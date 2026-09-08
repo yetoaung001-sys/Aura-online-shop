@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aura Store - Myanmar E-Commerce with Telegram Orders</title>
+  <title>Aura Store - Online Shop with Admin & Telegram Alerts</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
@@ -36,10 +36,20 @@
 </head>
 <body class="bg-slate-50 text-slate-900 antialiased selection:bg-brand-500 selection:text-white pb-24">
 
-  <!-- TOP NOTIFICATION BANNER -->
-  <div class="bg-brand-600 text-white text-xs py-2 px-4 text-center font-medium flex items-center justify-center gap-2">
-    <i class="ph ph-bell-ringing"></i>
-    <span>အော်ဒါတင်လိုက်သည်နှင့် ဆိုင်ရှင်၏ Telegram သို့ အလိုအလျောက် ချက်ချင်း ရောက်ရှိပါမည်။</span>
+  <!-- ADMIN STATUS BAR (VISIBLE ONLY TO ADMIN) -->
+  <div id="adminStatusBar" class="hidden bg-amber-500 text-slate-950 text-xs py-2 px-4 font-bold flex items-center justify-between shadow">
+    <div class="flex items-center gap-2 max-w-7xl mx-auto w-full justify-between">
+      <div class="flex items-center gap-2">
+        <i class="ph ph-shield-check text-lg"></i>
+        <span>Admin Mode ဖွင့်ထားပါသည် (သင်သည် ပစ္စည်းအသစ်တင်ခြင်းနှင့် စျေးနှုန်းပြင်ဆင်ခြင်းများ ပြုလုပ်နိုင်ပါသည်)</span>
+      </div>
+      <div class="flex items-center gap-3">
+        <button onclick="openAddProductModal()" class="bg-slate-900 text-white px-3 py-1 rounded-md text-xs hover:bg-black transition">
+          + ပစ္စည်းအသစ်တင်မည်
+        </button>
+        <button onclick="adminLogout()" class="underline hover:text-white text-xs">Logout</button>
+      </div>
+    </div>
   </div>
 
   <!-- NAVIGATION HEADER -->
@@ -53,7 +63,7 @@
         <div>
           <span class="text-xl font-bold tracking-tight text-slate-900 block leading-tight">Aura Store</span>
           <span class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
-            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Telegram Order Connected
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Online Shop & Telegram
           </span>
         </div>
       </div>
@@ -66,7 +76,7 @@
             type="text" 
             id="searchInput" 
             oninput="handleSearch(this.value)" 
-            placeholder="ရှာဖွေရန် (ဥပမာ: Headphone, Watch, Bag)..." 
+            placeholder="ပစ္စည်းရှာရန် (ဥပမာ: Watch, Bag, Phone)..." 
             class="w-full pl-10 pr-4 py-2 bg-slate-100 focus:bg-white text-sm rounded-full border border-transparent focus:border-brand-500 focus:ring-2 focus:ring-brand-500/20 outline-none transition"
           />
         </div>
@@ -84,11 +94,21 @@
           <span id="currLabel">MMK</span>
         </button>
 
-        <!-- Admin Settings (Telegram config modal) -->
+        <!-- Admin Login Button -->
+        <button 
+          onclick="handleAdminAuthClick()" 
+          id="adminAuthBtn"
+          class="p-2.5 rounded-full hover:bg-slate-100 text-slate-600 transition" 
+          title="ဆိုင်ရှင် Admin ဝင်ရန်"
+        >
+          <i class="ph ph-lock-key text-xl"></i>
+        </button>
+
+        <!-- Telegram Config -->
         <button 
           onclick="openTelegramConfigModal()" 
           class="p-2.5 rounded-full hover:bg-slate-100 text-slate-600 transition" 
-          title="ဆိုင်ရှင် Telegram ချိတ်ဆက်ရန် (Admin Setup)"
+          title="Telegram Setup"
         >
           <i class="ph ph-gear text-xl"></i>
         </button>
@@ -111,36 +131,36 @@
     </div>
   </header>
 
-  <!-- HERO BANNER -->
+  <!-- HERO SECTION -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-6">
     <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-brand-900 text-white p-8 sm:p-12 shadow-xl">
       <div class="relative z-10 max-w-2xl space-y-3">
         <span class="inline-block px-3 py-1 bg-brand-500/30 text-brand-200 border border-brand-400/30 rounded-full text-xs font-semibold tracking-wider">
-          Direct Telegram Ordering System
+          Official Myanmar Store
         </span>
         <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
-          အကောင်းဆုံး ပစ္စည်းများကို အိမ်တိုင်ရာရောက် မှာယူလိုက်ပါ
+          အရည်အသွေးမြင့် ပစ္စည်းများကို လက်လီ/လက်ကား မှာယူနိုင်ပါပြီ
         </h1>
         <p class="text-slate-300 text-sm sm:text-base leading-relaxed">
-          ဝယ်ယူလိုသော ပစ္စည်းများကို Cart ထဲထည့်ပြီး အော်ဒါတင်လိုက်ပါက ဆိုင်ရှင်၏ Telegram ဆီသို့ တိုက်ရိုက် စာပို့ပေးမည်ဖြစ်ပါသည်။
+          အော်ဒါတင်လိုက်သည်နှင့် ဆိုင်ရှင်၏ Telegram ထံသို့ အလိုအလျောက် သတင်းပို့ပေးမည့် အွန်လိုင်းစတိုး ဖြစ်ပါသည်။
         </p>
-        <div class="flex flex-wrap items-center gap-3 pt-2">
-          <span class="text-xs bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 flex items-center gap-1.5">
-            <i class="ph ph-truck text-brand-400"></i> Cash On Delivery ရရှိနိုင်
-          </span>
-          <span class="text-xs bg-white/10 px-3 py-1.5 rounded-lg border border-white/10 flex items-center gap-1.5">
-            <i class="ph ph-shield-check text-emerald-400"></i> KBZPay & WavePay လက်ခံသည်
-          </span>
-        </div>
       </div>
     </div>
   </section>
 
-  <!-- CATEGORIES & SORT -->
+  <!-- CATEGORIES & ADMIN SHORTCUT -->
   <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
     <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
       <div class="flex items-center gap-2 overflow-x-auto no-scrollbar pb-1" id="categoryContainer"></div>
+      
       <div class="flex items-center gap-2">
+        <button 
+          id="adminAddProductPill" 
+          onclick="openAddProductModal()" 
+          class="hidden bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-xl font-semibold shadow-sm items-center gap-1.5"
+        >
+          <i class="ph ph-plus-circle text-base"></i> ပစ္စည်းအသစ်တင်ရန်
+        </button>
         <select 
           onchange="sortProducts(this.value)" 
           class="text-xs sm:text-sm bg-white border border-slate-200 rounded-xl px-3 py-2 outline-none focus:border-brand-500 font-medium text-slate-700 shadow-sm"
@@ -148,7 +168,6 @@
           <option value="featured">Featured (လူကြိုက်များ)</option>
           <option value="price-asc">စျေးနှုန်း (အနည်းမှ အများ)</option>
           <option value="price-desc">စျေးနှုန်း (အများမှ အနည်း)</option>
-          <option value="rating">Rating (အမြင့်ဆုံး)</option>
         </select>
       </div>
     </div>
@@ -159,7 +178,112 @@
     <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6"></div>
   </main>
 
-  <!-- CART SLIDE DRAWER -->
+  <!-- ==================== MODALS ==================== -->
+
+  <!-- 1. ADD / EDIT PRODUCT MODAL (ADMIN) -->
+  <div id="productFormModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
+      <div class="p-4 bg-slate-900 text-white flex items-center justify-between">
+        <h3 class="font-bold text-sm flex items-center gap-2">
+          <i class="ph ph-package text-emerald-400 text-lg"></i>
+          <span id="productModalTitle">ပစ္စည်းအသစ် တင်ရန်</span>
+        </h3>
+        <button onclick="closeAddProductModal()" class="text-slate-400 hover:text-white">
+          <i class="ph ph-x text-lg"></i>
+        </button>
+      </div>
+
+      <form id="addProductForm" onsubmit="handleSaveProduct(event)" class="p-5 space-y-3.5 text-xs sm:text-sm max-h-[80vh] overflow-y-auto">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">ပစ္စည်းအမည် (Product Title) *</label>
+          <input type="text" required id="pTitle" placeholder="ဥပမာ: Nike Casual Sneakers" class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-brand-500 text-sm" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">စျေးနှုန်း (MMK) *</label>
+            <input type="number" required id="pPriceMMK" placeholder="150000" class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-brand-500 text-sm" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">စျေးနှုန်း (USD)</label>
+            <input type="number" id="pPriceUSD" placeholder="38" class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-brand-500 text-sm" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">အမျိုးအစား (Category) *</label>
+          <select id="pCategory" class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-brand-500 text-sm bg-white">
+            <option value="electronics">Electronics (လျှပ်စစ်ပစ္စည်း)</option>
+            <option value="gadgets">Gadgets (စမတ်ဖုန်း/နာရီ)</option>
+            <option value="fashion">Fashion (အဝတ်အထည်/ဖိနပ်)</option>
+            <option value="general">အထွေထွေ (General)</option>
+          </select>
+        </div>
+
+        <!-- Image Input Option: URL or File Upload -->
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">ဓာတ်ပုံ ရွေးချယ်တင်သွင်းရန် *</label>
+          <div class="space-y-2">
+            <input 
+              type="file" 
+              id="pFileUpload" 
+              accept="image/*" 
+              onchange="handleImageFilePick(event)" 
+              class="w-full text-xs text-slate-500 file:mr-3 file:py-2 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-brand-50 file:text-brand-700 hover:file:bg-brand-100"
+            />
+            <div class="text-center text-slate-400 text-[11px]">- သို့မဟုတ် ဓာတ်ပုံ Link (Image URL) ထည့်ပါ -</div>
+            <input 
+              type="url" 
+              id="pImageUrl" 
+              placeholder="https://images.unsplash.com/photo-..." 
+              class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-brand-500 text-xs" 
+            />
+          </div>
+          <!-- Preview -->
+          <div id="imagePreviewContainer" class="hidden mt-2 pt-2 border-t">
+            <span class="text-[10px] text-slate-400 block mb-1">ပုံစမ်းသပ်ပြသမှု (Preview):</span>
+            <img id="imagePreview" src="" class="w-20 h-20 object-cover rounded-lg border" />
+          </div>
+        </div>
+
+        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold shadow-md transition">
+          ပစ္စည်းအသစ် ထည့်သွင်းသိမ်းဆည်းမည်
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- 2. ADMIN PASSWORD LOGIN MODAL -->
+  <div id="adminAuthModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+    <div class="bg-white w-full max-w-sm rounded-2xl shadow-2xl p-6 space-y-4">
+      <div class="text-center space-y-1">
+        <div class="w-12 h-12 rounded-full bg-brand-50 text-brand-600 flex items-center justify-center mx-auto text-2xl">
+          <i class="ph ph-lock-key"></i>
+        </div>
+        <h3 class="font-bold text-slate-800 text-base">ဆိုင်ရှင် (Admin) စကားဝှက်ရိုက်ပါ</h3>
+        <p class="text-xs text-slate-500">ပစ္စည်းတင်ခြင်းနှင့် ဖျက်ခြင်းများ စီမံခန့်ခွဲရန်</p>
+      </div>
+      <form onsubmit="handleAdminLoginSubmit(event)" class="space-y-3">
+        <input 
+          type="password" 
+          id="adminPassInput" 
+          required 
+          placeholder="Password ရိုက်ထည့်ပါ (Default: admin123)" 
+          class="w-full px-3 py-2 border border-slate-200 rounded-xl outline-none focus:border-brand-500 text-sm text-center" 
+        />
+        <div class="flex gap-2">
+          <button type="button" onclick="closeAdminAuthModal()" class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-xs">
+            မလုပ်တော့ပါ
+          </button>
+          <button type="submit" class="flex-1 py-2 bg-brand-600 hover:bg-brand-700 text-white rounded-xl font-semibold text-xs shadow-md">
+            ဝင်မည် (Login)
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- 3. CART DRAWER -->
   <div id="cartModal" class="fixed inset-0 z-50 pointer-events-none transition-all duration-300 opacity-0">
     <div onclick="closeCart()" class="absolute inset-0 bg-black/50 backdrop-blur-sm transition-opacity"></div>
     <div class="absolute right-0 top-0 bottom-0 w-full max-w-md bg-white shadow-2xl flex flex-col pointer-events-auto transform translate-x-full transition-transform duration-300" id="cartContent">
@@ -174,42 +298,20 @@
         </button>
       </div>
 
-      <!-- Item list -->
       <div id="cartItemList" class="flex-1 overflow-y-auto p-4 space-y-3 divide-y divide-slate-100"></div>
 
-      <!-- Cart Bottom Info -->
       <div class="border-t border-slate-200 p-4 bg-slate-50 space-y-3">
-        <!-- Promo code input -->
-        <div class="flex gap-2">
-          <input 
-            type="text" 
-            id="promoInput" 
-            placeholder="Promo Code (AURA20)" 
-            class="flex-1 text-xs px-3 py-2 border border-slate-200 rounded-lg outline-none uppercase font-semibold"
-          />
-          <button 
-            onclick="applyPromo()" 
-            class="bg-slate-800 text-white text-xs px-3 py-2 rounded-lg hover:bg-slate-900 font-semibold"
-          >
-            Apply
-          </button>
-        </div>
-
         <div class="space-y-1 text-xs text-slate-600">
           <div class="flex justify-between">
-            <span>ကုန်ကျစရိတ် စုစုပေါင်း:</span>
+            <span>စုစုပေါင်းကုန်ကျငွေ:</span>
             <span id="subtotalText" class="font-medium text-slate-800">0 MMK</span>
-          </div>
-          <div class="flex justify-between text-emerald-600" id="discountRow" style="display: none;">
-            <span>ကူပွန်လျှော့စျေး (Discount):</span>
-            <span id="discountText">-0 MMK</span>
           </div>
           <div class="flex justify-between">
             <span>ပို့ဆောင်ခ (Delivery):</span>
             <span id="deliveryText" class="font-medium text-slate-800">2,500 MMK</span>
           </div>
           <div class="border-t border-slate-200 pt-2 flex justify-between text-sm font-bold text-slate-900">
-            <span>ရှင်းရမည့် စုစုပေါင်း:</span>
+            <span>ရှင်းရမည့်ငွေ စုစုပေါင်း:</span>
             <span id="finalTotalText" class="text-brand-600 font-extrabold text-base">0 MMK</span>
           </div>
         </div>
@@ -225,7 +327,7 @@
     </div>
   </div>
 
-  <!-- CHECKOUT MODAL -->
+  <!-- 4. CHECKOUT MODAL -->
   <div id="checkoutModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
     <div class="bg-white w-full max-w-lg rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-200">
       <div class="p-4 bg-slate-900 text-white flex items-center justify-between">
@@ -233,7 +335,7 @@
           <i class="ph ph-telegram-logo text-xl text-sky-400"></i>
           <div>
             <h3 class="font-bold text-sm">အော်ဒါအတည်ပြုခြင်း</h3>
-            <p class="text-[11px] text-slate-400">အော်ဒါအချက်အလက်များကို Telegram ဆီသို့ တိုက်ရိုက်ပို့ပေးပါမည်</p>
+            <p class="text-[11px] text-slate-400">Telegram သို့ အော်ဒါတိုက်ရိုက်ပေးပို့မည်</p>
           </div>
         </div>
         <button onclick="closeCheckout()" class="text-slate-400 hover:text-white">
@@ -243,22 +345,17 @@
 
       <form id="checkoutForm" onsubmit="submitOrderToTelegram(event)" class="p-5 space-y-3.5 max-h-[80vh] overflow-y-auto text-xs sm:text-sm">
         <div>
-          <label class="block font-semibold text-slate-700 mb-1">သင့်အမည် (Customer Name) *</label>
-          <input type="text" required id="custName" placeholder="ဥပမာ - မောင်မောင်" class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-brand-500 text-sm" />
+          <label class="block font-semibold text-slate-700 mb-1">သင့်အမည် (Name) *</label>
+          <input type="text" required id="custName" placeholder="မောင်မောင်" class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-brand-500 text-sm" />
         </div>
         <div>
-          <label class="block font-semibold text-slate-700 mb-1">ဖုန်းနံပါတ် (Phone Number) *</label>
+          <label class="block font-semibold text-slate-700 mb-1">ဖုန်းနံပါတ် (Phone) *</label>
           <input type="tel" required id="custPhone" placeholder="09xxxxxxxxx" class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-brand-500 text-sm" />
         </div>
         <div>
           <label class="block font-semibold text-slate-700 mb-1">ပို့ဆောင်ရမည့် မြို့နယ် / လိပ်စာ *</label>
           <textarea required id="custAddress" rows="2" placeholder="အမှတ်၊ လမ်း၊ ရပ်ကွက်၊ မြို့နယ်..." class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-brand-500 text-sm"></textarea>
         </div>
-        <div>
-          <label class="block font-semibold text-slate-700 mb-1">မှတ်ချက် (Optional Note)</label>
-          <input type="text" id="custNote" placeholder="ဥပမာ - နေ့လယ် ၁ နာရီနောက်ပိုင်းမှ ပို့ပေးပါ" class="w-full px-3 py-2 border border-slate-200 rounded-lg outline-none focus:border-brand-500 text-sm" />
-        </div>
-
         <div>
           <label class="block font-semibold text-slate-700 mb-1">ငွေပေးချေမှုစနစ် ရွေးချယ်ပါ *</label>
           <div class="grid grid-cols-3 gap-2">
@@ -273,41 +370,36 @@
               <span class="text-[10px] text-slate-500">Fast Pay</span>
             </label>
             <label class="border border-slate-200 rounded-xl p-2.5 flex flex-col items-center gap-1 cursor-pointer hover:border-brand-500 transition has-[:checked]:border-brand-600 has-[:checked]:bg-brand-50">
-              <input type="radio" name="payment" value="Cash On Delivery (COD)" class="hidden" />
+              <input type="radio" name="payment" value="Cash On Delivery" class="hidden" />
               <span class="font-bold text-emerald-600">COD</span>
               <span class="text-[10px] text-slate-500">အိမ်ရောက်ငွေချေ</span>
             </label>
           </div>
         </div>
 
-        <div id="submitBtnContainer" class="pt-2">
-          <button 
-            type="submit" 
-            id="orderSubmitBtn" 
-            class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl font-bold shadow-lg shadow-brand-500/30 transition flex items-center justify-center gap-2 text-sm"
-          >
-            <i class="ph ph-check-circle text-lg"></i> အော်ဒါ အတည်ပြုပေးပို့မည်
-          </button>
-        </div>
+        <button 
+          type="submit" 
+          id="orderSubmitBtn" 
+          class="w-full bg-brand-600 hover:bg-brand-700 text-white py-3 rounded-xl font-bold shadow-lg shadow-brand-500/30 transition flex items-center justify-center gap-2 text-sm"
+        >
+          <i class="ph ph-check-circle text-lg"></i> အော်ဒါ အတည်ပြုပေးပို့မည်
+        </button>
       </form>
     </div>
   </div>
 
-  <!-- ADMIN / TELEGRAM SETUP MODAL -->
+  <!-- 5. TELEGRAM SETUP MODAL -->
   <div id="telegramConfigModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
     <div class="bg-white w-full max-w-md rounded-2xl shadow-2xl p-6 space-y-4">
       <div class="flex items-center justify-between border-b pb-3">
         <div class="flex items-center gap-2 text-brand-600 font-bold">
           <i class="ph ph-robot text-2xl"></i>
-          <span>Telegram Alert ဆိုင်ရှင် Setup</span>
+          <span>Telegram Alert Setup</span>
         </div>
         <button onclick="closeTelegramConfigModal()" class="text-slate-400 hover:text-slate-600">
           <i class="ph ph-x text-lg"></i>
         </button>
       </div>
-      <p class="text-xs text-slate-500 leading-relaxed">
-        သင့်ဆိုင်အတွက် Bot Token နှင့် Chat ID ကို ဤနေရာတွင် ထည့်သွင်းသိမ်းဆည်းနိုင်ပါသည်။ (Browser LocalStorage တွင် လုံခြုံစွာ သိမ်းဆည်းထားပါမည်)
-      </p>
       <div class="space-y-3 text-xs">
         <div>
           <label class="block font-semibold mb-1 text-slate-700">Bot Token (From @BotFather)</label>
@@ -322,29 +414,14 @@
         <button onclick="saveTelegramConfig()" class="flex-1 bg-brand-600 hover:bg-brand-700 text-white font-semibold py-2 rounded-lg text-xs">
           သိမ်းဆည်းမည် (Save)
         </button>
-        <button onclick="testTelegramAlert()" class="px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold py-2 rounded-lg text-xs">
-          Test စမ်းသပ်ပို့မည်
-        </button>
       </div>
     </div>
   </div>
 
   <!-- JAVASCRIPT LOGIC -->
   <script>
-    // ==========================================
-    // ⚙️ TELEGRAM SETTINGS
-    // ==========================================
-    // သင့် Bot Token နှင့် Chat ID ကို ဒီနေရာတွင် တိုက်ရိုက် ထည့်ထားနိုင်ပါသည်:
-    const DEFAULT_TELEGRAM = {
-      botToken: localStorage.getItem('aura_bot_token') || '7829471923:AAExampleTokenPlaceholder',
-      chatId: localStorage.getItem('aura_chat_id') || '123456789'
-    };
-
-    let currentCurrency = 'MMK';
-    let discountRate = 0;
-    let selectedCategory = 'all';
-
-    const products = [
+    // 1. Initial Products Setup (Load from LocalStorage if exists)
+    const defaultProducts = [
       {
         id: 1,
         title: "Sony WH-1000XM5 Wireless Noise Cancelling Headphones",
@@ -356,7 +433,7 @@
       },
       {
         id: 2,
-        title: "Apple Watch Ultra 2 Titanium Case (GPS + Cellular)",
+        title: "Apple Watch Ultra 2 Titanium Case",
         category: "gadgets",
         priceMMK: 2850000,
         priceUSD: 710,
@@ -365,7 +442,7 @@
       },
       {
         id: 3,
-        title: "Nike Air Zoom Pegasus Athletic Running Shoes",
+        title: "Nike Air Zoom Pegasus Running Shoes",
         category: "fashion",
         priceMMK: 350000,
         priceUSD: 88,
@@ -374,41 +451,28 @@
       },
       {
         id: 4,
-        title: "Keychron Q1 Pro Custom Wireless Mechanical Keyboard",
+        title: "Keychron Mechanical Keyboard",
         category: "electronics",
         priceMMK: 480000,
         priceUSD: 120,
         rating: 4.9,
         image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80"
-      },
-      {
-        id: 5,
-        title: "Vintage Minimalist Waterproof Travel Backpack",
-        category: "fashion",
-        priceMMK: 185000,
-        priceUSD: 46,
-        rating: 4.6,
-        image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop&q=80"
-      },
-      {
-        id: 6,
-        title: "Logitech MX Master 3S Ergonomic Wireless Mouse",
-        category: "gadgets",
-        priceMMK: 380000,
-        priceUSD: 95,
-        rating: 4.9,
-        image: "https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=600&auto=format&fit=crop&q=80"
       }
     ];
 
+    let products = JSON.parse(localStorage.getItem('aura_products')) || defaultProducts;
+    let isAdmin = sessionStorage.getItem('aura_is_admin') === 'true';
+    let currentCurrency = 'MMK';
+    let selectedCategory = 'all';
     let cart = [];
+    let uploadedImageBase64 = null;
+
+    function saveProductsToStorage() {
+      localStorage.setItem('aura_products', JSON.stringify(products));
+    }
 
     function formatMoney(amount) {
-      if (currentCurrency === 'MMK') {
-        return amount.toLocaleString() + ' MMK';
-      } else {
-        return '$' + amount.toFixed(2);
-      }
+      return currentCurrency === 'MMK' ? amount.toLocaleString() + ' MMK' : '$' + amount.toFixed(2);
     }
 
     function toggleCurrency() {
@@ -420,10 +484,11 @@
 
     function renderCategories() {
       const categories = [
-        { id: 'all', label: 'အားလုံး (All Items)' },
+        { id: 'all', label: 'အားလုံး (All)' },
         { id: 'electronics', label: 'Electronics' },
         { id: 'gadgets', label: 'Gadgets' },
-        { id: 'fashion', label: 'Fashion & Bags' }
+        { id: 'fashion', label: 'Fashion' },
+        { id: 'general', label: 'အထွေထွေ' }
       ];
       const container = document.getElementById('categoryContainer');
       container.innerHTML = categories.map(cat => `
@@ -446,6 +511,7 @@
       renderProducts();
     }
 
+    // Product Grid Renderer
     function renderProducts(items = null) {
       const grid = document.getElementById('productGrid');
       let list = items || products;
@@ -454,13 +520,35 @@
         list = list.filter(p => p.category === selectedCategory);
       }
 
+      if (list.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-16 text-center text-slate-400">
+            <i class="ph ph-package text-5xl mb-2 text-slate-300"></i>
+            <p class="text-sm">ပစ္စည်းများ မရှိသေးပါ</p>
+          </div>
+        `;
+        return;
+      }
+
       grid.innerHTML = list.map(item => {
-        const price = currentCurrency === 'MMK' ? item.priceMMK : item.priceUSD;
+        const price = currentCurrency === 'MMK' ? item.priceMMK : (item.priceUSD || Math.round(item.priceMMK / 4000));
         return `
-          <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group">
+          <div class="bg-white rounded-2xl border border-slate-200/80 overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group relative">
+            
+            ${isAdmin ? `
+              <button 
+                onclick="deleteProduct(${item.id})" 
+                class="absolute top-2 right-2 z-10 bg-red-600/90 hover:bg-red-700 text-white p-2 rounded-xl shadow-md transition active:scale-95" 
+                title="ပစ္စည်းဖျက်မည် (Admin Only)"
+              >
+                <i class="ph ph-trash text-sm"></i>
+              </button>
+            ` : ''}
+
             <div class="relative pt-[80%] overflow-hidden bg-slate-100">
               <img src="${item.image}" alt="${item.title}" class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-300" />
             </div>
+
             <div class="p-4 flex-1 flex flex-col justify-between space-y-2">
               <div>
                 <span class="text-[10px] font-bold uppercase tracking-wider text-brand-600 bg-brand-50 px-2 py-0.5 rounded-full">${item.category}</span>
@@ -485,6 +573,130 @@
       }).join('');
     }
 
+    // ==========================================
+    // 👑 ADMIN MANAGEMENT & PRODUCT ADD / DELETE
+    // ==========================================
+    function handleAdminAuthClick() {
+      if (isAdmin) {
+        if (confirm('Admin အကောင့်မှ ထွက်လိုပါသလား?')) {
+          adminLogout();
+        }
+      } else {
+        document.getElementById('adminAuthModal').classList.remove('hidden');
+        document.getElementById('adminAuthModal').classList.add('flex');
+        document.getElementById('adminPassInput').focus();
+      }
+    }
+
+    function closeAdminAuthModal() {
+      document.getElementById('adminAuthModal').classList.add('hidden');
+      document.getElementById('adminAuthModal').classList.remove('flex');
+    }
+
+    function handleAdminLoginSubmit(e) {
+      e.preventDefault();
+      const pass = document.getElementById('adminPassInput').value;
+      if (pass === 'admin123') { // မူလ Admin Password
+        isAdmin = true;
+        sessionStorage.setItem('aura_is_admin', 'true');
+        closeAdminAuthModal();
+        updateAdminUI();
+        alert('🎉 Admin Mode သို့ အောင်မြင်စွာ ဝင်ရောက်ပြီးပါပြီ!');
+      } else {
+        alert('❌ စကားဝှက် မှားယွင်းနေပါသည်။ (Default: admin123)');
+      }
+    }
+
+    function adminLogout() {
+      isAdmin = false;
+      sessionStorage.removeItem('aura_is_admin');
+      updateAdminUI();
+    }
+
+    function updateAdminUI() {
+      const statusBar = document.getElementById('adminStatusBar');
+      const addPill = document.getElementById('adminAddProductPill');
+      const authBtn = document.getElementById('adminAuthBtn');
+
+      if (isAdmin) {
+        statusBar.classList.remove('hidden');
+        addPill.classList.remove('hidden');
+        addPill.classList.add('flex');
+        authBtn.classList.add('text-amber-500', 'bg-amber-50');
+      } else {
+        statusBar.classList.add('hidden');
+        addPill.classList.add('hidden');
+        addPill.classList.remove('flex');
+        authBtn.classList.remove('text-amber-500', 'bg-amber-50');
+      }
+      renderProducts();
+    }
+
+    function openAddProductModal() {
+      document.getElementById('addProductForm').reset();
+      uploadedImageBase64 = null;
+      document.getElementById('imagePreviewContainer').classList.add('hidden');
+      document.getElementById('productFormModal').classList.remove('hidden');
+      document.getElementById('productFormModal').classList.add('flex');
+    }
+
+    function closeAddProductModal() {
+      document.getElementById('productFormModal').classList.add('hidden');
+      document.getElementById('productFormModal').classList.remove('flex');
+    }
+
+    function handleImageFilePick(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(evt) {
+          uploadedImageBase64 = evt.target.result;
+          document.getElementById('imagePreview').src = uploadedImageBase64;
+          document.getElementById('imagePreviewContainer').classList.remove('hidden');
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    function handleSaveProduct(e) {
+      e.preventDefault();
+      const title = document.getElementById('pTitle').value.trim();
+      const priceMMK = parseInt(document.getElementById('pPriceMMK').value, 10);
+      let priceUSD = parseInt(document.getElementById('pPriceUSD').value, 10);
+      if (!priceUSD) priceUSD = Math.round(priceMMK / 4000);
+      const category = document.getElementById('pCategory').value;
+      const urlInput = document.getElementById('pImageUrl').value.trim();
+
+      const imageSrc = uploadedImageBase64 || urlInput || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80';
+
+      const newProduct = {
+        id: Date.now(),
+        title: title,
+        category: category,
+        priceMMK: priceMMK,
+        priceUSD: priceUSD,
+        rating: 5.0,
+        image: imageSrc
+      };
+
+      products.unshift(newProduct);
+      saveProductsToStorage();
+      renderProducts();
+      closeAddProductModal();
+      alert('✅ ပစ္စည်းအသစ်ကို အောင်မြင်စွာ တင်ပြီးပါပြီ!');
+    }
+
+    function deleteProduct(id) {
+      if (confirm('ဤပစ္စည်းကို ဖျက်ပစ်ရန် သေချာပါသလား?')) {
+        products = products.filter(p => p.id !== id);
+        saveProductsToStorage();
+        renderProducts();
+      }
+    }
+
+    // ==========================================
+    // 🛒 CART & ORDER TO TELEGRAM
+    // ==========================================
     function addToCart(id) {
       const prod = products.find(p => p.id === id);
       const existing = cart.find(item => item.id === id);
@@ -511,14 +723,14 @@
         list.innerHTML = `
           <div class="py-16 text-center text-slate-400">
             <i class="ph ph-shopping-cart text-5xl mb-2 text-slate-300"></i>
-            <p class="text-sm">စျေးဝယ်တွန်းလှည်းထဲတွင် ပစ္စည်းမရှိသေးပါ</p>
+            <p class="text-sm">စျေးဝယ်တွန်းလှည်းထဲတွင် ဘာမှမရှိသေးပါ</p>
           </div>
         `;
         document.getElementById('checkoutBtn').disabled = true;
       } else {
         document.getElementById('checkoutBtn').disabled = false;
         list.innerHTML = cart.map(item => {
-          const itemPrice = currentCurrency === 'MMK' ? item.priceMMK : item.priceUSD;
+          const itemPrice = currentCurrency === 'MMK' ? item.priceMMK : (item.priceUSD || Math.round(item.priceMMK / 4000));
           return `
             <div class="flex items-center gap-3 py-3">
               <img src="${item.image}" class="w-14 h-14 object-cover rounded-lg border border-slate-200" />
@@ -539,19 +751,11 @@
         }).join('');
       }
 
-      // Calculations
-      const subtotal = cart.reduce((sum, i) => sum + (currentCurrency === 'MMK' ? i.priceMMK : i.priceUSD) * i.quantity, 0);
-      const discount = subtotal * discountRate;
+      const subtotal = cart.reduce((sum, i) => sum + (currentCurrency === 'MMK' ? i.priceMMK : (i.priceUSD || Math.round(i.priceMMK / 4000))) * i.quantity, 0);
       const delivery = cart.length > 0 ? (currentCurrency === 'MMK' ? 2500 : 1) : 0;
-      const finalTotal = subtotal - discount + delivery;
+      const finalTotal = subtotal + delivery;
 
       document.getElementById('subtotalText').innerText = formatMoney(subtotal);
-      if (discountRate > 0) {
-        document.getElementById('discountRow').style.display = 'flex';
-        document.getElementById('discountText').innerText = '-' + formatMoney(discount);
-      } else {
-        document.getElementById('discountRow').style.display = 'none';
-      }
       document.getElementById('deliveryText').innerText = formatMoney(delivery);
       document.getElementById('finalTotalText').innerText = formatMoney(finalTotal);
     }
@@ -570,29 +774,14 @@
       updateCartUI();
     }
 
-    function applyPromo() {
-      const val = document.getElementById('promoInput').value.trim().toUpperCase();
-      if (val === 'AURA20') {
-        discountRate = 0.20;
-        alert('🎉 Promo Code (AURA20) အောင်မြင်ပါသည်! ၂၀% Discount ရရှိပါပြီ။');
-      } else {
-        alert('ကူပွန်နံပါတ် မှားယွင်းနေပါသည်။ (စမ်းသပ်ရန်: AURA20)');
-      }
-      updateCartUI();
-    }
-
     function openCart() {
-      const modal = document.getElementById('cartModal');
-      const content = document.getElementById('cartContent');
-      modal.classList.remove('opacity-0', 'pointer-events-none');
-      content.classList.remove('translate-x-full');
+      document.getElementById('cartModal').classList.remove('opacity-0', 'pointer-events-none');
+      document.getElementById('cartContent').classList.remove('translate-x-full');
     }
 
     function closeCart() {
-      const modal = document.getElementById('cartModal');
-      const content = document.getElementById('cartContent');
-      modal.classList.add('opacity-0', 'pointer-events-none');
-      content.classList.add('translate-x-full');
+      document.getElementById('cartModal').classList.add('opacity-0', 'pointer-events-none');
+      document.getElementById('cartContent').classList.add('translate-x-full');
     }
 
     function openCheckout() {
@@ -606,103 +795,63 @@
       document.getElementById('checkoutModal').classList.remove('flex');
     }
 
-    // ==========================================
-    // 🚀 TELEGRAM ORDER SUBMISSION CORE
-    // ==========================================
+    // Submit Order to Telegram
     async function submitOrderToTelegram(e) {
       e.preventDefault();
-
       const name = document.getElementById('custName').value.trim();
       const phone = document.getElementById('custPhone').value.trim();
       const address = document.getElementById('custAddress').value.trim();
-      const note = document.getElementById('custNote').value.trim() || 'မရှိပါ';
       const payment = document.querySelector('input[name="payment"]:checked').value;
 
-      const subtotal = cart.reduce((sum, i) => sum + (currentCurrency === 'MMK' ? i.priceMMK : i.priceUSD) * i.quantity, 0);
-      const discount = subtotal * discountRate;
+      const subtotal = cart.reduce((sum, i) => sum + (currentCurrency === 'MMK' ? i.priceMMK : (i.priceUSD || Math.round(i.priceMMK / 4000))) * i.quantity, 0);
       const delivery = currentCurrency === 'MMK' ? 2500 : 1;
-      const finalTotal = subtotal - discount + delivery;
+      const finalTotal = subtotal + delivery;
 
-      // Item list formatting for telegram message
       let itemsSummary = "";
       cart.forEach((item, index) => {
-        const itemPrice = currentCurrency === 'MMK' ? item.priceMMK : item.priceUSD;
+        const itemPrice = currentCurrency === 'MMK' ? item.priceMMK : (item.priceUSD || Math.round(item.priceMMK / 4000));
         itemsSummary += `${index + 1}. <b>${item.title}</b>\n   └ ${item.quantity} ခု x ${formatMoney(itemPrice)} = <b>${formatMoney(itemPrice * item.quantity)}</b>\n`;
       });
 
       const orderId = "ORD-" + Math.floor(100000 + Math.random() * 900000);
-      const currentTime = new Date().toLocaleString('en-US', { timeZone: 'Asia/Yangon' });
 
-      // Telegram Message Template
       const telegramMessage = `
 🛍️ <b>အော်ဒါအသစ် ရောက်ရှိပါသည်! (#${orderId})</b>
 ━━━━━━━━━━━━━━━━━━━
 👤 <b>ဝယ်သူအမည်:</b> ${name}
 📞 <b>ဖုန်းနံပါတ်:</b> ${phone}
-📍 <b>ပို့ဆောင်ရမည့်လိပ်စာ:</b> ${address}
-📝 <b>မှတ်ချက်:</b> ${note}
-💳 <b>ငွေပေးချေမှု:</b> ${payment}
-⏰ <b>အချိန်:</b> ${currentTime} (MMT)
+📍 <b>လိပ်စာ:</b> ${address}
+💳 <b>ငွေချေမှု:</b> ${payment}
 
 📦 <b>မှာယူထားသော ပစ္စည်းများ:</b>
 ${itemsSummary}
 ━━━━━━━━━━━━━━━━━━━
-💰 <b>ကုန်ကျငွေ:</b> ${formatMoney(subtotal)}
-🎁 <b>လျှော့စျေး:</b> ${formatMoney(discount)}
-🚚 <b>ပို့ဆောင်ခ:</b> ${formatMoney(delivery)}
-🔥 <b>ရှင်းရမည့်ငွေ စုစုပေါင်း:</b> <code>${formatMoney(finalTotal)}</code>
-━━━━━━━━━━━━━━━━━━━
+💰 <b>ကုန်ကျစရိတ် စုစုပေါင်း:</b> <code>${formatMoney(finalTotal)}</code>
 `;
 
-      const botToken = localStorage.getItem('aura_bot_token') || DEFAULT_TELEGRAM.botToken;
-      const chatId = localStorage.getItem('aura_chat_id') || DEFAULT_TELEGRAM.chatId;
+      const botToken = localStorage.getItem('aura_bot_token');
+      const chatId = localStorage.getItem('aura_chat_id');
 
-      const submitBtn = document.getElementById('orderSubmitBtn');
-      submitBtn.disabled = true;
-      submitBtn.innerHTML = `<i class="ph ph-spinner animate-spin text-lg"></i> Telegram သို့ ပေးပို့နေပါသည်...`;
-
-      try {
-        const response = await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: telegramMessage,
-            parse_mode: 'HTML'
-          })
-        });
-
-        const resData = await response.json();
-
-        if (resData.ok) {
-          alert(`🎉 ကျေးဇူးတင်ပါသည် ${name}!\n\nသင့်အော်ဒါ #${orderId} ကို ဆိုင်ရှင်၏ Telegram သို့ တိုက်ရိုက် ပေးပို့လိုက်ပါပြီ။ မကြာမီ ဆိုင်မှ ဖုန်းဆက်သွယ်ပေးပါမည်။`);
-          cart = [];
-          updateCartUI();
-          closeCheckout();
-          document.getElementById('checkoutForm').reset();
-        } else {
-          // If bot token is not configured yet
-          console.warn("Telegram Bot Error:", resData);
-          alert(`⚠️ အော်ဒါမှတ်တမ်း ရရှိပါသည်!\n(သတိပြုရန်: ဆိုင်ရှင်၏ Telegram Bot Token သို့မဟုတ် Chat ID မထည့်ရသေးပါက ထိပ်ရှိ Gear Icon တွင် သွားရောက် ထည့်သွင်းနိုင်ပါသည်)\n\nအော်ဒါအမှတ်: ${orderId}\nဝယ်သူ: ${name}\nစုစုပေါင်း: ${formatMoney(finalTotal)}`);
-          cart = [];
-          updateCartUI();
-          closeCheckout();
+      if (botToken && chatId) {
+        try {
+          await fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ chat_id: chatId, text: telegramMessage, parse_mode: 'HTML' })
+          });
+        } catch (err) {
+          console.error(err);
         }
-      } catch (err) {
-        console.error(err);
-        alert(`အော်ဒါတင်ခြင်း အောင်မြင်ပါသည်။ ဆိုင်ရှင်ထံ ဆက်သွယ်ပေးပါမည်ခင်ဗျာ။`);
-        cart = [];
-        updateCartUI();
-        closeCheckout();
-      } finally {
-        submitBtn.disabled = false;
-        submitBtn.innerHTML = `<i class="ph ph-check-circle text-lg"></i> အော်ဒါ အတည်ပြုပေးပို့မည်`;
       }
+
+      alert(`🎉 ကျေးဇူးတင်ပါသည် ${name}!\n\nသင့်အော်ဒါ #${orderId} ကို လက်ခံရရှိပါပြီ။ မကြာမီ ဆိုင်မှ ဖုန်းဆက်သွယ်ပေးပါမည်ခင်ဗျာ။`);
+      cart = [];
+      updateCartUI();
+      closeCheckout();
+      document.getElementById('checkoutForm').reset();
     }
 
-    // ==========================================
-    // ⚙️ TELEGRAM CONFIG MODAL HELPERS
-    // ==========================================
+    // Config Helpers
     function openTelegramConfigModal() {
       document.getElementById('cfgBotToken').value = localStorage.getItem('aura_bot_token') || '';
       document.getElementById('cfgChatId').value = localStorage.getItem('aura_chat_id') || '';
@@ -718,46 +867,10 @@ ${itemsSummary}
     function saveTelegramConfig() {
       const token = document.getElementById('cfgBotToken').value.trim();
       const chat = document.getElementById('cfgChatId').value.trim();
-
-      if (!token || !chat) {
-        alert('Bot Token နှင့် Chat ID နှစ်ခုစလုံးကို ဖြည့်ပေးပါခင်ဗျာ။');
-        return;
-      }
-
       localStorage.setItem('aura_bot_token', token);
       localStorage.setItem('aura_chat_id', chat);
-      alert('✅ Telegram Settings ကို အောင်မြင်စွာ သိမ်းဆည်းလိုက်ပါပြီ!');
+      alert('✅ Telegram Settings ကို သိမ်းဆည်းပြီးပါပြီ!');
       closeTelegramConfigModal();
-    }
-
-    async function testTelegramAlert() {
-      const token = document.getElementById('cfgBotToken').value.trim() || localStorage.getItem('aura_bot_token');
-      const chat = document.getElementById('cfgChatId').value.trim() || localStorage.getItem('aura_chat_id');
-
-      if (!token || !chat) {
-        alert('Bot Token နှင့် Chat ID အရင်ဖြည့်သွင်းပေးပါခင်ဗျာ။');
-        return;
-      }
-
-      try {
-        const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chat,
-            text: '🔔 <b>Aura Online Shop Test Alert</b>\n\nသင့်ဆိုင်နှင့် Telegram ချိတ်ဆက်မှု အောင်မြင်ပါသည်! Customer များ အော်ဒါတင်ပါက ဤနေရာသို့ ချက်ချင်း ရောက်ရှိလာပါမည်။',
-            parse_mode: 'HTML'
-          })
-        });
-        const d = await res.json();
-        if (d.ok) {
-          alert('✅ Test Message ကို Telegram ထဲသို့ ပို့ပြီးပါပြီ! သင့် Telegram ကို စစ်ဆေးကြည့်ပါ။');
-        } else {
-          alert('❌ ပေးပို့မှု မအောင်မြင်ပါ။ Bot Token သို့မဟုတ် Chat ID မှန်မမှန် ပြန်လည်စစ်ဆေးပါ: ' + d.description);
-        }
-      } catch (e) {
-        alert('❌ Error ဖြစ်ပွားပါသည်: ' + e.message);
-      }
     }
 
     function handleSearch(val) {
@@ -770,14 +883,14 @@ ${itemsSummary}
       let sorted = [...products];
       if (type === 'price-asc') sorted.sort((a, b) => a.priceMMK - b.priceMMK);
       if (type === 'price-desc') sorted.sort((a, b) => b.priceMMK - a.priceMMK);
-      if (type === 'rating') sorted.sort((a, b) => b.rating - a.rating);
       renderProducts(sorted);
     }
 
-    // Initialize App
+    // Initialize on load
     renderCategories();
     renderProducts();
     updateCartUI();
+    updateAdminUI();
   </script>
 </body>
 </html>
