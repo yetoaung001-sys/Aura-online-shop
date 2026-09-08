@@ -9,7 +9,7 @@
 </head>
 <body class="bg-slate-50 text-slate-900 pb-20">
 
-  <!-- ADMIN BAR (SHOWN AFTER ADMIN LOGIN) -->
+  <!-- ADMIN BAR -->
   <div id="adminBar" class="hidden bg-slate-900 text-amber-400 text-xs py-2 px-4 flex justify-between items-center">
     <span>👑 Admin Mode (<span id="adminName">Admin</span>)</span>
     <div class="space-x-3">
@@ -19,16 +19,16 @@
   </div>
 
   <!-- HEADER -->
-  <header class="bg-white border-b px-4 h-16 flex items-center justify-between sticky top-0 z-30 shadow-sm">
+  <header class="bg-white border-b px-4 h-16 flex items-center justify-between sticky top-0 z-30">
     <div class="flex items-center gap-2">
       <div class="w-9 h-9 bg-indigo-600 text-white font-bold rounded-xl flex items-center justify-center">A</div>
       <div>
         <span class="font-bold text-base block leading-tight">Aura Shop</span>
-        <span class="text-[10px] text-emerald-600 font-semibold">● Active Online Store</span>
+        <span class="text-[10px] text-emerald-600">● Live Database</span>
       </div>
     </div>
     <div class="flex items-center gap-2">
-      <button onclick="openCart()" class="relative p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition">
+      <button onclick="openCart()" class="relative p-2 bg-slate-100 rounded-full">
         <i class="ph ph-shopping-cart text-xl"></i>
         <span id="cartBadge" class="absolute -top-1 -right-1 bg-indigo-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
       </button>
@@ -37,10 +37,7 @@
 
   <!-- CONTENT -->
   <main class="max-w-4xl mx-auto p-4">
-    <div class="flex justify-between items-center mb-3">
-      <h2 class="font-bold text-slate-800 text-base">ပစ္စည်းစာရင်းများ</h2>
-      <span class="text-xs text-slate-400">Instantly Ready</span>
-    </div>
+    <h2 class="font-bold text-slate-800 text-base mb-3">ပစ္စည်းစာရင်းများ</h2>
     <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"></div>
   </main>
 
@@ -121,17 +118,35 @@
   </div>
 
   <script>
-    // မူလ ပစ္စည်းစာရင်း (Loading စောင့်စရာမလိုဘဲ ချက်ချင်း ပေါ်လာပါမည်)
-    const initialProducts = [
+    // Supabase REST API Direct (No external JS client needed)
+    const SB_URL = "https://zyajlsrytjvwxqtxrqd.supabase.co/rest/v1";
+    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
+    const HEADERS = { "apikey": SB_KEY, "Authorization": "Bearer " + SB_KEY, "Content-Type": "application/json" };
+
+    const backupProducts = [
       { id: 1, title: "Sony Wireless Headphone", priceMMK: 1250000, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80" },
       { id: 2, title: "Apple Watch Series", priceMMK: 850000, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80" },
-      { id: 3, title: "Running Sneakers", priceMMK: 150000, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80" },
-      { id: 4, title: "Mechanical Keyboard", priceMMK: 320000, image: "https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=500&q=80" }
+      { id: 3, title: "Running Sneakers", priceMMK: 150000, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80" }
     ];
 
-    let products = JSON.parse(localStorage.getItem('aura_shop_products')) || initialProducts;
+    let products = [];
     let cart = [];
     let isAdmin = sessionStorage.getItem('is_admin') === 'true';
+
+    async function loadProducts() {
+      try {
+        const res = await fetch(`${SB_URL}/products?select=*&order=id.desc`, { headers: HEADERS });
+        const data = await res.json();
+        if (Array.isArray(data) && data.length > 0) {
+          products = data;
+        } else {
+          products = backupProducts;
+        }
+      } catch (e) {
+        products = backupProducts;
+      }
+      render();
+    }
 
     function render() {
       const grid = document.getElementById('productGrid');
@@ -143,30 +158,38 @@
             <h4 class="font-bold text-xs line-clamp-1">${p.title}</h4>
             <div class="text-indigo-600 font-extrabold text-xs mt-1">${parseInt(p.priceMMK).toLocaleString()} MMK</div>
           </div>
-          <button onclick="addToCart(${p.id})" class="mt-2 w-full bg-slate-900 text-white text-xs py-1.5 rounded-lg font-bold hover:bg-indigo-600 transition">Cart ထည့်မည်</button>
+          <button onclick="addToCart(${p.id})" class="mt-2 w-full bg-slate-900 text-white text-xs py-1.5 rounded-lg font-bold">Cart ထည့်မည်</button>
         </div>
       `).join('');
     }
 
-    function addProduct(e) {
+    async function addProduct(e) {
       e.preventDefault();
       const title = document.getElementById('pName').value.trim();
       const priceMMK = parseInt(document.getElementById('pPrice').value, 10);
       const image = document.getElementById('pImg').value.trim();
 
-      const newProduct = { id: Date.now(), title, priceMMK, image };
-      products.unshift(newProduct);
-      localStorage.setItem('aura_shop_products', JSON.stringify(products));
-      render();
-      closeAddModal();
-      alert('✅ ပစ္စည်းအသစ် တင်ပြီးပါပြီ!');
+      document.getElementById('addBtn').innerText = "သိမ်းနေပါသည်...";
+      try {
+        await fetch(`${SB_URL}/products`, {
+          method: 'POST',
+          headers: HEADERS,
+          body: JSON.stringify({ title, priceMMK, image })
+        });
+        await loadProducts();
+        closeAddModal();
+        alert('✅ ပစ္စည်းအသစ် တင်ပြီးပါပြီ!');
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        document.getElementById('addBtn').innerText = "သိမ်းဆည်းမည်";
+      }
     }
 
-    function deleteProduct(id) {
+    async function deleteProduct(id) {
       if (confirm('ဤပစ္စည်းကို ဖျက်မည်လား?')) {
-        products = products.filter(p => p.id !== id);
-        localStorage.setItem('aura_shop_products', JSON.stringify(products));
-        render();
+        await fetch(`${SB_URL}/products?id=eq.${id}`, { method: 'DELETE', headers: HEADERS });
+        await loadProducts();
       }
     }
 
@@ -201,21 +224,22 @@
       `).join('');
     }
 
-    function sendOrder(e) {
+    async function sendOrder(e) {
       e.preventDefault();
       const name = document.getElementById('cName').value;
       const phone = document.getElementById('cPhone').value;
+      const address = document.getElementById('cAddress').value;
+      const payment = document.getElementById('cPayment').value;
       const total = cart.reduce((s, i) => s + (parseInt(i.priceMMK) * i.qty), 0);
 
-      alert(`🎉 ကျေးဇူးတင်ပါသည် ${name}!\nဖုန်း: ${phone}\nကျသင့်ငွေ: ${total.toLocaleString()} MMK\n\nအော်ဒါကို အောင်မြင်စွာ လက်ခံရရှိပါပြီ။`);
+      alert(`🎉 ကျေးဇူးတင်ပါသည် ${name}!\nစုစုပေါင်း: ${total.toLocaleString()} MMK\nအော်ဒါ လက်ခံရရှိပါပြီ။`);
       cart = [];
       updateCart();
       closeCheckout();
     }
 
-    // Admin Hash listener (#admin)
-    window.addEventListener('hashchange', checkAdminHash);
-    function checkAdminHash() {
+    // Admin Hash trigger
+    window.addEventListener('hashchange', () => {
       if (window.location.hash === '#admin') {
         const p = prompt('Admin Password: (Default: admin123)');
         if (p === 'admin123') {
@@ -223,11 +247,9 @@
           sessionStorage.setItem('is_admin', 'true');
           document.getElementById('adminBar').classList.remove('hidden');
           render();
-        } else if (p) {
-          alert('Password မှားပါသည်!');
         }
       }
-    }
+    });
 
     function adminLogout() {
       isAdmin = false;
@@ -245,8 +267,7 @@
     function closeAddModal() { document.getElementById('addModal').classList.add('hidden'); document.getElementById('addModal').classList.remove('flex'); }
 
     if (isAdmin) document.getElementById('adminBar').classList.remove('hidden');
-    checkAdminHash();
-    render(); // ချက်ချင်း Render ပြုလုပ်ပါမည်
+    loadProducts();
   </script>
 </body>
 </html>
