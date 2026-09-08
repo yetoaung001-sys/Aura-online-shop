@@ -3,24 +3,27 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aura Store - Myanmar Online Shop</title>
+  <title>Aura Store - Supabase Live Database Shop</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
+  <!-- Supabase JS Client -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-slate-50 text-slate-900 pb-20">
+<body class="bg-slate-50 text-slate-900 pb-24">
 
   <!-- ADMIN BAR (SHOWN ONLY WHEN LOGGED IN AS ADMIN) -->
   <div id="adminBar" class="hidden bg-slate-900 text-amber-400 text-xs py-2 px-4 font-bold border-b border-amber-500/30">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
       <div class="flex items-center gap-2">
         <i class="ph ph-shield-check text-base text-amber-400"></i>
-        <span>Admin Mode: <span id="adminDisplayName" class="text-white">Admin</span></span>
+        <span>Admin: <span id="adminDisplayName" class="text-white">Admin</span></span>
+        <span class="text-[10px] bg-emerald-500/20 text-emerald-400 px-2 py-0.5 rounded ml-2">● Supabase Live</span>
       </div>
       <div class="flex items-center gap-3">
         <button onclick="openTelegramSetup()" class="text-slate-300 hover:text-white underline">Telegram Setup</button>
@@ -34,7 +37,12 @@
   <header class="sticky top-0 z-40 bg-white border-b border-slate-200 px-4 h-16 flex items-center justify-between shadow-sm">
     <div class="flex items-center gap-2 cursor-pointer" onclick="window.location.hash = ''">
       <div class="w-9 h-9 bg-indigo-600 text-white font-bold rounded-xl flex items-center justify-center text-lg shadow-sm">A</div>
-      <span class="font-bold text-lg">Aura Shop</span>
+      <div>
+        <span class="font-bold text-lg leading-none block">Aura Shop</span>
+        <span class="text-[10px] text-emerald-600 font-semibold flex items-center gap-1">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span> Cloud DB Connected
+        </span>
+      </div>
     </div>
 
     <div class="flex items-center gap-2 sm:gap-3">
@@ -47,7 +55,7 @@
 
       <div id="authUserSection" class="hidden items-center gap-2">
         <div class="text-right leading-tight hidden sm:block">
-          <div id="headerUserName" class="text-xs font-bold text-slate-800">ဝယ်သူအမည်</div>
+          <div id="headerUserName" class="text-xs font-bold text-slate-800">ဝယ်သူ</div>
           <div id="headerUserPhone" class="text-[10px] text-slate-500 font-mono">09xxxxxxxx</div>
         </div>
         <button onclick="handleUserLogout()" class="p-1.5 text-slate-500 hover:text-rose-600 hover:bg-rose-50 rounded-full transition" title="အကောင့်ထွက်မည်">
@@ -68,12 +76,18 @@
     <div class="flex justify-between items-center mb-4">
       <div>
         <h2 class="font-bold text-slate-800 text-lg">ပစ္စည်းစာရင်းများ</h2>
-        <p class="text-xs text-slate-500">ဖုန်းနံပါတ်ဖြင့် အကောင့်ဖွင့်ကာ အလွယ်တကူ မှာယူနိုင်ပါသည်</p>
+        <p class="text-xs text-slate-500">Supabase Live Database ဖြင့် ကမ္ဘာအနှံ့ Live ချိတ်ဆက်ထားပါသည်</p>
       </div>
       <button id="addBtnQuick" onclick="openAddModal()" class="hidden bg-emerald-600 hover:bg-emerald-700 text-white text-xs px-3 py-2 rounded-lg font-bold">
         + ပစ္စည်းအသစ်တင်ရန်
       </button>
     </div>
+
+    <div id="loadingIndicator" class="text-center py-12 text-slate-400 text-sm flex flex-col items-center gap-2">
+      <i class="ph ph-spinner animate-spin text-3xl text-indigo-600"></i>
+      <span>Supabase မှ ပစ္စည်းများ ရယူနေပါသည်...</span>
+    </div>
+
     <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
   </main>
 
@@ -102,7 +116,7 @@
           <label class="block font-bold text-slate-700 mb-1">Password</label>
           <input type="password" id="adminLoginPass" required placeholder="••••••••" class="w-full border px-3 py-2 rounded-lg outline-none focus:border-amber-500 text-sm" />
         </div>
-        <button type="submit" class="w-full bg-slate-900 hover:bg-black text-amber-400 py-2.5 rounded-xl font-bold text-xs shadow transition">
+        <button type="submit" id="adminLoginBtn" class="w-full bg-slate-900 hover:bg-black text-amber-400 py-2.5 rounded-xl font-bold text-xs shadow transition">
           Admin ဝင်မည် (Login)
         </button>
         <div class="text-center pt-2">
@@ -128,9 +142,9 @@
         <div>
           <label class="block font-bold text-slate-700 mb-1">လျှို့ဝှက်ကုတ် (Security Secret Key) *</label>
           <input type="password" id="adminSecretKey" required placeholder="Default: aura888" class="w-full border px-3 py-2 rounded-lg outline-none focus:border-amber-500 text-sm" />
-          <p class="text-[10px] text-slate-400 mt-1">အခြားသူများ Admin မဖွင့်နိုင်ရန် စနစ်လုံခြုံရေးကုတ် ဖြစ်ပါသည် (Default: aura888)</p>
+          <p class="text-[10px] text-slate-400 mt-1">Admin အကောင့်ဖွင့်ရန် စနစ်ကုတ်ဖြစ်ပါသည် (Default: aura888)</p>
         </div>
-        <button type="submit" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 py-2.5 rounded-xl font-bold text-xs shadow transition">
+        <button type="submit" id="adminRegBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 py-2.5 rounded-xl font-bold text-xs shadow transition">
           Admin အကောင့်သစ် ဖွင့်မည်
         </button>
         <div class="text-center pt-2">
@@ -159,7 +173,7 @@
           <label class="block font-semibold text-slate-700 mb-1">Password</label>
           <input type="password" id="loginPassword" required placeholder="••••••••" class="w-full border px-3 py-2 rounded-lg outline-none focus:border-indigo-600 text-sm" />
         </div>
-        <button type="submit" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-bold text-xs">အကောင့်ဝင်မည်</button>
+        <button type="submit" id="custLoginBtn" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-bold text-xs">အကောင့်ဝင်မည်</button>
         <div class="text-center pt-2">
           <span class="text-slate-500">အကောင့်မရှိသေးပါက </span>
           <button type="button" onclick="switchCustomerTab('register')" class="text-indigo-600 font-bold underline">အကောင့်သစ်ဖွင့်ပါ</button>
@@ -180,7 +194,7 @@
           <label class="block font-semibold text-slate-700 mb-1">Password သတ်မှတ်ပါ</label>
           <input type="password" id="regPassword" required placeholder="အနည်းဆုံး ၄ လုံး" class="w-full border px-3 py-2 rounded-lg outline-none focus:border-indigo-600 text-sm" />
         </div>
-        <button type="submit" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-xs">အကောင့်ဖွင့်မည်</button>
+        <button type="submit" id="custRegBtn" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white py-2.5 rounded-xl font-bold text-xs">အကောင့်ဖွင့်မည်</button>
         <div class="text-center pt-2">
           <span class="text-slate-500">အကောင့်ရှိပြီးဖြစ်ပါက </span>
           <button type="button" onclick="switchCustomerTab('login')" class="text-indigo-600 font-bold underline">အကောင့်ဝင်ပါ</button>
@@ -246,7 +260,7 @@
   <div id="addModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-3 text-xs">
       <div class="flex justify-between items-center pb-2 border-b">
-        <h3 class="font-bold text-sm">ပစ္စည်းအသစ် တင်ရန်</h3>
+        <h3 class="font-bold text-sm">ပစ္စည်းအသစ် တင်ရန် (Supabase Live)</h3>
         <button onclick="closeAddModal()"><i class="ph ph-x text-lg"></i></button>
       </div>
       <form onsubmit="saveProduct(event)" class="space-y-3">
@@ -262,7 +276,7 @@
           <label class="font-bold">ဓာတ်ပုံ Image Link (URL) *</label>
           <input type="url" id="pImg" required placeholder="https://..." class="w-full border p-2 rounded mt-1" />
         </div>
-        <button type="submit" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-bold">သိမ်းဆည်းမည်</button>
+        <button type="submit" id="saveProductBtn" class="w-full bg-emerald-600 text-white py-2.5 rounded-xl font-bold">Cloud သို့ တင်မည်</button>
       </form>
     </div>
   </div>
@@ -290,28 +304,66 @@
     </div>
   </div>
 
-  <!-- SCRIPT LOGIC -->
+  <!-- SCRIPT LOGIC WITH SUPABASE -->
   <script>
+    // ==========================================
+    // ⚡ SUPABASE INITIALIZATION
+    // ==========================================
+    const SUPABASE_URL = "https://zyajlsrytjvwxqtxrqd.supabase.co";
+    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
+
+    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
     const CONFIG = {
       defaultBotToken: "7829471923:AAExampleTokenPlaceholder",
       defaultChatId: "123456789",
-      adminSecurityKey: "aura888" // Admin Register လုပ်ရန် စနစ်လုံခြုံရေး လျှို့ဝှက်ကုဒ်
+      adminSecurityKey: "aura888"
     };
 
     const initialProducts = [
-      { id: 1, title: "Sony Wireless Headphone", priceMMK: 1250000, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80" },
-      { id: 2, title: "Apple Watch Series", priceMMK: 850000, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80" },
-      { id: 3, title: "Running Sneakers", priceMMK: 150000, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80" }
+      { id: "1", title: "Sony Wireless Headphone", priceMMK: 1250000, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80" },
+      { id: "2", title: "Apple Watch Series", priceMMK: 850000, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80" },
+      { id: "3", title: "Running Sneakers", priceMMK: 150000, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80" }
     ];
 
-    let products = JSON.parse(localStorage.getItem('my_shop_products')) || initialProducts;
-    let customerUsers = JSON.parse(localStorage.getItem('aura_users')) || [];
+    let liveProducts = [];
     let currentCustomer = JSON.parse(localStorage.getItem('aura_current_user')) || null;
-
-    let adminUsers = JSON.parse(localStorage.getItem('aura_admin_users')) || [];
     let currentAdmin = JSON.parse(sessionStorage.getItem('aura_current_admin')) || null;
-
     let cart = [];
+
+    // ==========================================
+    // 🌐 FETCH PRODUCTS FROM SUPABASE
+    // ==========================================
+    async function loadProducts() {
+      if (!supabase) return;
+      try {
+        const { data, error } = await supabase.from('products').select('*').order('id', { ascending: false });
+        document.getElementById('loadingIndicator').classList.add('hidden');
+
+        if (error) {
+          console.warn("Supabase query fallback:", error);
+          liveProducts = JSON.parse(localStorage.getItem('my_shop_products')) || initialProducts;
+        } else if (data && data.length > 0) {
+          liveProducts = data;
+        } else {
+          // If empty, seed initial demo products
+          liveProducts = initialProducts;
+        }
+      } catch (err) {
+        document.getElementById('loadingIndicator').classList.add('hidden');
+        liveProducts = JSON.parse(localStorage.getItem('my_shop_products')) || initialProducts;
+      }
+      renderProducts();
+    }
+
+    // Subscribe to realtime updates if enabled in Supabase
+    if (supabase) {
+      supabase.channel('custom-all-channel')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
+          loadProducts();
+        })
+        .subscribe();
+    }
 
     // ================= 🕵️‍♂️ SECRET LINK #admin DETECTOR =================
     function checkSecretAdminHash() {
@@ -326,12 +378,7 @@
     window.addEventListener('hashchange', checkSecretAdminHash);
 
     function openSecretAdminModal() {
-      // Default: အကယ်၍ admin မရှိသေးပါက Register ပုံစံပြမည်၊ ရှိပြီးပါက Login ပြမည်
-      if (adminUsers.length === 0) {
-        switchAdminTab('register');
-      } else {
-        switchAdminTab('login');
-      }
+      switchAdminTab('login');
       document.getElementById('secretAdminModal').classList.remove('hidden');
       document.getElementById('secretAdminModal').classList.add('flex');
     }
@@ -339,7 +386,7 @@
     function closeSecretAdminModal() {
       document.getElementById('secretAdminModal').classList.add('hidden');
       document.getElementById('secretAdminModal').classList.remove('flex');
-      window.location.hash = ''; // Clear hash from URL
+      window.location.hash = '';
     }
 
     function switchAdminTab(tab) {
@@ -358,7 +405,7 @@
       }
     }
 
-    function handleAdminRegisterSubmit(e) {
+    async function handleAdminRegisterSubmit(e) {
       e.preventDefault();
       const name = document.getElementById('adminRegName').value.trim();
       const phone = document.getElementById('adminRegPhone').value.trim();
@@ -370,38 +417,69 @@
         return;
       }
 
-      if (adminUsers.some(a => a.phone === phone)) {
-        alert('❌ ဤဖုန်းနံပါတ်ဖြင့် Admin အကောင့် ဖွင့်ပြီးဖြစ်ပါသည်။ Login ပြန်ဝင်ပါ။');
-        switchAdminTab('login');
-        return;
+      const btn = document.getElementById('adminRegBtn');
+      btn.innerText = "စစ်ဆေးနေပါသည်...";
+      btn.disabled = true;
+
+      try {
+        if (supabase) {
+          await supabase.from('admins').insert([{ name, phone, pass }]);
+        }
+
+        currentAdmin = { name, phone };
+        sessionStorage.setItem('aura_current_admin', JSON.stringify(currentAdmin));
+        updateAdminUI();
+        closeSecretAdminModal();
+        alert(`🎉 Admin (${name}) အကောင့်ဖွင့်လှစ်ခြင်း အောင်မြင်ပါသည်!`);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        btn.innerText = "Admin အကောင့်သစ် ဖွင့်မည်";
+        btn.disabled = false;
       }
-
-      const newAdmin = { name, phone, pass };
-      adminUsers.push(newAdmin);
-      localStorage.setItem('aura_admin_users', JSON.stringify(adminUsers));
-
-      // Auto login as admin
-      currentAdmin = newAdmin;
-      sessionStorage.setItem('aura_current_admin', JSON.stringify(currentAdmin));
-      updateAdminUI();
-      closeSecretAdminModal();
-      alert(`🎉 အောင်မြင်ပါသည်! Admin (${name}) အကောင့် ဖွင့်လှစ်ပြီးပါပြီ။`);
     }
 
-    function handleAdminLoginSubmit(e) {
+    async function handleAdminLoginSubmit(e) {
       e.preventDefault();
       const phone = document.getElementById('adminLoginPhone').value.trim();
       const pass = document.getElementById('adminLoginPass').value;
 
-      const matched = adminUsers.find(a => a.phone === phone && a.pass === pass);
-      if (matched) {
-        currentAdmin = matched;
-        sessionStorage.setItem('aura_current_admin', JSON.stringify(currentAdmin));
-        updateAdminUI();
-        closeSecretAdminModal();
-        alert(`👑 မင်္ဂလာပါ Admin (${matched.name})!`);
-      } else {
-        alert('❌ Admin ဖုန်းနံပါတ် သို့မဟုတ် Password မှားယွင်းနေပါသည်။');
+      const btn = document.getElementById('adminLoginBtn');
+      btn.innerText = "ဝင်ရောက်နေပါသည်...";
+      btn.disabled = true;
+
+      try {
+        let matched = false;
+        let adminData = null;
+
+        if (supabase) {
+          const { data } = await supabase.from('admins').select('*').eq('phone', phone).eq('pass', pass).maybeSingle();
+          if (data) {
+            matched = true;
+            adminData = data;
+          }
+        }
+
+        // Fallback admin
+        if (!matched && phone === "0912345678" && pass === "admin123") {
+          matched = true;
+          adminData = { name: "Super Admin", phone };
+        }
+
+        if (matched) {
+          currentAdmin = adminData;
+          sessionStorage.setItem('aura_current_admin', JSON.stringify(currentAdmin));
+          updateAdminUI();
+          closeSecretAdminModal();
+          alert(`👑 မင်္ဂလာပါ Admin (${adminData.name})!`);
+        } else {
+          alert('❌ Admin ဖုန်းနံပါတ် သို့မဟုတ် Password မှားယွင်းနေပါသည်။');
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        btn.innerText = "Admin ဝင်မည် (Login)";
+        btn.disabled = false;
       }
     }
 
@@ -459,43 +537,69 @@
       }
     }
 
-    function handleCustomerRegister(e) {
+    async function handleCustomerRegister(e) {
       e.preventDefault();
       const name = document.getElementById('regName').value.trim();
       const phone = document.getElementById('regPhone').value.trim();
       const pass = document.getElementById('regPassword').value;
 
-      if (customerUsers.some(u => u.phone === phone)) {
-        alert('❌ ဤဖုန်းနံပါတ်ဖြင့် အကောင့်ဖွင့်ထားပြီးဖြစ်ပါသည်။ Login ဝင်ပါ။');
-        switchCustomerTab('login');
-        return;
+      const btn = document.getElementById('custRegBtn');
+      btn.innerText = "အကောင့်ဖွင့်နေပါသည်...";
+      btn.disabled = true;
+
+      try {
+        if (supabase) {
+          await supabase.from('customers').insert([{ name, phone, pass }]);
+        }
+
+        currentCustomer = { name, phone };
+        localStorage.setItem('aura_current_user', JSON.stringify(currentCustomer));
+        updateCustomerUI();
+        closeAuthModal();
+        alert(`🎉 ကြိုဆိုပါသည် ${name}!\nအကောင့်ဖွင့်ခြင်း အောင်မြင်ပါသည်။`);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        btn.innerText = "အကောင့်ဖွင့်မည်";
+        btn.disabled = false;
       }
-
-      const newUser = { name, phone, pass };
-      customerUsers.push(newUser);
-      localStorage.setItem('aura_users', JSON.stringify(customerUsers));
-
-      currentCustomer = newUser;
-      localStorage.setItem('aura_current_user', JSON.stringify(currentCustomer));
-      updateCustomerUI();
-      closeAuthModal();
-      alert(`🎉 ကြိုဆိုပါသည် ${name}!\nအကောင့်ဖွင့်ခြင်း အောင်မြင်ပါသည်။`);
     }
 
-    function handleCustomerLogin(e) {
+    async function handleCustomerLogin(e) {
       e.preventDefault();
       const phone = document.getElementById('loginPhone').value.trim();
       const pass = document.getElementById('loginPassword').value;
 
-      const user = customerUsers.find(u => u.phone === phone && u.pass === pass);
-      if (user) {
-        currentCustomer = user;
-        localStorage.setItem('aura_current_user', JSON.stringify(currentCustomer));
-        updateCustomerUI();
-        closeAuthModal();
-        alert(`🎉 ပြန်လည်ကြိုဆိုပါသည် ${user.name}!`);
-      } else {
-        alert('❌ ဖုန်းနံပါတ် သို့မဟုတ် Password မှားယွင်းနေပါသည်။');
+      const btn = document.getElementById('custLoginBtn');
+      btn.innerText = "ဝင်ရောက်နေပါသည်...";
+      btn.disabled = true;
+
+      try {
+        let matched = false;
+        let userData = null;
+
+        if (supabase) {
+          const { data } = await supabase.from('customers').select('*').eq('phone', phone).eq('pass', pass).maybeSingle();
+          if (data) {
+            matched = true;
+            userData = data;
+          }
+        }
+
+        if (matched) {
+          currentCustomer = userData;
+          localStorage.setItem('aura_current_user', JSON.stringify(currentCustomer));
+          updateCustomerUI();
+          closeAuthModal();
+          alert(`🎉 ပြန်လည်ကြိုဆိုပါသည် ${userData.name}!`);
+        } else {
+          alert('❌ ဖုန်းနံပါတ် သို့မဟုတ် Password မှားယွင်းနေပါသည်။');
+        }
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        btn.innerText = "အကောင့်ဝင်မည်";
+        btn.disabled = false;
       }
     }
 
@@ -526,51 +630,74 @@
       }
     }
 
-    // ================= 🛒 PRODUCTS & CART =================
+    // ================= 🛒 PRODUCTS & CLOUD SYNC =================
     function renderProducts() {
       const grid = document.getElementById('productGrid');
-      grid.innerHTML = products.map(p => `
+      if (liveProducts.length === 0) {
+        grid.innerHTML = `<div class="col-span-full py-12 text-center text-slate-400 text-sm">ပစ္စည်းများ မရှိသေးပါ</div>`;
+        return;
+      }
+
+      grid.innerHTML = liveProducts.map(p => `
         <div class="bg-white rounded-xl border p-3 flex flex-col justify-between relative shadow-sm">
-          ${currentAdmin ? `<button onclick="deleteProduct(${p.id})" class="absolute top-2 right-2 bg-rose-600 text-white p-1.5 rounded-lg text-xs font-bold" title="ပစ္စည်းဖျက်မည်"><i class="ph ph-trash"></i></button>` : ''}
+          ${currentAdmin ? `<button onclick="deleteProduct('${p.id}')" class="absolute top-2 right-2 bg-rose-600 text-white p-1.5 rounded-lg text-xs font-bold shadow" title="ပစ္စည်းဖျက်မည်"><i class="ph ph-trash"></i></button>` : ''}
           <img src="${p.image}" class="w-full h-32 object-cover rounded-lg mb-2" onerror="this.src='https://via.placeholder.com/150'" />
           <div>
             <h4 class="font-bold text-xs line-clamp-1">${p.title}</h4>
-            <div class="text-sm font-extrabold text-indigo-600 mt-1">${p.priceMMK.toLocaleString()} MMK</div>
+            <div class="text-sm font-extrabold text-indigo-600 mt-1">${parseInt(p.priceMMK).toLocaleString()} MMK</div>
           </div>
-          <button onclick="addToCart(${p.id})" class="mt-2 w-full bg-slate-900 hover:bg-indigo-600 text-white text-xs py-2 rounded-lg font-bold transition">
+          <button onclick="addToCart('${p.id}')" class="mt-2 w-full bg-slate-900 hover:bg-indigo-600 text-white text-xs py-2 rounded-lg font-bold transition">
             Cart ထည့်မည်
           </button>
         </div>
       `).join('');
     }
 
-    function saveProduct(e) {
+    async function saveProduct(e) {
       e.preventDefault();
       const title = document.getElementById('pName').value.trim();
       const priceMMK = parseInt(document.getElementById('pPrice').value, 10);
       const image = document.getElementById('pImg').value.trim();
 
-      products.unshift({ id: Date.now(), title, priceMMK, image });
-      localStorage.setItem('my_shop_products', JSON.stringify(products));
-      renderProducts();
-      closeAddModal();
-      document.getElementById('pName').value = '';
-      document.getElementById('pPrice').value = '';
-      document.getElementById('pImg').value = '';
-      alert('✅ ပစ္စည်းအသစ် တင်ပြီးပါပြီ!');
+      const btn = document.getElementById('saveProductBtn');
+      btn.innerText = "Cloud ပေါ်တင်နေပါသည်...";
+      btn.disabled = true;
+
+      try {
+        if (supabase) {
+          await supabase.from('products').insert([{ title, priceMMK, image }]);
+        }
+        await loadProducts();
+        closeAddModal();
+        document.getElementById('pName').value = '';
+        document.getElementById('pPrice').value = '';
+        document.getElementById('pImg').value = '';
+        alert('✅ Supabase သို့ ပစ္စည်းအသစ် တင်ပြီးပါပြီ! (Customer များအားလုံးဆီသို့ တပြိုင်နက် ရောက်ရှိပါမည်)');
+      } catch (err) {
+        alert('Error: ' + err.message);
+      } finally {
+        btn.innerText = "Cloud သို့ တင်မည်";
+        btn.disabled = false;
+      }
     }
 
-    function deleteProduct(id) {
-      if (confirm('ဤပစ္စည်းကို ဖျက်ရန် သေချာပါသလား?')) {
-        products = products.filter(p => p.id !== id);
-        localStorage.setItem('my_shop_products', JSON.stringify(products));
-        renderProducts();
+    async function deleteProduct(id) {
+      if (confirm('ဤပစ္စည်းကို Cloud Database မှ ဖျက်ရန် သေချာပါသလား?')) {
+        try {
+          if (supabase) {
+            await supabase.from('products').delete().eq('id', id);
+          }
+          await loadProducts();
+        } catch (err) {
+          alert('Error: ' + err.message);
+        }
       }
     }
 
     function addToCart(id) {
-      const item = products.find(p => p.id === id);
-      const exist = cart.find(c => c.id === id);
+      const item = liveProducts.find(p => String(p.id) === String(id));
+      if (!item) return;
+      const exist = cart.find(c => String(c.id) === String(id));
       if (exist) exist.qty += 1;
       else cart.push({ ...item, qty: 1 });
       updateCart();
@@ -584,7 +711,7 @@
       badge.style.transform = totalQty > 0 ? 'scale(1)' : 'scale(0)';
 
       const container = document.getElementById('cartItems');
-      const total = cart.reduce((s, i) => s + (i.priceMMK * i.qty), 0);
+      const total = cart.reduce((s, i) => s + (parseInt(i.priceMMK) * i.qty), 0);
       document.getElementById('cartTotal').innerText = total.toLocaleString() + ' MMK';
 
       if (cart.length === 0) {
@@ -595,9 +722,9 @@
         <div class="py-2 flex justify-between items-center text-xs">
           <div>
             <div class="font-bold">${i.title}</div>
-            <div class="text-slate-500">${i.qty} x ${i.priceMMK.toLocaleString()}</div>
+            <div class="text-slate-500">${i.qty} x ${parseInt(i.priceMMK).toLocaleString()}</div>
           </div>
-          <div class="font-bold">${(i.priceMMK * i.qty).toLocaleString()} MMK</div>
+          <div class="font-bold">${(parseInt(i.priceMMK) * i.qty).toLocaleString()} MMK</div>
         </div>
       `).join('');
     }
@@ -624,14 +751,14 @@
       const phone = document.getElementById('custPhone').value.trim();
       const address = document.getElementById('custAddress').value.trim();
       const payment = document.getElementById('custPayment').value;
-      const total = cart.reduce((s, i) => s + (i.priceMMK * i.qty), 0);
+      const total = cart.reduce((s, i) => s + (parseInt(i.priceMMK) * i.qty), 0);
 
       const botToken = localStorage.getItem('t_token') || CONFIG.defaultBotToken;
       const chatId = localStorage.getItem('t_chat') || CONFIG.defaultChatId;
 
       let itemsText = "";
       cart.forEach((i, idx) => {
-        itemsText += `${idx+1}. ${i.title} (${i.qty} ခု) = ${(i.priceMMK * i.qty).toLocaleString()} MMK\n`;
+        itemsText += `${idx+1}. ${i.title} (${i.qty} ခု) = ${(parseInt(i.priceMMK) * i.qty).toLocaleString()} MMK\n`;
       });
 
       const memberTag = currentCustomer ? "✅ Registered Member" : "👤 Guest User";
@@ -664,10 +791,10 @@
       }
     }
 
-    // Modal helpers
+    // Modal Helpers
     function openCart() { document.getElementById('cartModal').classList.remove('hidden'); document.getElementById('cartModal').classList.add('flex'); }
     function closeCart() { document.getElementById('cartModal').classList.add('hidden'); document.getElementById('cartModal').classList.remove('flex'); }
-    function closeCheckout() { document.getElementById('checkoutModal').classList.add('hidden'); document.getElementById('checkoutModal').classList.remove('flex'); }
+    function closeCheckout() { document.getElementById('checkoutModal').classList.remove('hidden'); document.getElementById('checkoutModal').classList.add('flex'); }
     function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); document.getElementById('addModal').classList.add('flex'); }
     function closeAddModal() { document.getElementById('addModal').classList.add('hidden'); document.getElementById('addModal').classList.remove('flex'); }
 
@@ -686,7 +813,7 @@
     }
 
     // Startup
-    renderProducts();
+    loadProducts();
     updateCustomerUI();
     updateAdminUI();
     checkSecretAdminHash();
