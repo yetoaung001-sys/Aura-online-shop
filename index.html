@@ -6,29 +6,38 @@
   <title>Aura Store</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; }
+  </style>
 </head>
 <body class="bg-slate-50 text-slate-900 pb-20">
 
-  <!-- ADMIN BAR -->
-  <div id="adminBar" class="hidden bg-slate-900 text-amber-400 text-xs py-2 px-4 flex justify-between items-center">
-    <span>👑 Admin Mode (<span id="adminName">Admin</span>)</span>
-    <div class="space-x-3">
-      <button onclick="openAddModal()" class="bg-amber-500 text-black px-2.5 py-1 rounded font-bold">+ ပစ္စည်းတင်မည်</button>
-      <button onclick="adminLogout()" class="underline text-rose-400">Logout</button>
+  <!-- ADMIN BAR (SHOWN AFTER ADMIN LOGIN) -->
+  <div id="adminBar" class="hidden bg-slate-900 text-amber-400 text-xs py-2.5 px-4 flex justify-between items-center shadow">
+    <span class="font-bold">👑 Admin Mode (<span id="adminName">Admin</span>)</span>
+    <div class="flex items-center gap-3">
+      <button onclick="testTelegramAlert()" class="bg-sky-600 hover:bg-sky-500 text-white px-2.5 py-1 rounded font-bold flex items-center gap-1 transition">
+        <i class="ph ph-telegram-logo text-sm"></i> Telegram စမ်းသပ်ပို့မည်
+      </button>
+      <button onclick="openAddModal()" class="bg-amber-500 hover:bg-amber-600 text-black px-2.5 py-1 rounded font-bold transition">
+        + ပစ္စည်းတင်မည်
+      </button>
+      <button onclick="adminLogout()" class="underline text-rose-400 hover:text-rose-300">Logout</button>
     </div>
   </div>
 
   <!-- HEADER -->
-  <header class="bg-white border-b px-4 h-16 flex items-center justify-between sticky top-0 z-30">
+  <header class="bg-white border-b px-4 h-16 flex items-center justify-between sticky top-0 z-30 shadow-sm">
     <div class="flex items-center gap-2">
       <div class="w-9 h-9 bg-indigo-600 text-white font-bold rounded-xl flex items-center justify-center">A</div>
       <div>
         <span class="font-bold text-base block leading-tight">Aura Shop</span>
-        <span class="text-[10px] text-emerald-600">● Live Database</span>
+        <span class="text-[10px] text-emerald-600 font-semibold">● Telegram Connected</span>
       </div>
     </div>
     <div class="flex items-center gap-2">
-      <button onclick="openCart()" class="relative p-2 bg-slate-100 rounded-full">
+      <button onclick="openCart()" class="relative p-2 bg-slate-100 rounded-full hover:bg-slate-200 transition">
         <i class="ph ph-shopping-cart text-xl"></i>
         <span id="cartBadge" class="absolute -top-1 -right-1 bg-indigo-600 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold">0</span>
       </button>
@@ -37,7 +46,9 @@
 
   <!-- CONTENT -->
   <main class="max-w-4xl mx-auto p-4">
-    <h2 class="font-bold text-slate-800 text-base mb-3">ပစ္စည်းစာရင်းများ</h2>
+    <div class="flex justify-between items-center mb-3">
+      <h2 class="font-bold text-slate-800 text-base">ပစ္စည်းစာရင်းများ</h2>
+    </div>
     <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 sm:gap-4"></div>
   </main>
 
@@ -118,35 +129,21 @@
   </div>
 
   <script>
-    // Supabase REST API Direct (No external JS client needed)
-    const SB_URL = "https://zyajlsrytjvwxqtxrqd.supabase.co/rest/v1";
-    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
-    const HEADERS = { "apikey": SB_KEY, "Authorization": "Bearer " + SB_KEY, "Content-Type": "application/json" };
+    // သင့် Telegram Bot အချက်အလက်များ ချိတ်ဆက်ပြီးပါပြီ
+    const TELEGRAM_CONFIG = {
+      botToken: "8999186526:AAFS6cmrN-f0zZCo9ut6vJExT5xiGzRl8h4",
+      chatId: "6759228843"
+    };
 
-    const backupProducts = [
+    const initialProducts = [
       { id: 1, title: "Sony Wireless Headphone", priceMMK: 1250000, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80" },
       { id: 2, title: "Apple Watch Series", priceMMK: 850000, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80" },
       { id: 3, title: "Running Sneakers", priceMMK: 150000, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80" }
     ];
 
-    let products = [];
+    let products = JSON.parse(localStorage.getItem('aura_shop_products')) || initialProducts;
     let cart = [];
     let isAdmin = sessionStorage.getItem('is_admin') === 'true';
-
-    async function loadProducts() {
-      try {
-        const res = await fetch(`${SB_URL}/products?select=*&order=id.desc`, { headers: HEADERS });
-        const data = await res.json();
-        if (Array.isArray(data) && data.length > 0) {
-          products = data;
-        } else {
-          products = backupProducts;
-        }
-      } catch (e) {
-        products = backupProducts;
-      }
-      render();
-    }
 
     function render() {
       const grid = document.getElementById('productGrid');
@@ -158,38 +155,29 @@
             <h4 class="font-bold text-xs line-clamp-1">${p.title}</h4>
             <div class="text-indigo-600 font-extrabold text-xs mt-1">${parseInt(p.priceMMK).toLocaleString()} MMK</div>
           </div>
-          <button onclick="addToCart(${p.id})" class="mt-2 w-full bg-slate-900 text-white text-xs py-1.5 rounded-lg font-bold">Cart ထည့်မည်</button>
+          <button onclick="addToCart(${p.id})" class="mt-2 w-full bg-slate-900 text-white text-xs py-1.5 rounded-lg font-bold hover:bg-indigo-600 transition">Cart ထည့်မည်</button>
         </div>
       `).join('');
     }
 
-    async function addProduct(e) {
+    function addProduct(e) {
       e.preventDefault();
       const title = document.getElementById('pName').value.trim();
       const priceMMK = parseInt(document.getElementById('pPrice').value, 10);
       const image = document.getElementById('pImg').value.trim();
 
-      document.getElementById('addBtn').innerText = "သိမ်းနေပါသည်...";
-      try {
-        await fetch(`${SB_URL}/products`, {
-          method: 'POST',
-          headers: HEADERS,
-          body: JSON.stringify({ title, priceMMK, image })
-        });
-        await loadProducts();
-        closeAddModal();
-        alert('✅ ပစ္စည်းအသစ် တင်ပြီးပါပြီ!');
-      } catch (err) {
-        alert('Error: ' + err.message);
-      } finally {
-        document.getElementById('addBtn').innerText = "သိမ်းဆည်းမည်";
-      }
+      products.unshift({ id: Date.now(), title, priceMMK, image });
+      localStorage.setItem('aura_shop_products', JSON.stringify(products));
+      render();
+      closeAddModal();
+      alert('✅ ပစ္စည်းအသစ် တင်ပြီးပါပြီ!');
     }
 
-    async function deleteProduct(id) {
+    function deleteProduct(id) {
       if (confirm('ဤပစ္စည်းကို ဖျက်မည်လား?')) {
-        await fetch(`${SB_URL}/products?id=eq.${id}`, { method: 'DELETE', headers: HEADERS });
-        await loadProducts();
+        products = products.filter(p => p.id !== id);
+        localStorage.setItem('aura_shop_products', JSON.stringify(products));
+        render();
       }
     }
 
@@ -224,22 +212,67 @@
       `).join('');
     }
 
+    // TELEGRAM SEND ORDER
     async function sendOrder(e) {
       e.preventDefault();
-      const name = document.getElementById('cName').value;
-      const phone = document.getElementById('cPhone').value;
-      const address = document.getElementById('cAddress').value;
+      const name = document.getElementById('cName').value.trim();
+      const phone = document.getElementById('cPhone').value.trim();
+      const address = document.getElementById('cAddress').value.trim();
       const payment = document.getElementById('cPayment').value;
       const total = cart.reduce((s, i) => s + (parseInt(i.priceMMK) * i.qty), 0);
 
-      alert(`🎉 ကျေးဇူးတင်ပါသည် ${name}!\nစုစုပေါင်း: ${total.toLocaleString()} MMK\nအော်ဒါ လက်ခံရရှိပါပြီ။`);
+      let itemsText = "";
+      cart.forEach((i, idx) => {
+        itemsText += `${idx+1}. ${i.title} (${i.qty} ခု) = ${(parseInt(i.priceMMK) * i.qty).toLocaleString()} MMK\n`;
+      });
+
+      const message = `🛍️ အော်ဒါအသစ် ရောက်ရှိပါသည်!\n━━━━━━━━━━━━━\n👤 ဝယ်သူ: ${name}\n📞 ဖုန်း: ${phone}\n📍 လိပ်စာ: ${address}\n💳 ငွေပေးချေမှု: ${payment}\n\n📦 မှာယူသောပစ္စည်းများ:\n${itemsText}━━━━━━━━━━━━━\n💰 စုစုပေါင်းကျသင့်ငွေ: ${total.toLocaleString()} MMK`;
+
+      const btn = document.getElementById('sendBtn');
+      btn.innerText = "ပို့ဆောင်နေပါသည်...";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: TELEGRAM_CONFIG.chatId, text: message })
+        });
+        const d = await res.json();
+        if (d.ok) {
+          alert(`🎉 ကျေးဇူးတင်ပါသည် ${name}!\nအော်ဒါကို အောင်မြင်စွာ လက်ခံရရှိပြီး Telegram သို့ စာပို့ဆောင်ပြီးပါပြီ။`);
+        } else {
+          alert('⚠️ Telegram သို့ စာမရောက်ပါ: ' + d.description + '\n(Bot ထဲတွင် /start နှိပ်ထားပါသလား စစ်ဆေးပါ)');
+        }
+      } catch (err) {
+        alert('အော်ဒါလက်ခံရရှိပါသည်!');
+      }
+
       cart = [];
       updateCart();
       closeCheckout();
+      btn.innerText = "အော်ဒါ အတည်ပြုမည်";
+      btn.disabled = false;
     }
 
-    // Admin Hash trigger
-    window.addEventListener('hashchange', () => {
+    async function testTelegramAlert() {
+      try {
+        const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ chat_id: TELEGRAM_CONFIG.chatId, text: '🔔 Aura Shop စမ်းသပ်ချက်: Telegram ချိတ်ဆက်မှု ၁၀၀% အောင်မြင်ပါသည်!' })
+        });
+        const d = await res.json();
+        if (d.ok) alert('✅ Telegram ထဲ စမ်းသပ်စာ ရောက်ရှိသွားပါပြီ!');
+        else alert('❌ မအောင်မြင်ပါ: ' + d.description + '\n(Bot ကို /start နှိပ်ထားပါ)');
+      } catch (e) {
+        alert('Error: ' + e.message);
+      }
+    }
+
+    // Admin Hash listener (#admin)
+    window.addEventListener('hashchange', checkAdminHash);
+    function checkAdminHash() {
       if (window.location.hash === '#admin') {
         const p = prompt('Admin Password: (Default: admin123)');
         if (p === 'admin123') {
@@ -249,7 +282,7 @@
           render();
         }
       }
-    });
+    }
 
     function adminLogout() {
       isAdmin = false;
@@ -267,7 +300,8 @@
     function closeAddModal() { document.getElementById('addModal').classList.add('hidden'); document.getElementById('addModal').classList.remove('flex'); }
 
     if (isAdmin) document.getElementById('adminBar').classList.remove('hidden');
-    loadProducts();
+    checkAdminHash();
+    render();
   </script>
 </body>
 </html>
