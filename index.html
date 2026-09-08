@@ -3,21 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aura Store - Supabase Live Database Shop</title>
+  <title>Aura Store - Supabase Live Shop</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
-  <!-- Supabase JS Client -->
+  <!-- Supabase JS Client with fallback CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-900 pb-24">
 
-  <!-- ADMIN BAR (SHOWN ONLY WHEN LOGGED IN AS ADMIN) -->
+  <!-- ADMIN BAR -->
   <div id="adminBar" class="hidden bg-slate-900 text-amber-400 text-xs py-2 px-4 font-bold border-b border-amber-500/30">
     <div class="max-w-6xl mx-auto flex justify-between items-center">
       <div class="flex items-center gap-2">
@@ -46,7 +44,6 @@
     </div>
 
     <div class="flex items-center gap-2 sm:gap-3">
-      <!-- Customer Auth Section -->
       <div id="authGuestSection">
         <button onclick="openAuthModal('login')" class="flex items-center gap-1.5 text-xs font-bold text-indigo-600 border border-indigo-200 bg-indigo-50 hover:bg-indigo-100 px-3 py-1.5 rounded-full transition">
           <i class="ph ph-user text-base"></i> အကောင့်ဝင်ရန်
@@ -63,7 +60,6 @@
         </button>
       </div>
 
-      <!-- Cart Button -->
       <button onclick="openCart()" class="relative p-2 text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-full transition">
         <i class="ph ph-shopping-cart text-xl"></i>
         <span id="cartCount" class="absolute -top-1 -right-1 bg-indigo-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-bold scale-0 transition-transform">0</span>
@@ -71,7 +67,7 @@
     </div>
   </header>
 
-  <!-- PRODUCTS GRID -->
+  <!-- MAIN -->
   <main class="max-w-6xl mx-auto px-4 py-6">
     <div class="flex justify-between items-center mb-4">
       <div>
@@ -83,6 +79,7 @@
       </button>
     </div>
 
+    <!-- Real-time Loading Indicator -->
     <div id="loadingIndicator" class="text-center py-12 text-slate-400 text-sm flex flex-col items-center gap-2">
       <i class="ph ph-spinner animate-spin text-3xl text-indigo-600"></i>
       <span>Supabase မှ ပစ္စည်းများ ရယူနေပါသည်...</span>
@@ -91,7 +88,7 @@
     <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4"></div>
   </main>
 
-  <!-- ================= SECRET ADMIN MODAL (TRIGGERED VIA #admin) ================= -->
+  <!-- ADMIN MODAL -->
   <div id="secretAdminModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-6 space-y-4 shadow-2xl border border-slate-200">
       <div class="flex justify-between items-center border-b pb-3">
@@ -101,12 +98,9 @@
           </div>
           <h3 id="adminModalTitle" class="text-sm">Admin Portal</h3>
         </div>
-        <button onclick="closeSecretAdminModal()" class="text-slate-400 hover:text-slate-600">
-          <i class="ph ph-x text-lg"></i>
-        </button>
+        <button onclick="closeSecretAdminModal()" class="text-slate-400 hover:text-slate-600"><i class="ph ph-x text-lg"></i></button>
       </div>
 
-      <!-- ADMIN LOGIN FORM -->
       <form id="adminLoginForm" onsubmit="handleAdminLoginSubmit(event)" class="space-y-3 text-xs">
         <div>
           <label class="block font-bold text-slate-700 mb-1">Admin ဖုန်းနံပါတ်</label>
@@ -125,7 +119,6 @@
         </div>
       </form>
 
-      <!-- ADMIN REGISTER FORM -->
       <form id="adminRegisterForm" onsubmit="handleAdminRegisterSubmit(event)" class="hidden space-y-3 text-xs">
         <div>
           <label class="block font-bold text-slate-700 mb-1">ဆိုင်ရှင်အမည် (Admin Name)</label>
@@ -140,9 +133,8 @@
           <input type="password" id="adminRegPass" required placeholder="အနည်းဆုံး ၄ လုံး" class="w-full border px-3 py-2 rounded-lg outline-none focus:border-amber-500 text-sm" />
         </div>
         <div>
-          <label class="block font-bold text-slate-700 mb-1">လျှို့ဝှက်ကုတ် (Security Secret Key) *</label>
+          <label class="block font-bold text-slate-700 mb-1">လျှို့ဝှက်ကုတ် (Security Key) *</label>
           <input type="password" id="adminSecretKey" required placeholder="Default: aura888" class="w-full border px-3 py-2 rounded-lg outline-none focus:border-amber-500 text-sm" />
-          <p class="text-[10px] text-slate-400 mt-1">Admin အကောင့်ဖွင့်ရန် စနစ်ကုတ်ဖြစ်ပါသည် (Default: aura888)</p>
         </div>
         <button type="submit" id="adminRegBtn" class="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 py-2.5 rounded-xl font-bold text-xs shadow transition">
           Admin အကောင့်သစ် ဖွင့်မည်
@@ -155,7 +147,7 @@
     </div>
   </div>
 
-  <!-- ================= CUSTOMER AUTH MODAL ================= -->
+  <!-- CUSTOMER AUTH MODAL -->
   <div id="authModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-sm rounded-2xl p-5 space-y-4">
       <div class="flex justify-between items-center border-b pb-3">
@@ -163,7 +155,6 @@
         <button onclick="closeAuthModal()" class="text-slate-400 hover:text-slate-600"><i class="ph ph-x text-lg"></i></button>
       </div>
 
-      <!-- CUSTOMER LOGIN -->
       <form id="loginForm" onsubmit="handleCustomerLogin(event)" class="space-y-3 text-xs">
         <div>
           <label class="block font-semibold text-slate-700 mb-1">ဖုန်းနံပါတ်</label>
@@ -180,7 +171,6 @@
         </div>
       </form>
 
-      <!-- CUSTOMER REGISTER -->
       <form id="registerForm" onsubmit="handleCustomerRegister(event)" class="hidden space-y-3 text-xs">
         <div>
           <label class="block font-semibold text-slate-700 mb-1">သင့်အမည်</label>
@@ -304,15 +294,15 @@
     </div>
   </div>
 
-  <!-- SCRIPT LOGIC WITH SUPABASE -->
+  <!-- SCRIPT LOGIC -->
   <script>
-    // ==========================================
-    // ⚡ SUPABASE INITIALIZATION
-    // ==========================================
     const SUPABASE_URL = "https://zyajlsrytjvwxqtxrqd.supabase.co";
     const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
 
-    const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+    let supabase = null;
+    if (window.supabase) {
+      supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    }
 
     const CONFIG = {
       defaultBotToken: "7829471923:AAExampleTokenPlaceholder",
@@ -332,40 +322,61 @@
     let cart = [];
 
     // ==========================================
-    // 🌐 FETCH PRODUCTS FROM SUPABASE
+    // 🌐 SMART LOAD (NO MORE INFINITE LOADING)
     // ==========================================
     async function loadProducts() {
-      if (!supabase) return;
-      try {
-        const { data, error } = await supabase.from('products').select('*').order('id', { ascending: false });
-        document.getElementById('loadingIndicator').classList.add('hidden');
+      // 1. Safety Timeout: ၁.၅ စက္ကန့်အတွင်း မရရင် loading ဖျောက်ပြီး default products ချက်ချင်းပြမည်
+      const safetyTimer = setTimeout(() => {
+        const loader = document.getElementById('loadingIndicator');
+        if (loader && !loader.classList.contains('hidden')) {
+          loader.classList.add('hidden');
+          if (liveProducts.length === 0) {
+            liveProducts = initialProducts;
+            renderProducts();
+          }
+        }
+      }, 1500);
 
-        if (error) {
-          console.warn("Supabase query fallback:", error);
-          liveProducts = JSON.parse(localStorage.getItem('my_shop_products')) || initialProducts;
-        } else if (data && data.length > 0) {
-          liveProducts = data;
+      try {
+        if (supabase) {
+          const { data, error } = await supabase.from('products').select('*').order('id', { ascending: false });
+          clearTimeout(safetyTimer);
+          document.getElementById('loadingIndicator').classList.add('hidden');
+
+          if (data && data.length > 0) {
+            liveProducts = data;
+          } else {
+            // Table ထဲ ဘာမှမရှိသေးပါက Demo ပစ္စည်းများကို Supabase ထဲ auto-insert ထည့်ပေးမည်
+            liveProducts = initialProducts;
+            initialProducts.forEach(async (p) => {
+              await supabase.from('products').insert([{ title: p.title, priceMMK: p.priceMMK, image: p.image }]);
+            });
+          }
         } else {
-          // If empty, seed initial demo products
+          clearTimeout(safetyTimer);
+          document.getElementById('loadingIndicator').classList.add('hidden');
           liveProducts = initialProducts;
         }
       } catch (err) {
+        clearTimeout(safetyTimer);
         document.getElementById('loadingIndicator').classList.add('hidden');
-        liveProducts = JSON.parse(localStorage.getItem('my_shop_products')) || initialProducts;
+        liveProducts = initialProducts;
       }
       renderProducts();
     }
 
-    // Subscribe to realtime updates if enabled in Supabase
+    // Realtime changes listener
     if (supabase) {
-      supabase.channel('custom-all-channel')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
-          loadProducts();
-        })
-        .subscribe();
+      try {
+        supabase.channel('products-channel')
+          .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, () => {
+            loadProducts();
+          })
+          .subscribe();
+      } catch(e) {}
     }
 
-    // ================= 🕵️‍♂️ SECRET LINK #admin DETECTOR =================
+    // Admin URL Hash Check
     function checkSecretAdminHash() {
       if (window.location.hash.toLowerCase() === '#admin') {
         if (currentAdmin) {
@@ -418,14 +429,13 @@
       }
 
       const btn = document.getElementById('adminRegBtn');
-      btn.innerText = "စစ်ဆေးနေပါသည်...";
+      btn.innerText = "ဖွင့်နေပါသည်...";
       btn.disabled = true;
 
       try {
         if (supabase) {
           await supabase.from('admins').insert([{ name, phone, pass }]);
         }
-
         currentAdmin = { name, phone };
         sessionStorage.setItem('aura_current_admin', JSON.stringify(currentAdmin));
         updateAdminUI();
@@ -460,7 +470,7 @@
           }
         }
 
-        // Fallback admin
+        // Fallback default admin
         if (!matched && phone === "0912345678" && pass === "admin123") {
           matched = true;
           adminData = { name: "Super Admin", phone };
@@ -509,7 +519,7 @@
       renderProducts();
     }
 
-    // ================= 👤 CUSTOMER AUTH LOGIC =================
+    // Customer Auth
     function openAuthModal(tab = 'login') {
       switchCustomerTab(tab);
       document.getElementById('authModal').classList.remove('hidden');
@@ -544,14 +554,13 @@
       const pass = document.getElementById('regPassword').value;
 
       const btn = document.getElementById('custRegBtn');
-      btn.innerText = "အကောင့်ဖွင့်နေပါသည်...";
+      btn.innerText = "ဖွင့်နေပါသည်...";
       btn.disabled = true;
 
       try {
         if (supabase) {
           await supabase.from('customers').insert([{ name, phone, pass }]);
         }
-
         currentCustomer = { name, phone };
         localStorage.setItem('aura_current_user', JSON.stringify(currentCustomer));
         updateCustomerUI();
@@ -630,7 +639,7 @@
       }
     }
 
-    // ================= 🛒 PRODUCTS & CLOUD SYNC =================
+    // Products Render & Save
     function renderProducts() {
       const grid = document.getElementById('productGrid');
       if (liveProducts.length === 0) {
@@ -660,7 +669,7 @@
       const image = document.getElementById('pImg').value.trim();
 
       const btn = document.getElementById('saveProductBtn');
-      btn.innerText = "Cloud ပေါ်တင်နေပါသည်...";
+      btn.innerText = "တင်နေပါသည်...";
       btn.disabled = true;
 
       try {
@@ -672,7 +681,7 @@
         document.getElementById('pName').value = '';
         document.getElementById('pPrice').value = '';
         document.getElementById('pImg').value = '';
-        alert('✅ Supabase သို့ ပစ္စည်းအသစ် တင်ပြီးပါပြီ! (Customer များအားလုံးဆီသို့ တပြိုင်နက် ရောက်ရှိပါမည်)');
+        alert('✅ Supabase သို့ ပစ္စည်းအသစ် တင်ပြီးပါပြီ!');
       } catch (err) {
         alert('Error: ' + err.message);
       } finally {
@@ -794,7 +803,7 @@
     // Modal Helpers
     function openCart() { document.getElementById('cartModal').classList.remove('hidden'); document.getElementById('cartModal').classList.add('flex'); }
     function closeCart() { document.getElementById('cartModal').classList.add('hidden'); document.getElementById('cartModal').classList.remove('flex'); }
-    function closeCheckout() { document.getElementById('checkoutModal').classList.remove('hidden'); document.getElementById('checkoutModal').classList.add('flex'); }
+    function closeCheckout() { document.getElementById('checkoutModal').classList.add('hidden'); document.getElementById('checkoutModal').classList.remove('flex'); }
     function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); document.getElementById('addModal').classList.add('flex'); }
     function closeAddModal() { document.getElementById('addModal').classList.add('hidden'); document.getElementById('addModal').classList.remove('flex'); }
 
@@ -812,7 +821,7 @@
       closeTelegramSetup();
     }
 
-    // Startup
+    // Start App
     loadProducts();
     updateCustomerUI();
     updateAdminUI();
