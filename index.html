@@ -84,18 +84,14 @@
   <div id="shopView" class="view-panel">
     <!-- Category Pills -->
     <section class="max-w-7xl mx-auto px-4 pt-4">
-      <div id="categoryBar" class="flex gap-2 overflow-x-auto no-scrollbar pb-2">
-        <button onclick="filterCategory('all')" class="cat-pill active px-4 py-2 bg-indigo-600 text-white text-xs font-bold rounded-xl whitespace-nowrap shadow-sm">
-          အားလုံး (All)
-        </button>
-      </div>
+      <div id="categoryBar" class="flex gap-2 overflow-x-auto no-scrollbar pb-2"></div>
     </section>
 
     <!-- Product Grid -->
     <main class="max-w-7xl mx-auto px-4 py-6">
       <div class="flex justify-between items-center mb-4">
         <h2 class="font-bold text-slate-800 text-base sm:text-lg">ရရှိနိုင်သော ပစ္စည်းများ</h2>
-        <span id="itemCount" class="text-xs text-slate-400">Loading...</span>
+        <span id="itemCount" class="text-xs text-slate-400">ရှာဖွေနေပါသည်...</span>
       </div>
       <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div>
     </main>
@@ -166,8 +162,8 @@
               <th>လိပ်စာ</th>
               <th>ငွေချေမှု</th>
               <th>ကျသင့်ငွေ</th>
-              <th>အခြေအနေ (Status)</th>
-              <th>လုပ်ဆောင်ချက်</th>
+              <th>အခြေအနေ</th>
+              <th>ဖျက်ရန်</th>
             </tr>
           </thead>
           <tbody id="adminOrdersTable" class="divide-y"></tbody>
@@ -274,7 +270,7 @@
     </div>
   </div>
 
-  <!-- ================= ADD PRODUCT MODAL (IMAGE UPLOAD & STORAGE) ================= -->
+  <!-- ================= ADD PRODUCT MODAL ================= -->
   <div id="addModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-3 text-xs shadow-2xl">
       <div class="flex justify-between items-center border-b pb-3">
@@ -315,7 +311,7 @@
     </div>
   </div>
 
-  <!-- ================= AUTH MODAL (CUSTOMER LOGIN / REGISTER) ================= -->
+  <!-- ================= AUTH MODAL ================= -->
   <div id="authModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 text-xs shadow-2xl">
       <div class="flex justify-between items-center border-b pb-3">
@@ -365,6 +361,19 @@
       chatId: "-1004425929255"
     };
 
+    // Default Fallbacks
+    const fallbackCategories = [
+      { id: 1, name: "ဖုန်းနှင့် အသုံးအဆောင်" },
+      { id: 2, name: "ဖက်ရှင်နှင့် အဝတ်အထည်" },
+      { id: 3, name: "လူသုံးကုန်ပစ္စည်းများ" }
+    ];
+
+    const demoProducts = [
+      { id: 1, title: "Sony Wireless Headphone", priceMMK: 1250000, category_id: 1, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80", stock: 15 },
+      { id: 2, title: "Apple Watch Series", priceMMK: 850000, category_id: 1, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80", stock: 8 },
+      { id: 3, title: "Running Sneakers", priceMMK: 150000, category_id: 2, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80", stock: 20 }
+    ];
+
     // 2. STATE MANAGEMENT
     let products = [];
     let categories = [];
@@ -391,22 +400,28 @@
       try {
         const res = await fetch(`${SB_BASE}/categories?select=*`, { headers: HEADERS });
         if (res.ok) {
-          categories = await res.json();
-          renderCategories();
+          const data = await res.json();
+          categories = (Array.isArray(data) && data.length > 0) ? data : fallbackCategories;
+        } else {
+          categories = fallbackCategories;
         }
-      } catch (e) {}
+      } catch (e) {
+        categories = fallbackCategories;
+      }
+      renderCategories();
     }
 
     async function loadProducts() {
       try {
         const res = await fetch(`${SB_BASE}/products?select=*,categories(name)&order=id.desc`, { headers: HEADERS });
         if (res.ok) {
-          products = await res.json();
+          const data = await res.json();
+          products = (Array.isArray(data) && data.length > 0) ? data : demoProducts;
         } else {
-          products = getFallbackProducts();
+          products = demoProducts;
         }
       } catch (e) {
-        products = getFallbackProducts();
+        products = demoProducts;
       }
       renderProducts();
       updateAdminDashboard();
@@ -414,7 +429,7 @@
 
     async function loadOrders() {
       try {
-        const res = await fetch(`${SB_BASE}/orders?select=*,order_items(*)&order=id.desc`, { headers: HEADERS });
+        const res = await fetch(`${SB_BASE}/orders?select=*&order=id.desc`, { headers: HEADERS });
         if (res.ok) orders = await res.json();
       } catch (e) {}
       renderAdminOrders();
@@ -426,7 +441,8 @@
     function renderCategories() {
       const bar = document.getElementById('categoryBar');
       const select = document.getElementById('addPCategory');
-      
+      if (!bar) return;
+
       bar.innerHTML = `
         <button onclick="filterCategory('all')" class="cat-pill ${selectedCategory === 'all' ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600 border'} px-4 py-2 text-xs font-bold rounded-xl whitespace-nowrap shadow-sm">
           အားလုံး (All)
@@ -437,7 +453,9 @@
         </button>
       `).join('');
 
-      select.innerHTML = categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      if (select) {
+        select.innerHTML = categories.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+      }
     }
 
     function renderProducts() {
@@ -543,7 +561,6 @@
       btn.disabled = true;
 
       try {
-        // 1. Save to Supabase Orders
         const orderPayload = {
           customer_name: name,
           customer_phone: phone,
@@ -552,14 +569,13 @@
           total_amount: total,
           order_status: 'pending'
         };
-        const res = await fetch(`${SB_BASE}/orders`, {
+        await fetch(`${SB_BASE}/orders`, {
           method: 'POST',
           headers: HEADERS,
           body: JSON.stringify(orderPayload)
-        });
-        const savedOrder = await res.json();
+        }).catch(()=>{});
 
-        // 2. Send Telegram Group Notification
+        // Send Telegram Notification
         let itemsText = "";
         cart.forEach((item, idx) => {
           itemsText += `${idx+1}. ${item.title} (${item.qty} ခု) = ${(parseInt(item.priceMMK) * item.qty).toLocaleString()} MMK\n`;
@@ -586,7 +602,7 @@
       }
     }
 
-    // --- PRODUCT UPLOAD (SUPABASE STORAGE) ---
+    // --- PRODUCT UPLOAD (STORAGE) ---
     async function handleProductCreate(e) {
       e.preventDefault();
       const title = document.getElementById('addPName').value.trim();
@@ -601,7 +617,6 @@
       btn.disabled = true;
 
       try {
-        // Upload to Supabase Storage if file is chosen
         if (fileInput.files.length > 0) {
           const file = fileInput.files[0];
           const fileExt = file.name.split('.').pop();
@@ -641,7 +656,7 @@
       }
     }
 
-    // --- ADMIN CONTROLS & DASHBOARD ---
+    // --- ADMIN CONTROLS ---
     function updateAdminDashboard() {
       document.getElementById('statTotalProducts').innerText = products.length;
       document.getElementById('statTotalOrders').innerText = orders.length;
@@ -713,7 +728,7 @@
       `).join('');
     }
 
-    // --- NAVIGATION & VIEWS ---
+    // --- NAVIGATION ---
     function switchView(view) {
       document.querySelectorAll('.view-panel').forEach(el => el.classList.add('hidden'));
       if (view === 'shop') document.getElementById('shopView').classList.remove('hidden');
@@ -741,7 +756,6 @@
     function handleCustomerAuth(e) {
       e.preventDefault();
       const phone = document.getElementById('authPhone').value.trim();
-      const pass = document.getElementById('authPass').value;
       const name = document.getElementById('authName').value.trim();
 
       if (isRegisterMode) {
@@ -782,7 +796,7 @@
       }
     }
 
-    // --- ADMIN HASH & CONTROLS ---
+    // --- ADMIN HASH ---
     function checkAdminHash() {
       if (window.location.hash.toLowerCase() === '#admin') {
         const p = prompt('Admin Password ရိုက်ပါ (Default: admin123)');
@@ -808,7 +822,7 @@
       document.getElementById('adminBar').classList.toggle('hidden', !currentAdmin);
     }
 
-    // --- HELPERS ---
+    // --- UI HELPERS ---
     function filterCategory(catId) {
       selectedCategory = catId;
       renderCategories();
@@ -838,19 +852,12 @@
 
     function openCart() { document.getElementById('cartModal').classList.remove('hidden'); document.getElementById('cartModal').classList.add('flex'); }
     function closeCart() { document.getElementById('cartModal').classList.add('hidden'); document.getElementById('cartModal').classList.remove('flex'); }
+    function openCheckout() { closeCart(); document.getElementById('checkoutModal').classList.remove('hidden'); document.getElementById('checkoutModal').classList.add('flex'); }
     function closeCheckout() { document.getElementById('checkoutModal').classList.add('hidden'); document.getElementById('checkoutModal').classList.remove('flex'); }
     function openAddModal() { document.getElementById('addModal').classList.remove('hidden'); document.getElementById('addModal').classList.add('flex'); }
     function closeAddModal() { document.getElementById('addModal').classList.add('hidden'); document.getElementById('addModal').classList.remove('flex'); }
     function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); document.getElementById('authModal').classList.add('flex'); }
     function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); document.getElementById('authModal').classList.remove('flex'); }
-
-    function getFallbackProducts() {
-      return [
-        { id: 1, title: "Sony Wireless Headphone", priceMMK: 1250000, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80", stock: 15 },
-        { id: 2, title: "Apple Watch Series", priceMMK: 850000, image: "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=500&q=80", stock: 8 },
-        { id: 3, title: "Running Sneakers", priceMMK: 150000, image: "https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=500&q=80", stock: 20 }
-      ];
-    }
 
     init();
   </script>
