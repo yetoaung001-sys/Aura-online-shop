@@ -345,8 +345,8 @@
   <!-- ================= APPLICATION SCRIPT ================= -->
   <script>
     // 1. SUPABASE & TELEGRAM CONFIGURATION
-    const SB_BASE = "https://zyajlsrytjvwxqtxrqd.supabase.co/rest/v1";
-    const SB_STORAGE = "https://zyajlsrytjvwxqtxrqd.supabase.co/storage/v1/object/product-images";
+    const SB_BASE = "https://zyajlsrytjvwxqtpxrqd.supabase.co/rest/v1";
+    const SB_STORAGE = "https://zyajlsrytjvwxqtpxrqd.supabase.co/storage/v1/object";
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
     
     const HEADERS = {
@@ -604,58 +604,69 @@
 
     // --- PRODUCT UPLOAD (STORAGE) ---
     async function handleProductCreate(e) {
-      e.preventDefault();
-      const title = document.getElementById('addPName').value.trim();
-      const priceMMK = parseInt(document.getElementById('addPPrice').value, 10);
-      const stock = parseInt(document.getElementById('addPStock').value, 10);
-      const category_id = parseInt(document.getElementById('addPCategory').value, 10);
-      const fileInput = document.getElementById('addPFile');
-      let imageUrl = document.getElementById('addPUrl').value.trim();
+  e.preventDefault();
+  const title = document.getElementById('addPName').value.trim();
+  const priceMMK = parseInt(document.getElementById('addPPrice').value, 10);
+  const stock = parseInt(document.getElementById('addPStock').value, 10);
+  const category_id = parseInt(document.getElementById('addPCategory').value, 10);
+  const fileInput = document.getElementById('addPFile');
+  let imageUrl = document.getElementById('addPUrl').value.trim();
 
-      const btn = document.getElementById('addPSubmitBtn');
-      btn.innerText = "Cloud သို့ တင်နေပါသည်...";
-      btn.disabled = true;
+  const btn = document.getElementById('addPSubmitBtn');
+  btn.innerText = "Cloud သို့ တင်နေပါသည်...";
+  btn.disabled = true;
 
-      try {
-        if (fileInput.files.length > 0) {
-          const file = fileInput.files[0];
-          const fileExt = file.name.split('.').pop();
-          const fileName = `${Date.now()}.${fileExt}`;
+  try {
+    // ဖုန်း/ကွန်ပျူတာထဲမှ ဓာတ်ပုံကို Supabase Storage ထဲ တင်ခြင်း
+    if (fileInput.files.length > 0) {
+      const file = fileInput.files[0];
+      const fileExt = file.name.split('.').pop();
+      const cleanFileName = `${Date.now()}_${Math.random().toString(36).substring(7)}.${fileExt}`;
 
-          const uploadRes = await fetch(`${SB_STORAGE}/${fileName}`, {
-            method: 'POST',
-            headers: {
-              "apikey": SB_KEY,
-              "Authorization": "Bearer " + SB_KEY,
-              "Content-Type": file.type
-            },
-            body: file
-          });
+      const uploadRes = await fetch(`${SB_STORAGE}/product-images/${cleanFileName}`, {
+        method: 'POST',
+        headers: {
+          "apikey": SB_KEY,
+          "Authorization": "Bearer " + SB_KEY,
+          "Content-Type": file.type || 'image/jpeg'
+        },
+        body: file
+      });
 
-          if (uploadRes.ok) {
-            imageUrl = `https://zyajlsrytjvwxqtxrqd.supabase.co/storage/v1/object/public/product-images/${fileName}`;
-          }
-        }
-
-        if (!imageUrl) imageUrl = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80';
-
-        await fetch(`${SB_BASE}/products`, {
-          method: 'POST',
-          headers: HEADERS,
-          body: JSON.stringify({ title, priceMMK, stock, category_id, image: imageUrl })
-        });
-
-        await loadProducts();
-        closeAddModal();
-        alert('✅ ပစ္စည်းအသစ် တင်ပြီးပါပြီ!');
-      } catch (err) {
-        alert('Error: ' + err.message);
-      } finally {
-        btn.innerText = "Cloud ပေါ်သို့ တင်မည်";
-        btn.disabled = false;
+      if (uploadRes.ok) {
+        imageUrl = `https://zyajlsrytjvwxqtpxrqd.supabase.co/storage/v1/object/public/product-images/${cleanFileName}`;
+      } else {
+        const errJson = await uploadRes.json().catch(() => ({}));
+        throw new Error(errJson.message || 'Image upload failed');
       }
     }
 
+    if (!imageUrl) {
+      imageUrl = 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=500&q=80';
+    }
+
+    // Database ထဲသို့ ပစ္စည်း အချက်အလက် သိမ်းဆည်းခြင်း
+    const dbRes = await fetch(`${SB_BASE}/products`, {
+      method: 'POST',
+      headers: HEADERS,
+      body: JSON.stringify({ title, priceMMK, stock, category_id, image: imageUrl })
+    });
+
+    if (!dbRes.ok) {
+      const dbErr = await dbRes.json().catch(() => ({}));
+      throw new Error(dbErr.message || 'Database insert failed');
+    }
+
+    await loadProducts();
+    closeAddModal();
+    alert('✅ ပစ္စည်းအသစ် တင်ပြီးပါပြီ!');
+  } catch (err) {
+    alert('Error: ' + err.message);
+  } finally {
+    btn.innerText = "Cloud ပေါ်သို့ တင်မည်";
+    btn.disabled = false;
+  }
+}
     // --- ADMIN CONTROLS ---
     function updateAdminDashboard() {
       document.getElementById('statTotalProducts').innerText = products.length;
