@@ -107,7 +107,7 @@
 
   <!-- ================= 1. CUSTOMER SHOP VIEW ================= -->
   <div id="shopView" class="view-panel">
-    <!-- HERO PROMOTIONAL BANNER (DYNAMIC ADMIN MANAGED) -->
+    <!-- HERO PROMOTIONAL BANNER -->
     <section class="max-w-7xl mx-auto px-4 pt-4">
       <div id="heroBannerBg" class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-900 text-white p-6 sm:p-10 shadow-xl border border-indigo-500/20 flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="space-y-3 text-center md:text-left z-10">
@@ -161,7 +161,7 @@
     </main>
   </div>
 
-  <!-- ================= 2. CUSTOMER ORDERS & LIVE TRACKING ================= -->
+  <!-- ================= 2. CUSTOMER ORDERS & TRACKING ================= -->
   <div id="ordersView" class="view-panel hidden max-w-3xl mx-auto px-4 py-6">
     <div class="flex justify-between items-center mb-6">
       <div>
@@ -173,7 +173,7 @@
     <div id="myOrdersList" class="space-y-4"></div>
   </div>
 
-  <!-- ================= 3. 👑 ADMIN MANAGEMENT DASHBOARD ================= -->
+  <!-- ================= 3. 👑 ADMIN DASHBOARD ================= -->
   <div id="adminView" class="view-panel hidden max-w-7xl mx-auto px-4 py-6 space-y-6">
     <div class="flex flex-wrap justify-between items-center gap-4 border-b pb-4">
       <div>
@@ -189,7 +189,7 @@
       </div>
     </div>
 
-    <!-- Stats Cards -->
+    <!-- Stats Overview -->
     <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
       <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
         <span class="text-slate-400 text-xs font-semibold">စုစုပေါင်း ရောင်းရငွေ</span>
@@ -253,7 +253,7 @@
         <div id="adminCategoryList" class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2"></div>
       </div>
 
-      <!-- Coupons Management Panel -->
+      <!-- Coupons Panel -->
       <div id="tabPanel-coupons" class="admin-panel hidden p-4 space-y-4 text-xs">
         <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200">
           <h3 class="font-bold text-sm text-slate-800 mb-2">🎟️ Coupon Code အသစ်ဖန်တီးပါ</h3>
@@ -282,7 +282,7 @@
         </div>
       </div>
 
-      <!-- Banner & Notice Management Panel -->
+      <!-- Banner & Notice Panel -->
       <div id="tabPanel-banner-notice" class="admin-panel hidden p-4 space-y-5 text-xs max-w-2xl">
         <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
           <h3 class="font-bold text-sm text-indigo-950 flex items-center gap-1.5">
@@ -496,7 +496,7 @@
     </div>
   </div>
 
-  <!-- ================= CART DRAWER (WITH COUPON APPLY) ================= -->
+  <!-- ================= CART DRAWER ================= -->
   <div id="cartModal" class="fixed inset-0 bg-black/50 z-50 hidden justify-end">
     <div class="bg-white w-full max-w-sm h-full flex flex-col p-4 shadow-2xl">
       <div class="flex justify-between items-center pb-3 border-b">
@@ -868,7 +868,6 @@
       const grid = document.getElementById('productGrid');
       let filtered = products;
 
-      // Safe Type-Checked Category Filter
       if (selectedCategory !== 'all') {
         filtered = filtered.filter(p => String(p.category_id) === String(selectedCategory));
       }
@@ -924,7 +923,7 @@
       }).join('');
     }
 
-    // --- PRODUCT DETAILS MODAL ---
+    // --- PRODUCT DETAILS MODAL (WITH ROBUST VARIANT SANITIZATION & FIXES) ---
     function openDetailsModal(id) {
       const p = products.find(i => i.id == id);
       if (!p) return;
@@ -960,18 +959,28 @@
         <img src="${img}" onclick="document.getElementById('detailMainImg').src='${img}'" class="w-12 h-12 rounded-lg object-cover cursor-pointer border hover:border-indigo-600 transition flex-shrink-0" />
       `).join('');
 
+      // Colors Variants (Filtered to eliminate blank items)
       const colorBox = document.getElementById('variantColorList');
-      const colors = (p.colors && p.colors.length > 0) ? p.colors : ["Standard"];
+      const rawColors = Array.isArray(p.colors) ? p.colors : (p.colors ? String(p.colors).split(',') : []);
+      const cleanColors = rawColors.map(c => String(c).trim()).filter(c => c.length > 0);
+      const colors = cleanColors.length > 0 ? cleanColors : ["Standard"];
       currentSelectedColor = colors[0];
-      colorBox.innerHTML = colors.map(c => `
-        <button onclick="selectVariantColor('${c}', this)" class="var-color-btn border border-slate-300 px-3 py-1 rounded-lg text-xs font-semibold ${c === currentSelectedColor ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700'}">${c}</button>
+      colorBox.innerHTML = colors.map((c, idx) => `
+        <button onclick="selectVariantColor('${c}', this)" class="var-color-btn border px-3 py-1 rounded-lg text-xs font-semibold ${idx === 0 ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm' : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400'} transition">
+          ${c}
+        </button>
       `).join('');
 
+      // Sizes Variants (Filtered to eliminate blank items)
       const sizeBox = document.getElementById('variantSizeList');
-      const sizes = (p.sizes && p.sizes.length > 0) ? p.sizes : ["Free Size"];
+      const rawSizes = Array.isArray(p.sizes) ? p.sizes : (p.sizes ? String(p.sizes).split(',') : []);
+      const cleanSizes = rawSizes.map(s => String(s).trim()).filter(s => s.length > 0);
+      const sizes = cleanSizes.length > 0 ? cleanSizes : ["Free Size"];
       currentSelectedSize = sizes[0];
-      sizeBox.innerHTML = sizes.map(s => `
-        <button onclick="selectVariantSize('${s}', this)" class="var-size-btn border border-slate-300 px-3 py-1 rounded-lg text-xs font-semibold ${s === currentSelectedSize ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-700'}">${s}</button>
+      sizeBox.innerHTML = sizes.map((s, idx) => `
+        <button onclick="selectVariantSize('${s}', this)" class="var-size-btn border px-3 py-1 rounded-lg text-xs font-semibold ${idx === 0 ? 'border-indigo-600 bg-indigo-600 text-white shadow-sm' : 'border-slate-300 bg-white text-slate-700 hover:border-slate-400'} transition">
+          ${s}
+        </button>
       `).join('');
 
       renderProductReviews(p.reviews || []);
@@ -982,22 +991,21 @@
       document.getElementById('detailsModal').classList.add('flex');
     }
 
+    // Fixed: Overwrite className directly to prevent white text on white background bug
     function selectVariantColor(color, btn) {
       currentSelectedColor = color;
       document.querySelectorAll('.var-color-btn').forEach(b => {
-        b.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
-        b.classList.add('bg-white', 'text-slate-700');
+        b.className = "var-color-btn border border-slate-300 px-3 py-1 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:border-slate-400 transition";
       });
-      btn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+      btn.className = "var-color-btn border border-indigo-600 px-3 py-1 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-sm transition";
     }
 
     function selectVariantSize(size, btn) {
       currentSelectedSize = size;
       document.querySelectorAll('.var-size-btn').forEach(b => {
-        b.classList.remove('bg-indigo-600', 'text-white', 'border-indigo-600');
-        b.classList.add('bg-white', 'text-slate-700');
+        b.className = "var-size-btn border border-slate-300 px-3 py-1 rounded-lg text-xs font-semibold bg-white text-slate-700 hover:border-slate-400 transition";
       });
-      btn.classList.add('bg-indigo-600', 'text-white', 'border-indigo-600');
+      btn.className = "var-size-btn border border-indigo-600 px-3 py-1 rounded-lg text-xs font-semibold bg-indigo-600 text-white shadow-sm transition";
     }
 
     function changeDetailQty(delta) {
@@ -1120,7 +1128,6 @@
       const container = document.getElementById('cartItems');
       const subtotal = cart.reduce((s, i) => s + (parseInt(i.priceMMK) * i.qty), 0);
 
-      // Calculate discount
       appliedDiscountAmount = 0;
       if (appliedCoupon && subtotal > 0) {
         if (appliedCoupon.type === 'percent') {
@@ -1544,11 +1551,13 @@
       document.getElementById('productModal').classList.remove('hidden');
       document.getElementById('productModal').classList.add('flex');
     }
+
     function closeProductModal() {
       document.getElementById('productModal').classList.add('hidden');
       document.getElementById('productModal').classList.remove('flex');
     }
 
+    // Fixed: Clean user-typed variant strings and eliminate empty commas
     async function handleProductSubmit(e) {
       e.preventDefault();
       const id = document.getElementById('editProductId').value;
@@ -1560,10 +1569,16 @@
       const description = document.getElementById('prodDesc').value.trim();
       let mainUrl = document.getElementById('prodUrl').value.trim();
 
-      const colorsRaw = document.getElementById('prodColors').value;
-      const sizesRaw = document.getElementById('prodSizes').value;
-      const colors = colorsRaw ? colorsRaw.split(',').map(s => s.trim()).filter(Boolean) : ["Standard"];
-      const sizes = sizesRaw ? sizesRaw.split(',').map(s => s.trim()).filter(Boolean) : ["Standard"];
+      const colorsRaw = document.getElementById('prodColors').value || '';
+      const sizesRaw = document.getElementById('prodSizes').value || '';
+      
+      const colors = colorsRaw.split(',')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
+        
+      const sizes = sizesRaw.split(',')
+        .map(s => s.trim())
+        .filter(s => s.length > 0);
 
       let images = [...stagedUploadImages];
       if (mainUrl && !images.includes(mainUrl)) images.unshift(mainUrl);
@@ -1577,8 +1592,8 @@
         p.stock = stock;
         p.category_id = category_id;
         p.allow_cod = allow_cod;
-        p.colors = colors;
-        p.sizes = sizes;
+        p.colors = colors.length > 0 ? colors : ["Standard"];
+        p.sizes = sizes.length > 0 ? sizes : ["Standard"];
         p.image = mainUrl;
         p.images = images;
         p.description = description;
@@ -1586,7 +1601,9 @@
         products.unshift({
           id: Date.now(),
           title, priceMMK, stock, category_id, allow_cod,
-          colors, sizes, image: mainUrl, images, description,
+          colors: colors.length > 0 ? colors : ["Standard"],
+          sizes: sizes.length > 0 ? sizes : ["Standard"],
+          image: mainUrl, images, description,
           reviews: []
         });
       }
@@ -1878,7 +1895,7 @@
       `).join('');
     }
 
-    // Modal Helpers
+    // Modals
     function openCart() { document.getElementById('cartModal').classList.remove('hidden'); document.getElementById('cartModal').classList.add('flex'); }
     function closeCart() { document.getElementById('cartModal').classList.add('hidden'); document.getElementById('cartModal').classList.remove('flex'); }
     function openWishlist() { document.getElementById('wishModal').classList.remove('hidden'); document.getElementById('wishModal').classList.add('flex'); }
