@@ -50,7 +50,6 @@
   <!-- ================= APP HEADER ================= -->
   <header class="bg-white/95 backdrop-blur-md border-b border-slate-200 sticky top-0 z-40 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between gap-3">
-      <!-- SVG Logo -->
       <div class="flex items-center gap-2 cursor-pointer" onclick="switchView('shop')">
         <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-indigo-600 via-violet-600 to-amber-400 p-[2px] shadow-md flex items-center justify-center">
           <div class="w-full h-full bg-slate-950 rounded-[14px] flex items-center justify-center">
@@ -74,13 +73,11 @@
         </div>
       </div>
 
-      <!-- Search Input -->
       <div class="flex-1 max-w-md relative hidden sm:block">
         <i class="ph ph-magnifying-glass absolute left-3 top-2.5 text-slate-400 text-lg"></i>
         <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="ပစ္စည်းအမည် ရှာဖွေပါ..." class="w-full pl-9 pr-4 py-2 bg-slate-100 border-none rounded-xl text-xs outline-none focus:ring-2 focus:ring-indigo-600" />
       </div>
 
-      <!-- Header Action Icons -->
       <div class="flex items-center gap-2">
         <button onclick="openWishlist()" class="relative p-2 text-slate-700 bg-slate-100 hover:bg-rose-50 hover:text-rose-600 rounded-full transition">
           <i class="ph ph-heart text-xl"></i>
@@ -107,7 +104,6 @@
 
   <!-- ================= 1. CUSTOMER SHOP VIEW ================= -->
   <div id="shopView" class="view-panel">
-    <!-- HERO PROMOTIONAL BANNER -->
     <section class="max-w-7xl mx-auto px-4 pt-4">
       <div id="heroBannerBg" class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-indigo-950 to-slate-900 text-white p-6 sm:p-10 shadow-xl border border-indigo-500/20 flex flex-col md:flex-row items-center justify-between gap-6">
         <div class="space-y-3 text-center md:text-left z-10">
@@ -135,7 +131,6 @@
       </div>
     </section>
 
-    <!-- Category Pills & COD Filter -->
     <section class="max-w-7xl mx-auto px-4 pt-5">
       <div class="flex flex-wrap items-center justify-between gap-2 pb-2">
         <div id="categoryBar" class="flex gap-2 overflow-x-auto no-scrollbar py-1"></div>
@@ -146,12 +141,10 @@
       </div>
     </section>
 
-    <!-- Mobile Search -->
     <div class="px-4 pt-2 sm:hidden">
       <input type="text" oninput="handleSearch(this.value)" placeholder="ပစ္စည်းအမည် ရှာဖွေပါ..." class="w-full px-3 py-2 bg-slate-100 border-none rounded-xl text-xs outline-none" />
     </div>
 
-    <!-- Products Grid -->
     <main class="max-w-7xl mx-auto px-4 py-4">
       <div class="flex justify-between items-center mb-4">
         <h2 class="font-bold text-slate-800 text-base">ကုန်ပစ္စည်းများ (Catalog)</h2>
@@ -674,6 +667,7 @@
     const initialProducts = [
       {
         id: 1,
+        shop_id: 1,
         title: "Sony Wireless Headphone (WH-1000XM5)",
         priceMMK: 1250000,
         category_id: 1,
@@ -694,6 +688,7 @@
       },
       {
         id: 2,
+        shop_id: 1,
         title: "Apple Watch Series 9",
         priceMMK: 850000,
         category_id: 1,
@@ -710,6 +705,7 @@
       },
       {
         id: 3,
+        shop_id: 2,
         title: "Nike Air Running Shoes",
         priceMMK: 150000,
         category_id: 2,
@@ -820,7 +816,6 @@
       return { avg: (sum / reviews.length).toFixed(1), count: reviews.length };
     }
 
-    // --- PRODUCTS & CATEGORY FILTERING (FIXED EMPTY VIEW BUG) ---
     function filterCategory(catId) {
       selectedCategory = catId;
       renderCategories();
@@ -923,7 +918,6 @@
       }).join('');
     }
 
-    // --- PRODUCT DETAILS MODAL (WITH ROBUST VARIANT SANITIZATION & FIXES) ---
     function openDetailsModal(id) {
       const p = products.find(i => i.id == id);
       if (!p) return;
@@ -959,7 +953,6 @@
         <img src="${img}" onclick="document.getElementById('detailMainImg').src='${img}'" class="w-12 h-12 rounded-lg object-cover cursor-pointer border hover:border-indigo-600 transition flex-shrink-0" />
       `).join('');
 
-      // Colors Variants (Filtered to eliminate blank items)
       const colorBox = document.getElementById('variantColorList');
       const rawColors = Array.isArray(p.colors) ? p.colors : (p.colors ? String(p.colors).split(',') : []);
       const cleanColors = rawColors.map(c => String(c).trim()).filter(c => c.length > 0);
@@ -971,7 +964,6 @@
         </button>
       `).join('');
 
-      // Sizes Variants (Filtered to eliminate blank items)
       const sizeBox = document.getElementById('variantSizeList');
       const rawSizes = Array.isArray(p.sizes) ? p.sizes : (p.sizes ? String(p.sizes).split(',') : []);
       const cleanSizes = rawSizes.map(s => String(s).trim()).filter(s => s.length > 0);
@@ -991,7 +983,6 @@
       document.getElementById('detailsModal').classList.add('flex');
     }
 
-    // Fixed: Overwrite className directly to prevent white text on white background bug
     function selectVariantColor(color, btn) {
       currentSelectedColor = color;
       document.querySelectorAll('.var-color-btn').forEach(b => {
@@ -1083,6 +1074,7 @@
         cart.push({
           cartItemId,
           id: currentDetailProduct.id,
+          shop_id: currentDetailProduct.shop_id || 1,
           title: currentDetailProduct.title,
           priceMMK: currentDetailProduct.priceMMK,
           image: currentDetailProduct.image,
@@ -1103,7 +1095,6 @@
       document.getElementById('detailsModal').classList.remove('flex');
     }
 
-    // --- COUPON APPLICATION IN CART ---
     function applyCartCoupon() {
       const code = document.getElementById('cartCouponInput').value.trim().toUpperCase();
       if (!code) return alert('ကျေးဇူးပြု၍ Coupon Code ရိုက်ထည့်ပါ');
@@ -1187,7 +1178,6 @@
       updateCartUI();
     }
 
-    // --- CHECKOUT & DYNAMIC DELIVERY ---
     function renderTownshipSelect() {
       const select = document.getElementById('custTownshipSelect');
       if (!select) return;
@@ -1271,8 +1261,12 @@
       });
     }
 
+    // ================= PROPER MULTI-VENDOR SPLIT ORDER SUBMIT =================
     async function handleOrderSubmit(e) {
       e.preventDefault();
+
+      if (cart.length === 0) return alert('စျေးဝယ်တွန်းလှည်းထဲတွင် ပစ္စည်းမရှိပါ');
+
       const name = document.getElementById('custName').value.trim();
       const phone = document.getElementById('custPhone').value.trim();
       const address = document.getElementById('custAddress').value.trim();
@@ -1280,12 +1274,12 @@
       const select = document.getElementById('custTownshipSelect');
       const township = townships.find(t => t.id === parseInt(select.value, 10)) || townships[0];
       const delFee = township.fee;
+
       const subTotal = cart.reduce((s, i) => s + (parseInt(i.priceMMK) * i.qty), 0);
       const grandTotal = Math.max(0, subTotal - appliedDiscountAmount) + delFee;
 
       const slipInput = document.getElementById('paySlipFile');
       let slipData = "";
-
       if (payment !== 'Cash On Delivery') {
         if (slipInput.files.length === 0) {
           alert('⚠️ အွန်လိုင်းငွေချေမှုအတွက် ငွေလွှဲပြေစာ ဓာတ်ပုံ ထည့်သွင်းပေးပါခင်ဗျာ။');
@@ -1295,58 +1289,151 @@
       }
 
       const btn = document.getElementById('submitOrderBtn');
-      btn.innerText = "ပို့ဆောင်နေပါသည်...";
+      btn.innerText = "အော်ဒါခွဲထုတ်၍ ပို့ဆောင်နေပါသည်...";
       btn.disabled = true;
 
-      cart.forEach(item => {
-        const prod = products.find(p => p.id == item.id);
-        if (prod) prod.stock = Math.max(0, (prod.stock || 0) - item.qty);
-      });
-      localStorage.setItem('aura_cust_products', JSON.stringify(products));
+      try {
+        cart.forEach(item => {
+          const prod = products.find(p => p.id == item.id);
+          if (prod) prod.stock = Math.max(0, (prod.stock || 0) - item.qty);
+        });
+        localStorage.setItem('aura_cust_products', JSON.stringify(products));
 
-      const newOrder = {
-        id: Date.now(),
-        customer_name: name,
-        customer_phone: phone,
-        customer_uid: currentCustomer ? currentCustomer.uid : null,
-        township: `${township.state} - ${township.name}`,
-        delivery_address: `${township.name}, ${address}`,
-        payment_method: payment,
-        payment_slip_url: slipData ? "Uploaded" : null,
-        discount_amount: appliedDiscountAmount,
-        coupon_code: appliedCoupon ? appliedCoupon.code : null,
-        total_amount: grandTotal,
-        order_status: 'pending',
-        created_at: new Date().toISOString()
-      };
-      orders.unshift(newOrder);
-      localStorage.setItem('aura_cust_orders', JSON.stringify(orders));
+        const parentOrderPayload = {
+          customer_uid: currentCustomer ? currentCustomer.uid : null,
+          customer_name: name,
+          customer_phone: phone,
+          delivery_address: `${township.name}, ${address}`,
+          township: `${township.state} - ${township.name}`,
+          payment_method: payment,
+          payment_slip_url: slipData ? "Uploaded" : null,
+          total_amount: grandTotal,
+          created_at: new Date().toISOString()
+        };
 
-      let itemsListText = "";
-      cart.forEach((i, idx) => {
-        itemsListText += `${idx+1}. ${i.title} [${i.color}/${i.size}] (${i.qty} ခု) = ${(parseInt(i.priceMMK)*i.qty).toLocaleString()} MMK\n`;
-      });
-      const teleMsg = `🛍️ အော်ဒါအသစ် ရောက်ရှိပါသည်!\n━━━━━━━━━━━━━\n👤 ဝယ်သူ: ${name}\n📞 ဖုန်း: ${phone}\n📍 မြို့နယ်: ${township.state} - ${township.name}\n🏠 လိပ်စာ: ${address}\n💳 ငွေချေစနစ်: ${payment}\n🚚 ပို့ခ: ${delFee.toLocaleString()} MMK\n🎟️ Coupon: ${appliedCoupon ? appliedCoupon.code + ' (-' + appliedDiscountAmount.toLocaleString() + ')' : 'မပါပါ'}\n🧾 ပြေစာပုံ: ${slipData ? '✅ Upload တင်ထားပါသည်' : '❌ COD'}\n\n📦 မှာယူသော ပစ္စည်းများ:\n${itemsListText}━━━━━━━━━━━━━\n💰 စုစုပေါင်း: ${grandTotal.toLocaleString()} MMK`;
+        const { data: parentOrder, error: pErr } = await supabaseClient
+          .from('orders')
+          .insert(parentOrderPayload)
+          .select()
+          .single();
+
+        if (pErr) throw new Error("Parent Order တင်မရပါ: " + pErr.message);
+
+        // Grouping items by shop_id
+        const ordersByShop = cart.reduce((acc, item) => {
+          const sId = item.shop_id || 1;
+          if (!acc[sId]) acc[sId] = [];
+          acc[sId].push(item);
+          return acc;
+        }, {});
+
+        for (const shopId in ordersByShop) {
+          const shopItems = ordersByShop[shopId];
+          const shopSubtotal = shopItems.reduce((s, i) => s + (parseInt(i.priceMMK) * i.qty), 0);
+          
+          const commissionRate = 5.0;
+          const commissionAmt = Math.round((shopSubtotal * commissionRate) / 100);
+          const sellerPayout = shopSubtotal - commissionAmt;
+
+          await supabaseClient
+            .from('shop_orders')
+            .insert({
+              order_id: parentOrder.id,
+              shop_id: parseInt(shopId, 10),
+              items: shopItems,
+              subtotal: shopSubtotal,
+              platform_commission: commissionAmt,
+              seller_payout: sellerPayout,
+              status: 'pending',
+              payout_status: 'unpaid'
+            });
+
+          await notifySellerTelegram(shopId, parentOrder, shopItems, shopSubtotal, sellerPayout);
+        }
+
+        await notifySuperAdminTelegram(parentOrder, cart, delFee, grandTotal, slipData);
+
+        orders.unshift({ ...parentOrderPayload, id: parentOrder.id, order_status: 'pending' });
+        localStorage.setItem('aura_cust_orders', JSON.stringify(orders));
+
+        alert(`🎉 ကျေးဇူးတင်ပါသည် ${name}!\nသင့်အော်ဒါကို သက်ဆိုင်ရာ ဆိုင်များထံ အောင်မြင်စွာ ခွဲထုတ်ပို့ဆောင်ပြီးပါပြီ။`);
+        
+        cart = [];
+        appliedCoupon = null;
+        appliedDiscountAmount = 0;
+        updateCartUI();
+        closeCheckout();
+        renderProducts();
+        switchView('orders');
+
+      } catch (err) {
+        alert('❌ အော်ဒါတင်ရာတွင် အမှားဖြစ်ပေါ်ပါသည်: ' + err.message);
+      } finally {
+        btn.innerText = "အော်ဒါ အတည်ပြုမည်";
+        btn.disabled = false;
+      }
+    }
+
+    // --- TELEGRAM NOTIFICATION HELPERS ---
+    async function notifySellerTelegram(shopId, parentOrder, items, subtotal, sellerPayout) {
+      let targetChatId = TELEGRAM_CONFIG.chatId;
+      let shopName = "သင့်ဆိုင်";
 
       try {
-        await fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ chat_id: TELEGRAM_CONFIG.chatId, text: teleMsg })
-        });
-        await fetch(`${SB_BASE}/orders`, { method: 'POST', headers: HEADERS, body: JSON.stringify(newOrder) });
+        const { data: shop } = await supabaseClient.from('shops').select('*').eq('id', shopId).single();
+        if (shop) {
+          shopName = shop.name;
+          if (shop.telegram_chat_id) targetChatId = shop.telegram_chat_id;
+        }
       } catch (e) {}
 
-      alert(`🎉 ကျေးဇူးတင်ပါသည် ${name}!\nသင့်အော်ဒါကို အောင်မြင်စွာ လက်ခံရရှိပြီး Telegram သို့ အကြောင်းကြားပြီးပါပြီ။`);
-      cart = [];
-      appliedCoupon = null;
-      appliedDiscountAmount = 0;
-      updateCartUI();
-      closeCheckout();
-      btn.innerText = "အော်ဒါ အတည်ပြုမည်";
-      btn.disabled = false;
-      renderProducts();
-      switchView('orders');
+      let itemListMsg = "";
+      items.forEach((item, idx) => {
+        itemListMsg += `${idx + 1}. ${item.title} [${item.color || 'Std'}/${item.size || 'Std'}] (${item.qty} ခု) = ${(parseInt(item.priceMMK) * item.qty).toLocaleString()} MMK\n`;
+      });
+
+      const msg = `🏪 [${shopName}] အတွက် အော်ဒါအသစ် ရောက်ပါပြီ!\n` +
+                  `━━━━━━━━━━━━━━━\n` +
+                  `🆔 အော်ဒါအမှတ်: #ORD-${parentOrder.id}\n` +
+                  `👤 ဝယ်သူ: ${parentOrder.customer_name}\n` +
+                  `📞 ဖုန်း: ${parentOrder.customer_phone}\n` +
+                  `📍 လိပ်စာ: ${parentOrder.delivery_address}\n\n` +
+                  `📦 သင့်ဆိုင်မှ မှာယူသော ပစ္စည်းများ:\n${itemListMsg}` +
+                  `━━━━━━━━━━━━━━━\n` +
+                  `💰 ပစ္စည်းရောင်းရငွေ: ${subtotal.toLocaleString()} MMK\n` +
+                  `💵 ဆိုင်ရငွေ (ကော်မရှင်နုတ်ပြီး): ${sellerPayout.toLocaleString()} MMK\n` +
+                  `💳 ငွေချေစနစ်: ${parentOrder.payment_method}`;
+
+      fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: targetChatId, text: msg })
+      }).catch(() => {});
+    }
+
+    async function notifySuperAdminTelegram(parentOrder, allItems, delFee, grandTotal, slipData) {
+      let allItemsText = "";
+      allItems.forEach((i, idx) => {
+        allItemsText += `${idx + 1}. [Shop-${i.shop_id || 1}] ${i.title} (${i.qty} ခု)\n`;
+      });
+
+      const msg = `👑 [AURA PLATFORM] အော်ဒါချုပ် အသစ်!\n` +
+                  `━━━━━━━━━━━━━━━\n` +
+                  `🆔 Order ID: #${parentOrder.id}\n` +
+                  `👤 ဝယ်သူ: ${parentOrder.customer_name} (${parentOrder.customer_phone})\n` +
+                  `📍 လိပ်စာ: ${parentOrder.delivery_address}\n` +
+                  `🚚 ပို့ဆောင်ခ: ${delFee.toLocaleString()} MMK\n` +
+                  `💳 ငွေပေးချေမှု: ${parentOrder.payment_method}\n` +
+                  `🧾 ငွေလွှဲပြေစာ: ${slipData ? '✅ Uploaded' : '❌ COD'}\n\n` +
+                  `📦 ပါဝင်သော ပစ္စည်းများ (ဆိုင်စုံ):\n${allItemsText}` +
+                  `━━━━━━━━━━━━━━━\n` +
+                  `💰 စုစုပေါင်းရငွေ: ${grandTotal.toLocaleString()} MMK`;
+
+      fetch(`https://api.telegram.org/bot${TELEGRAM_CONFIG.botToken}/sendMessage`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ chat_id: TELEGRAM_CONFIG.chatId, text: msg })
+      }).catch(() => {});
     }
 
     // --- ADMIN CONTROLS & MANAGEMENT TABS ---
@@ -1557,7 +1644,6 @@
       document.getElementById('productModal').classList.remove('flex');
     }
 
-    // Fixed: Clean user-typed variant strings and eliminate empty commas
     async function handleProductSubmit(e) {
       e.preventDefault();
       const id = document.getElementById('editProductId').value;
@@ -1600,6 +1686,7 @@
       } else {
         products.unshift({
           id: Date.now(),
+          shop_id: 1,
           title, priceMMK, stock, category_id, allow_cod,
           colors: colors.length > 0 ? colors : ["Standard"],
           sizes: sizes.length > 0 ? sizes : ["Standard"],
@@ -1709,7 +1796,6 @@
       }
     }
 
-    // Customer Tracking
     function renderCustomerOrders() {
       const list = document.getElementById('myOrdersList');
       const uid = currentCustomer ? currentCustomer.uid : null;
@@ -1754,7 +1840,6 @@
       }).join('');
     }
 
-    // View Switching
     function switchView(view) {
       document.querySelectorAll('.view-panel').forEach(el => el.classList.add('hidden'));
       if (view === 'shop') document.getElementById('shopView').classList.remove('hidden');
@@ -1794,7 +1879,6 @@
       document.getElementById('adminBar').classList.toggle('hidden', !isAdmin);
     }
 
-    // Auth Handlers
     async function handleSecureCustomerAuth(e) {
       e.preventDefault();
       const email = document.getElementById('authEmail').value.trim();
@@ -1820,6 +1904,7 @@
         btn.disabled = false;
       }
     }
+
     async function secureLogout() {
       await supabaseClient.auth.signOut();
       currentCustomer = null;
@@ -1831,6 +1916,7 @@
       switchView('shop');
       alert('အကောင့်မှ ထွက်ပြီးပါပြီ');
     }
+
     function toggleAuthMode() {
       isRegisterMode = !isRegisterMode;
       document.getElementById('authNameGroup').classList.toggle('hidden', !isRegisterMode);
@@ -1839,6 +1925,7 @@
       document.getElementById('authToggleBtn').innerText = isRegisterMode ? 'Login ပြန်ဝင်ပါ' : 'အကောင့်သစ်ဖွင့်ပါ';
       document.getElementById('authSubmitBtn').innerText = isRegisterMode ? 'အကောင့်ဖွင့်မည်' : 'အတည်ပြုမည်';
     }
+
     function updateAuthUI() {
       const isLogged = !!currentCustomer;
       document.getElementById('authGuestSection').classList.toggle('hidden', isLogged);
@@ -1859,7 +1946,6 @@
       document.getElementById('checkoutModal').classList.add('flex');
     }
 
-    // Wishlist UI
     function toggleWish(id) {
       if (wishlist.includes(id)) wishlist = wishlist.filter(x => x !== id);
       else wishlist.push(id);
@@ -1867,11 +1953,13 @@
       updateWishlistUI();
       renderProducts();
     }
+
     function toggleDetailWish() { if (currentDetailProduct) { toggleWish(currentDetailProduct.id); updateDetailWishBtn(); } }
     function updateDetailWishBtn() {
       const isW = wishlist.includes(currentDetailProduct.id);
       document.getElementById('detailWishBtn').innerHTML = `<i class="ph ${isW ? 'ph-heart-fill text-rose-600' : 'ph-heart'} text-lg"></i>`;
     }
+
     function updateWishlistUI() {
       const badge = document.getElementById('wishBadge');
       badge.innerText = wishlist.length;
@@ -1895,7 +1983,6 @@
       `).join('');
     }
 
-    // Modals
     function openCart() { document.getElementById('cartModal').classList.remove('hidden'); document.getElementById('cartModal').classList.add('flex'); }
     function closeCart() { document.getElementById('cartModal').classList.add('hidden'); document.getElementById('cartModal').classList.remove('flex'); }
     function openWishlist() { document.getElementById('wishModal').classList.remove('hidden'); document.getElementById('wishModal').classList.add('flex'); }
