@@ -153,25 +153,98 @@
     let shopOrders = [];
     let shopProducts = [];
 
-    async function initSellerGuard() {
-      const { data: { session } } = await supabaseClient.auth.getSession();
-      if (!session) {
-        alert("⚠️ ဆိုင်ရှင်အကောင့်ဖြင့် Login အရင်ဝင်ပါ");
-        window.location.href = "index.html";
-        return;
-      }
+   // Auth Guard: ဆိုင်ရှင် Login စစ်ဆေးခြင်း
+async function initSellerGuard() {
+  const { data: { session } } = await supabaseClient.auth.getSession();
+  
+  // Login မဝင်ရသေးပါက index.html သို့ မကန်ထုတ်ဘဲ Login Modal/Form ကို ပြပေးမည်
+  if (!session) {
+    showSellerLoginForm();
+    return;
+  }
 
-      const { data: shop } = await supabaseClient
-        .from('shops')
-        .select('*')
-        .eq('owner_id', session.user.id)
-        .single();
+  // Shop ရှိမရှိ စစ်ဆေးခြင်း
+  const { data: shop, error } = await supabaseClient
+    .from('shops')
+    .select('*')
+    .eq('owner_id', session.user.id)
+    .single();
 
-      if (!shop) {
-        alert("❌ သင့်အကောင့်သည် ဆိုင်ဖွင့်ထားခြင်း မရှိသေးပါ (Admin အား အကြောင်းကြားပါ)");
-        window.location.href = "index.html";
-        return;
-      }
+  if (!shop) {
+    alert("❌ သင့်အကောင့်သည် ဆိုင်ဖွင့်ထားခြင်း မရှိသေးပါ (Admin အား အကြောင်းကြားပါ)");
+    await supabaseClient.auth.signOut();
+    showSellerLoginForm();
+    return;
+  }
+
+  myShop = shop;
+  document.getElementById('sellerShopName').innerText = `${shop.name} (Commission: ${shop.commission_rate}%)`;
+  document.getElementById('sellerEmail').innerText = session.user.email;
+
+  // Login အောင်မြင်မှ Data များ ဆွဲတင်မည်
+  await loadShopData();
+}
+
+// Login Box ပြသပေးသည့် Function
+function showSellerLoginForm() {
+  let loginModal = document.getElementById('sellerLoginModal');
+  if (!loginModal) {
+    const modalHtml = `
+      <div id="sellerLoginModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+        <div class="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl space-y-4 text-xs">
+          <div class="text-center space-y-1">
+            <span class="bg-amber-400 text-slate-950 font-black px-2.5 py-0.5 rounded text-[10px]">SELLER CENTER</span>
+            <h3 class="text-base font-bold text-slate-900 pt-1">ဆိုင်ရှင် Login ဝင်ရန်</h3>
+            <p class="text-slate-400">Admin မှ ပေးထားသော Email နှင့် Password ဖြင့် ဝင်ပါ</p>
+          </div>
+          <form onsubmit="handleDirectSellerLogin(event)" class="space-y-3">
+            <div>
+              <label class="font-bold block mb-1">Email</label>
+              <input type="email" id="sLoginEmail" required class="w-full border px-3 py-2 rounded-xl outline-none" placeholder="seller@aura.com" />
+            </div>
+            <div>
+              <label class="font-bold block mb-1">Password</label>
+              <input type="password" id="sLoginPass" required class="w-full border px-3 py-2 rounded-xl outline-none" placeholder="******" />
+            </div>
+            <button type="submit" id="sLoginBtn" class="w-full bg-slate-900 hover:bg-indigo-600 text-white font-bold py-3 rounded-2xl shadow transition">
+              Login ဝင်မည်
+            </button>
+          </form>
+          <div class="text-center pt-1">
+            <a href="index.html" class="text-indigo-600 font-bold underline">← ပင်မဆိုင်သို့ ပြန်သွားမည်</a>
+          </div>
+        </div>
+      </div>
+    `;
+    document.body.insertAdjacentHTML('beforeend', modalHtml);
+  }
+}
+
+// တိုက်ရိုက် Login ဝင်ခြင်း လုပ်ဆောင်ချက်
+async function handleDirectSellerLogin(e) {
+  e.preventDefault();
+  const email = document.getElementById('sLoginEmail').value.trim();
+  const password = document.getElementById('sLoginPass').value;
+  const btn = document.getElementById('sLoginBtn');
+
+  btn.innerText = "စစ်ဆေးနေပါသည်...";
+  btn.disabled = true;
+
+  try {
+    const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+    if (error) throw error;
+
+    // Login အောင်မြင်ပါက Modal ကို ဖျက်ပြီး Guard ကို ပြန်စစ်မည်
+    const modal = document.getElementById('sellerLoginModal');
+    if (modal) modal.remove();
+    await initSellerGuard();
+  } catch (err) {
+    alert("❌ Login မအောင်မြင်ပါ: " + err.message);
+  } finally {
+    btn.innerText = "Login ဝင်မည်";
+    btn.disabled = false;
+  }
+}
 
       myShop = shop;
       document.getElementById('sellerShopName').innerText = `${shop.name} (Commission: ${shop.commission_rate}%)`;
