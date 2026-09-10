@@ -25,12 +25,12 @@
 
       <form onsubmit="handleSellerLogin(event)" class="space-y-4">
         <div>
-          <label class="font-bold text-slate-700 block mb-1">Email</label>
-          <input type="email" id="sellerEmailInput" required placeholder="seller@aura.com" class="w-full px-3.5 py-3 border rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 text-xs" />
+          <label for="sellerEmailInput" class="font-bold text-slate-700 block mb-1">Email</label>
+          <input type="email" id="sellerEmailInput" name="email" required placeholder="seller@aura.com" class="w-full px-3.5 py-3 border rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 text-xs" autocomplete="email" />
         </div>
         <div>
-          <label class="font-bold text-slate-700 block mb-1">Password</label>
-          <input type="password" id="sellerPassInput" required placeholder="••••••••" class="w-full px-3.5 py-3 border rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 text-xs" />
+          <label for="sellerPassInput" class="font-bold text-slate-700 block mb-1">Password</label>
+          <input type="password" id="sellerPassInput" name="password" required placeholder="••••••••" class="w-full px-3.5 py-3 border rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 text-xs" autocomplete="current-password" />
         </div>
         <button type="submit" id="loginSubmitBtn" class="w-full bg-gradient-to-r from-orange-500 to-rose-600 text-white font-bold py-3.5 rounded-2xl shadow-lg transition text-xs">
           ဆိုင်ထဲသို့ ဝင်မည်
@@ -97,60 +97,60 @@
       </div>
 
       <form onsubmit="handleProductSubmit(event)" class="space-y-3">
-        <input type="hidden" id="editProductId" />
+        <input type="hidden" id="editProductId" name="edit_product_id" />
         
         <div>
-          <label class="font-bold block mb-1">ပစ္စည်းအမည် *</label>
-          <input type="text" id="prodTitle" required class="w-full border p-2.5 rounded-xl outline-none" placeholder="Nike Air Shoes" />
+          <label for="prodTitle" class="font-bold block mb-1">ပစ္စည်းအမည် *</label>
+          <input type="text" id="prodTitle" name="title" required class="w-full border p-2.5 rounded-xl outline-none" placeholder="Nike Air Shoes" />
         </div>
 
         <div class="grid grid-cols-3 gap-2">
           <div>
-            <label class="font-bold block mb-1">ဈေးနှုန်း (MMK) *</label>
-            <input type="number" id="prodPrice" required class="w-full border p-2.5 rounded-xl outline-none" placeholder="50000" />
+            <label for="prodPrice" class="font-bold block mb-1">ဈေးနှုန်း (MMK) *</label>
+            <input type="number" id="prodPrice" name="price" required class="w-full border p-2.5 rounded-xl outline-none" placeholder="50000" />
           </div>
           <div>
-            <label class="font-bold block mb-1">Flash ဈေး</label>
-            <input type="number" id="prodFlashPrice" class="w-full border p-2.5 rounded-xl outline-none" placeholder="45000" />
+            <label for="prodFlashPrice" class="font-bold block mb-1">Flash ဈေး</label>
+            <input type="number" id="prodFlashPrice" name="flash_price" class="w-full border p-2.5 rounded-xl outline-none" placeholder="45000" />
           </div>
           <div>
-            <label class="font-bold block mb-1">Stock *</label>
-            <input type="number" id="prodStock" required value="10" class="w-full border p-2.5 rounded-xl outline-none" />
+            <label for="prodStock" class="font-bold block mb-1">Stock *</label>
+            <input type="number" id="prodStock" name="stock" required value="10" class="w-full border p-2.5 rounded-xl outline-none" />
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border">
           <div class="flex items-center justify-between">
-            <span class="font-bold">COD ရမည်လား?</span>
-            <input type="checkbox" id="prodAllowCod" checked class="w-4 h-4 accent-orange-600 cursor-pointer" />
+            <label for="prodAllowCod" class="font-bold cursor-pointer">COD ရမည်လား?</label>
+            <input type="checkbox" id="prodAllowCod" name="allow_cod" checked class="w-4 h-4 accent-orange-600 cursor-pointer" />
           </div>
           <div>
-            <label class="font-bold block mb-1">ကားဂိတ်ပို့ခ (MMK)</label>
-            <input type="number" id="prodShippingFee" value="0" class="w-full border p-2 rounded-xl outline-none bg-white font-mono" />
+            <label for="prodShippingFee" class="font-bold block mb-1">ကားဂိတ်ပို့ခ (MMK)</label>
+            <input type="number" id="prodShippingFee" name="shipping_fee" value="0" class="w-full border p-2 rounded-xl outline-none bg-white font-mono" />
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="font-bold block mb-1">🏷️ ကူပွန်ကုဒ် (ဥပမာ - AURA10)</label>
-            <input type="text" id="prodCouponCode" class="w-full border p-2 rounded-xl uppercase font-mono" placeholder="AURA10" />
+            <label for="prodCouponCode" class="font-bold block mb-1">🏷️ ကူပွန်ကုဒ် (ဥပမာ - AURA10)</label>
+            <input type="text" id="prodCouponCode" name="coupon_code" class="w-full border p-2 rounded-xl uppercase font-mono" placeholder="AURA10" />
           </div>
           <div>
-            <label class="font-bold block mb-1">🎫 ကူပွန်လျှော့စျေး</label>
-            <input type="number" id="prodCouponDiscount" class="w-full border p-2 rounded-xl" placeholder="10 (or 5000)" />
+            <label for="prodCouponDiscount" class="font-bold block mb-1">🎫 ကူပွန်လျှော့စျေး</label>
+            <input type="number" id="prodCouponDiscount" name="coupon_discount" class="w-full border p-2 rounded-xl" placeholder="10 (or 5000)" />
           </div>
         </div>
 
         <!-- PHOTO FILE UPLOAD (LOCAL FILES) -->
         <div>
-          <label class="font-bold block mb-1 text-orange-600">📸 ကုန်ပစ္စည်းဓာတ်ပုံများ ရွေးချယ်ရန် (Multiple Photos ရွေးနိုင်သည်)</label>
-          <input type="file" id="prodImageFiles" multiple accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 cursor-pointer text-xs" />
+          <label for="prodImageFiles" class="font-bold block mb-1 text-orange-600">📸 ကုန်ပစ္စည်းဓာတ်ပုံများ ရွေးချယ်ရန် (Multiple Photos)</label>
+          <input type="file" id="prodImageFiles" name="image_files" multiple accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 cursor-pointer text-xs" />
           <span class="text-[10px] text-slate-400 mt-0.5 block">ဖုန်း သို့မဟုတ် ကွန်ပျူတာထဲမှ ပုံများစွာကို တစ်ပြိုင်နက် ရွေးချယ်နိုင်ပါသည်။</span>
         </div>
 
         <div>
-          <label class="font-bold block mb-1">အကြောင်းအရာ အသေးစိတ်</label>
-          <textarea id="prodDesc" rows="2" class="w-full border p-2.5 rounded-xl outline-none" placeholder="ပစ္စည်းအကြောင်းအရာ..."></textarea>
+          <label for="prodDesc" class="font-bold block mb-1">အကြောင်းအရာ အသေးစိတ်</label>
+          <textarea id="prodDesc" name="description" rows="2" class="w-full border p-2.5 rounded-xl outline-none" placeholder="ပစ္စည်းအကြောင်းအရာ..."></textarea>
         </div>
 
         <button type="submit" id="saveProdBtn" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-2xl font-bold shadow transition">
@@ -162,7 +162,7 @@
 
   <script>
     const SUPABASE_URL = "https://zyajlsrytjvwxqtpxrqd.supabase.co";
-    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
+    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SB_KEY);
 
     let myShop = null;
@@ -250,14 +250,13 @@
         const coupon_discount = Number(document.getElementById('prodCouponDiscount').value) || 0;
         const description = document.getElementById('prodDesc').value.trim();
 
-        // Local Photo Files Upload to Supabase Storage
         const fileInput = document.getElementById('prodImageFiles');
         let imageUrls = [];
 
         if (fileInput.files.length > 0) {
           for (let i = 0; i < fileInput.files.length; i++) {
             const file = fileInput.files[i];
-            const fileName = `${Date.now()}-${Math.random().toString(36.substring(2))}-${file.name}`;
+            const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}-${file.name}`;
             
             const { data: uploadData, error: uploadError } = await supabaseClient.storage
               .from('product-images')
@@ -265,7 +264,6 @@
 
             if (uploadError) throw uploadError;
 
-            // Get Public URL
             const { data: { publicUrl } } = supabaseClient.storage
               .from('product-images')
               .getPublicUrl(fileName);
