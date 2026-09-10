@@ -114,14 +114,21 @@
     <!-- 3. SHOPS & COMMISSION TAB -->
     <section id="section-shops" class="tab-content hidden space-y-4">
       <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-        <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-plus-circle text-amber-500 mr-1"></i> ဆိုင်အသစ် ဖွင့်လှစ်ပေးရန်</h3>
-        <form onsubmit="handleCreateShop(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-sm">
-          <input type="text" id="shop-name" placeholder="ဆိုင်အမည်" required class="border rounded p-2">
-          <input type="text" id="shop-phone" placeholder="ဖုန်းနံပါတ်" class="border rounded p-2">
-          <input type="number" id="shop-commission" placeholder="Commission %" value="5" required class="border rounded p-2">
-          <button type="submit" class="bg-slate-900 text-white rounded p-2 hover:bg-slate-800 font-bold">ဆိုင်ဖွင့်မည်</button>
-        </form>
-      </div>
+  <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-store text-amber-500 mr-1"></i> ဆိုင်နှင့် ဆိုင်ရှင်အကောင့် တစ်ခါတည်း ဖွင့်ပေးရန်</h3>
+  <form onsubmit="handleCreateSellerAndShop(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+    <input type="text" id="seller-shop-name" placeholder="ဆိုင်အမည် (ဥပမာ - Aura Fashion)" required class="border rounded p-2">
+    <input type="text" id="seller-name" placeholder="ဆိုင်ရှင် အမည်" required class="border rounded p-2">
+    <input type="text" id="seller-phone" placeholder="ဖုန်းနံပါတ်" required class="border rounded p-2">
+    
+    <input type="email" id="seller-email" placeholder="ဆိုင်ရှင် Login ဝင်မည့် Email" required class="border rounded p-2">
+    <input type="text" id="seller-pass" placeholder="ဆိုင်ရှင် စကားဝှက် (Password)" required class="border rounded p-2">
+    <input type="number" id="seller-commission" placeholder="Platform ကော်မရှင် (%)" value="5" required class="border rounded p-2">
+    
+    <button type="submit" class="sm:col-span-3 bg-slate-900 text-white rounded p-2.5 hover:bg-slate-800 font-bold mt-2">
+      <i class="fa-solid fa-plus-circle mr-1"></i> ဆိုင်နှင့် အကောင့် အတည်ပြုဖွင့်လှစ်မည်
+    </button>
+  </form>
+</div>
 
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
         <table class="w-full text-left text-sm text-slate-600">
@@ -353,32 +360,35 @@
       `).join('');
     }
 
-    async function handleCreateShop(e) {
+ async function handleCreateSellerAndShop(e) {
   e.preventDefault();
-  const name = document.getElementById('shop-name').value;
-  const phone = document.getElementById('shop-phone').value;
-  const commission_rate = Number(document.getElementById('shop-commission').value);
+  
+  const shopName = document.getElementById('seller-shop-name').value.trim();
+  const name = document.getElementById('seller-name').value.trim();
+  const phone = document.getElementById('seller-phone').value.trim();
+  const email = document.getElementById('seller-email').value.trim();
+  const password = document.getElementById('seller-pass').value.trim();
+  const commission = Number(document.getElementById('seller-commission').value);
 
-  // လက်ရှိ login ဝင်ထားသော Super Admin ID ရယူခြင်း
-  const { data: { user } } = await client.auth.getUser();
-
-  const insertData = {
-    name,
-    phone,
-    commission_rate,
-    is_active: true
-  };
-
-  // user ရှိပါက owner_id ထည့်သွင်းပေးခြင်း
-  if (user) {
-    insertData.owner_id = user.id;
+  if (password.length < 6) {
+    alert('စကားဝှက်သည် အနည်းဆုံး ၆ လုံး ရှိရပါမည်။');
+    return;
   }
 
-  const { error } = await client.from('shops').insert([insertData]);
-  if (error) {
-    alert(error.message);
+  // Database Function အား လှမ်းခေါ်ခြင်း
+  const { data, error } = await client.rpc('create_seller_and_shop', {
+    p_email: email,
+    p_password: password,
+    p_name: name,
+    p_phone: phone,
+    p_shop_name: shopName,
+    p_commission: commission
+  });
+
+  if (error || (data && !data.success)) {
+    alert('အမှားဖြစ်ပေါ်ပါသည်: ' + (error ? error.message : data.error));
   } else {
-    alert('ဆိုင်အသစ် ဖွင့်လှစ်ပြီးပါပြီ');
+    alert(`အောင်မြင်ပါသည်!\nဆိုင်: ${shopName}\nLogin Email: ${email}\nPassword: ${password}\nဆိုင်ရှင်ထံ ဤအချက်အလက် ပေးပို့နိုင်ပါပြီ။`);
     e.target.reset();
     loadShops();
   }
