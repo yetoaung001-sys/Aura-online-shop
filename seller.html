@@ -10,7 +10,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
   <style> body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; } </style>
 </head>
-<body class="bg-slate-100 text-slate-900 min-h-screen">
+<body class="bg-slate-100 text-slate-900 min-h-screen pb-20">
 
   <!-- ================= 1. LOGIN SECTION ================= -->
   <div id="sellerLoginSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-slate-950 to-orange-950">
@@ -43,7 +43,7 @@
   </div>
 
   <!-- ================= 2. DASHBOARD SECTION ================= -->
-  <div id="sellerDashboardSection" class="hidden pb-20">
+  <div id="sellerDashboardSection" class="hidden">
     <header class="bg-slate-950 text-white border-b border-slate-800 sticky top-0 z-50">
       <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
         <div class="flex items-center gap-2">
@@ -59,98 +59,173 @@
     </header>
 
     <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
-      <div class="flex justify-between items-center">
-        <h2 class="font-black text-base text-slate-800">📦 ပစ္စည်းများနှင့် အော်ဒါစီမံရန်</h2>
+      
+      <!-- Analytics Stats Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white p-4 rounded-2xl border shadow-sm">
+          <span class="text-slate-400 text-[11px] font-semibold">စုစုပေါင်း ရောင်းရငွေ</span>
+          <div id="statTotalSales" class="text-lg font-black text-orange-600 mt-1">0 MMK</div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border shadow-sm">
+          <span class="text-slate-400 text-[11px] font-semibold">သင့်ရငွေ (Net Payout)</span>
+          <div id="statNetPayout" class="text-lg font-black text-emerald-600 mt-1">0 MMK</div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border shadow-sm">
+          <span class="text-slate-400 text-[11px] font-semibold">လက်ခံရရှိသော အော်ဒါ</span>
+          <div id="statTotalOrders" class="text-lg font-black text-slate-800 mt-1">0 ခု</div>
+        </div>
+        <div class="bg-white p-4 rounded-2xl border shadow-sm">
+          <span class="text-slate-400 text-[11px] font-semibold">တင်ထားသော ပစ္စည်း</span>
+          <div id="statTotalProds" class="text-lg font-black text-amber-600 mt-1">0 မျိုး</div>
+        </div>
+      </div>
+
+      <!-- Tabs & Action Bar -->
+      <div class="flex flex-wrap justify-between items-center gap-3">
+        <div class="flex gap-2 text-xs">
+          <button onclick="switchTab('products')" id="tabBtn-products" class="px-4 py-2 rounded-xl font-bold bg-orange-600 text-white shadow">
+            📦 ပစ္စည်းများ စီမံရန်
+          </button>
+          <button onclick="switchTab('orders')" id="tabBtn-orders" class="px-4 py-2 rounded-xl font-bold bg-white text-slate-700 border hover:bg-slate-50">
+            🛒 အော်ဒါများ စစ်ဆေးရန်
+          </button>
+        </div>
+        
         <button onclick="openProductModal()" class="bg-gradient-to-r from-orange-500 to-rose-600 text-white text-xs px-4 py-2.5 rounded-xl font-bold shadow flex items-center gap-1.5">
           <i class="ph ph-plus-circle text-base"></i> + ပစ္စည်းအသစ်တင်မည်
         </button>
       </div>
 
-      <!-- Products Table -->
-      <div class="bg-white rounded-2xl border shadow-sm p-4 overflow-x-auto text-xs">
-        <table class="w-full text-left">
-          <thead>
-            <tr class="border-b text-slate-400">
-              <th class="py-2.5">ပုံ</th>
-              <th>အမည်</th>
-              <th>ဈေးနှုန်း</th>
-              <th>Stock</th>
-              <th>COD / ကားဂိတ်ပို့ခ</th>
-              <th>ကူပွန်</th>
-              <th>ပြင် / ဖျက်</th>
-            </tr>
-          </thead>
-          <tbody id="sellerProductsTable" class="divide-y">
-            <tr><td colspan="7" class="py-8 text-center text-slate-400">ပစ္စည်းများ ရှာဖွေနေပါသည်...</td></tr>
-          </tbody>
-        </table>
+      <!-- PRODUCTS PANEL -->
+      <div id="panel-products" class="space-y-4">
+        <div class="bg-white rounded-2xl border shadow-sm p-4 overflow-x-auto text-xs">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="border-b text-slate-400">
+                <th class="py-2.5">ပုံ</th>
+                <th>အမည်</th>
+                <th>ဈေးနှုန်း</th>
+                <th>အရွယ်အစား & အရောင်</th>
+                <th>Stock</th>
+                <th>COD / ပို့ခ</th>
+                <th>လုပ်ဆောင်ချက်</th>
+              </tr>
+            </thead>
+            <tbody id="sellerProductsTable" class="divide-y">
+              <tr><td colspan="7" class="py-8 text-center text-slate-400">ပစ္စည်းများ ရှာဖွေနေပါသည်...</td></tr>
+            </tbody>
+          </table>
+        </div>
       </div>
+
+      <!-- ORDERS PANEL -->
+      <div id="panel-orders" class="space-y-4 hidden">
+        <div class="bg-white rounded-2xl border shadow-sm p-4 overflow-x-auto text-xs">
+          <table class="w-full text-left">
+            <thead>
+              <tr class="border-b text-slate-400">
+                <th class="py-2.5">Sub-Order ID</th>
+                <th>မှာယူသူအမည် / ဖုန်း</th>
+                <th>မှာယူထားသော ပစ္စည်းများ (Size/Color)</th>
+                <th>စုစုပေါင်းတန်ဖိုး</th>
+                <th>သင့်ရငွေ (Net)</th>
+                <th>အခြေအနေ (Status)</th>
+              </tr>
+            </thead>
+            <tbody id="sellerOrdersTable" class="divide-y">
+              <tr><td colspan="6" class="py-8 text-center text-slate-400">အော်ဒါများ မရှိသေးပါ</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
     </main>
   </div>
 
-  <!-- PRODUCT ADD/EDIT MODAL (LOCAL PHOTO UPLOAD) -->
+  <!-- PRODUCT ADD/EDIT MODAL -->
   <div id="productModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-3.5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 id="productModalTitle" class="font-extrabold text-sm text-slate-800">Shopee ပုံစံ ကုန်ပစ္စည်းတင်ရန်</h3>
+        <h3 id="productModalTitle" class="font-extrabold text-sm text-slate-800">ကုန်ပစ္စည်း အသစ်တင်ရန် (Size & Color ပါ)</h3>
         <button onclick="closeProductModal()"><i class="ph ph-x text-lg"></i></button>
       </div>
 
       <form onsubmit="handleProductSubmit(event)" class="space-y-3">
-        <input type="hidden" id="editProductId" name="edit_product_id" />
+        <input type="hidden" id="editProductId" />
         
         <div>
           <label for="prodTitle" class="font-bold block mb-1">ပစ္စည်းအမည် *</label>
-          <input type="text" id="prodTitle" name="title" required class="w-full border p-2.5 rounded-xl outline-none" placeholder="Nike Air Shoes" />
+          <input type="text" id="prodTitle" required class="w-full border p-2.5 rounded-xl outline-none" placeholder="Nike T-Shirt" />
         </div>
 
-        <div class="grid grid-cols-3 gap-2">
+        <div class="grid grid-cols-2 gap-2">
+          <div>
+            <label for="prodCategory" class="font-bold block mb-1">အမျိုးအစား (Category)</label>
+            <select id="prodCategory" class="w-full border p-2.5 rounded-xl bg-white font-bold">
+              <option value="1">Electronics & Gadgets</option>
+              <option value="2">Fashion & Apparel</option>
+              <option value="3">Home & Living</option>
+            </select>
+          </div>
+          <div>
+            <label for="prodStock" class="font-bold block mb-1">Stock လက်ကျန် *</label>
+            <input type="number" id="prodStock" required value="10" class="w-full border p-2.5 rounded-xl outline-none" />
+          </div>
+        </div>
+
+        <!-- SIZES & COLORS INPUT -->
+        <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border">
+          <div>
+            <label for="prodSizes" class="font-bold block mb-1">📏 အရွယ်အစားများ (Sizes - comma ဖြင့်ခွဲရန်)</label>
+            <input type="text" id="prodSizes" class="w-full border p-2 rounded-xl bg-white font-mono uppercase" placeholder="S, M, L, XL" />
+          </div>
+          <div>
+            <label for="prodColors" class="font-bold block mb-1">🎨 အရောင်များ (Colors - comma ဖြင့်ခွဲရန်)</label>
+            <input type="text" id="prodColors" class="w-full border p-2 rounded-xl bg-white font-mono" placeholder="Black, White, Red" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-2">
           <div>
             <label for="prodPrice" class="font-bold block mb-1">ဈေးနှုန်း (MMK) *</label>
-            <input type="number" id="prodPrice" name="price" required class="w-full border p-2.5 rounded-xl outline-none" placeholder="50000" />
+            <input type="number" id="prodPrice" required class="w-full border p-2.5 rounded-xl outline-none" placeholder="15000" />
           </div>
           <div>
-            <label for="prodFlashPrice" class="font-bold block mb-1">Flash ဈေး</label>
-            <input type="number" id="prodFlashPrice" name="flash_price" class="w-full border p-2.5 rounded-xl outline-none" placeholder="45000" />
-          </div>
-          <div>
-            <label for="prodStock" class="font-bold block mb-1">Stock *</label>
-            <input type="number" id="prodStock" name="stock" required value="10" class="w-full border p-2.5 rounded-xl outline-none" />
+            <label for="prodFlashPrice" class="font-bold block mb-1">Flash Sale ဈေး</label>
+            <input type="number" id="prodFlashPrice" class="w-full border p-2.5 rounded-xl outline-none" placeholder="12000" />
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-3 bg-slate-50 p-3 rounded-xl border">
           <div class="flex items-center justify-between">
             <label for="prodAllowCod" class="font-bold cursor-pointer">COD ရမည်လား?</label>
-            <input type="checkbox" id="prodAllowCod" name="allow_cod" checked class="w-4 h-4 accent-orange-600 cursor-pointer" />
+            <input type="checkbox" id="prodAllowCod" checked class="w-4 h-4 accent-orange-600 cursor-pointer" />
           </div>
           <div>
             <label for="prodShippingFee" class="font-bold block mb-1">ကားဂိတ်ပို့ခ (MMK)</label>
-            <input type="number" id="prodShippingFee" name="shipping_fee" value="0" class="w-full border p-2 rounded-xl outline-none bg-white font-mono" />
+            <input type="number" id="prodShippingFee" value="0" class="w-full border p-2 rounded-xl outline-none bg-white font-mono" />
           </div>
         </div>
 
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label for="prodCouponCode" class="font-bold block mb-1">🏷️ ကူပွန်ကုဒ် (ဥပမာ - AURA10)</label>
-            <input type="text" id="prodCouponCode" name="coupon_code" class="w-full border p-2 rounded-xl uppercase font-mono" placeholder="AURA10" />
+            <label for="prodCouponCode" class="font-bold block mb-1">🏷️ ကူပွန်ကုဒ်</label>
+            <input type="text" id="prodCouponCode" class="w-full border p-2 rounded-xl uppercase font-mono" placeholder="AURA10" />
           </div>
           <div>
             <label for="prodCouponDiscount" class="font-bold block mb-1">🎫 ကူပွန်လျှော့စျေး</label>
-            <input type="number" id="prodCouponDiscount" name="coupon_discount" class="w-full border p-2 rounded-xl" placeholder="10 (or 5000)" />
+            <input type="number" id="prodCouponDiscount" class="w-full border p-2 rounded-xl" placeholder="10 (or 5000)" />
           </div>
         </div>
 
-        <!-- PHOTO FILE UPLOAD (LOCAL FILES) -->
         <div>
-          <label for="prodImageFiles" class="font-bold block mb-1 text-orange-600">📸 ကုန်ပစ္စည်းဓာတ်ပုံများ ရွေးချယ်ရန် (Multiple Photos)</label>
-          <input type="file" id="prodImageFiles" name="image_files" multiple accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 cursor-pointer text-xs" />
-          <span class="text-[10px] text-slate-400 mt-0.5 block">ဖုန်း သို့မဟုတ် ကွန်ပျူတာထဲမှ ပုံများစွာကို တစ်ပြိုင်နက် ရွေးချယ်နိုင်ပါသည်။</span>
+          <label for="prodImageFiles" class="font-bold block mb-1 text-orange-600">📸 ကုန်ပစ္စည်းဓာတ်ပုံများ (Multiple Photos)</label>
+          <input type="file" id="prodImageFiles" multiple accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 cursor-pointer text-xs" />
         </div>
 
         <div>
           <label for="prodDesc" class="font-bold block mb-1">အကြောင်းအရာ အသေးစိတ်</label>
-          <textarea id="prodDesc" name="description" rows="2" class="w-full border p-2.5 rounded-xl outline-none" placeholder="ပစ္စည်းအကြောင်းအရာ..."></textarea>
+          <textarea id="prodDesc" rows="2" class="w-full border p-2.5 rounded-xl outline-none" placeholder="ပစ္စည်းအကြောင်းအရာ..."></textarea>
         </div>
 
         <button type="submit" id="saveProdBtn" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-2xl font-bold shadow transition">
@@ -167,6 +242,7 @@
 
     let myShop = null;
     let shopProducts = [];
+    let shopOrders = [];
 
     async function checkAuthSession() {
       const { data: { session } } = await supabaseClient.auth.getSession();
@@ -182,7 +258,7 @@
 
       myShop = shop;
       showDashboardView(session.user.email);
-      await loadShopProducts();
+      await loadShopData();
     }
 
     function showLoginView() {
@@ -206,10 +282,26 @@
       else await checkAuthSession();
     }
 
-    async function loadShopProducts() {
-      const { data } = await supabaseClient.from('products').select('*').eq('shop_id', myShop.id).order('id', { ascending: false });
-      shopProducts = data || [];
+    async function loadShopData() {
+      const { data: prods } = await supabaseClient.from('products').select('*').eq('shop_id', myShop.id).order('id', { ascending: false });
+      shopProducts = prods || [];
+
+      const { data: ords } = await supabaseClient.from('shop_orders').select('*, orders(customer_name, customer_phone, delivery_address, township)').eq('shop_id', myShop.id).order('id', { ascending: false });
+      shopOrders = ords || [];
+
+      updateAnalytics();
       renderProductsTable();
+      renderOrdersTable();
+    }
+
+    function updateAnalytics() {
+      const totalSales = shopOrders.reduce((s, o) => s + Number(o.subtotal || 0), 0);
+      const netPayout = shopOrders.reduce((s, o) => s + Number(o.seller_payout || 0), 0);
+
+      document.getElementById('statTotalSales').innerText = totalSales.toLocaleString() + ' MMK';
+      document.getElementById('statNetPayout').innerText = netPayout.toLocaleString() + ' MMK';
+      document.getElementById('statTotalOrders').innerText = shopOrders.length + ' ခု';
+      document.getElementById('statTotalProds').innerText = shopProducts.length + ' မျိုး';
     }
 
     function renderProductsTable() {
@@ -218,19 +310,70 @@
         tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">ပစ္စည်းစာရင်း မရှိသေးပါ</td></tr>`;
         return;
       }
-      tbody.innerHTML = shopProducts.map(p => `
-        <tr class="hover:bg-slate-50">
-          <td class="py-2"><img src="${p.image || p.image_url || 'https://placehold.co/100'}" class="w-10 h-10 object-cover rounded-lg" /></td>
-          <td class="font-bold">${p.title || p.name}</td>
-          <td class="font-bold text-orange-600">${Number(p.price || p.priceMMK).toLocaleString()} MMK</td>
-          <td>${p.stock}</td>
-          <td>${p.allow_cod ? '✓ COD' : '✕'} | ပို့ခ: ${p.shipping_fee || 0}</td>
-          <td><span class="bg-amber-100 text-amber-800 px-2 py-0.5 rounded font-mono">${p.coupon_code || '-'}</span></td>
-          <td class="space-x-2">
-            <button onclick="deleteProduct(${p.id})" class="text-rose-500 font-bold hover:underline">ဖျက်မည်</button>
-          </td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = shopProducts.map(p => {
+        const sizesStr = (p.sizes && p.sizes.length) ? p.sizes.join(', ') : '-';
+        const colorsStr = (p.colors && p.colors.length) ? p.colors.join(', ') : '-';
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="py-2"><img src="${p.image || p.image_url || 'https://placehold.co/100'}" class="w-10 h-10 object-cover rounded-lg" /></td>
+            <td class="font-bold">${p.title || p.name}</td>
+            <td class="font-bold text-orange-600">${Number(p.price || p.priceMMK || 0).toLocaleString()} MMK</td>
+            <td>
+              <div class="text-[10px]">📏 Size: <span class="font-bold text-slate-700">${sizesStr}</span></div>
+              <div class="text-[10px]">🎨 Color: <span class="font-bold text-slate-700">${colorsStr}</span></div>
+            </td>
+            <td>${p.stock}</td>
+            <td>${p.allow_cod ? '✓ COD' : '✕'} | ပို့ခ: ${p.shipping_fee || 0}</td>
+            <td class="space-x-2">
+              <button onclick="deleteProduct(${p.id})" class="text-rose-500 font-bold hover:underline">ဖျက်မည်</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderOrdersTable() {
+      const tbody = document.getElementById('sellerOrdersTable');
+      if (!shopOrders.length) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">အော်ဒါများ မရှိသေးပါ</td></tr>`;
+        return;
+      }
+      tbody.innerHTML = shopOrders.map(o => {
+        const custName = o.orders?.customer_name || 'အမည်မသိ';
+        const custPhone = o.orders?.customer_phone || '-';
+        const address = `${o.orders?.township || ''}, ${o.orders?.delivery_address || ''}`;
+        const items = o.items || [];
+        const itemsStr = items.map(i => `${i.title} [Size: ${i.selectedSize || '-'}, Color: ${i.selectedColor || '-'}] (${i.qty}ခု)`).join(', ');
+
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="py-3 font-mono font-bold text-orange-600">#SUB-${o.id}</td>
+            <td>
+              <div class="font-bold">${custName}</div>
+              <div class="text-[10px] text-slate-400">📞 ${custPhone}</div>
+              <div class="text-[10px] text-slate-500">📍 ${address}</div>
+            </td>
+            <td class="max-w-xs text-[11px]">${itemsStr}</td>
+            <td class="font-bold">${Number(o.subtotal || 0).toLocaleString()} MMK</td>
+            <td class="font-bold text-emerald-600">${Number(o.seller_payout || 0).toLocaleString()} MMK</td>
+            <td>
+              <select onchange="updateSubOrderStatus(${o.id}, this.value)" class="border rounded px-2 py-1 bg-white font-bold text-[11px]">
+                <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>⏳ Pending</option>
+                <option value="confirmed" ${o.status === 'confirmed' ? 'selected' : ''}>✅ Confirmed</option>
+                <option value="packing" ${o.status === 'packing' ? 'selected' : ''}>📦 Packing</option>
+                <option value="shipping" ${o.status === 'shipping' ? 'selected' : ''}>🚚 Shipping</option>
+                <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>🎉 Delivered</option>
+              </select>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function updateSubOrderStatus(subId, status) {
+      const { error } = await supabaseClient.from('shop_orders').update({ status }).eq('id', subId);
+      if (error) alert(error.message);
+      else alert(`အော်ဒါ #SUB-${subId} အား ${status.toUpperCase()} သို့ ပြောင်းလဲပြီးပါပြီ`);
     }
 
     async function handleProductSubmit(e) {
@@ -241,7 +384,8 @@
 
       try {
         const title = document.getElementById('prodTitle').value.trim();
-        const price = Number(document.getElementById('prodPrice').value);
+        const category_id = Number(document.getElementById('prodCategory').value);
+        const priceVal = Number(document.getElementById('prodPrice').value);
         const flash_price = Number(document.getElementById('prodFlashPrice').value) || 0;
         const stock = Number(document.getElementById('prodStock').value);
         const allow_cod = document.getElementById('prodAllowCod').checked;
@@ -249,6 +393,12 @@
         const coupon_code = document.getElementById('prodCouponCode').value.trim().toUpperCase();
         const coupon_discount = Number(document.getElementById('prodCouponDiscount').value) || 0;
         const description = document.getElementById('prodDesc').value.trim();
+
+        // Sizes & Colors arrays parsing
+        const sizesText = document.getElementById('prodSizes').value.trim();
+        const colorsText = document.getElementById('prodColors').value.trim();
+        const sizesArr = sizesText ? sizesText.split(',').map(s => s.trim()).filter(s => s) : [];
+        const colorsArr = colorsText ? colorsText.split(',').map(c => c.trim()).filter(c => c) : [];
 
         const fileInput = document.getElementById('prodImageFiles');
         let imageUrls = [];
@@ -258,7 +408,7 @@
             const file = fileInput.files[i];
             const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}-${file.name}`;
             
-            const { data: uploadData, error: uploadError } = await supabaseClient.storage
+            const { error: uploadError } = await supabaseClient.storage
               .from('product-images')
               .upload(fileName, file);
 
@@ -276,10 +426,19 @@
 
         const payload = {
           shop_id: myShop.id,
-          title, name: title,
-          price, priceMMK: price,
-          flash_price, stock, allow_cod,
-          shipping_fee, coupon_code, coupon_discount,
+          category_id,
+          title, 
+          name: title,
+          price: priceVal,
+          "priceMMK": priceVal,
+          flash_price, 
+          stock, 
+          allow_cod,
+          shipping_fee, 
+          coupon_code, 
+          coupon_discount,
+          sizes: sizesArr,
+          colors: colorsArr,
           image: primaryImage,
           image_url: primaryImage,
           images: imageUrls,
@@ -290,8 +449,8 @@
         if (error) throw error;
 
         closeProductModal();
-        await loadShopProducts();
-        alert('🎉 ပစ္စည်းအသစ် တင်ခြင်း အောင်မြင်ပါသည်!');
+        await loadShopData();
+        alert('🎉 ပစ္စည်းအသစ် (Size & Color နှင့်တကွ) တင်ခြင်း အောင်မြင်ပါသည်!');
       } catch (err) {
         alert("❌ Error: " + err.message);
       } finally {
@@ -303,8 +462,16 @@
     async function deleteProduct(id) {
       if (confirm('ဤပစ္စည်းကို ဖျက်ရန် သေချာပါသလား?')) {
         await supabaseClient.from('products').delete().eq('id', id);
-        await loadShopProducts();
+        await loadShopData();
       }
+    }
+
+    function switchTab(tab) {
+      document.getElementById('tabBtn-products').className = tab === 'products' ? 'px-4 py-2 rounded-xl font-bold bg-orange-600 text-white shadow' : 'px-4 py-2 rounded-xl font-bold bg-white text-slate-700 border hover:bg-slate-50';
+      document.getElementById('tabBtn-orders').className = tab === 'orders' ? 'px-4 py-2 rounded-xl font-bold bg-orange-600 text-white shadow' : 'px-4 py-2 rounded-xl font-bold bg-white text-slate-700 border hover:bg-slate-50';
+
+      document.getElementById('panel-products').classList.toggle('hidden', tab !== 'products');
+      document.getElementById('panel-orders').classList.toggle('hidden', tab !== 'orders');
     }
 
     function openProductModal() {
