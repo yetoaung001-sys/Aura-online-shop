@@ -1,1 +1,216 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Aura Platform - Super Admin Control</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
+  <style> body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; } </style>
+</head>
+<body class="bg-slate-50 text-slate-900 pb-20">
 
+  <header class="bg-slate-950 text-white border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <span class="bg-indigo-600 text-white text-xs font-black px-2 py-0.5 rounded-md">SUPER ADMIN</span>
+        <span class="font-bold text-sm">Platform Control Center</span>
+      </div>
+      <button onclick="adminLogout()" class="text-rose-400 hover:text-rose-300 text-xs font-bold">Logout</button>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+    <!-- Platform Overview Stats -->
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white p-4 rounded-2xl border shadow-sm">
+        <span class="text-slate-400 text-xs font-semibold">Platform စုစုပေါင်းရောင်းရငွေ</span>
+        <div id="statTotalGMV" class="text-xl font-black text-slate-900 mt-2">0 MMK</div>
+      </div>
+      <div class="bg-white p-4 rounded-2xl border shadow-sm">
+        <span class="text-slate-400 text-xs font-semibold">Platform ကော်မရှင် အသားတင်ရငွေ</span>
+        <div id="statTotalComm" class="text-xl font-black text-emerald-600 mt-2">0 MMK</div>
+      </div>
+      <div class="bg-white p-4 rounded-2xl border shadow-sm">
+        <span class="text-slate-400 text-xs font-semibold">ဆိုင်များသို့ ပေးချေရမည့်ငွေ</span>
+        <div id="statPendingPayout" class="text-xl font-black text-amber-600 mt-2">0 MMK</div>
+      </div>
+      <div class="bg-white p-4 rounded-2xl border shadow-sm">
+        <span class="text-slate-400 text-xs font-semibold">ဖွင့်လှစ်ထားသော ဆိုင်ပေါင်း</span>
+        <div id="statShopCount" class="text-xl font-black text-indigo-600 mt-2">0</div>
+      </div>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="flex flex-wrap border-b text-xs font-bold gap-2">
+      <button onclick="switchAdminTab('shops')" id="tab-shops" class="tab-btn px-4 py-2.5 rounded-t-xl bg-white text-indigo-600 border-t border-x">🏪 ဆိုင်များ စီမံခန့်ခွဲမှု</button>
+      <button onclick="switchAdminTab('payouts')" id="tab-payouts" class="tab-btn px-4 py-2.5 rounded-t-xl bg-slate-100 text-slate-600">💰 Seller Payout (ငွေရှင်းတမ်း)</button>
+      <button onclick="switchAdminTab('orders')" id="tab-orders" class="tab-btn px-4 py-2.5 rounded-t-xl bg-slate-100 text-slate-600">📦 အော်ဒါချုပ်များ (Master Orders)</button>
+    </div>
+
+    <!-- Panel 1: Shops Management -->
+    <div id="panel-shops" class="admin-panel bg-white p-4 rounded-b-2xl rounded-tr-2xl border shadow-sm space-y-4">
+      <div class="flex justify-between items-center">
+        <h3 class="font-bold text-sm">ဆိုင် ၁၀ ဆိုင် စာရင်းနှင့် ကော်မရှင်နှုန်းထားများ</h3>
+        <button onclick="openNewShopModal()" class="bg-indigo-600 text-white px-3 py-1.5 rounded-xl text-xs font-bold">+ ဆိုင်အသစ်ဖွင့်ပေးမည်</button>
+      </div>
+      <table class="w-full text-left text-xs">
+        <thead>
+          <tr class="border-b text-slate-400">
+            <th class="py-2">Shop ID</th>
+            <th>ဆိုင်အမည်</th>
+            <th>ဖုန်းနံပါတ်</th>
+            <th>Commission %</th>
+            <th>Telegram Chat ID</th>
+            <th>အခြေအနေ</th>
+          </tr>
+        </thead>
+        <tbody id="shopsTable" class="divide-y"></tbody>
+      </table>
+    </div>
+
+    <!-- Panel 2: Payout Management -->
+    <div id="panel-payouts" class="admin-panel hidden bg-white p-4 rounded-b-2xl rounded-tr-2xl border shadow-sm overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead>
+          <tr class="border-b text-slate-400">
+            <th class="py-2">Sub-Order ID</th>
+            <th>ဆိုင်အမည်</th>
+            <th>ဆိုင်ရငွေ (Payout)</th>
+            <th>Platform ကော်မရှင်</th>
+            <th>ငွေရှင်းရန်</th>
+          </tr>
+        </thead>
+        <tbody id="payoutsTable" class="divide-y"></tbody>
+      </table>
+    </div>
+
+    <!-- Panel 3: Master Orders -->
+    <div id="panel-orders" class="admin-panel hidden bg-white p-4 rounded-b-2xl rounded-tr-2xl border shadow-sm overflow-x-auto">
+      <table class="w-full text-left text-xs">
+        <thead>
+          <tr class="border-b text-slate-400">
+            <th class="py-2">Parent Order ID</th>
+            <th>ဝယ်သူအမည်</th>
+            <th>ဖုန်း</th>
+            <th>လိပ်စာ</th>
+            <th>ငွေချေမှု</th>
+            <th>စုစုပေါင်းတန်ဖိုး</th>
+          </tr>
+        </thead>
+        <tbody id="masterOrdersTable" class="divide-y"></tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    const SUPABASE_URL = "https://zyajlsrytjvwxqtpxrqd.supabase.co";
+    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SB_KEY);
+
+    async function initAdminGuard() {
+      const { data: { session } } = await supabaseClient.auth.getSession();
+      if (!session) {
+        alert("Super Admin အကောင့်ဖြင့် အရင် Login ဝင်ပါ");
+        window.location.href = "index.html";
+        return;
+      }
+
+      // Check Super Admin Role
+      const { data: profile } = await supabaseClient
+        .from('profiles')
+        .select('*')
+        .eq('id', session.user.id)
+        .single();
+
+      if (profile?.role !== 'super_admin') {
+        alert("❌ Super Admin အခွင့်အရေး မရှိပါ");
+        window.location.href = "index.html";
+        return;
+      }
+
+      loadPlatformData();
+    }
+
+    async function loadPlatformData() {
+      const { data: shops } = await supabaseClient.from('shops').select('*');
+      const { data: subOrders } = await supabaseClient.from('shop_orders').select('*, shops(name)');
+      const { data: masterOrders } = await supabaseClient.from('orders').select('*');
+
+      document.getElementById('statShopCount').innerText = shops?.length || 0;
+
+      const totalGMV = (masterOrders || []).reduce((s, o) => s + Number(o.total_amount), 0);
+      const totalComm = (subOrders || []).reduce((s, o) => s + Number(o.platform_commission), 0);
+      const pendingPayout = (subOrders || []).filter(o => o.payout_status !== 'paid').reduce((s, o) => s + Number(o.seller_payout), 0);
+
+      document.getElementById('statTotalGMV').innerText = totalGMV.toLocaleString() + ' MMK';
+      document.getElementById('statTotalComm').innerText = totalComm.toLocaleString() + ' MMK';
+      document.getElementById('statPendingPayout').innerText = pendingPayout.toLocaleString() + ' MMK';
+
+      // Render Shops
+      document.getElementById('shopsTable').innerHTML = (shops || []).map(s => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-2.5 font-mono">#${s.id}</td>
+          <td class="font-bold">${s.name}</td>
+          <td class="font-mono">${s.phone || '-'}</td>
+          <td class="font-bold text-indigo-600">${s.commission_rate}%</td>
+          <td class="font-mono text-[10px]">${s.telegram_chat_id || 'မထည့်ရသေးပါ'}</td>
+          <td><span class="bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold">Active</span></td>
+        </tr>
+      `).join('');
+
+      // Render Payouts
+      document.getElementById('payoutsTable').innerHTML = (subOrders || []).map(o => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-2 font-mono">#SUB-${o.id}</td>
+          <td class="font-bold">${o.shops?.name || 'Shop ' + o.shop_id}</td>
+          <td class="font-bold text-amber-600">${Number(o.seller_payout).toLocaleString()} MMK</td>
+          <td class="font-bold text-emerald-600">${Number(o.platform_commission).toLocaleString()} MMK</td>
+          <td>
+            ${o.payout_status === 'paid' ? 
+              '<span class="text-emerald-600 font-bold">✓ ရှင်းပြီး</span>' : 
+              `<button onclick="markPayoutPaid(${o.id})" class="bg-emerald-600 text-white px-2.5 py-1 rounded-lg font-bold">ငွေလွှဲပြီးကြောင်း အတည်ပြု</button>`
+            }
+          </td>
+        </tr>
+      `).join('');
+
+      // Render Master Orders
+      document.getElementById('masterOrdersTable').innerHTML = (masterOrders || []).map(o => `
+        <tr class="hover:bg-slate-50">
+          <td class="py-2 font-mono">#ORD-${o.id}</td>
+          <td class="font-bold">${o.customer_name}</td>
+          <td class="font-mono">${o.customer_phone}</td>
+          <td class="truncate max-w-xs">${o.delivery_address}</td>
+          <td>${o.payment_method}</td>
+          <td class="font-bold text-indigo-600">${Number(o.total_amount).toLocaleString()} MMK</td>
+        </tr>
+      `).join('');
+    }
+
+    async function markPayoutPaid(subOrderId) {
+      await supabaseClient.from('shop_orders').update({ payout_status: 'paid' }).eq('id', subOrderId);
+      loadPlatformData();
+      alert('✅ ဆိုင်ရှင်သို့ ငွေလွှဲပြီးကြောင်း အတည်ပြုပြီးပါပြီ!');
+    }
+
+    function switchAdminTab(tab) {
+      document.querySelectorAll('.tab-btn').forEach(b => {
+        b.className = "tab-btn px-4 py-2.5 rounded-t-xl bg-slate-100 text-slate-600";
+      });
+      document.getElementById(`tab-${tab}`).className = "tab-btn px-4 py-2.5 rounded-t-xl bg-white text-indigo-600 border-t border-x";
+      document.querySelectorAll('.admin-panel').forEach(p => p.classList.add('hidden'));
+      document.getElementById(`panel-${tab}`).classList.remove('hidden');
+    }
+
+    async function adminLogout() {
+      await supabaseClient.auth.signOut();
+      window.location.href = "index.html";
+    }
+
+    initAdminGuard();
+  </script>
+</body>
+</html>
