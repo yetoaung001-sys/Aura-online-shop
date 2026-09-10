@@ -360,7 +360,7 @@
       `).join('');
     }
 
- async function handleCreateSellerAndShop(e) {
+async function handleCreateSellerAndShop(e) {
   e.preventDefault();
   
   const shopName = document.getElementById('seller-shop-name').value.trim();
@@ -375,25 +375,50 @@
     return;
   }
 
-  // Database Function အား လှမ်းခေါ်ခြင်း
-  const { data, error } = await client.rpc('create_seller_and_shop', {
-    p_email: email,
-    p_password: password,
-    p_name: name,
-    p_phone: phone,
-    p_shop_name: shopName,
-    p_commission: commission
-  });
+  try {
+    // ၁။ Supabase Auth ဖြင့် အကောင့်သစ် ဖွင့်လှစ်ခြင်း
+    const { data: authData, error: authError } = await client.auth.signUp({
+      email: email,
+      password: password,
+      options: {
+        data: { full_name: name, phone: phone }
+      }
+    });
 
-  if (error || (data && !data.success)) {
-    alert('အမှားဖြစ်ပေါ်ပါသည်: ' + (error ? error.message : data.error));
-  } else {
+    if (authError) throw authError;
+
+    const newUserId = authData.user?.id;
+    if (!newUserId) throw new Error("User ID ရယူမရနိုင်ပါ။");
+
+    // ၂။ Profiles တွင် Seller အဖြစ် Role သတ်မှတ်ပေးခြင်း
+    const { error: profileError } = await client.from('profiles').upsert({
+      id: newUserId,
+      full_name: name,
+      phone: phone,
+      role: 'seller'
+    });
+
+    if (profileError) throw profileError;
+
+    // ၃။ ဆိုင်အသစ် ဖွင့်ပေးပြီး အဆိုပါ Seller User ID နှင့် ချိတ်ဆက်ခြင်း
+    const { error: shopError } = await client.from('shops').insert([{
+      name: shopName,
+      phone: phone,
+      commission_rate: commission,
+      owner_id: newUserId,
+      is_active: true
+    }]);
+
+    if (shopError) throw shopError;
+
     alert(`အောင်မြင်ပါသည်!\nဆိုင်: ${shopName}\nLogin Email: ${email}\nPassword: ${password}\nဆိုင်ရှင်ထံ ဤအချက်အလက် ပေးပို့နိုင်ပါပြီ။`);
     e.target.reset();
     loadShops();
+
+  } catch (err) {
+    alert('ဆိုင်ဖွင့်မရပါ: ' + err.message);
   }
 }
-
     // PRODUCTS
     async function loadProducts() {
       const { data: products } = await client.from('products').select('*, shops(name)');
