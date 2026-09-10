@@ -3,9 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aura Store - Complete E-Commerce Platform</title>
+  <title>Aura Store - Secure Enterprise E-Commerce</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <!-- Supabase Official JS SDK v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
   <style>
     body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; }
@@ -20,12 +22,12 @@
     <div class="max-w-7xl mx-auto flex justify-between items-center">
       <div class="flex items-center gap-2">
         <i class="ph ph-shield-check text-base text-amber-400"></i>
-        <span>👑 Mode: <strong class="text-white">Admin Dashboard</strong></span>
+        <span>👑 Mode: <strong id="adminLabel" class="text-white">Admin Dashboard</strong></span>
       </div>
       <div class="flex items-center gap-3">
         <button onclick="switchView('admin')" class="bg-amber-500 hover:bg-amber-600 text-slate-950 px-3 py-1 rounded font-bold transition">Dashboard သို့</button>
         <button onclick="switchView('shop')" class="text-slate-300 hover:text-white underline">Shop View သို့</button>
-        <button onclick="adminLogout()" class="text-rose-400 hover:text-rose-300">Logout</button>
+        <button onclick="secureLogout()" class="text-rose-400 hover:text-rose-300">Logout</button>
       </div>
     </div>
   </div>
@@ -53,7 +55,7 @@
         </div>
         <div>
           <span class="font-extrabold text-lg leading-none block text-slate-900">Aura Store</span>
-          <span class="text-[10px] text-indigo-600 font-bold">● Premium Shopping</span>
+          <span class="text-[10px] text-indigo-600 font-bold">● Secure Cloud DB</span>
         </div>
       </div>
 
@@ -75,21 +77,25 @@
           <span id="cartBadge" class="absolute -top-1 -right-1 bg-indigo-600 text-white text-[9px] w-4 h-4 rounded-full flex items-center justify-center font-bold scale-0 transition-transform">0</span>
         </button>
 
-        <!-- Customer Auth Section -->
+        <!-- Customer / Admin Auth State Trigger -->
         <div id="authGuestSection">
-          <button onclick="openAuthModal('login')" class="text-xs font-bold text-indigo-600 border border-indigo-200 bg-indigo-50/50 hover:bg-indigo-100 px-3 py-1.5 rounded-full transition">
-            အကောင့်ဝင်ရန်
+          <button onclick="openAuthModal('login')" class="text-xs font-bold text-indigo-600 border border-indigo-200 bg-indigo-50/50 hover:bg-indigo-100 px-3 py-1.5 rounded-full transition flex items-center gap-1">
+            <i class="ph ph-user"></i> အကောင့်ဝင်ရန်
           </button>
         </div>
         <div id="authUserSection" class="hidden items-center gap-1.5">
+          <div class="text-right leading-tight hidden sm:block">
+            <div id="headerUserName" class="text-xs font-bold text-slate-800">ဝယ်သူ</div>
+            <div id="headerUserEmail" class="text-[10px] text-slate-400 font-mono truncate max-w-[110px]">user@mail.com</div>
+          </div>
           <button onclick="switchView('orders')" class="p-2 text-slate-700 hover:bg-slate-100 rounded-full" title="My Orders"><i class="ph ph-receipt text-xl"></i></button>
-          <button onclick="customerLogout()" class="p-2 text-slate-400 hover:text-rose-600 rounded-full" title="Logout"><i class="ph ph-sign-out text-xl"></i></button>
+          <button onclick="secureLogout()" class="p-2 text-slate-400 hover:text-rose-600 rounded-full" title="Logout"><i class="ph ph-sign-out text-xl"></i></button>
         </div>
       </div>
     </div>
   </header>
 
-  <!-- ================= 1. HOME & CATALOG VIEW ================= -->
+  <!-- ================= 1. CUSTOMER CATALOG VIEW ================= -->
   <div id="shopView" class="view-panel">
     <section class="max-w-7xl mx-auto px-4 pt-4">
       <div id="categoryBar" class="flex gap-2 overflow-x-auto no-scrollbar pb-2"></div>
@@ -108,7 +114,7 @@
     </main>
   </div>
 
-  <!-- ================= 2. CUSTOMER ORDERS & TRACKING ================= -->
+  <!-- ================= 2. CUSTOMER ORDERS & 5-STAGE TRACKING ================= -->
   <div id="ordersView" class="view-panel hidden max-w-3xl mx-auto px-4 py-6">
     <div class="flex justify-between items-center mb-6">
       <div>
@@ -120,7 +126,7 @@
     <div id="myOrdersList" class="space-y-4"></div>
   </div>
 
-  <!-- ================= 3. 👑 FULL ADMIN DASHBOARD VIEW ================= -->
+  <!-- ================= 3. 👑 ADMIN MANAGEMENT DASHBOARD ================= -->
   <div id="adminView" class="view-panel hidden max-w-7xl mx-auto px-4 py-6 space-y-6">
     <div class="flex flex-wrap justify-between items-center gap-4 border-b pb-4">
       <div>
@@ -168,7 +174,7 @@
       </div>
     </div>
 
-    <!-- Admin Tabs -->
+    <!-- Admin Navigation Tabs -->
     <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
       <div class="flex flex-wrap border-b text-xs font-bold bg-slate-50 gap-1 p-1">
         <button onclick="switchAdminTab('orders')" id="tabBtn-orders" class="admin-tab px-4 py-2.5 rounded-xl bg-white text-indigo-600 shadow-sm">📦 Orders စီမံခန့်ခွဲမှု</button>
@@ -180,7 +186,7 @@
         <button onclick="switchAdminTab('delivery')" id="tabBtn-delivery" class="admin-tab px-4 py-2.5 rounded-xl text-slate-600 hover:text-slate-900">🚚 Delivery စျေးနှုန်းများ</button>
       </div>
 
-      <!-- TAB 1: ORDERS -->
+      <!-- Tab 1: Orders -->
       <div id="tabPanel-orders" class="admin-panel p-4 overflow-x-auto">
         <table class="w-full text-left text-xs">
           <thead>
@@ -200,7 +206,7 @@
         </table>
       </div>
 
-      <!-- TAB 2: PRODUCTS & STOCK -->
+      <!-- Tab 2: Products & Stock -->
       <div id="tabPanel-products" class="admin-panel hidden p-4 overflow-x-auto">
         <table class="w-full text-left text-xs">
           <thead>
@@ -217,7 +223,7 @@
         </table>
       </div>
 
-      <!-- TAB 3: CATEGORIES -->
+      <!-- Tab 3: Categories -->
       <div id="tabPanel-categories" class="admin-panel hidden p-4 space-y-4">
         <form onsubmit="handleCategoryCreate(event)" class="flex gap-2 max-w-md">
           <input type="text" id="newCatName" required placeholder="Category အသစ်အမည်..." class="flex-1 border px-3 py-2 rounded-xl text-xs outline-none focus:ring-2 focus:ring-indigo-600" />
@@ -226,22 +232,22 @@
         <div id="adminCategoryList" class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2"></div>
       </div>
 
-      <!-- TAB 4: CUSTOMERS -->
+      <!-- Tab 4: Customers -->
       <div id="tabPanel-customers" class="admin-panel hidden p-4 overflow-x-auto">
         <table class="w-full text-left text-xs">
           <thead>
             <tr class="border-b text-slate-400">
-              <th class="py-2.5">ID</th>
+              <th class="py-2.5">UID</th>
               <th>အမည်</th>
+              <th>အီးမေးလ်</th>
               <th>ဖုန်းနံပါတ်</th>
-              <th>လိပ်စာ</th>
             </tr>
           </thead>
           <tbody id="adminCustomersTable" class="divide-y"></tbody>
         </table>
       </div>
 
-      <!-- TAB 5: COUPONS -->
+      <!-- Tab 5: Coupons -->
       <div id="tabPanel-coupons" class="admin-panel hidden p-4 space-y-4">
         <form onsubmit="handleCouponCreate(event)" class="flex flex-wrap gap-2 text-xs">
           <input type="text" id="newCouponCode" required placeholder="Code (ဥပမာ - SALE20)" class="border px-3 py-2 rounded-xl uppercase font-mono outline-none" />
@@ -255,7 +261,7 @@
         <div id="adminCouponList" class="divide-y text-xs border rounded-xl"></div>
       </div>
 
-      <!-- TAB 6: REPORTS & BEST-SELLERS -->
+      <!-- Tab 6: Reports -->
       <div id="tabPanel-reports" class="admin-panel hidden p-4 space-y-6">
         <div>
           <h3 class="font-bold text-sm text-slate-800 mb-2">🔥 Best-Selling Products (အရောင်းရဆုံး ပစ္စည်းများ)</h3>
@@ -263,7 +269,7 @@
         </div>
       </div>
 
-      <!-- TAB 7: DELIVERY SETTINGS -->
+      <!-- Tab 7: Delivery Settings -->
       <div id="tabPanel-delivery" class="admin-panel hidden p-4 space-y-4 text-xs max-w-md">
         <div>
           <label class="font-bold block mb-1">ရန်ကုန် / မန္တလေး မြို့တွင်း ပို့ခ (MMK)</label>
@@ -278,7 +284,7 @@
     </div>
   </div>
 
-  <!-- ================= PRODUCT ADD / EDIT MODAL (ADMIN) ================= -->
+  <!-- ================= PRODUCT ADD / EDIT MODAL ================= -->
   <div id="productModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-3 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -306,7 +312,7 @@
           <select id="prodCategory" class="w-full border px-3 py-2 rounded-xl bg-white outline-none"></select>
         </div>
         <div>
-          <label class="font-bold block mb-1">ပစ္စည်းပုံများ ရွေးချယ်ပါ (Multiple Images တပြိုင်နက် ရွေးနိုင်သည်)</label>
+          <label class="font-bold block mb-1">ပစ္စည်းပုံများ (Multiple Images တပြိုင်နက် ရွေးနိုင်သည်)</label>
           <input type="file" id="prodFiles" multiple accept="image/*" class="w-full border px-3 py-2 rounded-xl bg-slate-50" />
         </div>
         <div>
@@ -324,7 +330,7 @@
     </div>
   </div>
 
-  <!-- ================= PRODUCT DETAIL MODAL (CUSTOMER) ================= -->
+  <!-- ================= PRODUCT DETAIL MODAL ================= -->
   <div id="detailsModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl overflow-hidden shadow-2xl space-y-3 max-h-[90vh] overflow-y-auto">
       <div class="relative bg-slate-100">
@@ -450,27 +456,31 @@
     </div>
   </div>
 
-  <!-- ================= AUTH MODAL ================= -->
+  <!-- ================= SECURE SUPABASE AUTH MODAL ================= -->
   <div id="authModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-sm rounded-3xl p-6 space-y-4 text-xs shadow-2xl">
       <div class="flex justify-between items-center border-b pb-3">
         <h3 id="authTitle" class="font-bold text-sm">အကောင့်ဝင်ရန် (Login)</h3>
         <button onclick="closeAuthModal()"><i class="ph ph-x text-lg"></i></button>
       </div>
-      <form onsubmit="handleCustomerAuth(event)" class="space-y-3">
+      <form onsubmit="handleSecureCustomerAuth(event)" class="space-y-3">
+        <div>
+          <label class="font-bold block mb-1">အီးမေးလ် (Email) *</label>
+          <input type="email" id="authEmail" required class="w-full border px-3 py-2 rounded-xl outline-none" placeholder="user@gmail.com" />
+        </div>
         <div id="authNameGroup" class="hidden">
-          <label class="font-bold block mb-1">သင့်အမည် *</label>
+          <label class="font-bold block mb-1">အမည် အပြည့်အစုံ *</label>
           <input type="text" id="authName" class="w-full border px-3 py-2 rounded-xl outline-none" placeholder="မောင်မောင်" />
         </div>
-        <div>
+        <div id="authPhoneGroup" class="hidden">
           <label class="font-bold block mb-1">ဖုန်းနံပါတ် *</label>
-          <input type="tel" id="authPhone" required class="w-full border px-3 py-2 rounded-xl font-mono outline-none" placeholder="09xxxxxxxxx" />
+          <input type="tel" id="authPhone" class="w-full border px-3 py-2 rounded-xl font-mono outline-none" placeholder="09xxxxxxxxx" />
         </div>
         <div>
-          <label class="font-bold block mb-1">Password *</label>
-          <input type="password" id="authPass" required class="w-full border px-3 py-2 rounded-xl outline-none" placeholder="••••••••" />
+          <label class="font-bold block mb-1">စကားဝှက် (Password) *</label>
+          <input type="password" id="authPass" required class="w-full border px-3 py-2 rounded-xl outline-none" placeholder="အနည်းဆုံး ၆ လုံး" />
         </div>
-        <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-2xl font-bold shadow-md">အတည်ပြုမည်</button>
+        <button type="submit" id="authSubmitBtn" class="w-full bg-indigo-600 text-white py-3 rounded-2xl font-bold shadow-md">အတည်ပြုမည်</button>
         <div class="text-center pt-2">
           <button type="button" onclick="toggleAuthMode()" id="authToggleBtn" class="text-indigo-600 font-bold underline">အကောင့်သစ်ဖွင့်ပါ</button>
         </div>
@@ -480,15 +490,21 @@
 
   <!-- ================= APPLICATION JAVASCRIPT ================= -->
   <script>
-    const SB_BASE = "https://zyajlsrytjvwxqtpxrqd.supabase.co/rest/v1";
+    // 1. SUPABASE & TELEGRAM CONFIG
+    const SUPABASE_URL = "https://zyajlsrytjvwxqtpxrqd.supabase.co";
+    const SB_BASE = `${SUPABASE_URL}/rest/v1`;
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
     const HEADERS = { "apikey": SB_KEY, "Authorization": "Bearer " + SB_KEY, "Content-Type": "application/json", "Prefer": "return=representation" };
 
     const TELEGRAM_CONFIG = {
       botToken: "8999186526:AAFS6cmrN-f0zZCo9ut6vJExT5xiGzRl8h4",
-      chatId: "-1004425929255"
+      chatId: "6759228843"
     };
 
+    // Initialize Official Supabase Client
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SB_KEY);
+
+    // Initial Fallback Data
     const initialCategories = [
       { id: 1, name: "ဖုန်းနှင့် အသုံးအဆောင်" },
       { id: 2, name: "ဖက်ရှင်နှင့် အဝတ်အထည်" },
@@ -551,18 +567,52 @@
     let currentDetailQty = 1;
     let isRegisterMode = false;
 
-    let currentCustomer = JSON.parse(localStorage.getItem('aura_customer')) || null;
+    let currentCustomer = null;
     let isAdmin = sessionStorage.getItem('aura_is_admin') === 'true';
 
+    // 2. INITIALIZATION & AUTH LISTENER
     async function init() {
       renderCategories();
       renderProducts();
       updateWishlistUI();
       updateCartUI();
-      updateAuthUI();
       updateAdminBarUI();
       checkAdminHash();
       fetchCloudData();
+
+      // Listen for Native Supabase Auth Changes
+      supabaseClient.auth.onAuthStateChange(async (event, session) => {
+        if (session && session.user) {
+          const user = session.user;
+          const { data: profile } = await supabaseClient
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+          currentCustomer = {
+            uid: user.id,
+            email: user.email,
+            name: profile?.full_name || user.user_metadata?.full_name || "ဝယ်သူ",
+            phone: profile?.phone || user.user_metadata?.phone || "",
+            role: profile?.role || 'customer'
+          };
+
+          if (currentCustomer.role === 'admin') {
+            isAdmin = true;
+            sessionStorage.setItem('aura_is_admin', 'true');
+          }
+        } else {
+          currentCustomer = null;
+          if (!sessionStorage.getItem('aura_admin_pass_logged')) {
+            isAdmin = false;
+            sessionStorage.removeItem('aura_is_admin');
+          }
+        }
+        updateAuthUI();
+        updateAdminBarUI();
+        renderCustomerOrders();
+      });
     }
 
     async function fetchCloudData() {
@@ -581,7 +631,81 @@
       updateAdminDashboard();
     }
 
-    // Category & Products Render
+    // 3. SECURE AUTH HANDLERS
+    async function handleSecureCustomerAuth(e) {
+      e.preventDefault();
+      const email = document.getElementById('authEmail').value.trim();
+      const pass = document.getElementById('authPass').value;
+      const btn = document.getElementById('authSubmitBtn');
+
+      btn.disabled = true;
+      btn.innerText = "စစ်ဆေးနေပါသည်...";
+
+      try {
+        if (isRegisterMode) {
+          const fullName = document.getElementById('authName').value.trim();
+          const phone = document.getElementById('authPhone').value.trim();
+          if (pass.length < 6) throw new Error("Password သည် အနည်းဆုံး ၆ လုံး ရှိရပါမည်");
+
+          const { data, error } = await supabaseClient.auth.signUp({
+            email,
+            password: pass,
+            options: {
+              data: { full_name: fullName, phone: phone, role: 'customer' }
+            }
+          });
+          if (error) throw error;
+          alert('🎉 အကောင့်ဖွင့်လှစ်ခြင်း အောင်မြင်ပါသည်!');
+        } else {
+          const { data, error } = await supabaseClient.auth.signInWithPassword({
+            email,
+            password: pass
+          });
+          if (error) throw error;
+          alert('🎉 အောင်မြင်စွာ အကောင့်ဝင်ရောက်ပြီးပါပြီ!');
+        }
+        closeAuthModal();
+      } catch (err) {
+        alert('❌ Error: ' + (err.message || 'လုပ်ဆောင်ချက် မအောင်မြင်ပါ'));
+      } finally {
+        btn.disabled = false;
+        btn.innerText = isRegisterMode ? "အကောင့်ဖွင့်မည်" : "အတည်ပြုမည်";
+      }
+    }
+
+    async function secureLogout() {
+      await supabaseClient.auth.signOut();
+      currentCustomer = null;
+      isAdmin = false;
+      sessionStorage.removeItem('aura_is_admin');
+      sessionStorage.removeItem('aura_admin_pass_logged');
+      updateAuthUI();
+      updateAdminBarUI();
+      switchView('shop');
+      alert('အကောင့်မှ ထွက်ပြီးပါပြီ');
+    }
+
+    function toggleAuthMode() {
+      isRegisterMode = !isRegisterMode;
+      document.getElementById('authNameGroup').classList.toggle('hidden', !isRegisterMode);
+      document.getElementById('authPhoneGroup').classList.toggle('hidden', !isRegisterMode);
+      document.getElementById('authTitle').innerText = isRegisterMode ? 'အကောင့်သစ်ဖွင့်ရန် (Sign Up)' : 'အကောင့်ဝင်ရန် (Sign In)';
+      document.getElementById('authToggleBtn').innerText = isRegisterMode ? 'Login ပြန်ဝင်ပါ' : 'အကောင့်သစ်ဖွင့်ပါ';
+      document.getElementById('authSubmitBtn').innerText = isRegisterMode ? 'အကောင့်ဖွင့်မည်' : 'အတည်ပြုမည်';
+    }
+
+    function updateAuthUI() {
+      const isLogged = !!currentCustomer;
+      document.getElementById('authGuestSection').classList.toggle('hidden', isLogged);
+      document.getElementById('authUserSection').classList.toggle('hidden', !isLogged);
+      document.getElementById('authUserSection').classList.toggle('flex', isLogged);
+      if (isLogged) {
+        document.getElementById('headerUserName').innerText = currentCustomer.name;
+        document.getElementById('headerUserEmail').innerText = currentCustomer.email;
+      }
+    }
+
+    // 4. CATALOG & PRODUCTS
     function renderCategories() {
       const bar = document.getElementById('categoryBar');
       const prodSelect = document.getElementById('prodCategory');
@@ -627,7 +751,7 @@
       }).join('');
     }
 
-    // Product Details Modal
+    // 5. PRODUCT DETAILS MODAL (VARIANTS & GALLERY)
     function openDetailsModal(id) {
       const p = products.find(i => i.id == id);
       if (!p) return;
@@ -723,7 +847,7 @@
       document.getElementById('detailsModal').classList.remove('flex');
     }
 
-    // Wishlist
+    // 6. WISHLIST
     function toggleWish(id) {
       if (wishlist.includes(id)) wishlist = wishlist.filter(x => x !== id);
       else wishlist.push(id);
@@ -761,7 +885,7 @@
       `).join('');
     }
 
-    // Cart System
+    // 7. CART SYSTEM
     function updateCartUI() {
       const totalQty = cart.reduce((s, i) => s + i.qty, 0);
       const badge = document.getElementById('cartBadge');
@@ -809,7 +933,7 @@
       updateCartUI();
     }
 
-    // Checkout
+    // 8. CHECKOUT & ORDERS
     function openCheckout() {
       if (cart.length === 0) return alert('Cart ထဲတွင် ပစ္စည်းမရှိပါ');
       closeCart();
@@ -884,7 +1008,6 @@
       btn.innerText = "ပို့ဆောင်နေပါသည်...";
       btn.disabled = true;
 
-      // Stock deduction
       cart.forEach(item => {
         const prod = products.find(p => p.id == item.id);
         if (prod) prod.stock = Math.max(0, (prod.stock || 0) - item.qty);
@@ -895,6 +1018,7 @@
         id: Date.now(),
         customer_name: name,
         customer_phone: phone,
+        customer_uid: currentCustomer ? currentCustomer.uid : null,
         delivery_address: address,
         payment_method: payment,
         payment_slip_url: slipData ? "Uploaded" : null,
@@ -905,13 +1029,7 @@
       orders.unshift(newOrder);
       localStorage.setItem('aura_cust_orders', JSON.stringify(orders));
 
-      // Customer account save
-      if (!customers.find(c => c.phone === phone)) {
-        customers.push({ id: Date.now(), name, phone, address });
-        localStorage.setItem('aura_cust_customers', JSON.stringify(customers));
-      }
-
-      // Telegram
+      // Telegram Alert
       let itemsListText = "";
       cart.forEach((i, idx) => {
         itemsListText += `${idx+1}. ${i.title} [${i.color}/${i.size}] (${i.qty} ခု) = ${(parseInt(i.priceMMK)*i.qty).toLocaleString()} MMK\n`;
@@ -937,12 +1055,15 @@
       switchView('orders');
     }
 
-    // Customer Orders List
+    // 9. CUSTOMER ORDERS LIST & 5 STAGES TRACKING
     function renderCustomerOrders() {
       const list = document.getElementById('myOrdersList');
       const phone = currentCustomer ? currentCustomer.phone : null;
+      const uid = currentCustomer ? currentCustomer.uid : null;
       let my = orders;
-      if (phone) my = my.filter(o => o.customer_phone === phone);
+      if (uid || phone) {
+        my = my.filter(o => (uid && o.customer_uid === uid) || (phone && o.customer_phone === phone));
+      }
 
       if (my.length === 0) {
         list.innerHTML = `<div class="text-center py-12 text-slate-400 text-xs">မှာယူထားသော မှတ်တမ်း မရှိသေးပါ</div>`;
@@ -963,8 +1084,6 @@
               </div>
               <span class="bg-indigo-50 text-indigo-600 font-bold px-2.5 py-1 rounded-full uppercase text-[10px]">${o.order_status}</span>
             </div>
-
-            <!-- 5 Stages Progress Tracker -->
             <div class="pt-2">
               <div class="grid grid-cols-5 gap-1 text-center font-bold text-[9px]">
                 ${stages.map((st, i) => `
@@ -975,7 +1094,6 @@
                 `).join('')}
               </div>
             </div>
-
             <div class="pt-2 border-t flex justify-between font-bold text-sm">
               <span>စုစုပေါင်းငွေ:</span>
               <span class="text-indigo-600">${parseInt(o.total_amount).toLocaleString()} MMK</span>
@@ -985,7 +1103,7 @@
       }).join('');
     }
 
-    // ================= 👑 ADMIN DASHBOARD LOGIC =================
+    // 10. 👑 ADMIN DASHBOARD IMPLEMENTATION
     function switchAdminTab(tab) {
       document.querySelectorAll('.admin-tab').forEach(b => {
         b.classList.remove('bg-white', 'text-indigo-600', 'shadow-sm');
@@ -1204,10 +1322,10 @@
       const tbody = document.getElementById('adminCustomersTable');
       tbody.innerHTML = customers.map(c => `
         <tr class="hover:bg-slate-50">
-          <td class="py-2 font-mono text-[10px]">#${c.id || 1}</td>
+          <td class="py-2 font-mono text-[10px] truncate max-w-[90px]">${c.uid || '-'}</td>
           <td class="font-bold">${c.name}</td>
-          <td class="font-mono">${c.phone}</td>
-          <td class="truncate max-w-[150px]">${c.address || '-'}</td>
+          <td class="font-mono">${c.email || '-'}</td>
+          <td class="font-mono">${c.phone || '-'}</td>
         </tr>
       `).join('');
     }
@@ -1264,7 +1382,7 @@
       alert('✅ Delivery ပို့ခ နှုန်းထားများ သိမ်းဆည်းပြီးပါပြီ!');
     }
 
-    // ================= 🧭 NAVIGATION & AUTH =================
+    // 11. NAVIGATION & ADMIN ROUTING
     function switchView(view) {
       document.querySelectorAll('.view-panel').forEach(el => el.classList.add('hidden'));
       if (view === 'shop') document.getElementById('shopView').classList.remove('hidden');
@@ -1279,16 +1397,16 @@
       }
     }
 
-    // Check Hash URL for #admin
     function checkAdminHash() {
       if (window.location.hash.toLowerCase() === '#admin') {
         if (isAdmin) {
           switchView('admin');
         } else {
-          const pass = prompt('👑 Admin Password ရိုက်ထည့်ပါ (Default: admin123):');
+          const pass = prompt('👑 Admin Password ရိုက်ထည့်ပါ:');
           if (pass === 'admin123') {
             isAdmin = true;
             sessionStorage.setItem('aura_is_admin', 'true');
+            sessionStorage.setItem('aura_admin_pass_logged', 'true');
             updateAdminBarUI();
             switchView('admin');
             alert('🎉 Admin Dashboard သို့ အောင်မြင်စွာ ဝင်ရောက်ပါပြီ!');
@@ -1301,45 +1419,8 @@
     }
     window.addEventListener('hashchange', checkAdminHash);
 
-    function adminLogout() {
-      isAdmin = false;
-      sessionStorage.removeItem('aura_is_admin');
-      updateAdminBarUI();
-      switchView('shop');
-      window.location.hash = '';
-    }
-
     function updateAdminBarUI() {
       document.getElementById('adminBar').classList.toggle('hidden', !isAdmin);
-    }
-
-    // Customer Auth
-    function handleCustomerAuth(e) {
-      e.preventDefault();
-      const phone = document.getElementById('authPhone').value.trim();
-      const name = document.getElementById('authName').value.trim();
-      currentCustomer = { name: name || "ဝယ်သူ", phone };
-      localStorage.setItem('aura_customer', JSON.stringify(currentCustomer));
-      updateAuthUI();
-      closeAuthModal();
-      alert('🎉 အကောင့်ဝင်ရောက်ခြင်း အောင်မြင်ပါသည်!');
-    }
-    function toggleAuthMode() {
-      isRegisterMode = !isRegisterMode;
-      document.getElementById('authNameGroup').classList.toggle('hidden', !isRegisterMode);
-      document.getElementById('authTitle').innerText = isRegisterMode ? 'အကောင့်သစ်ဖွင့်ရန်' : 'အကောင့်ဝင်ရန်';
-      document.getElementById('authToggleBtn').innerText = isRegisterMode ? 'Login ပြန်ဝင်ပါ' : 'အကောင့်သစ်ဖွင့်ပါ';
-    }
-    function customerLogout() {
-      currentCustomer = null;
-      localStorage.removeItem('aura_customer');
-      updateAuthUI();
-    }
-    function updateAuthUI() {
-      const isLogged = !!currentCustomer;
-      document.getElementById('authGuestSection').classList.toggle('hidden', isLogged);
-      document.getElementById('authUserSection').classList.toggle('hidden', !isLogged);
-      document.getElementById('authUserSection').classList.toggle('flex', isLogged);
     }
 
     // Modal Helpers
@@ -1348,12 +1429,14 @@
     function openWishlist() { document.getElementById('wishModal').classList.remove('hidden'); document.getElementById('wishModal').classList.add('flex'); }
     function closeWishlist() { document.getElementById('wishModal').classList.add('hidden'); document.getElementById('wishModal').classList.remove('flex'); }
     function closeCheckout() { document.getElementById('checkoutModal').classList.add('hidden'); document.getElementById('checkoutModal').classList.remove('flex'); }
-    function openAuthModal(mode) { document.getElementById('authModal').classList.remove('hidden'); document.getElementById('authModal').classList.add('flex'); }
+    function openAuthModal() { document.getElementById('authModal').classList.remove('hidden'); document.getElementById('authModal').classList.add('flex'); }
     function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); document.getElementById('authModal').classList.remove('flex'); }
     function filterCategory(id) { selectedCategory = id; renderCategories(); renderProducts(); }
     function handleSearch(val) { searchQuery = val; renderProducts(); }
 
     init();
   </script>
+</body>
+</html>
 </body>
 </html>
