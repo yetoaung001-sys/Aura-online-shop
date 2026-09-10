@@ -354,24 +354,35 @@
     }
 
     async function handleCreateShop(e) {
-      e.preventDefault();
-      const name = document.getElementById('shop-name').value;
-      const phone = document.getElementById('shop-phone').value;
-      const commission_rate = Number(document.getElementById('shop-commission').value);
-      const { error } = await client.from('shops').insert([{ name, phone, commission_rate, is_active: true }]);
-      if (error) alert(error.message);
-      else { alert('ဆိုင်အသစ် ဖွင့်လှစ်ပြီးပါပြီ'); e.target.reset(); loadShops(); }
-    }
+  e.preventDefault();
+  const name = document.getElementById('shop-name').value;
+  const phone = document.getElementById('shop-phone').value;
+  const commission_rate = Number(document.getElementById('shop-commission').value);
 
-    async function updateCommission(shopId, rate) {
-      await client.from('shops').update({ commission_rate: Number(rate) }).eq('id', shopId);
-      alert('ကော်မရှင်နှုန်းထား ပြင်ဆင်ပြီးပါပြီ');
-    }
+  // လက်ရှိ login ဝင်ထားသော Super Admin ID ရယူခြင်း
+  const { data: { user } } = await client.auth.getUser();
 
-    async function toggleShop(id, current) {
-      await client.from('shops').update({ is_active: !current }).eq('id', id);
-      loadShops();
-    }
+  const insertData = {
+    name,
+    phone,
+    commission_rate,
+    is_active: true
+  };
+
+  // user ရှိပါက owner_id ထည့်သွင်းပေးခြင်း
+  if (user) {
+    insertData.owner_id = user.id;
+  }
+
+  const { error } = await client.from('shops').insert([insertData]);
+  if (error) {
+    alert(error.message);
+  } else {
+    alert('ဆိုင်အသစ် ဖွင့်လှစ်ပြီးပါပြီ');
+    e.target.reset();
+    loadShops();
+  }
+}
 
     // PRODUCTS
     async function loadProducts() {
