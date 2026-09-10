@@ -1,12 +1,12 @@
 <!DOCTYPE html>
 <html lang="my">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aura Platform - Super Admin Ultimate Panel</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap');
     body { font-family: 'Padauk', sans-serif; }
@@ -114,21 +114,19 @@
     <!-- 3. SHOPS & COMMISSION TAB -->
     <section id="section-shops" class="tab-content hidden space-y-4">
       <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
-  <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-store text-amber-500 mr-1"></i> ဆိုင်နှင့် ဆိုင်ရှင်အကောင့် တစ်ခါတည်း ဖွင့်ပေးရန်</h3>
-  <form onsubmit="handleCreateSellerAndShop(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-    <input type="text" id="seller-shop-name" placeholder="ဆိုင်အမည် (ဥပမာ - Aura Fashion)" required class="border rounded p-2">
-    <input type="text" id="seller-name" placeholder="ဆိုင်ရှင် အမည်" required class="border rounded p-2">
-    <input type="text" id="seller-phone" placeholder="ဖုန်းနံပါတ်" required class="border rounded p-2">
-    
-    <input type="email" id="seller-email" placeholder="ဆိုင်ရှင် Login ဝင်မည့် Email" required class="border rounded p-2">
-    <input type="text" id="seller-pass" placeholder="ဆိုင်ရှင် စကားဝှက် (Password)" required class="border rounded p-2">
-    <input type="number" id="seller-commission" placeholder="Platform ကော်မရှင် (%)" value="5" required class="border rounded p-2">
-    
-    <button type="submit" class="sm:col-span-3 bg-slate-900 text-white rounded p-2.5 hover:bg-slate-800 font-bold mt-2">
-      <i class="fa-solid fa-plus-circle mr-1"></i> ဆိုင်နှင့် အကောင့် အတည်ပြုဖွင့်လှစ်မည်
-    </button>
-  </form>
-</div>
+        <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-store text-amber-500 mr-1"></i> ဆိုင်နှင့် ဆိုင်ရှင်အကောင့် တစ်ခါတည်း ဖွင့်ပေးရန်</h3>
+        <form onsubmit="handleCreateSellerAndShop(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
+          <input type="text" id="seller-shop-name" placeholder="ဆိုင်အမည် (ဥပမာ - Aura Fashion)" required class="border rounded p-2" />
+          <input type="text" id="seller-name" placeholder="ဆိုင်ရှင် အမည်" required class="border rounded p-2" />
+          <input type="text" id="seller-phone" placeholder="ဖုန်းနံပါတ်" required class="border rounded p-2" />
+          <input type="email" id="seller-email" placeholder="ဆိုင်ရှင် Login ဝင်မည့် Email" required class="border rounded p-2" />
+          <input type="text" id="seller-pass" placeholder="ဆိုင်ရှင် စကားဝှက် (Password)" required class="border rounded p-2" />
+          <input type="number" id="seller-commission" placeholder="Platform ကော်မရှင် (%)" value="5" required class="border rounded p-2" />
+          <button type="submit" class="sm:col-span-3 bg-slate-900 text-white rounded p-2.5 hover:bg-slate-800 font-bold mt-2">
+            <i class="fa-solid fa-plus-circle mr-1"></i> ဆိုင်နှင့် အကောင့် အတည်ပြုဖွင့်လှစ်မည်
+          </button>
+        </form>
+      </div>
 
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
         <table class="w-full text-left text-sm text-slate-600">
@@ -200,8 +198,8 @@
       <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
         <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-image text-amber-500 mr-1"></i> Banner အသစ်တင်ရန်</h3>
         <form onsubmit="handleAddBanner(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-          <input type="text" id="banner-title" placeholder="Banner ခေါင်းစဉ် (Optional)" class="border rounded p-2">
-          <input type="url" id="banner-img" placeholder="Banner Image URL" required class="border rounded p-2">
+          <input type="text" id="banner-title" placeholder="Banner ခေါင်းစဉ် (Optional)" class="border rounded p-2" />
+          <input type="url" id="banner-img" placeholder="Banner Image URL" required class="border rounded p-2" />
           <button type="submit" class="bg-slate-900 text-white rounded p-2 hover:bg-slate-800 font-bold">Banner တင်မည်</button>
         </form>
       </div>
@@ -213,9 +211,9 @@
       <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
         <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-credit-card text-amber-500 mr-1"></i> Payment အကောင့်အသစ် ထည့်ရန်</h3>
         <form onsubmit="handleAddPayment(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-sm">
-          <input type="text" id="pay-provider" placeholder="Provider (KBZPay / Wave)" required class="border rounded p-2">
-          <input type="text" id="pay-name" placeholder="အကောင့်ပိုင်ရှင် အမည်" required class="border rounded p-2">
-          <input type="text" id="pay-number" placeholder="အကောင့်နံပါတ် / ဖုန်း" required class="border rounded p-2">
+          <input type="text" id="pay-provider" placeholder="Provider (KBZPay / Wave)" required class="border rounded p-2" />
+          <input type="text" id="pay-name" placeholder="အကောင့်ပိုင်ရှင် အမည်" required class="border rounded p-2" />
+          <input type="text" id="pay-number" placeholder="အကောင့်နံပါတ် / ဖုန်း" required class="border rounded p-2" />
           <button type="submit" class="bg-slate-900 text-white rounded p-2 hover:bg-slate-800 font-bold">ထည့်သွင်းမည်</button>
         </form>
       </div>
@@ -239,9 +237,9 @@
       <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
         <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-tags text-amber-500 mr-1"></i> Coupon အသစ်ဖန်တီးရန်</h3>
         <form onsubmit="handleAddCoupon(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-sm">
-          <input type="text" id="coupon-code" placeholder="ကူပွန်ကုဒ် (ဥပမာ: AURA5000)" required class="border rounded p-2 uppercase">
-          <input type="number" id="coupon-discount" placeholder="လျှော့ငွေ (Ks)" required class="border rounded p-2">
-          <input type="number" id="coupon-min" placeholder="အနည်းဆုံးဝယ်ယူငွေ (Ks)" value="0" class="border rounded p-2">
+          <input type="text" id="coupon-code" placeholder="ကူပွန်ကုဒ် (ဥပမာ: AURA5000)" required class="border rounded p-2 uppercase" />
+          <input type="number" id="coupon-discount" placeholder="လျှော့ငွေ (Ks)" required class="border rounded p-2" />
+          <input type="number" id="coupon-min" placeholder="အနည်းဆုံးဝယ်ယူငွေ (Ks)" value="0" class="border rounded p-2" />
           <button type="submit" class="bg-slate-900 text-white rounded p-2 hover:bg-slate-800 font-bold">ကူပွန်ထုတ်မည်</button>
         </form>
       </div>
@@ -296,7 +294,7 @@
           return;
         }
         const { data: profile } = await client.from('profiles').select('role').eq('id', user.id).single();
-        if (!profile || profile.role !== 'super_admin') {
+        if (!profile || (profile.role !== 'super_admin' && profile.role !== 'admin')) {
           alert('Super Admin အခွင့်အရေး မရှိပါ');
           window.location.href = 'index.html';
           return;
@@ -312,16 +310,15 @@
         document.getElementById('stat-sales').innerText = totalSales.toLocaleString() + ' Ks';
         document.getElementById('stat-orders').innerText = orders.length;
       }
-      const { data: shopOrders } = await client.from('shop_orders').select('commission_amount');
+      const { data: shopOrders } = await client.from('shop_orders').select('commission_amount, platform_commission');
       if (shopOrders) {
-        const totalCommission = shopOrders.reduce((sum, so) => sum + Number(so.commission_amount || 0), 0);
+        const totalCommission = shopOrders.reduce((sum, so) => sum + Number(so.commission_amount || so.platform_commission || 0), 0);
         document.getElementById('stat-commission').innerText = totalCommission.toLocaleString() + ' Ks';
       }
       const { data: shops } = await client.from('shops').select('id');
       if (shops) document.getElementById('stat-shops').innerText = shops.length;
     }
 
-    // ORDERS
     async function loadOrders() {
       const { data: orders } = await client.from('orders').select('*').order('created_at', { ascending: false });
       const tbody = document.getElementById('orders-tbody');
@@ -332,13 +329,12 @@
           <td class="p-4 font-bold text-slate-800">${o.customer_name || '-'}</td>
           <td class="p-4">${o.customer_phone || '-'}<br><span class="text-xs text-slate-400">${o.township || ''} ${o.delivery_address || ''}</span></td>
           <td class="p-4 font-bold text-emerald-600">${Number(o.total_amount).toLocaleString()} Ks</td>
-          <td class="p-4"><span class="px-2 py-1 text-xs rounded bg-amber-50 text-amber-600 font-bold">${o.status || 'Pending'}</span></td>
+          <td class="p-4"><span class="px-2 py-1 text-xs rounded bg-amber-50 text-amber-600 font-bold">${o.status || o.order_status || 'Pending'}</span></td>
           <td class="p-4 text-xs text-slate-400">${new Date(o.created_at).toLocaleDateString()}</td>
         </tr>
       `).join('');
     }
 
-    // SHOPS
     async function loadShops() {
       const { data: shops } = await client.from('shops').select('*');
       const tbody = document.getElementById('shops-tbody');
@@ -360,66 +356,47 @@
       `).join('');
     }
 
-async function handleCreateSellerAndShop(e) {
-  e.preventDefault();
-  
-  const shopName = document.getElementById('seller-shop-name').value.trim();
-  const name = document.getElementById('seller-name').value.trim();
-  const phone = document.getElementById('seller-phone').value.trim();
-  const email = document.getElementById('seller-email').value.trim();
-  const password = document.getElementById('seller-pass').value.trim();
-  const commission = Number(document.getElementById('seller-commission').value);
+    async function handleCreateSellerAndShop(e) {
+      e.preventDefault();
+      const shopName = document.getElementById('seller-shop-name').value.trim();
+      const name = document.getElementById('seller-name').value.trim();
+      const phone = document.getElementById('seller-phone').value.trim();
+      const email = document.getElementById('seller-email').value.trim();
+      const password = document.getElementById('seller-pass').value.trim();
+      const commission = Number(document.getElementById('seller-commission').value);
 
-  if (password.length < 6) {
-    alert('စကားဝှက်သည် အနည်းဆုံး ၆ လုံး ရှိရပါမည်။');
-    return;
-  }
+      if (password.length < 6) return alert('စကားဝှက်သည် အနည်းဆုံး ၆ လုံး ရှိရပါမည်။');
 
-  try {
-    // ၁။ Supabase Auth ဖြင့် အကောင့်သစ် ဖွင့်လှစ်ခြင်း
-    const { data: authData, error: authError } = await client.auth.signUp({
-      email: email,
-      password: password,
-      options: {
-        data: { full_name: name, phone: phone }
+      try {
+        const { data: authData, error: authError } = await client.auth.signUp({
+          email, password, options: { data: { full_name: name, phone } }
+        });
+        if (authError) throw authError;
+
+        const newUserId = authData.user?.id;
+        if (!newUserId) throw new Error("User ID ရယူမရနိုင်ပါ။");
+
+        await client.from('profiles').upsert({ id: newUserId, full_name: name, phone, role: 'seller' });
+        await client.from('shops').insert([{ name: shopName, phone, commission_rate: commission, owner_id: newUserId, is_active: true }]);
+
+        alert(`🎉 အောင်မြင်ပါသည်!\nဆိုင်: ${shopName}\nLogin Email: ${email}\nPassword: ${password}\nဆိုင်ရှင်ထံ ဤအချက်အလက် ပေးပို့နိုင်ပါပြီ။`);
+        e.target.reset();
+        loadShops();
+      } catch (err) {
+        alert('❌ ဆိုင်ဖွင့်မရပါ: ' + err.message);
       }
-    });
+    }
 
-    if (authError) throw authError;
+    async function updateCommission(shopId, rate) {
+      await client.from('shops').update({ commission_rate: Number(rate) }).eq('id', shopId);
+      alert('ကော်မရှင်နှုန်းထား ပြင်ဆင်ပြီးပါပြီ');
+    }
 
-    const newUserId = authData.user?.id;
-    if (!newUserId) throw new Error("User ID ရယူမရနိုင်ပါ။");
+    async function toggleShop(id, current) {
+      await client.from('shops').update({ is_active: !current }).eq('id', id);
+      loadShops();
+    }
 
-    // ၂။ Profiles တွင် Seller အဖြစ် Role သတ်မှတ်ပေးခြင်း
-    const { error: profileError } = await client.from('profiles').upsert({
-      id: newUserId,
-      full_name: name,
-      phone: phone,
-      role: 'seller'
-    });
-
-    if (profileError) throw profileError;
-
-    // ၃။ ဆိုင်အသစ် ဖွင့်ပေးပြီး အဆိုပါ Seller User ID နှင့် ချိတ်ဆက်ခြင်း
-    const { error: shopError } = await client.from('shops').insert([{
-      name: shopName,
-      phone: phone,
-      commission_rate: commission,
-      owner_id: newUserId,
-      is_active: true
-    }]);
-
-    if (shopError) throw shopError;
-
-    alert(`အောင်မြင်ပါသည်!\nဆိုင်: ${shopName}\nLogin Email: ${email}\nPassword: ${password}\nဆိုင်ရှင်ထံ ဤအချက်အလက် ပေးပို့နိုင်ပါပြီ။`);
-    e.target.reset();
-    loadShops();
-
-  } catch (err) {
-    alert('ဆိုင်ဖွင့်မရပါ: ' + err.message);
-  }
-}
-    // PRODUCTS
     async function loadProducts() {
       const { data: products } = await client.from('products').select('*, shops(name)');
       const tbody = document.getElementById('products-tbody');
@@ -427,10 +404,10 @@ async function handleCreateSellerAndShop(e) {
       document.getElementById('product-count').innerText = `စုစုပေါင်း: ${products.length}`;
       tbody.innerHTML = products.map(p => `
         <tr class="hover:bg-slate-50">
-          <td class="p-4"><img src="${p.image_url || 'https://placehold.co/50'}" class="w-10 h-10 object-cover rounded border"></td>
-          <td class="p-4 font-semibold text-slate-800">${p.name}</td>
+          <td class="p-4"><img src="${p.image || p.image_url || 'https://placehold.co/50'}" class="w-10 h-10 object-cover rounded border"></td>
+          <td class="p-4 font-semibold text-slate-800">${p.title || p.name}</td>
           <td class="p-4 text-xs font-bold text-slate-600">${p.shops ? p.shops.name : '-'}</td>
-          <td class="p-4 font-bold text-slate-700">${Number(p.price).toLocaleString()} Ks</td>
+          <td class="p-4 font-bold text-slate-700">${Number(p.price || p.priceMMK).toLocaleString()} Ks</td>
           <td class="p-4">${p.stock || 0}</td>
           <td class="p-4">
             <button onclick="deleteProduct(${p.id})" class="text-rose-600 hover:text-rose-800 text-xs">
@@ -448,7 +425,6 @@ async function handleCreateSellerAndShop(e) {
       }
     }
 
-    // USERS
     async function loadUsers() {
       const { data: users } = await client.from('profiles').select('*');
       const tbody = document.getElementById('users-tbody');
@@ -474,14 +450,13 @@ async function handleCreateSellerAndShop(e) {
       alert('User Role ပြောင်းလဲပြီးပါပြီ');
     }
 
-    // BANNERS
     async function loadBanners() {
       const { data: banners } = await client.from('banners').select('*');
       const container = document.getElementById('banners-container');
       if (!banners || !banners.length) { container.innerHTML = '<p class="text-slate-400 p-4">Banner မရှိသေးပါ</p>'; return; }
       container.innerHTML = banners.map(b => `
         <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm space-y-2">
-          <img src="${b.image_url}" class="w-full h-32 object-cover rounded">
+          <img src="${b.image_url || b.img}" class="w-full h-32 object-cover rounded">
           <p class="font-bold text-sm text-slate-800">${b.title || 'Untitled'}</p>
           <button onclick="deleteBanner(${b.id})" class="text-xs text-rose-600 hover:underline">ဖျက်မည်</button>
         </div>
@@ -492,7 +467,7 @@ async function handleCreateSellerAndShop(e) {
       e.preventDefault();
       const title = document.getElementById('banner-title').value;
       const image_url = document.getElementById('banner-img').value;
-      await client.from('banners').insert([{ title, image_url }]);
+      await client.from('banners').insert([{ title, image_url, img: image_url }]);
       e.target.reset();
       loadBanners();
     }
@@ -504,7 +479,6 @@ async function handleCreateSellerAndShop(e) {
       }
     }
 
-    // PAYMENTS
     async function loadPayments() {
       const { data: payments } = await client.from('payment_methods').select('*');
       const tbody = document.getElementById('payments-tbody');
@@ -536,7 +510,6 @@ async function handleCreateSellerAndShop(e) {
       }
     }
 
-    // COUPONS
     async function loadCoupons() {
       const { data: coupons } = await client.from('coupons').select('*');
       const tbody = document.getElementById('coupons-tbody');
@@ -544,8 +517,8 @@ async function handleCreateSellerAndShop(e) {
       tbody.innerHTML = coupons.map(c => `
         <tr class="hover:bg-slate-50">
           <td class="p-4 font-mono font-bold text-amber-600">${c.code}</td>
-          <td class="p-4 font-bold text-emerald-600">${Number(c.discount_amount).toLocaleString()} Ks</td>
-          <td class="p-4">${Number(c.min_order_amount).toLocaleString()} Ks</td>
+          <td class="p-4 font-bold text-emerald-600">${Number(c.discount_amount || c.val).toLocaleString()} Ks</td>
+          <td class="p-4">${Number(c.min_order_amount || 0).toLocaleString()} Ks</td>
           <td class="p-4"><button onclick="deleteCoupon(${c.id})" class="text-xs text-rose-600 hover:underline">ဖျက်မည်</button></td>
         </tr>
       `).join('');
@@ -556,7 +529,7 @@ async function handleCreateSellerAndShop(e) {
       const code = document.getElementById('coupon-code').value.toUpperCase();
       const discount_amount = Number(document.getElementById('coupon-discount').value);
       const min_order_amount = Number(document.getElementById('coupon-min').value);
-      await client.from('coupons').insert([{ code, discount_amount, min_order_amount }]);
+      await client.from('coupons').insert([{ code, discount_amount, val: discount_amount, min_order_amount }]);
       e.target.reset();
       loadCoupons();
     }
