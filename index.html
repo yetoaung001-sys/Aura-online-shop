@@ -60,10 +60,11 @@
       <span id="productCountBadge" class="text-xs text-slate-400">Loading...</span>
     </div>
 
+    <!-- Product Grid -->
     <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
   </main>
 
-  <!-- Cart Drawer -->
+  <!-- CART DRAWER -->
   <div id="cartModal" class="fixed inset-0 bg-black/60 z-50 hidden justify-end">
     <div class="bg-white w-full max-w-sm h-full flex flex-col p-4 shadow-2xl">
       <div class="flex justify-between items-center pb-3 border-b">
@@ -81,11 +82,39 @@
     </div>
   </div>
 
-  <!-- Checkout Modal -->
+  <!-- BUY / VARIANT MODAL (Shopee Style Size & Color Picker) -->
+  <div id="buyModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-4 text-xs shadow-2xl">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-black text-sm text-slate-800">🛒 ဝယ်ယူရန် ရွေးချယ်ပါ</h3>
+        <button onclick="closeBuyModal()"><i class="ph ph-x text-lg"></i></button>
+      </div>
+
+      <div id="modalProductInfo" class="flex gap-3 items-center"></div>
+
+      <!-- Size Selection -->
+      <div id="sizeSelectionArea" class="space-y-1.5 hidden">
+        <label class="font-bold text-slate-700">📏 Size ရွေးပါ:</label>
+        <div id="sizeOptionsList" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <!-- Color Selection -->
+      <div id="colorSelectionArea" class="space-y-1.5 hidden">
+        <label class="font-bold text-slate-700">🎨 Color ရွေးပါ:</label>
+        <div id="colorOptionsList" class="flex flex-wrap gap-2"></div>
+      </div>
+
+      <button onclick="confirmAddToCart()" class="w-full bg-gradient-to-r from-orange-500 to-rose-600 text-white font-bold py-3 rounded-2xl shadow-lg">
+        ဈေးတောင်းထဲသို့ ထည့်မည်
+      </button>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL WITH PAYMENT VOUCHER -->
   <div id="checkoutModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-3 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-2">
-        <h3 class="font-bold text-sm">အော်ဒါ အချက်အလက်</h3>
+        <h3 class="font-bold text-sm">အော်ဒါ အချက်အလက် နှင့် ငွေပေးချေမှု</h3>
         <button onclick="closeCheckout()"><i class="ph ph-x text-lg"></i></button>
       </div>
       <form onsubmit="handleOrderSubmit(event)" class="space-y-3">
@@ -93,11 +122,20 @@
         <input type="tel" id="custPhone" required placeholder="ဖုန်းနံပါတ် *" class="w-full border p-2.5 rounded-xl outline-none font-mono" />
         <input type="text" id="custTownship" required placeholder="မြို့နယ် *" class="w-full border p-2.5 rounded-xl outline-none" />
         <textarea id="custAddress" required placeholder="လိပ်စာ အပြည့်အစုံ *" class="w-full border p-2.5 rounded-xl outline-none" rows="2"></textarea>
+        
         <select id="custPayment" class="w-full border p-2.5 rounded-xl bg-white font-bold">
           <option value="Cash On Delivery">Cash On Delivery (အိမ်ရောက်ငွေချေ)</option>
           <option value="KBZPay">KBZPay</option>
           <option value="WavePay">WavePay</option>
         </select>
+
+        <!-- Payment Voucher Upload -->
+        <div class="bg-slate-50 p-3 rounded-xl border space-y-1.5">
+          <label class="font-bold text-slate-700 block">💳 ငွေလွှဲဘောက်ချာ (Payment Voucher Screenshot)</label>
+          <input type="file" id="checkoutVoucherFile" accept="image/*" class="w-full border p-2 rounded-xl bg-white cursor-pointer text-[11px]" />
+          <span class="text-[10px] text-slate-400">KBZPay / WavePay ဖြင့် လွှဲထားပါက ဘောက်ချာပုံတင်ပေးပါ</span>
+        </div>
+
         <div class="pt-2 border-t flex justify-between font-bold text-sm text-orange-600">
           <span>စုစုပေါင်း:</span>
           <span id="summaryTotal">0 MMK</span>
@@ -115,6 +153,9 @@
     let products = [];
     let cart = [];
     let searchQuery = '';
+    let selectedProductForBuy = null;
+    let chosenSize = '';
+    let chosenColor = '';
 
     async function init() {
       const { data, error } = await client
@@ -169,7 +210,7 @@
               <div class="text-base font-black text-orange-600 mt-1">${price.toLocaleString()} MMK</div>
               <div class="text-[10px] text-slate-400 mt-0.5">လက်ကျန်: ${p.stock || 0} ခု</div>
             </div>
-            <button onclick="addToCart(${p.id}, '${title.replace(/'/g, "")}', ${price}, '${image}')" class="mt-3 w-full bg-orange-600 hover:bg-orange-700 text-white py-2 rounded-xl text-xs font-bold shadow transition">
+            <button onclick='openBuyModal(${JSON.stringify(p)})' class="mt-3 w-full bg-orange-600 hover:bg-orange-700 text-white py-2 rounded-xl text-xs font-bold shadow transition">
               ဝယ်ယူမည်
             </button>
           </div>
@@ -182,11 +223,77 @@
       renderProducts();
     }
 
-    function addToCart(id, title, price, image) {
-      const exist = cart.find(i => i.id === id);
-      if (exist) exist.qty += 1;
-      else cart.push({ id, title, price, image, qty: 1 });
+    function openBuyModal(product) {
+      selectedProductForBuy = product;
+      chosenSize = '';
+      chosenColor = '';
+
+      const img = product.image || product.image_url || 'https://placehold.co/100';
+      document.getElementById('modalProductInfo').innerHTML = `
+        <img src="${img}" class="w-16 h-16 object-cover rounded-xl border" />
+        <div>
+          <div class="font-bold text-slate-800">${product.title || product.name}</div>
+          <div class="text-orange-600 font-black text-sm">${Number(product.price || product.priceMMK || 0).toLocaleString()} MMK</div>
+        </div>
+      `;
+
+      // Sizes handling
+      const sizeArea = document.getElementById('sizeSelectionArea');
+      const sizeList = document.getElementById('sizeOptionsList');
+      if (product.sizes && product.sizes.length > 0) {
+        sizeArea.classList.remove('hidden');
+        sizeList.innerHTML = product.sizes.map((s, idx) => `
+          <button onclick="selectSize('${s}', this)" class="size-btn px-3 py-1.5 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-orange-600 bg-orange-50 text-orange-600' : 'border-slate-200'}">${s}</button>
+        `).join('');
+        chosenSize = product.sizes[0];
+      } else {
+        sizeArea.classList.add('hidden');
+      }
+
+      // Colors handling
+      const colorArea = document.getElementById('colorSelectionArea');
+      const colorList = document.getElementById('colorOptionsList');
+      if (product.colors && product.colors.length > 0) {
+        colorArea.classList.remove('hidden');
+        colorList.innerHTML = product.colors.map((c, idx) => `
+          <button onclick="selectColor('${c}', this)" class="color-btn px-3 py-1.5 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-orange-600 bg-orange-50 text-orange-600' : 'border-slate-200'}">${c}</button>
+        `).join('');
+        chosenColor = product.colors[0];
+      } else {
+        colorArea.classList.add('hidden');
+      }
+
+      document.getElementById('buyModal').classList.remove('hidden');
+      document.getElementById('buyModal').classList.add('flex');
+    }
+
+    function selectSize(size, el) {
+      chosenSize = size;
+      document.querySelectorAll('.size-btn').forEach(b => b.className = "size-btn px-3 py-1.5 rounded-xl border font-bold text-xs border-slate-200");
+      el.className = "size-btn px-3 py-1.5 rounded-xl border font-bold text-xs border-orange-600 bg-orange-50 text-orange-600";
+    }
+
+    function selectColor(color, el) {
+      chosenColor = color;
+      document.querySelectorAll('.color-btn').forEach(b => b.className = "color-btn px-3 py-1.5 rounded-xl border font-bold text-xs border-slate-200");
+      el.className = "color-btn px-3 py-1.5 rounded-xl border font-bold text-xs border-orange-600 bg-orange-50 text-orange-600";
+    }
+
+    function closeBuyModal() {
+      document.getElementById('buyModal').classList.add('hidden');
+      document.getElementById('buyModal').classList.remove('flex');
+    }
+
+    function confirmAddToCart() {
+      if (!selectedProductForBuy) return;
+      cart.push({
+        ...selectedProductForBuy,
+        selectedSize: chosenSize,
+        selectedColor: chosenColor,
+        qty: 1
+      });
       updateCartUI();
+      closeBuyModal();
       openCart();
     }
 
@@ -196,7 +303,7 @@
       badge.innerText = totalQty;
       badge.style.transform = totalQty > 0 ? 'scale(1)' : 'scale(0)';
 
-      const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+      const total = cart.reduce((s, i) => s + (Number(i.price || i.priceMMK || 0) * i.qty), 0);
       document.getElementById('cartTotal').innerText = total.toLocaleString() + ' MMK';
 
       const box = document.getElementById('cartItems');
@@ -205,22 +312,28 @@
         return;
       }
 
-      box.innerHTML = cart.map((i, idx) => `
-        <div class="py-3 flex items-center justify-between gap-2">
-          <img src="${i.image}" class="w-12 h-12 object-cover rounded-xl" />
-          <div class="flex-1">
-            <h5 class="font-bold line-clamp-1">${i.title}</h5>
-            <div class="text-orange-600 font-bold">${i.price.toLocaleString()} MMK x ${i.qty}</div>
+      box.innerHTML = cart.map((i, idx) => {
+        const p = Number(i.price || i.priceMMK || 0);
+        const title = i.title || i.name;
+        const img = i.image || i.image_url;
+        return `
+          <div class="py-3 flex items-center justify-between gap-2">
+            <img src="${img}" class="w-12 h-12 object-cover rounded-xl" />
+            <div class="flex-1">
+              <h5 class="font-bold line-clamp-1">${title}</h5>
+              <div class="text-[10px] text-slate-500">Size: ${i.selectedSize || '-'} | Color: ${i.selectedColor || '-'}</div>
+              <div class="text-orange-600 font-bold">${p.toLocaleString()} MMK x ${i.qty}</div>
+            </div>
+            <button onclick="cart.splice(${idx}, 1); updateCartUI();" class="text-rose-500 p-1"><i class="ph ph-trash text-base"></i></button>
           </div>
-          <button onclick="cart.splice(${idx}, 1); updateCartUI();" class="text-rose-500 p-1"><i class="ph ph-trash"></i></button>
-        </div>
-      `).join('');
+        `;
+      }).join('');
     }
 
     function openCheckout() {
       if (!cart.length) return alert('စျေးဝယ်တွန်းလှည်းထဲ ပစ္စည်းမရှိပါ');
       closeCart();
-      const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+      const total = cart.reduce((s, i) => s + (Number(i.price || i.priceMMK || 0) * i.qty), 0);
       document.getElementById('summaryTotal').innerText = total.toLocaleString() + ' MMK';
       document.getElementById('checkoutModal').classList.remove('hidden');
       document.getElementById('checkoutModal').classList.add('flex');
@@ -233,22 +346,41 @@
       const township = document.getElementById('custTownship').value.trim();
       const address = document.getElementById('custAddress').value.trim();
       const payment = document.getElementById('custPayment').value;
-      const total = cart.reduce((s, i) => s + (i.price * i.qty), 0);
+      const total = cart.reduce((s, i) => s + (Number(i.price || i.priceMMK || 0) * i.qty), 0);
 
       const btn = document.getElementById('submitOrderBtn');
-      btn.innerText = "တင်နေပါသည်...";
+      btn.innerText = "ဘောက်ချာနှင့် အော်ဒါ တင်နေပါသည်...";
       btn.disabled = true;
 
       try {
+        // Upload Voucher Image if provided
+        const fileInput = document.getElementById('checkoutVoucherFile');
+        let voucherUrl = '';
+        if (fileInput.files.length > 0) {
+          const file = fileInput.files[0];
+          const fileName = `voucher-${Date.now()}-${file.name}`;
+          const { error: upErr } = await client.storage.from('product-images').upload(fileName, file);
+          if (!upErr) {
+            const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(fileName);
+            voucherUrl = publicUrl;
+          }
+        }
+
         const { data: order, error } = await client.from('orders').insert([{
-          customer_name: name, customer_phone: phone, township,
-          delivery_address: address, payment_method: payment,
-          total_amount: total, status: 'pending', order_status: 'pending'
+          customer_name: name,
+          customer_phone: phone,
+          township,
+          delivery_address: address,
+          payment_method: payment,
+          payment_voucher: voucherUrl,
+          total_amount: total,
+          status: 'pending',
+          order_status: 'pending'
         }]).select().single();
 
         if (error) throw error;
 
-        alert('🎉 အော်ဒါတင်ခြင်း အောင်မြင်ပါသည်!');
+        alert('🎉 အော်ဒါတင်ခြင်းနှင့် ငွေပေးချေမှု အောင်မြင်ပါသည်!');
         cart = [];
         updateCartUI();
         closeCheckout();
@@ -262,7 +394,6 @@
 
     function openCart() { document.getElementById('cartModal').classList.remove('hidden'); document.getElementById('cartModal').classList.add('flex'); }
     function closeCart() { document.getElementById('cartModal').classList.add('hidden'); document.getElementById('cartModal').classList.remove('flex'); }
-    function openCheckout() { document.getElementById('checkoutModal').classList.remove('hidden'); document.getElementById('checkoutModal').classList.add('flex'); }
     function closeCheckout() { document.getElementById('checkoutModal').classList.add('hidden'); document.getElementById('checkoutModal').classList.remove('flex'); }
 
     init();
