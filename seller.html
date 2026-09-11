@@ -245,10 +245,12 @@
     let shopOrders = [];
 
     async function checkAuthSession() {
-      const { data: { session } } = await supabaseClient.auth.getSession();
+      const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
+      if (sessionError) { console.error(sessionError); showLoginView(); return; }
       if (!session) { showLoginView(); return; }
 
-      const { data: shop } = await supabaseClient.from('shops').select('*').eq('owner_id', session.user.id).single();
+      const { data: shop, error: shopError } = await supabaseClient.from('shops').select('*').eq('owner_id', session.user.id).maybeSingle();
+      if (shopError) { alert('❌ ဆိုင်အချက်အလက် ရယူမရပါ: ' + shopError.message); showLoginView(); return; }
       if (!shop) {
         alert("❌ သင့်အကောင့်သည် ဆိုင်ဖွင့်ထားခြင်း မရှိသေးပါ");
         await supabaseClient.auth.signOut();
@@ -283,10 +285,12 @@
     }
 
     async function loadShopData() {
-      const { data: prods } = await supabaseClient.from('products').select('*').eq('shop_id', myShop.id).order('id', { ascending: false });
+      const { data: prods, error: prodError } = await supabaseClient.from('products').select('*').eq('shop_id', myShop.id).order('id', { ascending: false });
+      if (prodError) { alert('❌ ပစ္စည်းများ ရယူမရပါ: ' + prodError.message); return; }
       shopProducts = prods || [];
 
-      const { data: ords } = await supabaseClient.from('shop_orders').select('*, orders(customer_name, customer_phone, delivery_address, township)').eq('shop_id', myShop.id).order('id', { ascending: false });
+      const { data: ords, error: orderError } = await supabaseClient.from('shop_orders').select('*, orders(customer_name, customer_phone, delivery_address, township)').eq('shop_id', myShop.id).order('id', { ascending: false });
+      if (orderError) { console.error(orderError); }
       shopOrders = ords || [];
 
       updateAnalytics();
@@ -325,7 +329,7 @@
             <td>${p.stock}</td>
             <td>${p.allow_cod ? '✓ COD' : '✕'} | ပို့ခ: ${p.shipping_fee || 0}</td>
             <td class="space-x-2">
-              <button onclick="deleteProduct(${p.id})" class="text-rose-500 font-bold hover:underline">ဖျက်မည်</button>
+              <button onclick="editProduct(${p.id})" class="text-blue-600 font-bold hover:underline">ပြင်မည်</button><button onclick="deleteProduct(${p.id})" class="text-rose-500 font-bold hover:underline">ဖျက်မည်</button>
             </td>
           </tr>
         `;
@@ -424,6 +428,10 @@
 
         const primaryImage = imageUrls.length > 0 ? imageUrls[0] : 'https://placehold.co/300';
 
+        if (!title) throw new Error('ပစ္စည်းအမည်ထည့်ပါ');
+        if (!Number.isFinite(priceVal) || priceVal <= 0) throw new Error('ဈေးနှုန်းမှန်ကန်စွာထည့်ပါ');
+        if (!Number.isInteger(stock) || stock < 0) throw new Error('Stock မှန်ကန်စွာထည့်ပါ');
+
         const payload = {
           shop_id: myShop.id,
           category_id,
@@ -445,7 +453,11 @@
           description
         };
 
-        const { error } = await supabaseClient.from('products').insert([payload]);
+        const editId = document.getElementById('editProductId').value;
+        const result = editId
+          ? await supabaseClient.from('products').update(payload).eq('id', editId).eq('shop_id', myShop.id)
+          : await supabaseClient.from('products').insert([payload]);
+        const error = result.error;
         if (error) throw error;
 
         closeProductModal();
@@ -461,7 +473,8 @@
 
     async function deleteProduct(id) {
       if (confirm('ဤပစ္စည်းကို ဖျက်ရန် သေချာပါသလား?')) {
-        await supabaseClient.from('products').delete().eq('id', id);
+        const { error } = await supabaseClient.from('products').delete().eq('id', id).eq('shop_id', myShop.id);
+        if (error) return alert('❌ ဖျက်မရပါ: ' + error.message);
         await loadShopData();
       }
     }
@@ -474,12 +487,40 @@
       document.getElementById('panel-orders').classList.toggle('hidden', tab !== 'orders');
     }
 
+    function editProduct(id) {
+      const p = shopProducts.find(x => Number(x.id) === Number(id));
+      if (!p) return;
+      document.getElementById('editProductId').value = p.id;
+      document.getElementById('productModalTitle').innerText = 'ကုန်ပစ္စည်း ပြင်ဆင်ရန်';
+      document.getElementById('prodTitle').value = p.title || p.name || '';
+      document.getElementById('prodCategory').value = p.category_id || 1;
+      document.getElementById('prodStock').value = p.stock ?? 0;
+      document.getElementById('prodSizes').value = (p.sizes || []).join(', ');
+      document.getElementById('prodColors').value = (p.colors || []).join(', ');
+      document.getElementById('prodPrice').value = p.price ?? p.priceMMK ?? 0;
+      document.getElementById('prodFlashPrice').value = p.flash_price || 0;
+      document.getElementById('prodAllowCod').checked = p.allow_cod !== false;
+      document.getElementById('prodShippingFee').value = p.shipping_fee || 0;
+      document.getElementById('prodCouponCode').value = p.coupon_code || '';
+      document.getElementById('prodCouponDiscount').value = p.coupon_discount || 0;
+      document.getElementById('prodDesc').value = p.description || '';
+      openProductModal();
+    }
+
     function openProductModal() {
+      if (!document.getElementById('editProductId').value) {
+        document.getElementById('productModalTitle').innerText = 'ကုန်ပစ္စည်း အသစ်တင်ရန် (Size & Color ပါ)';
+        document.querySelector('#productModal form').reset();
+        document.getElementById('prodStock').value = 10;
+        document.getElementById('prodAllowCod').checked = true;
+        document.getElementById('prodShippingFee').value = 0;
+      }
       document.getElementById('productModal').classList.remove('hidden');
       document.getElementById('productModal').classList.add('flex');
     }
 
     function closeProductModal() {
+      document.getElementById('editProductId').value = '';
       document.getElementById('productModal').classList.add('hidden');
       document.getElementById('productModal').classList.remove('flex');
     }
