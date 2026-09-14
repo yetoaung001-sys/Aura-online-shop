@@ -64,7 +64,7 @@
     <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
   </main>
 
-  <!-- PRODUCT DETAIL & BUY MODAL (အသေးစိတ်ကြည့်ရန် နှင့် ဝယ်ယူရန် Modal) -->
+  <!-- PRODUCT DETAIL & BUY MODAL -->
   <div id="buyModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -72,7 +72,6 @@
         <button onclick="closeBuyModal()"><i class="ph ph-x text-lg"></i></button>
       </div>
 
-      <!-- Detail Info -->
       <div class="flex flex-col sm:flex-row gap-4 items-center sm:items-start">
         <img id="detailImg" src="" class="w-32 h-32 object-cover rounded-2xl border shadow-sm" />
         <div class="space-y-1.5 flex-1">
@@ -80,7 +79,6 @@
           <div id="detailShop" class="text-slate-500 font-bold"></div>
           <div id="detailPrice" class="text-orange-600 font-black text-base"></div>
           
-          <!-- Badges for Stock, COD, Coupon -->
           <div class="flex flex-wrap gap-2 pt-1">
             <span id="detailStockBadge" class="px-2 py-0.5 rounded-md font-bold text-[10px]"></span>
             <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-md font-bold text-[10px]">🚚 COD ငွေချေစနစ် ရရှိသည်</span>
@@ -89,19 +87,16 @@
         </div>
       </div>
 
-      <!-- Description if available -->
       <div id="detailDescArea" class="bg-slate-50 p-3 rounded-2xl border text-slate-600 space-y-1 hidden">
         <span class="font-bold text-slate-700 block">📝 ပစ္စည်းအကြောင်းအရာ:</span>
         <p id="detailDescText"></p>
       </div>
 
-      <!-- Size Selection -->
       <div id="sizeSelectionArea" class="space-y-1.5 hidden">
         <label class="font-bold text-slate-700">📏 Size ရွေးပါ:</label>
         <div id="sizeOptionsList" class="flex flex-wrap gap-2"></div>
       </div>
 
-      <!-- Color Selection -->
       <div id="colorSelectionArea" class="space-y-1.5 hidden">
         <label class="font-bold text-slate-700">🎨 Color ရွေးပါ:</label>
         <div id="colorOptionsList" class="flex flex-wrap gap-2"></div>
@@ -157,12 +152,8 @@
         </div>
         
         <div>
-          <label for="custPayment" class="sr-only">ငွေပေးချေမှုစနစ်</label>
-          <select id="custPayment" class="w-full border p-2.5 rounded-xl bg-white font-bold" autocomplete="off">
-            <option value="Cash On Delivery">Cash On Delivery (အိမ်ရောက်ငွေချေ - COD)</option>
-            <option value="KBZPay">KBZPay</option>
-            <option value="WavePay">WavePay</option>
-          </select>
+          <label for="custPayment" class="block font-bold text-slate-700 mb-1">ငွေပေးချေမှုစနစ် ရွေးချယ်ရန်</label>
+          <select id="custPayment" class="w-full border p-2.5 rounded-xl bg-white font-bold" autocomplete="off"></select>
         </div>
 
         <div class="bg-slate-50 p-3 rounded-xl border space-y-1.5">
@@ -186,6 +177,7 @@
     const client = supabase.createClient(SUPABASE_URL, SB_KEY);
 
     let products = [];
+    let paymentMethods = [];
     let cart = JSON.parse(localStorage.getItem('aura_cart') || '[]');
     let searchQuery = '';
     let selectedProductForBuy = null;
@@ -193,19 +185,33 @@
     let chosenColor = '';
 
     async function init() {
-      const { data, error } = await client
-        .from('products')
-        .select('*, shops(name, is_active)')
-        .order('id', { ascending: false });
+      const [prodRes, payRes] = await Promise.all([
+        client.from('products').select('*, shops(name, is_active)').order('id', { ascending: false }),
+        client.from('payment_methods').select('*')
+      ]);
 
-      if (error) {
-        console.error(error);
-        alert("Error fetching products: " + error.message);
+      if (prodRes.error) {
+        console.error(prodRes.error);
+        alert("Error fetching products: " + prodRes.error.message);
         return;
       }
 
-      products = data || [];
+      products = prodRes.data || [];
+      paymentMethods = payRes.data || [];
+      
       renderProducts();
+      populatePaymentMethods();
+    }
+
+    function populatePaymentMethods() {
+      const select = document.getElementById('custPayment');
+      if (!paymentMethods.length) {
+        select.innerHTML = '<option value="">Cash On Delivery (Default)</option>';
+        return;
+      }
+      select.innerHTML = paymentMethods.map(pm => `
+        <option value="${pm.id}">${pm.provider_name} - ${pm.account_name} (${pm.account_number})</option>
+      `).join('');
     }
 
     function renderProducts() {
@@ -285,7 +291,6 @@
         stockBadge.innerText = `❌ ပစ္စည်းလက်ကျန် ကုန်နေပါသည်`;
       }
 
-      // Description
       const descArea = document.getElementById('detailDescArea');
       const descText = document.getElementById('detailDescText');
       if (product.description) {
@@ -295,7 +300,6 @@
         descArea.classList.add('hidden');
       }
 
-      // Sizes handling
       const sizeArea = document.getElementById('sizeSelectionArea');
       const sizeList = document.getElementById('sizeOptionsList');
       if (product.sizes && product.sizes.length > 0) {
@@ -308,7 +312,6 @@
         sizeArea.classList.add('hidden');
       }
 
-      // Colors handling
       const colorArea = document.getElementById('colorSelectionArea');
       const colorList = document.getElementById('colorOptionsList');
       if (product.colors && product.colors.length > 0) {
@@ -411,7 +414,7 @@
       const phone = document.getElementById('custPhone').value.trim();
       const township = document.getElementById('custTownship').value.trim();
       const address = document.getElementById('custAddress').value.trim();
-      const payment = document.getElementById('custPayment').value;
+      const paymentMethodId = document.getElementById('custPayment').value;
       const total = cart.reduce((s, i) => s + (Number(i.price || i.priceMMK || 0) * i.qty), 0);
 
       const btn = document.getElementById('submitOrderBtn');
@@ -436,7 +439,7 @@
           customer_phone: phone,
           township,
           delivery_address: address,
-          payment_method: payment,
+          payment_method_id: paymentMethodId ? Number(paymentMethodId) : null,
           payment_voucher: voucherUrl,
           total_amount: total,
           status: 'pending',
