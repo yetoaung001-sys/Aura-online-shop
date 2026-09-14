@@ -767,7 +767,7 @@
       tbody.innerHTML = coupons.map(c => `
         <tr class="hover:bg-slate-50">
           <td class="p-4 font-mono font-bold text-amber-600">${escapeHtml(c.code)}</td>
-          <td class="p-4 font-bold text-emerald-600">${Number(c.discount_amount || c.val || 0).toLocaleString()} Ks</td>
+          <td class="p-4 font-bold text-emerald-600">${Number(c.discount_value || c.discount_amount || c.val || 0).toLocaleString()} Ks</td>
           <td class="p-4">${Number(c.min_order_amount || 0).toLocaleString()} Ks</td>
           <td class="p-4"><button onclick="deleteCoupon(${c.id})" class="text-xs text-rose-600 hover:underline">ဖျက်မည်</button></td>
         </tr>
@@ -777,10 +777,10 @@
     async function handleAddCoupon(e) {
       e.preventDefault();
       const code = document.getElementById('coupon-code').value.trim().toUpperCase();
-      const discount_amount = Number(document.getElementById('coupon-discount').value);
+      const discount_value = Number(document.getElementById('coupon-discount').value);
       const min_order_amount = Number(document.getElementById('coupon-min').value);
 
-      const { error } = await client.from('coupons').insert([{ code, discount_amount, val: discount_amount, min_order_amount }]);
+      const { error } = await client.from('coupons').insert([{ code, discount_value, min_order_amount }]);
       if (error) {
         alert('Coupon ထည့်မရပါ:\n' + error.message);
         return;
@@ -809,7 +809,7 @@
       if (!allowed) return;
       console.log('✅ Aura Admin Panel Authorized');
       await loadDashboardStats();
-      await loadShops(); // 👈 ဆိုင်စာရင်းများကို Page စတင်ချိန်တွင် ချက်ချင်း ဆွဲထုတ်ပေးရန် ထည့်သွင်းပြီးပါပြီ
+      await loadShops();
     }
 
     document.addEventListener('DOMContentLoaded', init);
