@@ -92,7 +92,7 @@ async function init(){
   ]);
   if(sr.error||!sr.data){alert('ဆိုင်မတွေ့ပါ');return;}
   shop=sr.data;
-  shopShippingFee = Number(shop.shipping_fee ?? 0);
+  shopShippingFee = Number(shop.shipping_fee ?? shop.delivery_fee ?? 0);
 
   document.title=`${shop.name||'Shop'} - Aura Marketplace`;
   document.getElementById('headerShopName').innerText=shop.name||'Aura Store';
@@ -196,6 +196,8 @@ function openCheckout(){
   if(!selectedItems.length)return alert('ဝယ်ယူရန် ပစ္စည်းအနည်းဆုံး တစ်ခု ရွေးချယ်ပါ');
   closeCart();
   
+  shopShippingFee = Number(shop.shipping_fee ?? shop.delivery_fee ?? 0);
+
   document.getElementById('checkoutItemsList').innerHTML=selectedItems.map(i=>{
     const unitPrice=Number(i.price??i.priceMMK??0),itemTotal=unitPrice*i.qty;
     return `
