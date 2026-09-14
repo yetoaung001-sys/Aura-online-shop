@@ -22,9 +22,9 @@
       <span>⚡ အိမ်တိုင်ရာရောက် ငွေချေစနစ် (COD) ဖြင့် မြန်မာတစ်နိုင်ငံလုံးသို့ ပို့ဆောင်ပေးပါသည်</span>
       <div class="flex items-center gap-4">
         <a href="seller.html" class="font-bold underline hover:text-amber-200">Seller Center</a>
-        <a href="admin.html" class="hover:text-amber-200">
-  👑 Admin
-</a>
+        <a href="login.html" class="hover:text-amber-200 font-bold">
+          👑 Admin Login
+        </a>
       </div>
     </div>
   </div>
@@ -162,7 +162,7 @@
     async function init() {
       const { data, error } = await client
         .from('products')
-        .select('*, shops(name)')
+        .select('*, shops(name, is_active)')
         .order('id', { ascending: false });
 
       if (error) {
@@ -198,22 +198,25 @@
         const price = Number(p.price || p.priceMMK || 0);
         const image = p.image || p.image_url || 'https://placehold.co/300';
         const shopName = p.shops?.name || 'Aura Store';
+        const shopId = p.shop_id || p.shops?.id;
+        const isShopClosed = p.shops?.is_active === false;
+        const stock = Number(p.stock || 0);
 
         return `
           <div class="bg-white rounded-2xl border border-slate-200 p-3 flex flex-col justify-between hover:shadow-md transition">
             <div>
               <div class="relative">
                 <img src="${image}" class="w-full h-36 sm:h-44 object-cover rounded-xl mb-2" onerror="this.src='https://placehold.co/300'" />
-                <span class="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur text-amber-300 text-[9px] font-bold px-2 py-0.5 rounded">
+                <a href="shop.html?id=${shopId}" class="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur text-amber-300 text-[9px] font-bold px-2 py-0.5 rounded hover:underline">
                   <i class="ph-fill ph-storefront"></i> ${shopName}
-                </span>
+                </a>
               </div>
               <h4 class="font-bold text-xs text-slate-800 line-clamp-2">${title}</h4>
               <div class="text-base font-black text-orange-600 mt-1">${price.toLocaleString()} MMK</div>
-              <div class="text-[10px] text-slate-400 mt-0.5">လက်ကျန်: ${p.stock || 0} ခု</div>
+              <div class="text-[10px] text-slate-400 mt-0.5">လက်ကျန်: ${stock} ခု</div>
             </div>
-            <button onclick='openBuyModal(${JSON.stringify(p)})' class="mt-3 w-full bg-orange-600 hover:bg-orange-700 text-white py-2 rounded-xl text-xs font-bold shadow transition">
-              ဝယ်ယူမည်
+            <button onclick='openBuyModal(${JSON.stringify(p)})' ${stock <= 0 || isShopClosed ? 'disabled' : ''} class="mt-3 w-full ${stock <= 0 || isShopClosed ? 'bg-slate-300 cursor-not-allowed' : 'bg-orange-600 hover:bg-orange-700'} text-white py-2 rounded-xl text-xs font-bold shadow transition">
+              ${stock <= 0 ? 'ကုန်နေပါသည်' : isShopClosed ? 'ဆိုင်ပိတ်ထားပါသည်' : 'ဝယ်ယူမည်'}
             </button>
           </div>
         `;
@@ -245,7 +248,7 @@
       if (product.sizes && product.sizes.length > 0) {
         sizeArea.classList.remove('hidden');
         sizeList.innerHTML = product.sizes.map((s, idx) => `
-          <button onclick="selectSize('${s}', this)" class="size-btn px-3 py-1.5 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-orange-600 bg-orange-50 text-orange-600' : 'border-slate-200'}">${s}</button>
+          <button type="button" onclick="selectSize('${s}', this)" class="size-btn px-3 py-1.5 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-orange-600 bg-orange-50 text-orange-600' : 'border-slate-200'}">${s}</button>
         `).join('');
         chosenSize = product.sizes[0];
       } else {
@@ -258,7 +261,7 @@
       if (product.colors && product.colors.length > 0) {
         colorArea.classList.remove('hidden');
         colorList.innerHTML = product.colors.map((c, idx) => `
-          <button onclick="selectColor('${c}', this)" class="color-btn px-3 py-1.5 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-orange-600 bg-orange-50 text-orange-600' : 'border-slate-200'}">${c}</button>
+          <button type="button" onclick="selectColor('${c}', this)" class="color-btn px-3 py-1.5 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-orange-600 bg-orange-50 text-orange-600' : 'border-slate-200'}">${c}</button>
         `).join('');
         chosenColor = product.colors[0];
       } else {
@@ -293,8 +296,12 @@
       if (stock <= 0) return alert('ဤပစ္စည်း လက်ကျန်မရှိတော့ပါ');
       const key = `${selectedProductForBuy.id}|${chosenSize}|${chosenColor}`;
       const existing = cart.find(i => i.key === key);
+      const shopId = selectedProductForBuy.shop_id || selectedProductForBuy.shops?.id;
+      const shopName = selectedProductForBuy.shops?.name || 'Aura Store';
+
       if (existing) existing.qty = Math.min(existing.qty + qty, stock);
-      else cart.push({ key, ...selectedProductForBuy, selectedSize: chosenSize, selectedColor: chosenColor, qty });
+      else cart.push({ key, ...selectedProductForBuy, selectedSize: chosenSize, selectedColor: chosenColor, qty, shop_id: shopId, shop_name: shopName });
+      
       saveCart();
       updateCartUI();
       closeBuyModal();
@@ -327,7 +334,7 @@
             <img src="${img}" class="w-12 h-12 object-cover rounded-xl" />
             <div class="flex-1">
               <h5 class="font-bold line-clamp-1">${title}</h5>
-              <div class="text-[10px] text-slate-500">Size: ${i.selectedSize || '-'} | Color: ${i.selectedColor || '-'}</div>
+              <div class="text-[10px] text-slate-500">${i.shop_name || ''} · Size: ${i.selectedSize || '-'} | Color: ${i.selectedColor || '-'}</div>
               <div class="text-orange-600 font-bold">${p.toLocaleString()} MMK x ${i.qty}</div>
             </div>
             <button onclick="cart.splice(${idx}, 1); saveCart(); updateCartUI();" class="text-rose-500 p-1"><i class="ph ph-trash text-base"></i></button>
@@ -359,7 +366,6 @@
       btn.disabled = true;
 
       try {
-        // Upload Voucher Image if provided
         const fileInput = document.getElementById('checkoutVoucherFile');
         let voucherUrl = '';
         if (fileInput.files.length > 0) {
@@ -386,18 +392,19 @@
 
         if (error) throw error;
 
-        // Split the cart into seller-specific sub-orders so every seller sees only their own items.
         const groups = {};
         cart.forEach(item => {
           const sid = item.shop_id || item.shops?.id;
           if (!sid) return;
           (groups[sid] ||= []).push(item);
         });
+
         for (const [shopId, items] of Object.entries(groups)) {
           const subtotal = items.reduce((sum, i) => sum + Number(i.price || i.priceMMK || 0) * Number(i.qty || 0), 0);
           const rate = Number(items[0].commission_rate || 0);
           const commission = Number((subtotal * rate / 100).toFixed(2));
           const sellerPayout = subtotal - commission;
+          
           const { error: subError } = await client.from('shop_orders').insert([{
             order_id: order.id,
             shop_id: Number(shopId),
