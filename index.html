@@ -217,7 +217,7 @@
 
     async function init() {
       const [prodRes, payRes] = await Promise.all([
-        client.from('products').select('*, shops(id, name, is_active)').order('id', { ascending: false }),
+        client.from('products').select('*, shops(id, name, is_active, shipping_fee, delivery_fee)').order('id', { ascending: false }),
         client.from('payment_methods').select('*')
       ]);
       if (prodRes.error) { console.error(prodRes.error); return; }
@@ -286,8 +286,10 @@
       const existing = cart.find(i => i.key === key);
       const shopId = selectedProductForBuy.shop_id || selectedProductForBuy.shops?.id;
       const shopName = selectedProductForBuy.shops?.name || 'Aura Store';
+      const shippingFee = Number(selectedProductForBuy.shipping_fee ?? selectedProductForBuy.shops?.shipping_fee ?? selectedProductForBuy.shops?.delivery_fee ?? 0);
+      
       if (existing) existing.qty = Math.min(existing.qty + qty, stock);
-      else cart.push({ key, ...selectedProductForBuy, selectedSize: chosenSize, selectedColor: chosenColor, qty, checked: true, shop_id: shopId, shop_name: shopName });
+      else cart.push({ key, ...selectedProductForBuy, selectedSize: chosenSize, selectedColor: chosenColor, qty, checked: true, shop_id: shopId, shop_name: shopName, shipping_fee: shippingFee });
       saveCart(); updateCartUI(); closeBuyModal(); openCart();
     }
 
@@ -324,7 +326,9 @@
       const selectedItems = cart.filter(i => i.checked);
       if (!selectedItems.length) return alert('ဝယ်ယူရန် ပစ္စည်းအနည်းဆုံး တစ်ခု ရွေးချယ်ပါ');
       closeCart();
-      shopShippingFee = 0; // မူလတန်ဖိုး
+
+      const firstItem = selectedItems[0];
+      shopShippingFee = Number(firstItem.shipping_fee ?? firstItem.shops?.shipping_fee ?? firstItem.shops?.delivery_fee ?? 0);
 
       document.getElementById('checkoutItemsList').innerHTML = selectedItems.map(i => `
         <div class="flex items-center gap-3 py-2 text-xs">
