@@ -82,7 +82,6 @@
           <div class="flex flex-wrap gap-2 pt-1">
             <span id="detailStockBadge" class="px-2 py-0.5 rounded-md font-bold text-[10px]"></span>
             <span class="bg-emerald-50 text-emerald-700 border border-emerald-200 px-2 py-0.5 rounded-md font-bold text-[10px]">🚚 COD ငွေချေစနစ် ရရှိသည်</span>
-            <span class="bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-md font-bold text-[10px]">🎟️ ကူပွန် (Coupon) အသုံးပြုနိုင်သည်</span>
           </div>
         </div>
       </div>
@@ -133,7 +132,7 @@
       
       <div class="border-t pt-3 space-y-2 text-xs">
         <div class="flex justify-between text-sm font-black">
-          <span>ရွေးချယ်ထားုပီး စုစုပေါင်း:</span>
+          <span>ရွေးချယ်ထားပြီး စုစုပေါင်း:</span>
           <span id="cartTotal" class="text-orange-600">0 MMK</span>
         </div>
         <button onclick="openCheckout()" class="w-full bg-orange-600 text-white py-3 rounded-2xl font-bold shadow">ရွေးချယ်ထားသည်များ ဝယ်မည် (Checkout)</button>
@@ -150,8 +149,6 @@
       </div>
 
       <form onsubmit="handleOrderSubmit(event)" class="space-y-3">
-        
-        <!-- 📦 ဝယ်ယူမည့် ပစ္စည်းများ စာရင်းဇယား (Form ၏ အပေါ်ဆုံးတွင် ပေါ်မည်) -->
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 space-y-2">
           <span class="font-black text-slate-700 block border-b pb-1 text-xs">📦 ဝယ်ယူမည့် ရွေးချယ်ထားသော ပစ္စည်းများ</span>
           <div id="checkoutItemsList" class="max-h-40 overflow-y-auto divide-y divide-slate-200 space-y-2"></div>
@@ -174,7 +171,6 @@
           <textarea id="custAddress" required placeholder="လမ်းနာမည်၊ ရပ်ကွက်၊ အိမ်နံပါတ်..." class="w-full border p-2.5 rounded-xl outline-none" rows="2"></textarea>
         </div>
 
-        <!-- 🚚 ကားဂိတ်ပို့ခ -->
         <div>
           <label class="font-bold block mb-1 text-slate-700">🚚 ကားဂိတ်ပို့ခ (Shipping Fee) - ဆိုင်မှသတ်မှတ်သည်</label>
           <input type="text" id="shippingFeeDisplay" readonly value="0 MMK" class="w-full border p-2.5 rounded-xl bg-slate-100 font-black text-slate-600 outline-none cursor-not-allowed" />
@@ -190,7 +186,6 @@
           <input type="file" id="checkoutVoucherFile" accept="image/*" class="w-full border p-2 rounded-xl bg-white cursor-pointer" />
         </div>
 
-        <!-- Financial Breakdown -->
         <div class="pt-2 border-t space-y-1 text-xs font-bold bg-slate-50 p-3 rounded-xl border">
           <div class="flex justify-between text-slate-600">
             <span>ပစ္စည်းတန်ဖိုး (Subtotal):</span>
@@ -216,32 +211,18 @@
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
     const client = supabase.createClient(SUPABASE_URL, SB_KEY);
 
-    let products = [];
-    let paymentMethods = [];
-    let cart = JSON.parse(localStorage.getItem('aura_cart') || '[]');
-    let searchQuery = '';
-    let selectedProductForBuy = null;
-    let chosenSize = '';
-    let chosenColor = '';
-    let shopShippingFee = 0;
-
+    let products = [], paymentMethods = [], cart = JSON.parse(localStorage.getItem('aura_cart') || '[]');
+    let searchQuery = '', selectedProductForBuy = null, chosenSize = '', chosenColor = '', shopShippingFee = 0;
     cart.forEach(i => { if(i.checked === undefined) i.checked = true; });
 
     async function init() {
       const [prodRes, payRes] = await Promise.all([
-        client.from('products').select('*, shops(id, name, is_active, shipping_fee, delivery_fee)').order('id', { ascending: false }),
+        client.from('products').select('*, shops(id, name, is_active)').order('id', { ascending: false }),
         client.from('payment_methods').select('*')
       ]);
-
-      if (prodRes.error) {
-        console.error(prodRes.error);
-        alert("Error fetching products: " + prodRes.error.message);
-        return;
-      }
-
+      if (prodRes.error) { console.error(prodRes.error); return; }
       products = prodRes.data || [];
       paymentMethods = payRes.data || [];
-      
       renderProducts();
       populatePaymentMethods();
       updateCartUI();
@@ -249,32 +230,16 @@
 
     function populatePaymentMethods() {
       const select = document.getElementById('custPayment');
-      if (!paymentMethods.length) {
-        select.innerHTML = '<option value="">Cash On Delivery (Default)</option>';
-        return;
-      }
-      select.innerHTML = paymentMethods.map(pm => `
-        <option value="${pm.id}">${pm.provider_name} - ${pm.account_name} (${pm.account_number})</option>
-      `).join('');
+      if (!paymentMethods.length) { select.innerHTML = '<option value="">Cash On Delivery (Default)</option>'; return; }
+      select.innerHTML = paymentMethods.map(pm => `<option value="${pm.id}">${pm.provider_name} - ${pm.account_name} (${pm.account_number})</option>`).join('');
     }
 
     function renderProducts() {
       const grid = document.getElementById('productGrid');
       let list = products;
-
-      if (searchQuery) {
-        list = list.filter(p => {
-          const t = p.title || p.name || '';
-          return t.toLowerCase().includes(searchQuery);
-        });
-      }
-
+      if (searchQuery) list = list.filter(p => (p.title || p.name || '').toLowerCase().includes(searchQuery));
       document.getElementById('productCountBadge').innerText = `${list.length} မျိုး ရှိသည်`;
-
-      if (!list.length) {
-        grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-400 text-xs">ကုန်ပစ္စည်း မရှိသေးပါ</div>';
-        return;
-      }
+      if (!list.length) { grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-400 text-xs">ကုန်ပစ္စည်း မရှိသေးပါ</div>'; return; }
 
       grid.innerHTML = list.map(p => {
         const title = p.title || p.name || 'အမည်မရှိပစ္စည်း';
@@ -282,223 +247,103 @@
         const image = p.image || p.image_url || 'https://placehold.co/300';
         const shopName = p.shops?.name || 'Aura Store';
         const shopId = p.shop_id || p.shops?.id;
-        const isShopClosed = p.shops?.is_active === false;
         const stock = Number(p.stock || 0);
-
         return `
           <div class="bg-white rounded-2xl border border-slate-200 p-3 flex flex-col justify-between hover:shadow-md transition">
             <div>
               <div class="relative cursor-pointer" onclick='openBuyModal(${JSON.stringify(p)})'>
                 <img src="${image}" class="w-full h-36 sm:h-44 object-cover rounded-xl mb-2" onerror="this.src='https://placehold.co/300'" />
                 <span class="absolute top-2 right-2 bg-black/60 text-white text-[9px] px-2 py-0.5 rounded-full font-bold">လက်ကျန်: ${stock}</span>
-                <a href="shop.html?id=${shopId}" onclick="event.stopPropagation()" class="absolute bottom-2 left-2 bg-slate-900/80 backdrop-blur text-amber-300 text-[9px] font-bold px-2 py-0.5 rounded hover:underline">
-                  <i class="ph-fill ph-storefront"></i> ${shopName}
-                </a>
+                <a href="shop.html?id=${shopId}" onclick="event.stopPropagation()" class="absolute bottom-2 left-2 bg-slate-900/80 text-amber-300 text-[9px] font-bold px-2 py-0.5 rounded"><i class="ph-fill ph-storefront"></i> ${shopName}</a>
               </div>
               <h4 class="font-bold text-xs text-slate-800 line-clamp-2 cursor-pointer hover:text-orange-600" onclick='openBuyModal(${JSON.stringify(p)})'>${title}</h4>
               <div class="text-base font-black text-orange-600 mt-1">${price.toLocaleString()} MMK</div>
-              <div class="flex items-center gap-1.5 mt-1 text-[10px] text-emerald-600 font-bold">
-                <i class="ph-bold ph-check-circle"></i> COD နှင့် ကူပွန်ရသည်
-              </div>
             </div>
-            <button onclick='openBuyModal(${JSON.stringify(p)})' ${stock <= 0 || isShopClosed ? 'disabled' : ''} class="mt-3 w-full ${stock <= 0 || isShopClosed ? 'bg-slate-300 cursor-not-allowed' : 'bg-orange-600 hover:bg-orange-700'} text-white py-2 rounded-xl text-xs font-bold shadow transition">
-              ${stock <= 0 ? 'ကုန်နေပါသည်' : isShopClosed ? 'ဆိုင်ပိတ်ထားပါသည်' : 'အသေးစိတ်ကြည့်မည်'}
-            </button>
+            <button onclick='openBuyModal(${JSON.stringify(p)})' ${stock<=0?'disabled':''} class="mt-3 w-full ${stock<=0?'bg-slate-300':'bg-orange-600 hover:bg-orange-700'} text-white py-2 rounded-xl text-xs font-bold">${stock<=0?'ကုန်နေပါသည်':'အသေးစိတ်ကြည့်မည်'}</button>
           </div>
         `;
       }).join('');
     }
 
-    function handleSearch(val) {
-      searchQuery = val.trim().toLowerCase();
-      renderProducts();
-    }
-
+    function handleSearch(val) { searchQuery = val.trim().toLowerCase(); renderProducts(); }
     function openBuyModal(product) {
-      selectedProductForBuy = product;
-      chosenSize = '';
-      chosenColor = '';
-
-      const img = product.image || product.image_url || 'https://placehold.co/100';
-      document.getElementById('detailImg').src = img;
-      document.getElementById('detailTitle').innerText = product.title || product.name || 'အမည်မရှိပစ္စည်း';
+      selectedProductForBuy = product; chosenSize = ''; chosenColor = '';
+      document.getElementById('detailImg').src = product.image || product.image_url || 'https://placehold.co/100';
+      document.getElementById('detailTitle').innerText = product.title || product.name || '';
       document.getElementById('detailShop').innerText = `ဆိုင်: ${product.shops?.name || 'Aura Store'}`;
       document.getElementById('detailPrice').innerText = `${Number(product.price || product.priceMMK || 0).toLocaleString()} MMK`;
-
-      const stock = Number(product.stock || 0);
-      const stockBadge = document.getElementById('detailStockBadge');
-      if (stock > 0) {
-        stockBadge.className = "px-2 py-0.5 rounded-md font-bold text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200";
-        stockBadge.innerText = `📦 လက်ကျန်ရှိသည် (${stock} ခု)`;
-      } else {
-        stockBadge.className = "px-2 py-0.5 rounded-md font-bold text-[10px] bg-rose-50 text-rose-700 border border-rose-200";
-        stockBadge.innerText = `❌ ပစ္စည်းလက်ကျန် ကုန်နေပါသည်`;
-      }
-
-      const descArea = document.getElementById('detailDescArea');
-      const descText = document.getElementById('detailDescText');
-      if (product.description) {
-        descArea.classList.remove('hidden');
-        descText.innerText = product.description;
-      } else {
-        descArea.classList.add('hidden');
-      }
-
-      const sizeArea = document.getElementById('sizeSelectionArea');
-      const sizeList = document.getElementById('sizeOptionsList');
-      if (product.sizes && product.sizes.length > 0) {
-        sizeArea.classList.remove('hidden');
-        sizeList.innerHTML = product.sizes.map((s, idx) => `
-          <button type="button" onclick="selectSize('${s}', this)" class="size-btn px-3 py-1.5 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-orange-600 bg-orange-50 text-orange-600' : 'border-slate-200'}">${s}</button>
-        `).join('');
-        chosenSize = product.sizes[0];
-      } else {
-        sizeArea.classList.add('hidden');
-      }
-
-      const colorArea = document.getElementById('colorSelectionArea');
-      const colorList = document.getElementById('colorOptionsList');
-      if (product.colors && product.colors.length > 0) {
-        colorArea.classList.remove('hidden');
-        colorList.innerHTML = product.colors.map((c, idx) => `
-          <button type="button" onclick="selectColor('${c}', this)" class="color-btn px-3 py-1.5 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-orange-600 bg-orange-50 text-orange-600' : 'border-slate-200'}">${c}</button>
-        `).join('');
-        chosenColor = product.colors[0];
-      } else {
-        colorArea.classList.add('hidden');
-      }
-
-      document.getElementById('buyModal').classList.remove('hidden');
-      document.getElementById('buyModal').classList.add('flex');
+      document.getElementById('detailStockBadge').innerText = Number(product.stock || 0) > 0 ? `📦 လက်ကျန်ရှိသည် (${product.stock} ခု)` : `❌ ကုန်နေပါသည်`;
+      document.getElementById('buyModal').classList.remove('hidden'); document.getElementById('buyModal').classList.add('flex');
     }
-
-    function selectSize(size, el) {
-      chosenSize = size;
-      document.querySelectorAll('.size-btn').forEach(b => b.className = "size-btn px-3 py-1.5 rounded-xl border font-bold text-xs border-slate-200");
-      el.className = "size-btn px-3 py-1.5 rounded-xl border font-bold text-xs border-orange-600 bg-orange-50 text-orange-600";
-    }
-
-    function selectColor(color, el) {
-      chosenColor = color;
-      document.querySelectorAll('.color-btn').forEach(b => b.className = "color-btn px-3 py-1.5 rounded-xl border font-bold text-xs border-slate-200");
-      el.className = "color-btn px-3 py-1.5 rounded-xl border font-bold text-xs border-orange-600 bg-orange-50 text-orange-600";
-    }
-
-    function closeBuyModal() {
-      document.getElementById('buyModal').classList.add('hidden');
-      document.getElementById('buyModal').classList.remove('flex');
-    }
+    function closeBuyModal() { document.getElementById('buyModal').classList.add('hidden'); document.getElementById('buyModal').classList.remove('flex'); }
 
     function confirmAddToCart() {
       if (!selectedProductForBuy) return;
       const qty = Math.max(1, Number(document.getElementById('buyQty').value) || 1);
       const stock = Number(selectedProductForBuy.stock || 0);
-      if (stock <= 0) return alert('ဤပစ္စည်း လက်ကျန်မရှိတော့ပါ');
       if (qty > stock) return alert(`လက်ကျန် ${stock} ခုသာရှိပါသည်`);
-      
       const key = `${selectedProductForBuy.id}|${chosenSize}|${chosenColor}`;
       const existing = cart.find(i => i.key === key);
       const shopId = selectedProductForBuy.shop_id || selectedProductForBuy.shops?.id;
       const shopName = selectedProductForBuy.shops?.name || 'Aura Store';
-
       if (existing) existing.qty = Math.min(existing.qty + qty, stock);
       else cart.push({ key, ...selectedProductForBuy, selectedSize: chosenSize, selectedColor: chosenColor, qty, checked: true, shop_id: shopId, shop_name: shopName });
-      
-      saveCart();
-      updateCartUI();
-      closeBuyModal();
-      openCart();
+      saveCart(); updateCartUI(); closeBuyModal(); openCart();
     }
 
-    function toggleItemCheck(index) {
-      cart[index].checked = !cart[index].checked;
-      saveCart();
-    }
-
-    function toggleSelectAll(master) {
-      const status = master.checked;
-      cart.forEach(i => i.checked = status);
-      saveCart();
-    }
-
-    function saveCart(){ localStorage.setItem('aura_cart', JSON.stringify(cart)); }
+    function toggleItemCheck(index) { cart[index].checked = !cart[index].checked; saveCart(); }
+    function toggleSelectAll(master) { cart.forEach(i => i.checked = master.checked); saveCart(); }
+    function saveCart() { localStorage.setItem('aura_cart', JSON.stringify(cart)); }
 
     function updateCartUI() {
       const totalQty = cart.reduce((s, i) => s + i.qty, 0);
-      const badge = document.getElementById('cartBadge');
-      badge.innerText = totalQty;
-      badge.style.transform = totalQty > 0 ? 'scale(1)' : 'scale(0)';
-
+      document.getElementById('cartBadge').innerText = totalQty;
+      document.getElementById('cartBadge').style.transform = totalQty > 0 ? 'scale(1)' : 'scale(0)';
       const selectedItems = cart.filter(i => i.checked);
-      const total = selectedItems.reduce((s, i) => s + (Number(i.price || i.priceMMK || 0) * i.qty), 0);
-      document.getElementById('cartTotal').innerText = total.toLocaleString() + ' MMK';
+      document.getElementById('cartTotal').innerText = (selectedItems.reduce((s, i) => s + (Number(i.price || i.priceMMK || 0) * i.qty), 0)).toLocaleString() + ' MMK';
       document.getElementById('selectedCountBadge').innerText = `${selectedItems.length} ခု ရွေးထားသည်`;
-
-      const allChecked = cart.length > 0 && cart.every(i => i.checked);
-      document.getElementById('selectAllCheckbox').checked = allChecked;
-
+      document.getElementById('selectAllCheckbox').checked = cart.length > 0 && cart.every(i => i.checked);
+      
       const box = document.getElementById('cartItems');
-      if (!cart.length) {
-        box.innerHTML = '<div class="py-12 text-center text-slate-400">စျေးဝယ်တွန်းလှည်းထဲ ဘာမှမရှိသေးပါ</div>';
-        return;
-      }
-
-      box.innerHTML = cart.map((i, idx) => {
-        const p = Number(i.price || i.priceMMK || 0);
-        const title = i.title || i.name;
-        const img = i.image || i.image_url;
-        return `
-          <div class="py-3 flex items-center gap-2">
-            <input type="checkbox" ${i.checked ? 'checked' : ''} onchange="toggleItemCheck(${idx})" class="w-4 h-4 rounded text-orange-600 accent-orange-600 cursor-pointer" />
-            <img src="${img}" class="w-12 h-12 object-cover rounded-xl border" />
-            <div class="flex-1">
-              <h5 class="font-bold line-clamp-1">${title}</h5>
-              <div class="text-[10px] text-slate-500">${i.shop_name || ''} · Size: ${i.selectedSize || '-'} | Color: ${i.selectedColor || '-'}</div>
-              <div class="text-orange-600 font-bold">${p.toLocaleString()} MMK x ${i.qty}</div>
-            </div>
-            <button onclick="cart.splice(${idx}, 1); saveCart(); updateCartUI();" class="text-rose-500 p-1"><i class="ph ph-trash text-base"></i></button>
+      if (!cart.length) { box.innerHTML = '<div class="py-12 text-center text-slate-400">စျေးဝယ်တွန်းလှည်းထဲ ဘာမှမရှိသေးပါ</div>'; return; }
+      box.innerHTML = cart.map((i, idx) => `
+        <div class="py-3 flex items-center gap-2">
+          <input type="checkbox" ${i.checked ? 'checked' : ''} onchange="toggleItemCheck(${idx})" class="w-4 h-4 rounded text-orange-600 accent-orange-600 cursor-pointer" />
+          <img src="${i.image || i.image_url}" class="w-12 h-12 object-cover rounded-xl border" />
+          <div class="flex-1">
+            <h5 class="font-bold line-clamp-1">${i.title || i.name}</h5>
+            <div class="text-[10px] text-slate-500">${i.shop_name || ''} · Size: ${i.selectedSize || '-'} | Color: ${i.selectedColor || '-'}</div>
+            <div class="text-orange-600 font-bold">${Number(i.price || i.priceMMK || 0).toLocaleString()} MMK x ${i.qty}</div>
           </div>
-        `;
-      }).join('');
+          <button onclick="cart.splice(${idx}, 1); saveCart(); updateCartUI();" class="text-rose-500 p-1"><i class="ph ph-trash text-base"></i></button>
+        </div>
+      `).join('');
     }
 
     function openCheckout() {
       const selectedItems = cart.filter(i => i.checked);
       if (!selectedItems.length) return alert('ဝယ်ယူရန် ပစ္စည်းအနည်းဆုံး တစ်ခု ရွေးချယ်ပါ');
       closeCart();
+      shopShippingFee = 0; // မူလတန်ဖိုး
 
-      // ဆိုင်၏ delivery fee ကို ယူမည် (ပထမဆုံး ရွေးထားသောပစ္စည်း၏ ဆိုင်ဒေတာမှ)
-      const firstItem = selectedItems[0];
-      shopShippingFee = Number(firstItem.shops?.shipping_fee ?? firstItem.shops?.delivery_fee ?? 0);
-
-      const itemsBox = document.getElementById('checkoutItemsList');
-      itemsBox.innerHTML = selectedItems.map(i => {
-        const unitPrice = Number(i.price ?? i.priceMMK ?? 0);
-        const itemTotal = unitPrice * i.qty;
-        return `
-          <div class="flex items-center gap-3 py-2 text-xs">
-            <img src="${esc(i.image || i.image_url || 'https://placehold.co/50')}" class="w-12 h-12 object-cover rounded-xl border shadow-sm">
-            <div class="flex-1 space-y-0.5">
-              <div class="font-bold text-slate-800 line-clamp-1">${esc(i.title || i.name)}</div>
-              <div class="text-[10px] text-slate-500">📏 Size: ${esc(i.selectedSize || '-')} | 🎨 Color: ${esc(i.selectedColor || '-')}</div>
-              <div class="text-[10px] text-slate-600 font-bold">${unitPrice.toLocaleString()} MMK × ${i.qty} ခု</div>
-            </div>
-            <div class="font-black text-orange-600 text-sm">${itemTotal.toLocaleString()} MMK</div>
+      document.getElementById('checkoutItemsList').innerHTML = selectedItems.map(i => `
+        <div class="flex items-center gap-3 py-2 text-xs">
+          <img src="${esc(i.image || i.image_url || 'https://placehold.co/50')}" class="w-12 h-12 object-cover rounded-xl border shadow-sm">
+          <div class="flex-1 space-y-0.5">
+            <div class="font-bold text-slate-800 line-clamp-1">${esc(i.title || i.name)}</div>
+            <div class="text-[10px] text-slate-500">📏 Size: ${esc(i.selectedSize || '-')} | 🎨 Color: ${esc(i.selectedColor || '-')}</div>
+            <div class="text-[10px] text-slate-600 font-bold">${Number(i.price || i.priceMMK || 0).toLocaleString()} MMK × ${i.qty} ခု</div>
           </div>
-        `;
-      }).join('');
+          <div class="font-black text-orange-600 text-sm">${(Number(i.price || i.priceMMK || 0) * i.qty).toLocaleString()} MMK</div>
+        </div>
+      `).join('');
 
       document.getElementById('shippingFeeDisplay').value = shopShippingFee.toLocaleString() + ' MMK';
-
       const subtotal = selectedItems.reduce((s, i) => s + (Number(i.price || i.priceMMK || 0) * i.qty), 0);
-      const total = subtotal + shopShippingFee;
-
       document.getElementById('summarySubtotal').innerText = subtotal.toLocaleString() + ' MMK';
       document.getElementById('summaryShipping').innerText = shopShippingFee.toLocaleString() + ' MMK';
-      document.getElementById('summaryTotal').innerText = total.toLocaleString() + ' MMK';
-
-      document.getElementById('checkoutModal').classList.remove('hidden');
-      document.getElementById('checkoutModal').classList.add('flex');
+      document.getElementById('summaryTotal').innerText = (subtotal + shopShippingFee).toLocaleString() + ' MMK';
+      document.getElementById('checkoutModal').classList.remove('hidden'); document.getElementById('checkoutModal').classList.add('flex');
     }
 
     function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
@@ -507,19 +352,16 @@
       e.preventDefault();
       const selectedItems = cart.filter(i => i.checked);
       if (!selectedItems.length) return alert('ဝယ်ယူမည့် ပစ္စည်း မရှိပါ');
-
       const name = document.getElementById('custName').value.trim();
       const phone = document.getElementById('custPhone').value.trim();
       const township = document.getElementById('custTownship').value.trim();
       const address = document.getElementById('custAddress').value.trim();
       const paymentMethodId = document.getElementById('custPayment').value;
-      
       const subtotal = selectedItems.reduce((s, i) => s + (Number(i.price || i.priceMMK || 0) * i.qty), 0);
       const total = subtotal + shopShippingFee;
 
       const btn = document.getElementById('submitOrderBtn');
-      btn.innerText = "ဘောက်ချာနှင့် အော်ဒါ တင်နေပါသည်...";
-      btn.disabled = true;
+      btn.innerText = "တင်နေပါသည်..."; btn.disabled = true;
 
       try {
         const fileInput = document.getElementById('checkoutVoucherFile');
@@ -528,82 +370,28 @@
           const file = fileInput.files[0];
           const fileName = `voucher-${Date.now()}-${file.name}`;
           const { error: upErr } = await client.storage.from('product-images').upload(fileName, file);
-          if (!upErr) {
-            const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(fileName);
-            voucherUrl = publicUrl;
-          }
+          if (!upErr) { const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(fileName); voucherUrl = publicUrl; }
         }
 
         const { data: order, error } = await client.from('orders').insert([{
-          customer_name: name,
-          customer_phone: phone,
-          township,
-          delivery_address: address,
+          customer_name: name, customer_phone: phone, township, delivery_address: address,
           payment_method_id: paymentMethodId ? Number(paymentMethodId) : null,
-          payment_voucher: voucherUrl,
-          subtotal: subtotal,
-          shipping_fee: shopShippingFee,
-          total: total,
-          total_amount: total,
-          items: selectedItems.map(i => ({
-            product_id: i.id,
-            title: i.title || i.name,
-            image: i.image || i.image_url || '',
-            qty: i.qty,
-            price: Number(i.price ?? i.priceMMK ?? 0),
-            selectedSize: i.selectedSize || '',
-            selectedColor: i.selectedColor || ''
-          })),
-          status: 'pending',
-          order_status: 'pending'
+          payment_voucher: voucherUrl, subtotal, shipping_fee: shopShippingFee, total, total_amount: total,
+          items: selectedItems.map(i => ({ product_id: i.id, title: i.title || i.name, image: i.image || i.image_url || '', qty: i.qty, price: Number(i.price || i.priceMMK || 0), selectedSize: i.selectedSize || '', selectedColor: i.selectedColor || '' })),
+          status: 'pending', order_status: 'pending'
         }]).select().single();
-
         if (error) throw error;
 
-        const groups = {};
-        selectedItems.forEach(item => {
-          const sid = item.shop_id || item.shops?.id;
-          if (!sid) return;
-          (groups[sid] ||= []).push(item);
-        });
-
-        for (const [shopId, items] of Object.entries(groups)) {
-          const itemSubtotal = items.reduce((sum, i) => sum + Number(i.price || i.priceMMK || 0) * Number(i.qty || 0), 0);
-          const rate = Number(items[0].commission_rate || 0);
-          const commission = Number((itemSubtotal * rate / 100).toFixed(2));
-          const sellerPayout = itemSubtotal - commission;
-          
-          const { error: subError } = await client.from('shop_orders').insert([{
-            order_id: order.id,
-            shop_id: Number(shopId),
-            items: items.map(i => ({ product_id: i.id, title: i.title || i.name, qty: i.qty, price: Number(i.price || i.priceMMK || 0), selectedSize: i.selectedSize || '', selectedColor: i.selectedColor || '' })),
-            subtotal: itemSubtotal,
-            commission_amount: commission,
-            platform_commission: commission,
-            seller_payout: sellerPayout,
-            status: 'pending'
-          }]);
-          if (subError) throw subError;
-        }
-
-        cart = cart.filter(i => !i.checked);
-        saveCart();
-        updateCartUI();
-        alert(`🎉 အော်ဒါ #${order.id} တင်ခြင်း အောင်မြင်ပါသည်!`);
-        closeCheckout();
+        cart = cart.filter(i => !i.checked); saveCart(); updateCartUI();
+        alert(`🎉 အော်ဒါ #${order.id} တင်ပြီးပါပြီ!`);
+        document.getElementById('checkoutModal').classList.add('hidden');
         location.reload();
-      } catch (err) {
-        alert("❌ Error: " + err.message);
-      } finally {
-        btn.innerText = "အော်ဒါ အတည်ပြုမည်";
-        btn.disabled = false;
-      }
+      } catch (err) { alert("❌ Error: " + err.message); } finally { btn.innerText = "အော်ဒါ အတည်ပြုမည်"; btn.disabled = false; }
     }
 
     function openCart() { document.getElementById('cartModal').classList.remove('hidden'); document.getElementById('cartModal').classList.add('flex'); }
     function closeCart() { document.getElementById('cartModal').classList.add('hidden'); document.getElementById('cartModal').classList.remove('flex'); }
     function closeCheckout() { document.getElementById('checkoutModal').classList.add('hidden'); document.getElementById('checkoutModal').classList.remove('flex'); }
-
     init();
   </script>
 </body>
