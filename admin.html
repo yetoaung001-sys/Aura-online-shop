@@ -809,6 +809,7 @@
       if (!allowed) return;
       console.log('✅ Aura Admin Panel Authorized');
       await loadDashboardStats();
+      await loadShops(); // 👈 ဆိုင်စာရင်းများကို Page စတင်ချိန်တွင် ချက်ချင်း ဆွဲထုတ်ပေးရန် ထည့်သွင်းပြီးပါပြီ
     }
 
     document.addEventListener('DOMContentLoaded', init);
