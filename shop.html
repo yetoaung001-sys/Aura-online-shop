@@ -34,10 +34,10 @@
       <button onclick="closeCheckout()"><i class="ph ph-x text-lg"></i></button>
     </div>
 
-    <!-- 📦 ဝယ်ယူမည့် ပစ္စည်းစာရင်းအသေးစိတ်ပြသရန် -->
+    <!-- 📦 ဝယ်ယူမည့် ပစ္စည်းစာရင်းနှင့် အသေးစိတ်ပြသရန် -->
     <div class="bg-slate-50 border rounded-2xl p-3 space-y-2">
-      <span class="font-bold text-slate-700 block border-b pb-1">ဝယ်ယူမည့် ပစ္စည်းများ:</span>
-      <div id="checkoutItemsList" class="max-h-36 overflow-y-auto divide-y space-y-1"></div>
+      <span class="font-bold text-slate-700 block border-b pb-1">📦 ဝယ်ယူမည့် ပစ္စည်းများ စာရင်း:</span>
+      <div id="checkoutItemsList" class="max-h-40 overflow-y-auto divide-y space-y-2"></div>
     </div>
 
     <form onsubmit="handleOrderSubmit(event)" class="space-y-3">
@@ -57,6 +57,13 @@
         <label class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label>
         <textarea id="custAddress" required placeholder="လမ်းနာမည်၊ ရပ်ကွက်၊ အိမ်နံပါတ်..." class="w-full border p-2.5 rounded-xl outline-none" rows="2"></textarea>
       </div>
+
+      <!-- 🚚 ကားဂိတ်ပို့ခ ထည့်သွင်းရန် -->
+      <div>
+        <label class="font-bold block mb-1 text-slate-700">🚚 ကားဂိတ်ပို့ခ (Shipping Fee) - MMK</label>
+        <input type="number" id="shippingFeeInput" min="0" value="0" oninput="calculateTotal()" placeholder="ပို့ခ ထည့်ရန်" class="w-full border p-2.5 rounded-xl outline-none font-bold" />
+      </div>
+
       <div>
         <label class="font-bold block mb-1 text-slate-700">ငွေပေးချေမှုစနစ် ရွေးချယ်ရန်</label>
         <select id="custPayment" class="w-full border p-2.5 rounded-xl bg-white font-bold outline-none"></select>
@@ -65,10 +72,23 @@
         <label class="font-bold block text-slate-700">💳 ငွေလွှဲဘောက်ချာ (KBZPay / Wave Screenshot)</label>
         <input type="file" id="checkoutVoucherFile" accept="image/*" class="w-full border p-2 rounded-xl bg-white cursor-pointer" />
       </div>
-      <div class="pt-2 border-t flex justify-between font-black text-sm text-orange-600">
-        <span>စုစုပေါင်း ကျသင့်ငွေ:</span>
-        <span id="summaryTotal">0 MMK</span>
+
+      <!-- Financial Summary Breakdown -->
+      <div class="pt-2 border-t space-y-1.5 text-xs font-bold">
+        <div class="flex justify-between text-slate-600">
+          <span>ပစ္စည်းတန်ဖိုး (Subtotal):</span>
+          <span id="summarySubtotal">0 MMK</span>
+        </div>
+        <div class="flex justify-between text-slate-600">
+          <span>ကားဂိတ်ပို့ခ (Shipping Fee):</span>
+          <span id="summaryShipping">0 MMK</span>
+        </div>
+        <div class="flex justify-between text-sm font-black text-orange-600 border-t pt-1.5">
+          <span>စုစုပေါင်း ကျသင့်ငွေ (Total):</span>
+          <span id="summaryTotal">0 MMK</span>
+        </div>
       </div>
+
       <button type="submit" id="submitOrderBtn" class="w-full bg-gradient-to-r from-orange-500 to-rose-600 text-white py-3 rounded-2xl font-bold shadow-lg">အော်ဒါ အတည်ပြုမည်</button>
     </form>
   </div>
@@ -93,27 +113,44 @@ function show(id){document.getElementById(id).classList.remove('hidden');documen
 function confirmAddToCart(){if(!selected)return;const qty=Math.max(1,Number(document.getElementById('buyQty').value)||1),stock=Number(selected.stock||0);if(qty>stock)return alert(`လက်ကျန် ${stock} ခုသာရှိပါသည်`);const key=`${selected.id}|${chosenSize}|${chosenColor}`;const old=cart.find(i=>i.key===key);if(old)old.qty=Math.min(old.qty+qty,stock);else cart.push({key,...selected,selectedSize:chosenSize,selectedColor:chosenColor,qty,shop_id:shop.id,shop_name:shop.name});saveCart();closeBuyModal();openCart();}
 function updateCartUI(){const totalQty=cart.reduce((s,i)=>s+Number(i.qty||0),0),total=cart.reduce((s,i)=>s+Number(i.price??i.priceMMK??0)*Number(i.qty||0),0);document.getElementById('cartBadge').innerText=totalQty;document.getElementById('cartBadge').style.transform=totalQty?'scale(1)':'scale(0)';document.getElementById('cartTotal').innerText=total.toLocaleString()+' MMK';const box=document.getElementById('cartItems');if(!cart.length){box.innerHTML='<div class="py-12 text-center text-slate-400">စျေးဝယ်တွန်းလှည်းထဲ ဘာမှမရှိသေးပါ</div>';return;}box.innerHTML=cart.map((i,idx)=>`<div class="py-3 flex items-center gap-2"><img src="${esc(i.image||i.image_url||'https://placehold.co/50')}" class="w-12 h-12 object-cover rounded-xl"><div class="flex-1"><h5 class="font-bold line-clamp-1">${esc(i.title||i.name)}</h5><div class="text-[10px] text-slate-500">${esc(i.shop_name||'')} · Size: ${esc(i.selectedSize||'-')} · Color: ${esc(i.selectedColor||'-')}</div><div class="text-orange-600 font-bold">${Number(i.price??i.priceMMK??0).toLocaleString()} MMK × ${i.qty}</div></div><button onclick="removeCart(${idx})" class="text-rose-500 p-1"><i class="ph ph-trash"></i></button></div>`).join('');}
 function removeCart(i){cart.splice(i,1);saveCart();}function openCart(){show('cartModal')}function closeCart(){hide('cartModal')}
+
 function openCheckout(){
   if(!cart.length)return alert('စျေးဝယ်တွန်းလှည်းထဲ ပစ္စည်းမရှိပါ');
   closeCart();
   
-  // Checkout ထဲတွင် ဝယ်မည့်ပစ္စည်းများ အသေးစိတ်ပေါ်လာစေရန်
+  // 🛒 ပုံ၊ အမည်၊ Size၊ Color၊ အရေအတွက်၊ ဈေးနှုန်း အပြည့်အစုံဖော်ပြရန်
   const itemsBox = document.getElementById('checkoutItemsList');
-  itemsBox.innerHTML = cart.map(i => `
-    <div class="flex items-center gap-2 py-1.5 text-xs">
-      <img src="${esc(i.image || i.image_url || 'https://placehold.co/40')}" class="w-10 h-10 object-cover rounded-lg border">
-      <div class="flex-1">
-        <div class="font-bold line-clamp-1">${esc(i.title || i.name)}</div>
-        <div class="text-[10px] text-slate-500">Size: ${esc(i.selectedSize || '-')} | Color: ${esc(i.selectedColor || '-')} | ရေအတွက်: ${i.qty}</div>
+  itemsBox.innerHTML = cart.map(i => {
+    const unitPrice = Number(i.price ?? i.priceMMK ?? 0);
+    const itemTotal = unitPrice * i.qty;
+    return `
+      <div class="flex items-center gap-3 py-2 text-xs">
+        <img src="${esc(i.image || i.image_url || 'https://placehold.co/50')}" class="w-12 h-12 object-cover rounded-xl border shadow-sm">
+        <div class="flex-1 space-y-0.5">
+          <div class="font-bold text-slate-800 line-clamp-1">${esc(i.title || i.name)}</div>
+          <div class="text-[10px] text-slate-500">📏 Size: ${esc(i.selectedSize || '-')} | 🎨 Color: ${esc(i.selectedColor || '-')}</div>
+          <div class="text-[10px] text-slate-600 font-bold">${unitPrice.toLocaleString()} MMK × ${i.qty} ခု</div>
+        </div>
+        <div class="font-black text-orange-600 text-sm">${itemTotal.toLocaleString()} MMK</div>
       </div>
-      <div class="font-black text-orange-600">${(Number(i.price ?? i.priceMMK ?? 0) * i.qty).toLocaleString()} MMK</div>
-    </div>
-  `).join('');
+    `;
+  }).join('');
 
-  const total = cart.reduce((s,i)=>s+Number(i.price??i.priceMMK??0)*Number(i.qty||0),0);
-  document.getElementById('summaryTotal').innerText=total.toLocaleString()+' MMK';
+  document.getElementById('shippingFeeInput').value = 0;
+  calculateTotal();
   show('checkoutModal');
 }
+
+function calculateTotal(){
+  const subtotal = cart.reduce((s,i)=>s+Number(i.price??i.priceMMK??0)*Number(i.qty||0),0);
+  const shippingFee = Number(document.getElementById('shippingFeeInput').value) || 0;
+  const total = subtotal + shippingFee;
+
+  document.getElementById('summarySubtotal').innerText = subtotal.toLocaleString() + ' MMK';
+  document.getElementById('summaryShipping').innerText = shippingFee.toLocaleString() + ' MMK';
+  document.getElementById('summaryTotal').innerText = total.toLocaleString() + ' MMK';
+}
+
 function closeCheckout(){hide('checkoutModal')}
 
 async function handleOrderSubmit(e){
@@ -129,7 +166,10 @@ async function handleOrderSubmit(e){
           address=document.getElementById('custAddress').value.trim(),
           paymentMethodId=document.getElementById('custPayment').value;
           
-    const total=cart.reduce((s,i)=>s+Number(i.price??i.priceMMK??0)*Number(i.qty||0),0);
+    const subtotal = cart.reduce((s,i)=>s+Number(i.price??i.priceMMK??0)*Number(i.qty||0),0);
+    const shippingFee = Number(document.getElementById('shippingFeeInput').value) || 0;
+    const total = subtotal + shippingFee;
+
     let voucherUrl='';
     const f=document.getElementById('checkoutVoucherFile').files[0];
     if(f){
@@ -141,17 +181,18 @@ async function handleOrderSubmit(e){
       voucherUrl=client.storage.from('product-images').getPublicUrl(path).data.publicUrl;
     }
 
-    // orders ဇယားသို့ total, subtotal, items များအပါအဝင် ထည့်သွင်းခြင်း
+    // orders ဇယားသို့ subtotal, shipping_fee, total, items များ ထည့်သွင်းခြင်း
     const ins=await client.from('orders').insert([{
-      customer_name:name,
-      customer_phone:phone,
+      customer_name: name,
+      customer_phone: phone,
       township,
-      delivery_address:address,
-      payment_method_id:paymentMethodId?Number(paymentMethodId):null,
-      payment_voucher:voucherUrl,
-      subtotal:total,
-      total:total,
-      total_amount:total,
+      delivery_address: address,
+      payment_method_id: paymentMethodId ? Number(paymentMethodId) : null,
+      payment_voucher: voucherUrl,
+      subtotal: subtotal,
+      shipping_fee: shippingFee,
+      total: total,
+      total_amount: total,
       items: cart.map(i => ({
         product_id: i.id,
         title: i.title || i.name,
@@ -161,8 +202,8 @@ async function handleOrderSubmit(e){
         selectedSize: i.selectedSize || '',
         selectedColor: i.selectedColor || ''
       })),
-      status:'pending',
-      order_status:'pending'
+      status: 'pending',
+      order_status: 'pending'
     }]).select().single();
 
     if(ins.error)throw ins.error;
@@ -171,19 +212,19 @@ async function handleOrderSubmit(e){
     cart.forEach(i=>{const sid=i.shop_id||shop.id;(groups[sid]??=[]).push(i);});
 
     for(const [sid,items] of Object.entries(groups)){
-      const subtotal=items.reduce((s,i)=>s+Number(i.price??i.priceMMK??0)*Number(i.qty||0),0);
+      const itemSubtotal=items.reduce((s,i)=>s+Number(i.price??i.priceMMK??0)*Number(i.qty||0),0);
       const shopRate=Number(items[0].commission_rate??shop.commission_rate??0);
-      const commission=Number((subtotal*shopRate/100).toFixed(2));
-      const payout=subtotal-commission;
+      const commission=Number((itemSubtotal*shopRate/100).toFixed(2));
+      const payout=itemSubtotal-commission;
       const so=await client.from('shop_orders').insert([{
-        order_id:orderId,
-        shop_id:Number(sid),
-        items:items.map(i=>({product_id:i.id,title:i.title||i.name,qty:i.qty,price:Number(i.price??i.priceMMK??0),selectedSize:i.selectedSize||'',selectedColor:i.selectedColor||''})),
-        subtotal,
-        commission_amount:commission,
-        platform_commission:commission,
-        seller_payout:payout,
-        status:'pending'
+        order_id: orderId,
+        shop_id: Number(sid),
+        items: items.map(i=>({product_id: i.id, title: i.title || i.name, qty: i.qty, price: Number(i.price ?? i.priceMMK ?? 0), selectedSize: i.selectedSize || '', selectedColor: i.selectedColor || ''})),
+        subtotal: itemSubtotal,
+        commission_amount: commission,
+        platform_commission: commission,
+        seller_payout: payout,
+        status: 'pending'
       }]);
       if(so.error)throw so.error;
     }
