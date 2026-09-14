@@ -43,7 +43,7 @@
       </div>
 
       <div class="flex-1 max-w-xl relative">
-        <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="ပစ္စည်းများ ရှာဖွေရန်..." class="w-full pl-10 pr-4 py-2.5 bg-slate-100 border border-slate-200 rounded-2xl text-xs outline-none focus:ring-2 focus:ring-orange-500" />
+        <input type="text" id="searchInput" oninput="handleSearch(this.value)" placeholder="ပစ္စည်းများ ရှာဖွေရန်..." autocomplete="search" class="w-full pl-10 pr-4 py-2.5 bg-slate-100 border border-slate-200 rounded-2xl text-xs outline-none focus:ring-2 focus:ring-orange-500" />
         <i class="ph ph-magnifying-glass absolute left-3.5 top-3 text-slate-400 text-base"></i>
       </div>
 
@@ -120,20 +120,35 @@
         <button onclick="closeCheckout()"><i class="ph ph-x text-lg"></i></button>
       </div>
       <form onsubmit="handleOrderSubmit(event)" class="space-y-3">
-        <input type="text" id="custName" required placeholder="ဝယ်သူအမည် *" class="w-full border p-2.5 rounded-xl outline-none" />
-        <input type="tel" id="custPhone" required placeholder="ဖုန်းနံပါတ် *" class="w-full border p-2.5 rounded-xl outline-none font-mono" />
-        <input type="text" id="custTownship" required placeholder="မြို့နယ် *" class="w-full border p-2.5 rounded-xl outline-none" />
-        <textarea id="custAddress" required placeholder="လိပ်စာ အပြည့်အစုံ *" class="w-full border p-2.5 rounded-xl outline-none" rows="2"></textarea>
+        <div>
+          <label for="custName" class="sr-only">ဝယ်သူအမည်</label>
+          <input type="text" id="custName" required placeholder="ဝယ်သူအမည် *" autocomplete="name" class="w-full border p-2.5 rounded-xl outline-none" />
+        </div>
+        <div>
+          <label for="custPhone" class="sr-only">ဖုန်းနံပါတ်</label>
+          <input type="tel" id="custPhone" required placeholder="ဖုန်းနံပါတ် *" autocomplete="tel" class="w-full border p-2.5 rounded-xl outline-none font-mono" />
+        </div>
+        <div>
+          <label for="custTownship" class="sr-only">မြို့နယ်</label>
+          <input type="text" id="custTownship" required placeholder="မြို့နယ် *" autocomplete="address-level2" class="w-full border p-2.5 rounded-xl outline-none" />
+        </div>
+        <div>
+          <label for="custAddress" class="sr-only">လိပ်စာ အပြည့်အစုံ</label>
+          <textarea id="custAddress" required placeholder="လိပ်စာ အပြည့်အစုံ *" autocomplete="street-address" class="w-full border p-2.5 rounded-xl outline-none" rows="2"></textarea>
+        </div>
         
-        <select id="custPayment" class="w-full border p-2.5 rounded-xl bg-white font-bold">
-          <option value="Cash On Delivery">Cash On Delivery (အိမ်ရောက်ငွေချေ)</option>
-          <option value="KBZPay">KBZPay</option>
-          <option value="WavePay">WavePay</option>
-        </select>
+        <div>
+          <label for="custPayment" class="sr-only">ငွေပေးချေမှုစနစ်</label>
+          <select id="custPayment" class="w-full border p-2.5 rounded-xl bg-white font-bold" autocomplete="off">
+            <option value="Cash On Delivery">Cash On Delivery (အိမ်ရောက်ငွေချေ)</option>
+            <option value="KBZPay">KBZPay</option>
+            <option value="WavePay">WavePay</option>
+          </select>
+        </div>
 
         <!-- Payment Voucher Upload -->
         <div class="bg-slate-50 p-3 rounded-xl border space-y-1.5">
-          <label class="font-bold text-slate-700 block">💳 ငွေလွှဲဘောက်ချာ (Payment Voucher Screenshot)</label>
+          <label for="checkoutVoucherFile" class="font-bold text-slate-700 block">💳 ငွေလွှဲဘောက်ချာ (Payment Voucher Screenshot)</label>
           <input type="file" id="checkoutVoucherFile" accept="image/*" class="w-full border p-2 rounded-xl bg-white cursor-pointer text-[11px]" />
           <span class="text-[10px] text-slate-400">KBZPay / WavePay ဖြင့် လွှဲထားပါက ဘောက်ချာပုံတင်ပေးပါ</span>
         </div>
