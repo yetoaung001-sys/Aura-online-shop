@@ -24,7 +24,34 @@
 <section class="space-y-3"><div class="flex justify-between items-center border-b pb-2"><h3 class="font-extrabold text-slate-800 text-base flex items-center gap-1.5"><i class="ph-fill ph-boxes text-orange-500"></i> ဤဆိုင်မှ ပစ္စည်းများ</h3><span id="shopProdBadge" class="text-xs text-slate-400">Loading...</span></div><div id="shopProductGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-4"></div></section>
 </main>
 
-<div id="cartModal" class="fixed inset-0 bg-black/60 z-50 hidden justify-end"><div class="bg-white w-full max-w-sm h-full flex flex-col p-4 shadow-2xl"><div class="flex justify-between items-center pb-3 border-b"><h3 class="font-bold text-sm">စျေးဝယ်တွန်းလှည်း</h3><button onclick="closeCart()"><i class="ph ph-x text-xl"></i></button></div><div id="cartItems" class="flex-1 overflow-y-auto divide-y text-xs py-2"></div><div class="border-t pt-3 space-y-2 text-xs"><div class="flex justify-between text-sm font-black"><span>စုစုပေါင်း:</span><span id="cartTotal" class="text-orange-600">0 MMK</span></div><button onclick="openCheckout()" class="w-full bg-orange-600 text-white py-3 rounded-2xl font-bold">Checkout ဝယ်ယူမည်</button></div></div></div>
+<!-- CART DRAWER WITH SELECTION -->
+<div id="cartModal" class="fixed inset-0 bg-black/60 z-50 hidden justify-end">
+  <div class="bg-white w-full max-w-sm h-full flex flex-col p-4 shadow-2xl">
+    <div class="flex justify-between items-center pb-3 border-b">
+      <h3 class="font-bold text-sm">🛒 စျေးဝယ်တွန်းလှည်း</h3>
+      <button onclick="closeCart()"><i class="ph ph-x text-xl"></i></button>
+    </div>
+    
+    <!-- Select All Option -->
+    <div class="py-2 border-b flex justify-between items-center text-xs">
+      <label class="flex items-center gap-2 font-bold cursor-pointer">
+        <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" class="w-4 h-4 rounded text-orange-600 accent-orange-600" />
+        <span>အားလုံးကို ရွေးမည်</span>
+      </label>
+      <span id="selectedCountBadge" class="text-slate-400 font-bold">0 ခု ရွေးထားသည်</span>
+    </div>
+
+    <div id="cartItems" class="flex-1 overflow-y-auto divide-y text-xs py-2"></div>
+    
+    <div class="border-t pt-3 space-y-2 text-xs">
+      <div class="flex justify-between text-sm font-black">
+        <span>ရွေးချယ်ထားုပီး စုစုပေါင်း:</span>
+        <span id="cartTotal" class="text-orange-600">0 MMK</span>
+      </div>
+      <button onclick="openCheckout()" class="w-full bg-orange-600 text-white py-3 rounded-2xl font-bold shadow">ရွေးချယ်ထားသည်များ ဝယ်မည် (Checkout)</button>
+    </div>
+  </div>
+</div>
 
 <div id="buyModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4"><div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-4 text-xs shadow-2xl"><div class="flex justify-between items-center border-b pb-3"><h3 class="font-black text-sm">🛒 ဝယ်ယူရန် ရွေးချယ်ပါ</h3><button onclick="closeBuyModal()"><i class="ph ph-x text-lg"></i></button></div><div id="modalProductInfo" class="flex gap-3 items-center"></div><div id="sizeSelectionArea" class="space-y-1.5 hidden"><label class="font-bold">📏 Size ရွေးပါ:</label><div id="sizeOptionsList" class="flex flex-wrap gap-2"></div></div><div id="colorSelectionArea" class="space-y-1.5 hidden"><label class="font-bold">🎨 Color ရွေးပါ:</label><div id="colorOptionsList" class="flex flex-wrap gap-2"></div></div><div><label class="font-bold block mb-1">အရေအတွက်</label><input id="buyQty" type="number" min="1" value="1" class="w-full border p-2.5 rounded-xl" /></div><button onclick="confirmAddToCart()" class="w-full bg-gradient-to-r from-orange-500 to-rose-600 text-white font-bold py-3 rounded-2xl">ဈေးတောင်းထဲသို့ ထည့်မည်</button></div></div>
 
@@ -38,9 +65,9 @@
 
     <form onsubmit="handleOrderSubmit(event)" class="space-y-3">
       
-      <!-- 📦 ဝယ်ယူမည့် ပစ္စည်းများ စာရင်းဇယား (အပေါ်ဆုံးတွင် ပေါ်မည်) -->
+      <!-- 📦 ရွေးချယ်ထားသော ပစ္စည်းများ စာရင်းဇယား -->
       <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3 space-y-2">
-        <span class="font-black text-slate-700 block border-b pb-1 text-xs">📦 ဝယ်ယူမည့် ပစ္စည်းများ</span>
+        <span class="font-black text-slate-700 block border-b pb-1 text-xs">📦 ဝယ်ယူမည့် ရွေးချယ်ထားသော ပစ္စည်းများ</span>
         <div id="checkoutItemsList" class="max-h-40 overflow-y-auto divide-y divide-slate-200 space-y-2"></div>
       </div>
 
@@ -63,8 +90,8 @@
 
       <!-- 🚚 ကားဂိတ်ပို့ခ -->
       <div>
-        <label class="font-bold block mb-1 text-slate-700">🚚 ကားဂိတ်ပို့ခ (Shipping Fee) - MMK</label>
-        <input type="number" id="shippingFeeInput" min="0" value="0" oninput="calculateTotal()" placeholder="ပို့ခ ထည့်ရန်" class="w-full border p-2.5 rounded-xl outline-none font-bold" />
+        <label class="font-bold block mb-1 text-slate-700">🚚 ကားဂိတ်ပို့ခ (Shipping Fee) - ဆိုင်မှသတ်မှတ်သည်</label>
+        <input type="text" id="shippingFeeDisplay" readonly value="0 MMK" class="w-full border p-2.5 rounded-xl bg-slate-100 font-black text-slate-600 outline-none cursor-not-allowed" />
       </div>
 
       <div>
@@ -104,26 +131,164 @@ const SB_KEY="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 const client=supabase.createClient(SUPABASE_URL,SB_KEY);
 const shopId=Number(new URLSearchParams(location.search).get('id'));
 let shop=null,products=[],paymentMethods=[],cart=JSON.parse(localStorage.getItem('aura_cart')||'[]'),selected=null,chosenSize='',chosenColor='';
+let shopShippingFee = 0;
+
+// Cart item တိုင်းအတွက် checked property ထည့်ပေးရန် (Default: true)
+cart.forEach(i => { if(i.checked === undefined) i.checked = true; });
+
 function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 function saveCart(){localStorage.setItem('aura_cart',JSON.stringify(cart));updateCartUI();}
-async function init(){if(!shopId){showError('ဆိုင် ID မမှန်ပါ');return;}const [sr,pr,pmr]=await Promise.all([client.from('shops').select('*').eq('id',shopId).maybeSingle(),client.from('products').select('*').eq('shop_id',shopId).order('id',{ascending:false}),client.from('payment_methods').select('*')]);if(sr.error||!sr.data){showError('ဆိုင်မတွေ့ပါ');return;}shop=sr.data;document.title=`${shop.name||'Shop'} - Aura Marketplace`;document.getElementById('headerShopName').innerText=shop.name||'Aura Store';document.getElementById('shopTitle').innerText=shop.name||'Aura Store';document.getElementById('shopPhone').innerText=`📞 ဖုန်းနံပါတ်: ${shop.phone||'မဖော်ပြထားပါ'}`;document.getElementById('shopRating').innerText=`⭐ ${Number(shop.rating||0).toFixed(1)}`;document.getElementById('shopStatus').innerText=shop.is_active===false?'Closed':'Active';document.getElementById('shopStatus').className=shop.is_active===false?'text-base text-rose-400':'text-base text-emerald-400';document.getElementById('verifiedBadge').innerText=shop.is_verified?'✓ Aura Verified Seller':'Seller';document.getElementById('verifiedBadge').className=shop.is_verified?'text-[10px] text-emerald-400 font-bold mt-0.5 block':'text-[10px] text-slate-400 font-bold mt-0.5 block';if(pr.error){showError('ပစ္စည်းများ ရယူ၍မရပါ');console.error(pr.error);return;}products=pr.data||[];paymentMethods=pmr.data||[];document.getElementById('statProdCount').innerText=products.length;document.getElementById('shopProdBadge').innerText=`${products.length} မျိုး ရှိပါသည်`;renderProducts();populatePaymentMethods();updateCartUI();}
-function populatePaymentMethods(){const select=document.getElementById('custPayment');if(!paymentMethods.length){select.innerHTML='<option value="">Cash On Delivery (Default)</option>';return;}select.innerHTML=paymentMethods.map(pm=>`<option value="${pm.id}">${pm.provider_name} - ${pm.account_name} (${pm.account_number})</option>`).join('');}
+
+async function init(){
+  if(!shopId){showError('ဆိုင် ID မမှန်ပါ');return;}
+  const [sr,pr,pmr]=await Promise.all([
+    client.from('shops').select('*').eq('id',shopId).maybeSingle(),
+    client.from('products').select('*').eq('shop_id',shopId).order('id',{ascending:false}),
+    client.from('payment_methods').select('*')
+  ]);
+  
+  if(sr.error||!sr.data){showError('ဆိုင်မတွေ့ပါ');return;}
+  shop=sr.data;
+  shopShippingFee = Number(shop.shipping_fee ?? shop.delivery_fee ?? 0);
+
+  document.title=`${shop.name||'Shop'} - Aura Marketplace`;
+  document.getElementById('headerShopName').innerText=shop.name||'Aura Store';
+  document.getElementById('shopTitle').innerText=shop.name||'Aura Store';
+  document.getElementById('shopPhone').innerText=`📞 ဖုန်းနံပါတ်: ${shop.phone||'မဖော်ပြထားပါ'}`;
+  document.getElementById('shopRating').innerText=`⭐ ${Number(shop.rating||0).toFixed(1)}`;
+  document.getElementById('shopStatus').innerText=shop.is_active===false?'Closed':'Active';
+  document.getElementById('shopStatus').className=shop.is_active===false?'text-base text-rose-400':'text-base text-emerald-400';
+  document.getElementById('verifiedBadge').innerText=shop.is_verified?'✓ Aura Verified Seller':'Seller';
+  document.getElementById('verifiedBadge').className=shop.is_verified?'text-[10px] text-emerald-400 font-bold mt-0.5 block':'text-[10px] text-slate-400 font-bold mt-0.5 block';
+  
+  if(pr.error){showError('ပစ္စည်းများ ရယူ၍မရပါ');console.error(pr.error);return;}
+  products=pr.data||[];
+  paymentMethods=pmr.data||[];
+  document.getElementById('statProdCount').innerText=products.length;
+  document.getElementById('shopProdBadge').innerText=`${products.length} မျိုး ရှိပါသည်`;
+  renderProducts();
+  populatePaymentMethods();
+  updateCartUI();
+}
+
+function populatePaymentMethods(){
+  const select=document.getElementById('custPayment');
+  if(!paymentMethods.length){select.innerHTML='<option value="">Cash On Delivery (Default)</option>';return;}
+  select.innerHTML=paymentMethods.map(pm=>`<option value="${pm.id}">${pm.provider_name} - ${pm.account_name} (${pm.account_number})</option>`).join('');
+}
+
 function showError(msg){document.getElementById('shopProductGrid').innerHTML=`<div class="col-span-full py-16 text-center text-slate-400 text-xs"><div>${esc(msg)}</div><a href="index.html" class="inline-block mt-4 bg-orange-600 text-white px-4 py-2 rounded-xl font-bold">ပင်မသို့ ပြန်သွားမည်</a></div>`;}
-function renderProducts(){const grid=document.getElementById('shopProductGrid');if(!products.length){grid.innerHTML='<div class="col-span-full py-16 text-center text-slate-400 text-xs">ဤဆိုင်တွင် ကုန်ပစ္စည်း မရှိသေးပါ</div>';return;}grid.innerHTML=products.map(p=>{const title=esc(p.title||p.name||'အမည်မရှိပစ္စည်း'),price=Number(p.price??p.priceMMK??0),img=esc(p.image||p.image_url||'https://placehold.co/300'),stock=Number(p.stock||0);return `<div class="bg-white rounded-2xl border border-slate-200 p-3 flex flex-col justify-between hover:shadow-md transition"><div><img src="${img}" onerror="this.src='https://placehold.co/300'" class="w-full h-36 sm:h-44 object-cover rounded-xl mb-2" /><h4 class="font-bold text-xs text-slate-800 line-clamp-2">${title}</h4><div class="text-base font-black text-orange-600 mt-1">${price.toLocaleString()} MMK</div><div class="text-[10px] text-slate-400 mt-0.5">လက်ကျန်: ${stock.toLocaleString()} ခု</div></div><button onclick="openBuy(${Number(p.id)})" ${stock<=0||shop.is_active===false?'disabled':''} class="mt-3 w-full ${stock<=0||shop.is_active===false?'bg-slate-300 cursor-not-allowed':'bg-orange-600 hover:bg-orange-700'} text-white py-2 rounded-xl text-xs font-bold">${stock<=0?'ကုန်နေပါသည်':shop.is_active===false?'ဆိုင်ပိတ်ထားပါသည်':'ဝယ်ယူမည်'}</button></div>`;}).join('');}
-function openBuy(id){selected=products.find(p=>Number(p.id)===id);if(!selected)return;chosenSize=(selected.sizes||[])[0]||'';chosenColor=(selected.colors||[])[0]||'';document.getElementById('buyQty').value=1;document.getElementById('modalProductInfo').innerHTML=`<img src="${esc(selected.image||selected.image_url||'https://placehold.co/100')}" class="w-16 h-16 object-cover rounded-xl border"><div><div class="font-bold">${esc(selected.title||selected.name)}</div><div class="text-orange-600 font-black">${Number(selected.price??selected.priceMMK??0).toLocaleString()} MMK</div></div>`;renderOptions('size',selected.sizes||[]);renderOptions('color',selected.colors||[]);show('buyModal');}
-function renderOptions(type,arr){const area=document.getElementById(type+'SelectionArea'),list=document.getElementById(type+'OptionsList');if(!arr.length){area.classList.add('hidden');list.innerHTML='';return;}area.classList.remove('hidden');list.innerHTML=arr.map((x,i)=>`<button type="button" onclick="choose('${type}',${i})" id="${type}-${i}" class="px-3 py-1.5 rounded-xl border font-bold text-xs ${i===0?'border-orange-600 bg-orange-50 text-orange-600':'border-slate-200'}">${esc(x)}</button>`).join('');}
-function choose(type,i){const arr=type==='size'?selected.sizes:selected.colors;if(type==='size')chosenSize=arr[i];else chosenColor=arr[i];document.querySelectorAll(`[id^="${type}-"]`).forEach(b=>b.className='px-3 py-1.5 rounded-xl border font-bold text-xs border-slate-200');document.getElementById(`${type}-${i}`).className='px-3 py-1.5 rounded-xl border font-bold text-xs border-orange-600 bg-orange-50 text-orange-600';}
-function show(id){document.getElementById(id).classList.remove('hidden');document.getElementById(id).classList.add('flex');}function hide(id){document.getElementById(id).classList.add('hidden');document.getElementById(id).classList.remove('flex');}function closeBuyModal(){hide('buyModal')}
-function confirmAddToCart(){if(!selected)return;const qty=Math.max(1,Number(document.getElementById('buyQty').value)||1),stock=Number(selected.stock||0);if(qty>stock)return alert(`လက်ကျန် ${stock} ခုသာရှိပါသည်`);const key=`${selected.id}|${chosenSize}|${chosenColor}`;const old=cart.find(i=>i.key===key);if(old)old.qty=Math.min(old.qty+qty,stock);else cart.push({key,...selected,selectedSize:chosenSize,selectedColor:chosenColor,qty,shop_id:shop.id,shop_name:shop.name});saveCart();closeBuyModal();openCart();}
-function updateCartUI(){const totalQty=cart.reduce((s,i)=>s+Number(i.qty||0),0),total=cart.reduce((s,i)=>s+Number(i.price??i.priceMMK??0)*Number(i.qty||0),0);document.getElementById('cartBadge').innerText=totalQty;document.getElementById('cartBadge').style.transform=totalQty?'scale(1)':'scale(0)';document.getElementById('cartTotal').innerText=total.toLocaleString()+' MMK';const box=document.getElementById('cartItems');if(!cart.length){box.innerHTML='<div class="py-12 text-center text-slate-400">စျေးဝယ်တွန်းလှည်းထဲ ဘာမှမရှိသေးပါ</div>';return;}box.innerHTML=cart.map((i,idx)=>`<div class="py-3 flex items-center gap-2"><img src="${esc(i.image||i.image_url||'https://placehold.co/50')}" class="w-12 h-12 object-cover rounded-xl"><div class="flex-1"><h5 class="font-bold line-clamp-1">${esc(i.title||i.name)}</h5><div class="text-[10px] text-slate-500">${esc(i.shop_name||'')} · Size: ${esc(i.selectedSize||'-')} · Color: ${esc(i.selectedColor||'-')}</div><div class="text-orange-600 font-bold">${Number(i.price??i.priceMMK??0).toLocaleString()} MMK × ${i.qty}</div></div><button onclick="removeCart(${idx})" class="text-rose-500 p-1"><i class="ph ph-trash"></i></button></div>`).join('');}
-function removeCart(i){cart.splice(i,1);saveCart();}function openCart(){show('cartModal')}function closeCart(){hide('cartModal')}
+
+function renderProducts(){
+  const grid=document.getElementById('shopProductGrid');
+  if(!products.length){grid.innerHTML='<div class="col-span-full py-16 text-center text-slate-400 text-xs">ဤဆိုင်တွင် ကုန်ပစ္စည်း မရှိသေးပါ</div>';return;}
+  grid.innerHTML=products.map(p=>{
+    const title=esc(p.title||p.name||'အမည်မရှိပစ္စည်း'),price=Number(p.price??p.priceMMK??0),img=esc(p.image||p.image_url||'https://placehold.co/300'),stock=Number(p.stock||0);
+    return `<div class="bg-white rounded-2xl border border-slate-200 p-3 flex flex-col justify-between hover:shadow-md transition"><div><img src="${img}" onerror="this.src='https://placehold.co/300'" class="w-full h-36 sm:h-44 object-cover rounded-xl mb-2" /><h4 class="font-bold text-xs text-slate-800 line-clamp-2">${title}</h4><div class="text-base font-black text-orange-600 mt-1">${price.toLocaleString()} MMK</div><div class="text-[10px] text-slate-400 mt-0.5">လက်ကျန်: ${stock.toLocaleString()} ခု</div></div><button onclick="openBuy(${Number(p.id)})" ${stock<=0||shop.is_active===false?'disabled':''} class="mt-3 w-full ${stock<=0||shop.is_active===false?'bg-slate-300 cursor-not-allowed':'bg-orange-600 hover:bg-orange-700'} text-white py-2 rounded-xl text-xs font-bold">${stock<=0?'ကုန်နေပါသည်':shop.is_active===false?'ဆိုင်ပိတ်ထားပါသည်':'ဝယ်ယူမည်'}</button></div>`;
+  }).join('');
+}
+
+function openBuy(id){
+  selected=products.find(p=>Number(p.id)===id);
+  if(!selected)return;
+  chosenSize=(selected.sizes||[])[0]||'';
+  chosenColor=(selected.colors||[])[0]||'';
+  document.getElementById('buyQty').value=1;
+  document.getElementById('modalProductInfo').innerHTML=`<img src="${esc(selected.image||selected.image_url||'https://placehold.co/100')}" class="w-16 h-16 object-cover rounded-xl border"><div><div class="font-bold">${esc(selected.title||selected.name)}</div><div class="text-orange-600 font-black">${Number(selected.price??selected.priceMMK??0).toLocaleString()} MMK</div></div>`;
+  renderOptions('size',selected.sizes||[]);
+  renderOptions('color',selected.colors||[]);
+  show('buyModal');
+}
+
+function renderOptions(type,arr){
+  const area=document.getElementById(type+'SelectionArea'),list=document.getElementById(type+'OptionsList');
+  if(!arr.length){area.classList.add('hidden');list.innerHTML='';return;}
+  area.classList.remove('hidden');
+  list.innerHTML=arr.map((x,i)=>`<button type="button" onclick="choose('${type}',${i})" id="${type}-${i}" class="px-3 py-1.5 rounded-xl border font-bold text-xs ${i===0?'border-orange-600 bg-orange-50 text-orange-600':'border-slate-200'}">${esc(x)}</button>`).join('');
+}
+
+function choose(type,i){
+  const arr=type==='size'?selected.sizes:selected.colors;
+  if(type==='size')chosenSize=arr[i];else chosenColor=arr[i];
+  document.querySelectorAll(`[id^="${type}-"]`).forEach(b=>b.className='px-3 py-1.5 rounded-xl border font-bold text-xs border-slate-200');
+  document.getElementById(`${type}-${i}`).className='px-3 py-1.5 rounded-xl border font-bold text-xs border-orange-600 bg-orange-50 text-orange-600';
+}
+
+function show(id){document.getElementById(id).classList.remove('hidden');document.getElementById(id).classList.add('flex');}
+function hide(id){document.getElementById(id).classList.add('hidden');document.getElementById(id).classList.remove('flex');}
+function closeBuyModal(){hide('buyModal')}
+
+function confirmAddToCart(){
+  if(!selected)return;
+  const qty=Math.max(1,Number(document.getElementById('buyQty').value)||1),stock=Number(selected.stock||0);
+  if(qty>stock)return alert(`လက်ကျန် ${stock} ခုသာရှိပါသည်`);
+  const key=`${selected.id}|${chosenSize}|${chosenColor}`;
+  const old=cart.find(i=>i.key===key);
+  if(old)old.qty=Math.min(old.qty+qty,stock);
+  else cart.push({key,...selected,selectedSize:chosenSize,selectedColor:chosenColor,qty,checked:true,shop_id:shop.id,shop_name:shop.name});
+  saveCart();
+  closeBuyModal();
+  openCart();
+}
+
+function toggleItemCheck(index){
+  cart[index].checked = !cart[index].checked;
+  saveCart();
+}
+
+function toggleSelectAll(master){
+  const status = master.checked;
+  cart.forEach(i => i.checked = status);
+  saveCart();
+}
+
+function updateCartUI(){
+  const totalQty = cart.reduce((s,i)=>s+Number(i.qty||0),0);
+  const badge = document.getElementById('cartBadge');
+  badge.innerText = totalQty;
+  badge.style.transform = totalQty ? 'scale(1)' : 'scale(0)';
+
+  // ရွေးချယ်ထားသော ပစ္စည်းများ၏ စုစုပေါင်းတန်ဖိုး
+  const selectedItems = cart.filter(i => i.checked);
+  const total = selectedItems.reduce((s,i)=>s+Number(i.price??i.priceMMK??0)*Number(i.qty||0),0);
+  document.getElementById('cartTotal').innerText = total.toLocaleString() + ' MMK';
+  document.getElementById('selectedCountBadge').innerText = `${selectedItems.length} ခု ရွေးထားသည်`;
+
+  // Select All Checkbox state sync
+  const allChecked = cart.length > 0 && cart.every(i => i.checked);
+  document.getElementById('selectAllCheckbox').checked = allChecked;
+
+  const box = document.getElementById('cartItems');
+  if(!cart.length){
+    box.innerHTML = '<div class="py-12 text-center text-slate-400">စျေးဝယ်တွန်းလှည်းထဲ ဘာမှမရှိသေးပါ</div>';
+    return;
+  }
+
+  box.innerHTML = cart.map((i, idx)=>`
+    <div class="py-3 flex items-center gap-2">
+      <input type="checkbox" ${i.checked ? 'checked' : ''} onchange="toggleItemCheck(${idx})" class="w-4 h-4 rounded text-orange-600 accent-orange-600 cursor-pointer" />
+      <img src="${esc(i.image||i.image_url||'https://placehold.co/50')}" class="w-12 h-12 object-cover rounded-xl border">
+      <div class="flex-1">
+        <h5 class="font-bold line-clamp-1">${esc(i.title||i.name)}</h5>
+        <div class="text-[10px] text-slate-500">Size: ${esc(i.selectedSize||'-')} · Color: ${esc(i.selectedColor||'-')}</div>
+        <div class="text-orange-600 font-bold">${Number(i.price??i.priceMMK??0).toLocaleString()} MMK × ${i.qty}</div>
+      </div>
+      <button onclick="removeCart(${idx})" class="text-rose-500 p-1"><i class="ph ph-trash text-base"></i></button>
+    </div>
+  `).join('');
+}
+
+function removeCart(i){cart.splice(i,1);saveCart();}
+function openCart(){show('cartModal')}
+function closeCart(){hide('cartModal')}
 
 function openCheckout(){
-  if(!cart.length)return alert('စျေးဝယ်တွန်းလှည်းထဲ ပစ္စည်းမရှိပါ');
+  const selectedItems = cart.filter(i => i.checked);
+  if(!selectedItems.length)return alert('ဝယ်ယူရန် ပစ္စည်းအနည်းဆုံး တစ်ခု ရွေးချယ်ပါ');
   closeCart();
   
   const itemsBox = document.getElementById('checkoutItemsList');
-  itemsBox.innerHTML = cart.map(i => {
+  itemsBox.innerHTML = selectedItems.map(i => {
     const unitPrice = Number(i.price ?? i.priceMMK ?? 0);
     const itemTotal = unitPrice * i.qty;
     return `
@@ -139,26 +304,26 @@ function openCheckout(){
     `;
   }).join('');
 
-  document.getElementById('shippingFeeInput').value = 0;
-  calculateTotal();
-  show('checkoutModal');
-}
-
-function calculateTotal(){
-  const subtotal = cart.reduce((s,i)=>s+Number(i.price??i.priceMMK??0)*Number(i.qty||0),0);
-  const shippingFee = Number(document.getElementById('shippingFeeInput').value) || 0;
-  const total = subtotal + shippingFee;
+  document.getElementById('shippingFeeDisplay').value = shopShippingFee.toLocaleString() + ' MMK';
+  
+  // တွက်ချက်မှုအတွက် ရွေးချယ်ထားသော ပစ္စည်းများကို သုံးမည်
+  const subtotal = selectedItems.reduce((s,i)=>s+Number(i.price??i.priceMMK??0)*Number(i.qty||0),0);
+  const total = subtotal + shopShippingFee;
 
   document.getElementById('summarySubtotal').innerText = subtotal.toLocaleString() + ' MMK';
-  document.getElementById('summaryShipping').innerText = shippingFee.toLocaleString() + ' MMK';
+  document.getElementById('summaryShipping').innerText = shopShippingFee.toLocaleString() + ' MMK';
   document.getElementById('summaryTotal').innerText = total.toLocaleString() + ' MMK';
+
+  show('checkoutModal');
 }
 
 function closeCheckout(){hide('checkoutModal')}
 
 async function handleOrderSubmit(e){
   e.preventDefault();
-  if(!cart.length)return alert('Cart အလွတ်ဖြစ်နေပါသည်');
+  const selectedItems = cart.filter(i => i.checked);
+  if(!selectedItems.length)return alert('ဝယ်ယူမည့် ပစ္စည်း မရှိပါ');
+  
   const btn=document.getElementById('submitOrderBtn');
   btn.disabled=true;
   btn.innerText='အော်ဒါတင်နေပါသည်...';
@@ -169,9 +334,8 @@ async function handleOrderSubmit(e){
           address=document.getElementById('custAddress').value.trim(),
           paymentMethodId=document.getElementById('custPayment').value;
           
-    const subtotal = cart.reduce((s,i)=>s+Number(i.price??i.priceMMK??0)*Number(i.qty||0),0);
-    const shippingFee = Number(document.getElementById('shippingFeeInput').value) || 0;
-    const total = subtotal + shippingFee;
+    const subtotal = selectedItems.reduce((s,i)=>s+Number(i.price??i.priceMMK??0)*Number(i.qty||0),0);
+    const total = subtotal + shopShippingFee;
 
     let voucherUrl='';
     const f=document.getElementById('checkoutVoucherFile').files[0];
@@ -192,10 +356,10 @@ async function handleOrderSubmit(e){
       payment_method_id: paymentMethodId ? Number(paymentMethodId) : null,
       payment_voucher: voucherUrl,
       subtotal: subtotal,
-      shipping_fee: shippingFee,
+      shipping_fee: shopShippingFee,
       total: total,
       total_amount: total,
-      items: cart.map(i => ({
+      items: selectedItems.map(i => ({
         product_id: i.id,
         title: i.title || i.name,
         image: i.image || i.image_url || '',
@@ -211,7 +375,7 @@ async function handleOrderSubmit(e){
     if(ins.error)throw ins.error;
     const orderId=ins.data.id;
     const groups={};
-    cart.forEach(i=>{const sid=i.shop_id||shop.id;(groups[sid]??=[]).push(i);});
+    selectedItems.forEach(i=>{const sid=i.shop_id||shop.id;(groups[sid]??=[]).push(i);});
 
     for(const [sid,items] of Object.entries(groups)){
       const itemSubtotal=items.reduce((s,i)=>s+Number(i.price??i.priceMMK??0)*Number(i.qty||0),0);
@@ -231,7 +395,8 @@ async function handleOrderSubmit(e){
       if(so.error)throw so.error;
     }
 
-    cart=[];
+    // ဝယ်ယူပြီးသား ပစ္စည်းများကို Cart ထဲမှ ဖယ်ရှားပြီး မဝယ်ရသေးတာတွေကို ဆက်ထားမည်
+    cart = cart.filter(i => !i.checked);
     saveCart();
     closeCheckout();
     alert(`🎉 အော်ဒါ #${orderId} တင်ပြီးပါပြီ`);
