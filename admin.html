@@ -168,15 +168,17 @@
         <table class="w-full text-left text-sm text-slate-600">
           <thead class="bg-slate-50 text-xs uppercase text-slate-400 border-b">
             <tr>
+              <th class="p-4">Logo</th>
               <th class="p-4">ဆိုင်အမည်</th>
               <th class="p-4">ဖုန်း</th>
               <th class="p-4">Commission (%)</th>
               <th class="p-4">အခြေအနေ</th>
+              <th class="p-4">Logo တင်ရန် / ပြင်ရန်</th>
               <th class="p-4">လုပ်ဆောင်ချက်</th>
             </tr>
           </thead>
           <tbody id="shops-tbody" class="divide-y">
-            <tr><td colspan="5" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr>
+            <tr><td colspan="7" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr>
           </tbody>
         </table>
       </div>
@@ -459,12 +461,15 @@
       const tbody = document.getElementById('shops-tbody');
       const { data: shops, error } = await client.from('shops').select('*');
       if (error || !shops || !shops.length) {
-        tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center">ဆိုင်မရှိသေးပါ</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center">ဆိုင်မရှိသေးပါ</td></tr>';
         return;
       }
 
       tbody.innerHTML = shops.map(s => `
         <tr class="hover:bg-slate-50">
+          <td class="p-4">
+            <img src="${escapeHtml(s.logo_url || 'https://placehold.co/50')}" class="w-10 h-10 object-cover rounded-xl border shadow-xs" onerror="this.src='https://placehold.co/50'">
+          </td>
           <td class="p-4 font-bold text-slate-800">${escapeHtml(s.name)}</td>
           <td class="p-4">${escapeHtml(s.phone || '-')}</td>
           <td class="p-4">
@@ -472,12 +477,59 @@
           </td>
           <td class="p-4"><span class="text-xs font-bold ${s.is_active ? 'text-emerald-600' : 'text-rose-600'}">${s.is_active ? 'Active' : 'Closed'}</span></td>
           <td class="p-4">
+            <div class="flex items-center gap-2">
+              <input type="file" id="logoFile-${s.id}" accept="image/*" class="text-[10px] w-36 cursor-pointer" />
+              <button onclick="adminUploadShopLogo(${s.id})" class="bg-slate-900 text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-slate-800">တင်မည်</button>
+            </div>
+          </td>
+          <td class="p-4">
             <button onclick="toggleShop(${s.id}, ${Boolean(s.is_active)})" class="text-xs px-2 py-1 rounded ${s.is_active ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}">
               ${s.is_active ? 'ဆိုင်ပိတ်မည်' : 'ဆိုင်ဖွင့်မည်'}
             </button>
           </td>
         </tr>
       `).join('');
+    }
+
+    async function adminUploadShopLogo(shopId) {
+      const fileInput = document.getElementById(`logoFile-${shopId}`);
+      if (!fileInput.files || fileInput.files.length === 0) {
+        alert('ကျေးဇူးပြု၍ ပုံဖိုင် ရွေးချယ်ပါ။');
+        return;
+      }
+
+      const file = fileInput.files[0];
+      if (file.size > 5 * 1024 * 1024) {
+        alert('ပုံအရွယ်အစား 5MB ထက် မကြီးရပါ။');
+        return;
+      }
+
+      try {
+        const ext = (file.name.split('.').pop() || 'jpg').replace(/[^a-z0-9]/gi, '');
+        const fileName = `shop-logos/${Date.now()}-${crypto.randomUUID()}.${ext}`;
+
+        const { error: uploadError } = await client.storage
+          .from('product-images')
+          .upload(fileName, file, { upsert: false });
+
+        if (uploadError) throw uploadError;
+
+        const { data: { publicUrl } } = client.storage
+          .from('product-images')
+          .getPublicUrl(fileName);
+
+        const { error: updateError } = await client
+          .from('shops')
+          .update({ logo_url: publicUrl })
+          .eq('id', shopId);
+
+        if (updateError) throw updateError;
+
+        alert('🎉 ဆိုင် Logo အောင်မြင်စွာ တင်ပြီးပါပြီ!');
+        await loadShops();
+      } catch (err) {
+        alert('❌ Logo တင်မရပါ: ' + (err.message || err));
+      }
     }
 
     async function handleCreateSellerAndShop(e) {
