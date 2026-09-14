@@ -59,7 +59,11 @@
   </header>
 
   <!-- MAIN CONTAINER -->
-  <main class="max-w-7xl mx-auto px-4 py-8 space-y-6">
+  <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
+    
+    <!-- 🖼️ DYNAMIC BANNERS CONTAINER -->
+    <section id="indexBannersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden"></section>
+
     <div class="flex justify-between items-center bg-white p-4 rounded-2xl border border-slate-200 shadow-xs">
       <div>
         <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">လူကြိုက်များသော ကုန်ပစ္စည်းများ</h2>
@@ -294,16 +298,37 @@
     cart.forEach(i => { if(i.checked === undefined) i.checked = true; });
 
     async function init() {
-      const [prodRes, payRes] = await Promise.all([
+      const [prodRes, payRes, bannerRes] = await Promise.all([
         client.from('products').select('*, shops(id, name, is_active, shipping_fee, delivery_fee)').order('id', { ascending: false }),
-        client.from('payment_methods').select('*')
+        client.from('payment_methods').select('*'),
+        client.from('banners').select('*')
       ]);
+
       if (prodRes.error) { console.error(prodRes.error); return; }
       products = prodRes.data || [];
       paymentMethods = payRes.data || [];
+      
+      renderBanners(bannerRes.data || []);
       renderProducts();
       populatePaymentMethods();
       updateCartUI();
+    }
+
+    function renderBanners(banners) {
+      const container = document.getElementById('indexBannersContainer');
+      if (!banners.length) {
+        container.classList.add('hidden');
+        return;
+      }
+      container.classList.remove('hidden');
+      container.innerHTML = banners.map(b => `
+        <div class="relative overflow-hidden rounded-3xl shadow-md border border-slate-200 group bg-slate-900">
+          <img src="${esc(b.image_url || b.img || 'https://placehold.co/600x300')}" class="w-full h-44 sm:h-52 object-cover group-hover:scale-105 transition duration-500 opacity-90" onerror="this.src='https://placehold.co/600x300'" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-4">
+            <h3 class="text-white font-bold text-sm sm:text-base">${esc(b.title || '')}</h3>
+          </div>
+        </div>
+      `).join('');
     }
 
     function populatePaymentMethods() {
@@ -362,7 +387,7 @@
         stockBadge.className = "px-2.5 py-1 rounded-lg font-bold text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200";
         stockBadge.innerText = `📦 လက်ကျန်ရှိသည် (${stock} ခု)`;
       } else {
-        stockBadge.className = "px-2.5 py-1 rounded-lg font-bold text-[10px] bg-rose-50 text-rose-700 border border-rose-200";
+        stockBadge.className = "px-2.5 py-1 rounded-lg font-bold text-[10px] bg-rose-50 text-rose-700 border border-emerald-200";
         stockBadge.innerText = `❌ ကုန်နေပါသည်`;
       }
 
