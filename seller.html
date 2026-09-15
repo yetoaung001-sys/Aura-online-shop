@@ -72,6 +72,7 @@
         <div class="flex gap-2 text-xs">
           <button type="button" onclick="switchTab('products')" id="tabBtn-products" class="px-4 py-2 rounded-xl font-bold bg-orange-600 text-white shadow">📦 ပစ္စည်းများ စီမံရန်</button>
           <button type="button" onclick="switchTab('orders')" id="tabBtn-orders" class="px-4 py-2 rounded-xl font-bold bg-white text-slate-700 border">🛒 အော်ဒါများ စစ်ဆေးရန်</button>
+          <button type="button" onclick="switchTab('banners')" id="tabBtn-banners" class="px-4 py-2 rounded-xl font-bold bg-white text-slate-700 border">🖼️ ဆိုင် Banner များ</button>
         </div>
         <button type="button" onclick="openProductModal()" class="bg-gradient-to-r from-orange-500 to-rose-600 text-white text-xs px-4 py-2.5 rounded-xl font-bold shadow flex items-center gap-1.5">+ ပစ္စည်းအသစ်တင်မည်</button>
       </div>
@@ -95,6 +96,33 @@
           </table>
         </div>
       </div>
+
+      <!-- BANNERS PANEL -->
+      <div id="panel-banners" class="space-y-4 hidden">
+        <div class="bg-white p-5 rounded-2xl border shadow-sm space-y-4">
+          <h3 class="font-extrabold text-slate-800 text-sm">🖼️ ဆိုင်အတွက် Banner ကြော်ငြာပုံအသစ် တင်ရန်</h3>
+          <form onsubmit="handleShopBannerSubmit(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+            <div>
+              <label for="shopBannerTitle" class="font-bold block mb-1 text-slate-700">Banner ခေါင်းစဉ် (ရွေးချယ်နိုင်သည်)</label>
+              <input type="text" id="shopBannerTitle" name="shop_banner_title" placeholder="ဥပမာ- ရာသီအလိုက် အထူးလျှော့ဈေး" class="w-full border p-2.5 rounded-xl outline-none" />
+            </div>
+            <div>
+              <label for="shopBannerFile" class="font-bold block mb-1 text-slate-700">Banner ပုံ ရွေးပါ * (အချိုး: 16:9 သို့ 3:1)</label>
+              <input type="file" id="shopBannerFile" name="shop_banner_file" accept="image/*" required class="w-full border p-2 rounded-xl bg-slate-50 cursor-pointer text-xs" />
+            </div>
+            <div class="flex items-end">
+              <button type="submit" id="shopBannerBtn" name="shop_banner_submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2.5 rounded-xl transition">Banner တင်မည်</button>
+            </div>
+          </form>
+        </div>
+
+        <div class="bg-white p-5 rounded-2xl border shadow-sm space-y-3">
+          <h4 class="font-bold text-slate-800 text-xs">လက်ရှိ တင်ထားသော Banner များ</h4>
+          <div id="shopBannersGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+            <div class="col-span-full py-8 text-center text-slate-400 text-xs">Banner မရှိသေးပါ</div>
+          </div>
+        </div>
+      </div>
     </main>
   </div>
 
@@ -114,7 +142,6 @@
         </div>
 
         <div class="grid grid-cols-2 gap-2">
-          <!-- Text Box သို့ ပြောင်းထားသော Category -->
           <div>
             <label for="prodCategory" class="font-bold block mb-1">ကုန်ပစ္စည်း အမျိုးအစား (Category) *</label>
             <input type="text" id="prodCategory" name="category" required class="w-full border p-2.5 rounded-xl outline-none" placeholder="ဥပမာ - အဝတ်အထည်၊ ဖိနပ်၊ ဖုန်း" />
@@ -140,7 +167,6 @@
           <div><label for="prodShippingFee" class="font-bold block mb-1">ပို့ခ (MMK)</label><input type="number" id="prodShippingFee" name="shipping_fee" value="0" class="w-full border p-2 rounded-xl outline-none bg-white font-mono" /></div>
         </div>
 
-        <!-- ၅ ပုံအထိ တင်နိုင်သော Multiple Photo Upload -->
         <div>
           <div class="flex justify-between items-center mb-1">
             <label for="prodImageFiles" class="font-bold text-orange-600 block">📸 ပစ္စည်းဓာတ်ပုံများ (အများဆုံး ၅ ပုံထိ တင်နိုင်ပါသည်)</label>
@@ -415,8 +441,88 @@
     function switchTab(tab) {
       document.getElementById('tabBtn-products').className = tab === 'products' ? 'px-4 py-2 rounded-xl font-bold bg-orange-600 text-white shadow' : 'px-4 py-2 rounded-xl font-bold bg-white text-slate-700 border';
       document.getElementById('tabBtn-orders').className = tab === 'orders' ? 'px-4 py-2 rounded-xl font-bold bg-orange-600 text-white shadow' : 'px-4 py-2 rounded-xl font-bold bg-white text-slate-700 border';
+      document.getElementById('tabBtn-banners').className = tab === 'banners' ? 'px-4 py-2 rounded-xl font-bold bg-orange-600 text-white shadow' : 'px-4 py-2 rounded-xl font-bold bg-white text-slate-700 border';
+
       document.getElementById('panel-products').classList.toggle('hidden', tab !== 'products');
       document.getElementById('panel-orders').classList.toggle('hidden', tab !== 'orders');
+      document.getElementById('panel-banners').classList.toggle('hidden', tab !== 'banners');
+
+      if (tab === 'banners') loadShopBanners();
+    }
+
+    // 🖼️ SHOP BANNERS MANAGEMENT FUNCTIONS
+    async function loadShopBanners() {
+      if (!myShop) return;
+      const grid = document.getElementById('shopBannersGrid');
+      grid.innerHTML = '<div class="col-span-full py-4 text-center text-slate-400 text-xs">Banner များ ရယူနေပါသည်...</div>';
+
+      const { data: banners, error } = await supabaseClient
+        .from('shop_banners')
+        .select('*')
+        .eq('shop_id', myShop.id)
+        .order('id', { ascending: false });
+
+      if (error || !banners || !banners.length) {
+        grid.innerHTML = '<div class="col-span-full py-6 text-center text-slate-400 text-xs">Banner တင်ထားခြင်း မရှိသေးပါ</div>';
+        return;
+      }
+
+      grid.innerHTML = banners.map(b => `
+        <div class="border rounded-2xl overflow-hidden shadow-sm bg-slate-50 space-y-2 pb-3">
+          <img src="${escapeHtml(b.image_url)}" alt="Shop Banner" class="w-full h-36 object-cover" />
+          <div class="px-3 flex justify-between items-center">
+            <span class="font-bold text-slate-800 line-clamp-1">${escapeHtml(b.title || 'ခေါင်းစဉ်မရှိ')}</span>
+            <button type="button" onclick="deleteShopBanner(${b.id})" class="text-rose-500 font-bold hover:underline text-xs">ဖျက်မည်</button>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    async function handleShopBannerSubmit(e) {
+      e.preventDefault();
+      const fileInput = document.getElementById('shopBannerFile');
+      if (!fileInput.files || !fileInput.files[0]) return alert('ပုံရွေးပါ');
+
+      const btn = document.getElementById('shopBannerBtn');
+      btn.innerText = "တင်နေပါသည်...";
+      btn.disabled = true;
+
+      try {
+        const file = fileInput.files[0];
+        const fileName = `shop-banners/${myShop.id}-${Date.now()}.${file.name.split('.').pop()}`;
+        const { error: upErr } = await supabaseClient.storage.from('product-images').upload(fileName, file);
+        if (upErr) throw upErr;
+
+        const { data: { publicUrl } } = supabaseClient.storage.from('product-images').getPublicUrl(fileName);
+        const title = document.getElementById('shopBannerTitle').value.trim();
+
+        const { error: insErr } = await supabaseClient.from('shop_banners').insert([{
+          shop_id: myShop.id,
+          title: title,
+          image_url: publicUrl
+        }]);
+
+        if (insErr) throw insErr;
+
+        alert('🎉 Banner အောင်မြင်စွာ တင်ပြီးပါပြီ!');
+        e.target.reset();
+        await loadShopBanners();
+      } catch (err) {
+        alert('❌ Error: ' + err.message);
+      } finally {
+        btn.innerText = "Banner တင်မည်";
+        btn.disabled = false;
+      }
+    }
+
+    async function deleteShopBanner(bannerId) {
+      if (!confirm('ဤ Banner ကို ဖျက်မှာ သေချာပါသလား?')) return;
+      const { error } = await supabaseClient.from('shop_banners').delete().eq('id', bannerId);
+      if (error) alert(error.message);
+      else {
+        alert('ဖျက်ပြီးပါပြီ');
+        await loadShopBanners();
+      }
     }
 
     function editProduct(id) {
