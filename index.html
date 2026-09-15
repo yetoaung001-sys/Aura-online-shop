@@ -24,7 +24,7 @@
         <span>အသိပေးချက်:</span>
       </div>
       <marquee behavior="scroll" direction="left" scrollamount="5" class="text-white font-medium text-xs">
-        ✨ Aura Marketplace မှ ကြိုဆိုပါတယ်ခင်ဗျာ။ စိတ်ချယုံကြည်စွာဖြင့် အရည်အသွေးမြင့် ကုန်ပစ္စည်းများကို အထူးဈေးနှုန်းများဖြင့် ဝယ်ယူနိုင်ပါပြီ။ Admin အတည်ပြုပြီးပါက Stock အလိုအလျောက် လျော့သွားမည်ဖြစ်ပါသည်။
+        ✨ Aura Company Marketplace မှ နွေးထွေးစွာ ကြိုဆိုပါတယ်။ စိတ်ချယုံကြည်စွာဖြင့် အရည်အသွေးမြင့် ကုန်ပစ္စည်းများကို အထူးဈေးနှုန်းများဖြင့် ဝယ်ယူနိုင်ပါပြီ။ Company ဘက်မှ အတည်ပြု (Confirm) ပြီးသည်နှင့် ပစ္စည်းလက်ကျန် (Stock) အလိုအလျောက် လျော့သွားမည်ဖြစ်ပါသည်။
       </marquee>
       <div class="shrink-0 pl-4 hidden sm:block">
         <a href="seller.html" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition">Seller Center</a>
@@ -41,7 +41,7 @@
         </div>
         <div>
           <span class="font-black text-2xl leading-none block text-slate-900 tracking-tight">AURA</span>
-          <span class="text-[10px] text-violet-600 font-extrabold uppercase tracking-widest">Marketplace</span>
+          <span class="text-[10px] text-violet-600 font-extrabold uppercase tracking-widest">Company Marketplace</span>
         </div>
       </div>
 
@@ -53,14 +53,12 @@
       </div>
 
       <div class="flex items-center gap-3">
-        <!-- Customer Profile / Login Button -->
-        <button onclick="openProfileModal()" class="flex items-center gap-2 bg-violet-50 text-violet-700 hover:bg-violet-100 px-3.5 py-2.5 rounded-2xl font-extrabold text-xs transition border border-violet-100 shadow-xs">
+        <button type="button" onclick="openProfileModal()" class="flex items-center gap-2 bg-violet-50 text-violet-700 hover:bg-violet-100 px-3.5 py-2.5 rounded-2xl font-extrabold text-xs transition border border-violet-100 shadow-xs">
           <i class="ph-bold ph-user-circle text-base"></i>
           <span id="headerUserName" class="hidden sm:inline">အကောင့် / အော်ဒါများ</span>
         </button>
 
-        <!-- Cart Button -->
-        <button onclick="openCart()" class="relative p-3.5 bg-rose-50 text-rose-600 rounded-2xl hover:bg-rose-100 transition shadow-xs border border-rose-100">
+        <button type="button" onclick="openCart()" class="relative p-3.5 bg-rose-50 text-rose-600 rounded-2xl hover:bg-rose-100 transition shadow-xs border border-rose-100">
           <i class="ph-bold ph-shopping-bag-open text-xl"></i>
           <span id="cartBadge" class="absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black scale-0 transition-transform">0</span>
         </button>
@@ -87,13 +85,13 @@
   <footer class="bg-slate-900 text-slate-400 py-12 px-4 mt-20 text-xs border-t border-slate-800">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
       <div class="space-y-3">
-        <h3 class="text-white font-black text-sm flex items-center gap-2"><i class="ph-bold ph-storefront text-violet-500 text-lg"></i> Aura Marketplace</h3>
+        <h3 class="text-white font-black text-sm flex items-center gap-2"><i class="ph-bold ph-storefront text-violet-500 text-lg"></i> Aura Company</h3>
         <p class="leading-relaxed">မြန်မာနိုင်ငံတစ်ဝန်း လုံခြုံစိတ်ချရသော ဈေးဝယ်စနစ်နှင့် အရည်အသွေးမြင့် ကုန်ပစ္စည်းများကို တစ်နေရာတည်းတွင် ရရှိနိုင်ပါသည်။</p>
       </div>
       <div class="space-y-2">
         <h4 class="text-white font-bold">အသုံးဝင်သော လင့်ခ်များ</h4>
         <p><a href="#" onclick="openPolicyModal(); return false;" class="hover:text-white transition">📄 ဝယ်ယူရေး မူဝါဒများနှင့် စည်းကမ်းများ</a></p>
-        <p><a href="#" onclick="openContactModal(); return false;" class="hover:text-white transition">📞 Admin သို့ ဆက်သွယ်ရန်</a></p>
+        <p><a href="#" onclick="openContactModal(); return false;" class="hover:text-white transition">📞 Company သို့ ဆက်သွယ်ရန်</a></p>
       </div>
       <div class="space-y-2">
         <h4 class="text-white font-bold">Customer Support</h4>
@@ -103,7 +101,7 @@
     </div>
   </footer>
 
-  <!-- ================= 1. AUTH MODAL (LOGIN / SIGNUP) ================= -->
+  <!-- ================= AUTH MODAL (LOGIN / SIGNUP) ================= -->
   <div id="authModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl p-7 space-y-5 text-xs shadow-2xl animate-in fade-in zoom-in-95 duration-200">
       <div class="flex justify-between items-center border-b pb-3">
@@ -137,7 +135,7 @@
     </div>
   </div>
 
-  <!-- ================= 2. CUSTOMER PROFILE & ORDER HISTORY MODAL ================= -->
+  <!-- ================= CUSTOMER PROFILE & ORDER HISTORY MODAL ================= -->
   <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-xl rounded-3xl p-7 space-y-5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -184,19 +182,35 @@
     </div>
   </div>
 
-  <!-- ================= 3. ORDER DETAIL MODAL ================= -->
+  <!-- ================= ORDER DETAIL & STATUS TRACKING (WITH DAYS LEFT & RATING) ================= -->
   <div id="orderDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-black text-sm text-slate-900">📄 အော်ဒါအသေးစိတ် အချက်အလက်</h3>
+        <h3 class="font-black text-sm text-slate-900">📄 အော်ဒါအသေးစိတ်နှင့် အခြေအနေ စောင့်ကြည့်ရန်</h3>
         <button type="button" onclick="closeOrderDetailModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button>
       </div>
+      
       <div id="orderDetailContent" class="space-y-3"></div>
+
+      <!-- Shop Rating Section (Available after Order Completed / Delivered) -->
+      <div id="shopRatingSection" class="hidden bg-amber-50/70 border border-amber-200 p-4 rounded-2xl space-y-2">
+        <span class="font-extrabold text-amber-900 block">⭐ ဆိုင်ကို သုံးသပ်ချက်နှင့် Rating ပေးရန်</span>
+        <div class="flex gap-2 text-2xl text-amber-400 cursor-pointer" id="ratingStars">
+          <i class="ph ph-star star-btn" data-val="1" onclick="setRating(1)"></i>
+          <i class="ph ph-star star-btn" data-val="2" onclick="setRating(2)"></i>
+          <i class="ph ph-star star-btn" data-val="3" onclick="setRating(3)"></i>
+          <i class="ph ph-star star-btn" data-val="4" onclick="setRating(4)"></i>
+          <i class="ph ph-star star-btn" data-val="5" onclick="setRating(5)"></i>
+        </div>
+        <textarea id="shopReviewText" rows="2" placeholder="ဆိုင်နှင့် ပတ်သက်သည့် အတွေ့အကြုံ ရေးပေးပါ..." class="w-full border border-amber-200 rounded-xl p-2.5 bg-white outline-none"></textarea>
+        <button type="button" onclick="submitShopRating()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2 rounded-xl text-xs">Rating ပေးပို့မည်</button>
+      </div>
+
       <button type="button" onclick="closeOrderDetailModal()" class="w-full bg-slate-900 text-white py-3 rounded-2xl font-bold">ပိတ်မည်</button>
     </div>
   </div>
 
-  <!-- ================= 4. PRODUCT DETAIL MODAL (5 IMAGES SUPPORT) ================= -->
+  <!-- ================= PRODUCT DETAIL MODAL (5 IMAGES SUPPORT) ================= -->
   <div id="buyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-4">
@@ -204,7 +218,7 @@
         <button type="button" onclick="closeBuyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition"><i class="ph ph-x text-base"></i></button>
       </div>
       
-      <!-- Multi-Images Gallery -->
+      <!-- Multi-Images Gallery (Up to 5 images) -->
       <div class="space-y-3">
         <div class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm">
           <img id="detailMainImg" src="" alt="Product Detail" class="w-full h-64 object-cover transition duration-300" />
@@ -247,7 +261,7 @@
     </div>
   </div>
 
-  <!-- ================= 5. CART DRAWER ================= -->
+  <!-- ================= CART DRAWER ================= -->
   <div id="cartModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden justify-end">
     <div class="bg-white w-full max-w-md h-full flex flex-col p-6 shadow-2xl">
       <div class="flex justify-between items-center pb-4 border-b">
@@ -274,7 +288,7 @@
     </div>
   </div>
 
-  <!-- ================= 6. CHECKOUT MODAL ================= -->
+  <!-- ================= CHECKOUT MODAL ================= -->
   <div id="checkoutModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-7 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -326,31 +340,32 @@
     </div>
   </div>
 
-  <!-- ================= 7. POLICY MODAL ================= -->
+  <!-- ================= POLICY MODAL ================= -->
   <div id="policyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-3 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
         <h3 class="font-black text-sm text-slate-900">📄 မူဝါဒများနှင့် စည်းကမ်းချက်များ</h3>
         <button type="button" onclick="closePolicyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button>
       </div>
-      <p class="text-slate-600 leading-relaxed">အော်ဒါတင်ရာတွင် ငွေလွှဲဘောက်ချာ မဖြစ်မနေ ပူးတွဲတင်ပြရပါမည်။ Admin မှ အတည်ပြုစစ်ဆေးပြီးပါက ပစ္စည်းစတင်ပေးပို့မည်ဖြစ်ပါသည်။</p>
+      <p class="text-slate-600 leading-relaxed">အော်ဒါတင်ရာတွင် ငွေလွှဲဘောက်ချာ မဖြစ်မနေ ပူးတွဲတင်ပြရပါမည်။ Aura Company မှ စစ်ဆေးအတည်ပြု (Confirm) ပြီးပါက ပစ္စည်းစတင်ပေးပို့မည်ဖြစ်ပြီး Stock ကို အလိုအလျောက် နုတ်ယူသွားပါမည်။</p>
       <button type="button" onclick="closePolicyModal()" class="w-full bg-slate-900 text-white py-3 rounded-2xl font-bold mt-3">နားလည်လက်ခံပါသည်</button>
     </div>
   </div>
 
-  <!-- ================= 8. CONTACT ADMIN MODAL ================= -->
+  <!-- ================= CONTACT COMPANY MODAL ================= -->
   <div id="contactModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-4 text-xs shadow-2xl">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-black text-sm text-slate-900">📞 Admin ဆက်သွယ်ရန်</h3>
+        <h3 class="font-black text-sm text-slate-900">📞 Aura Company ဆက်သွယ်ရန်</h3>
         <button type="button" onclick="closeContactModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button>
       </div>
       <p class="text-slate-700 font-bold">📞 ဖုန်း/Viber/Telegram: 09-9789588064</p>
+      <p class="text-slate-500 text-[11px]">Email: support@auracompany.com</p>
       <button type="button" onclick="closeContactModal()" class="w-full bg-violet-600 text-white py-3 rounded-2xl font-bold">ပိတ်မည်</button>
     </div>
   </div>
 
-  <!-- ================= SCRIPT LOGIC ================= -->
+  <!-- ================= JAVASCRIPT LOGIC ================= -->
   <script>
     const SUPABASE_URL = "https://zyajlsrytjvwxqtpxrqd.supabase.co";
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
@@ -360,8 +375,23 @@
     let searchQuery = '', selectedProductForBuy = null, chosenSize = '', chosenColor = '', shopShippingFee = 0;
     let isSignupMode = false;
     let currentAuthSessionUser = null;
+    let currentRatingOrderId = null, currentRatingShopId = null, currentSelectedStars = 5;
 
     cart.forEach(i => { if(i.checked === undefined) i.checked = true; });
+
+    function calculateDaysLeft(shippedAtString) {
+      if (!shippedAtString) return '';
+      const shippedDate = new Date(shippedAtString);
+      const now = new Date();
+      const AUTO_COMPLETE_DAYS = 5;
+      const targetDate = new Date(shippedDate.getTime() + (AUTO_COMPLETE_DAYS * 24 * 60 * 60 * 1000));
+      const diffDays = Math.ceil((targetDate - now) / (1000 * 60 * 60 * 24));
+      
+      if (diffDays > 1) return `<span class="text-blue-600 font-extrabold text-[11px]">⏳ ပစ္စည်းရောက်ရန်: ${diffDays} ရက်ခန့်ကျန်</span>`;
+      if (diffDays === 1) return `<span class="text-amber-600 font-extrabold text-[11px]">⚠️ မနက်ဖြန် ရောက်ရှိပါမည်</span>`;
+      if (diffDays === 0) return `<span class="text-rose-600 font-extrabold text-[11px]">🔥 ယနေ့ ပစ္စည်းရောက်ရှိပါမည်</span>`;
+      return `<span class="text-emerald-600 font-extrabold text-[11px]">✅ ပို့ဆောင်ပြီးပါပြီ</span>`;
+    }
 
     async function init() {
       const { data: { session } } = await client.auth.getSession();
@@ -524,8 +554,8 @@
       saveCart(); updateCartUI(); closeBuyModal(); openCart();
     }
 
-    function toggleItemCheck(index) { cart[index].checked = !cart[index].checked; saveCart(); updateCartUI(); }
-    function toggleSelectAll(master) { cart.forEach(i => i.checked = master.checked); saveCart(); updateCartUI(); }
+    function toggleItemCheck(index) { cart[index].checked = !cart[index].checked; saveCart(); }
+    function toggleSelectAll(master) { cart.forEach(i => i.checked = master.checked); saveCart(); }
     function saveCart() { localStorage.setItem('aura_cart', JSON.stringify(cart)); }
 
     function updateCartUI() {
@@ -643,11 +673,17 @@
       }
     }
 
+    // 🔍 LOAD CUSTOMER ORDERS WITH SHOP ORDERS (DAYS LEFT DATA)
     async function loadCustomerOrderHistory(userId) {
       const container = document.getElementById('customerOrdersContainer');
       container.innerHTML = '<div class="text-center py-4 text-slate-400">သင့်အော်ဒါများကို ရှာဖွေနေပါသည်...</div>';
 
-      const { data: orders, error } = await client.from('orders').select('*').eq('customer_id', userId).order('created_at', { ascending: false });
+      const { data: orders, error } = await client
+        .from('orders')
+        .select('*, shop_orders(id, shop_id, status, shipped_at)')
+        .eq('customer_id', userId)
+        .order('created_at', { ascending: false });
+
       if (error || !orders || !orders.length) {
         container.innerHTML = '<div class="text-center py-4 text-slate-400 text-xs">ဝယ်ယူထားသော အော်ဒါမှတ်တမ်း မရှိသေးပါ။</div>';
         return;
@@ -655,57 +691,88 @@
 
       container.innerHTML = orders.map(o => {
         const status = o.status || o.order_status || 'pending';
+        const subOrd = o.shop_orders?.[0];
+        const subStatus = subOrd?.status || status;
+        const daysLeftHTML = subStatus === 'shipping' ? calculateDaysLeft(subOrd?.shipped_at) : '';
+
         let statusBadgeClass = "bg-amber-50 text-amber-600";
-        if (status === 'confirmed') statusBadgeClass = "bg-blue-50 text-blue-600";
-        else if (status === 'shipping') statusBadgeClass = "bg-indigo-50 text-indigo-600";
-        else if (status === 'delivered' || status === 'completed') statusBadgeClass = "bg-emerald-50 text-emerald-600";
-        else if (status === 'cancelled') statusBadgeClass = "bg-rose-50 text-rose-600";
+        if (subStatus === 'confirmed') statusBadgeClass = "bg-blue-50 text-blue-600";
+        else if (subStatus === 'shipping') statusBadgeClass = "bg-indigo-50 text-indigo-600";
+        else if (subStatus === 'delivered' || subStatus === 'completed') statusBadgeClass = "bg-emerald-50 text-emerald-600";
+        else if (subStatus === 'cancelled') statusBadgeClass = "bg-rose-50 text-rose-600";
 
         return `
           <div class="bg-slate-50 border border-slate-200 p-3.5 rounded-2xl space-y-2 text-xs">
             <div class="flex justify-between items-center font-bold">
               <span class="font-mono text-violet-700">Order #${o.id}</span>
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold ${statusBadgeClass}">${status.toUpperCase()}</span>
+              <div class="text-right">
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold ${statusBadgeClass}">${subStatus.toUpperCase()}</span>
+                <div class="mt-0.5">${daysLeftHTML}</div>
+              </div>
             </div>
-            <div class="flex justify-between items-center text-slate-600">
+            <div class="flex justify-between items-center text-slate-600 pt-1 border-t">
               <span>ကျသင့်ငွေ: <b class="text-slate-900">${Number(o.total_amount || o.total || 0).toLocaleString()} MMK</b></span>
-              <button type="button" onclick='openOrderDetail(${JSON.stringify(o)})' class="bg-slate-900 text-white px-3 py-1.5 rounded-xl font-bold text-[10px]">အသေးစိတ်ကြည့်ရန်</button>
+              <button type="button" onclick='openOrderDetail(${JSON.stringify(o)})' class="bg-slate-900 hover:bg-violet-600 text-white px-3 py-1.5 rounded-xl font-bold text-[10px] transition">အသေးစိတ်ကြည့်ရန်</button>
             </div>
           </div>
         `;
       }).join('');
     }
 
+    // 📄 OPEN ORDER DETAIL & STATUS TRACKING
     function openOrderDetail(order) {
       const content = document.getElementById('orderDetailContent');
       const items = order.items || [];
-      const status = order.status || order.order_status || 'pending';
+      const subOrd = order.shop_orders?.[0];
+      const status = subOrd?.status || order.status || order.order_status || 'pending';
+      const daysLeftHTML = status === 'shipping' ? calculateDaysLeft(subOrd?.shipped_at) : '';
 
       content.innerHTML = `
         <div class="space-y-3">
-          <div class="bg-slate-50 p-3 rounded-2xl border space-y-1">
+          <div class="bg-slate-50 p-4 rounded-2xl border space-y-2">
             <div class="flex justify-between font-bold"><span>Order ID:</span> <span class="font-mono text-violet-700">#${order.id}</span></div>
-            <div class="flex justify-between font-bold"><span>အခြေအနေ (Status):</span> <span class="text-emerald-600 uppercase">${status}</span></div>
-            <div class="flex justify-between font-bold"><span>ရက်စွဲ:</span> <span>${new Date(order.created_at).toLocaleString()}</span></div>
+            <div class="flex justify-between font-bold items-center">
+              <span>အခြေအနေ (Status):</span> 
+              <div class="text-right">
+                <span class="text-emerald-600 uppercase font-black">${status}</span>
+                <div>${daysLeftHTML}</div>
+              </div>
+            </div>
+            <div class="flex justify-between font-bold"><span>မှာယူသည့်ရက်စွဲ:</span> <span>${new Date(order.created_at).toLocaleString()}</span></div>
           </div>
+
           <div class="space-y-1">
-            <span class="font-bold text-slate-700">မှာယူထားသော ပစ္စည်းများ:</span>
+            <span class="font-bold text-slate-700">မှာယူထားသော ကုန်ပစ္စည်းများ:</span>
             <div class="max-h-40 overflow-y-auto divide-y border rounded-xl p-2 bg-slate-50">
               ${items.map(i => `
-                <div class="py-1.5 flex justify-between items-center text-[11px]">
+                <div class="py-2 flex justify-between items-center text-[11px]">
                   <div><b>${esc(i.title)}</b> <span class="text-slate-500">(Size: ${i.selectedSize||'-'}, Color: ${i.selectedColor||'-'})</span> x ${i.qty}</div>
-                  <div class="font-bold">${(Number(i.price)*i.qty).toLocaleString()} MMK</div>
+                  <div class="font-bold text-slate-900">${(Number(i.price)*i.qty).toLocaleString()} MMK</div>
                 </div>
               `).join('')}
             </div>
           </div>
-          <div class="bg-violet-50 p-3 rounded-2xl border border-violet-100 space-y-1 text-xs font-bold">
+
+          <div class="bg-violet-50 p-3.5 rounded-2xl border border-violet-100 space-y-1 text-xs font-bold">
             <div class="flex justify-between"><span>ပစ္စည်းတန်ဖိုး:</span> <span>${Number(order.subtotal||0).toLocaleString()} MMK</span></div>
             <div class="flex justify-between"><span>ကားဂိတ်ပို့ခ:</span> <span>${Number(order.shipping_fee||0).toLocaleString()} MMK</span></div>
-            <div class="flex justify-between text-sm text-rose-600 border-t pt-1"><span>စုစုပေါင်း:</span> <span>${Number(order.total_amount||order.total||0).toLocaleString()} MMK</span></div>
+            <div class="flex justify-between text-sm text-rose-600 border-t pt-1.5"><span>စုစုပေါင်း ကျသင့်ငွေ:</span> <span>${Number(order.total_amount||order.total||0).toLocaleString()} MMK</span></div>
           </div>
         </div>
       `;
+
+      // Rating Section Handling: Shows only when delivered/completed
+      currentRatingOrderId = order.id;
+      currentRatingShopId = subOrd?.shop_id || items[0]?.shop_id || null;
+
+      const ratingBox = document.getElementById('shopRatingSection');
+      if (status === 'delivered' || status === 'completed') {
+        ratingBox.classList.remove('hidden');
+        setRating(5);
+      } else {
+        ratingBox.classList.add('hidden');
+      }
+
       document.getElementById('orderDetailModal').classList.remove('hidden');
       document.getElementById('orderDetailModal').classList.add('flex');
     }
@@ -713,6 +780,42 @@
     function closeOrderDetailModal() {
       document.getElementById('orderDetailModal').classList.add('hidden');
       document.getElementById('orderDetailModal').classList.remove('flex');
+    }
+
+    // ⭐ SHOP RATING SYSTEM
+    function setRating(val) {
+      currentSelectedStars = val;
+      const stars = document.querySelectorAll('.star-btn');
+      stars.forEach((star, index) => {
+        if (index < val) {
+          star.classList.remove('ph');
+          star.classList.add('ph-fill');
+        } else {
+          star.classList.remove('ph-fill');
+          star.classList.add('ph');
+        }
+      });
+    }
+
+    async function submitShopRating() {
+      if (!currentRatingShopId) return alert('ဆိုင်အချက်အလက် မတွေ့ရှိပါ');
+      const comment = document.getElementById('shopReviewText').value.trim();
+
+      try {
+        const { error } = await client.from('shop_ratings').insert([{
+          order_id: currentRatingOrderId,
+          shop_id: currentRatingShopId,
+          customer_id: currentAuthSessionUser ? currentAuthSessionUser.id : null,
+          rating: currentSelectedStars,
+          comment: comment
+        }]);
+
+        if (error) throw error;
+        alert('🎉 သုံးသပ်ချက်နှင့် Rating ပေးပို့ပြီးပါပြီ။ ကျေးဇူးတင်ပါသည်!');
+        document.getElementById('shopRatingSection').classList.add('hidden');
+      } catch (err) {
+        alert('Rating ပေးပို့ပြီးဖြစ်ပါသည် (သို့) အချက်အလက် မပြည့်စုံပါ: ' + err.message);
+      }
     }
 
     async function handleCustomerLogout() {
@@ -834,7 +937,7 @@
         }
 
         cart = cart.filter(i => !i.checked); saveCart(); updateCartUI();
-        alert(`🎉 အော်ဒါ #${order.id} တင်ပြီးပါပြီ! Admin အတည်ပြုပြီးပါက Stock လျော့သွားပါမည်။`);
+        alert(`🎉 အော်ဒါ #${order.id} တင်ပြီးပါပြီ! Aura Company မှ အတည်ပြုပြီးပါက Stock လျော့သွားပါမည်။`);
         document.getElementById('checkoutModal').classList.add('hidden');
         location.reload();
       } catch (err) { alert("❌ Error: " + err.message); } finally { btn.innerText = "အော်ဒါ အတည်ပြုမည်"; btn.disabled = false; }
