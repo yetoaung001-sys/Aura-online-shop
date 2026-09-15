@@ -399,8 +399,16 @@
       }).join('');
     }
 
+    // 🚚 ဆိုင်ရှင်မှ ပစ္စည်းပို့ဆောင်သည့်အခါ shipped_at ပါ အတူ မှတ်သားမည့် function
     async function updateSubOrderStatus(subId, status) {
-      const { error } = await supabaseClient.from('shop_orders').update({ status }).eq('id', subId);
+      let updateData = { status: status };
+      
+      // အကယ်၍ ဆိုင်ရှင်က shipping လို့ ပြောင်းလိုက်ရင် shipped_at ကို လက်ရှိအချိန်နဲ့ မှတ်သားမည်
+      if (status === 'shipping') {
+        updateData.shipped_at = new Date().toISOString();
+      }
+
+      const { error } = await supabaseClient.from('shop_orders').update(updateData).eq('id', subId);
       if (error) alert(error.message);
       else {
         alert(`အော်ဒါ #SUB-${subId} အား ${status.toUpperCase()} သို့ ပြောင်းလဲပြီးပါပြီ`);
