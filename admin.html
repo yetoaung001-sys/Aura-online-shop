@@ -435,7 +435,37 @@
       }
     }
 
+    // 🔄 Auto-Complete Orders Logic (ရက် ၅ ရက်ကျော်ပါက အလိုအလျောက် completed သို့ပြောင်းရန်)
+    async function checkAndProcessAutoCompletes() {
+      try {
+        const { data: shippingOrders, error } = await client
+          .from('shop_orders')
+          .select('id, order_id, status, updated_at')
+          .eq('status', 'shipping');
+
+        if (error || !shippingOrders) return;
+
+        const now = new Date();
+        const AUTO_COMPLETE_DAYS = 5;
+
+        for (const so of shippingOrders) {
+          const updatedAt = new Date(so.updated_at);
+          const diffDays = (now - updatedAt) / (1000 * 60 * 60 * 24);
+
+          if (diffDays >= AUTO_COMPLETE_DAYS) {
+            await client.from('shop_orders').update({ status: 'completed' }).eq('id', so.id);
+            await client.from('orders').update({ order_status: 'completed', status: 'completed' }).eq('id', so.order_id);
+          }
+        }
+      } catch (err) {
+        console.error('Auto-complete check error:', err);
+      }
+    }
+
     async function loadOrders() {
+      // အော်ဒါစာရင်းမတင်မီ Auto-Complete ကို အရင်စစ်ဆေးပေးမည်
+      await checkAndProcessAutoCompletes();
+
       const tbody = document.getElementById('orders-tbody');
       tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr>';
 
@@ -453,7 +483,7 @@
           ? `<a href="${escapeHtml(o.payment_voucher)}" target="_blank" class="text-orange-600 font-bold underline flex items-center gap-1"><i class="fa-solid fa-image"></i> ပုံကြည့်ရန်</a>` 
           : '<span class="text-slate-400">ဘောက်ချာမရှိ</span>';
         
-        let actionButtons = `<span class="px-2.5 py-1 text-xs rounded font-bold ${status === 'confirmed' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-600'}">${escapeHtml(status)}</span>`;
+        let actionButtons = `<span class="px-2.5 py-1 text-xs rounded font-bold ${status === 'confirmed' || status === 'completed' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-600'}">${escapeHtml(status)}</span>`;
         
         if (isPending) {
           actionButtons = `
