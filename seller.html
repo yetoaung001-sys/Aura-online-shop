@@ -349,6 +349,39 @@
         const items = o.items || [];
         const itemsStr = items.map(i => `${i.title} [Size: ${i.selectedSize || '-'}, Color: ${i.selectedColor || '-'}] (${i.qty}ခု)`).join(', ');
 
+        const currentStatus = o.status || 'pending';
+        let statusElement = '';
+
+        if (currentStatus === 'pending') {
+          statusElement = `
+            <span class="px-2.5 py-1 text-xs rounded bg-amber-50 text-amber-600 font-bold inline-block">
+              ⏳ Admin ငွေစစ်ဆေးဆဲ (Pending)
+            </span>
+          `;
+        } else if (currentStatus === 'confirmed') {
+          statusElement = `
+            <div class="space-y-1">
+              <span class="px-2 py-0.5 text-[10px] rounded bg-emerald-50 text-emerald-600 font-bold block text-center">
+                ✅ Admin အတည်ပြုပြီး (Confirmed)
+              </span>
+              <select onchange="updateSubOrderStatus(${o.id}, this.value)" class="border rounded px-2 py-1 bg-white font-bold text-[11px] w-full text-orange-600 border-orange-300">
+                <option value="confirmed" selected disabled>👉 အဆင့်ရွေးပါ</option>
+                <option value="packing">📦 Packing (ထုတ်ပိုးနေဆဲ)</option>
+                <option value="shipping">🚚 Shipping (ပို့ဆောင်နေပြီ)</option>
+                <option value="delivered">🎉 Delivered (ရောက်ရှိပြီ)</option>
+              </select>
+            </div>
+          `;
+        } else {
+          statusElement = `
+            <select onchange="updateSubOrderStatus(${o.id}, this.value)" class="border rounded px-2 py-1 bg-white font-bold text-[11px]">
+              <option value="packing" ${currentStatus === 'packing' ? 'selected' : ''}>📦 Packing</option>
+              <option value="shipping" ${currentStatus === 'shipping' ? 'selected' : ''}>🚚 Shipping</option>
+              <option value="delivered" ${currentStatus === 'delivered' ? 'selected' : ''}>🎉 Delivered</option>
+            </select>
+          `;
+        }
+
         return `
           <tr class="hover:bg-slate-50">
             <td class="py-3 font-mono font-bold text-orange-600">#SUB-${o.id}</td>
@@ -360,14 +393,7 @@
             <td class="max-w-xs text-[11px]">${itemsStr}</td>
             <td class="font-bold">${Number(o.subtotal || 0).toLocaleString()} MMK</td>
             <td class="font-bold text-emerald-600">${Number(o.seller_payout || 0).toLocaleString()} MMK</td>
-            <td>
-              <select onchange="updateSubOrderStatus(${o.id}, this.value)" class="border rounded px-2 py-1 bg-white font-bold text-[11px]">
-                <option value="pending" ${o.status === 'pending' ? 'selected' : ''}>⏳ Pending</option>
-                <option value="packing" ${o.status === 'packing' ? 'selected' : ''}>📦 Packing</option>
-                <option value="shipping" ${o.status === 'shipping' ? 'selected' : ''}>🚚 Shipping</option>
-                <option value="delivered" ${o.status === 'delivered' ? 'selected' : ''}>🎉 Delivered</option>
-              </select>
-            </td>
+            <td>${statusElement}</td>
           </tr>
         `;
       }).join('');
@@ -376,7 +402,10 @@
     async function updateSubOrderStatus(subId, status) {
       const { error } = await supabaseClient.from('shop_orders').update({ status }).eq('id', subId);
       if (error) alert(error.message);
-      else alert(`အော်ဒါ #SUB-${subId} အား ${status.toUpperCase()} သို့ ပြောင်းလဲပြီးပါပြီ`);
+      else {
+        alert(`အော်ဒါ #SUB-${subId} အား ${status.toUpperCase()} သို့ ပြောင်းလဲပြီးပါပြီ`);
+        await loadShopData();
+      }
     }
 
     async function handleProductSubmit(e) {
