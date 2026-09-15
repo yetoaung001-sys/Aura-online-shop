@@ -32,16 +32,12 @@
       </div>
 
       <div class="flex items-center space-x-4">
-        <span id="adminName" class="text-xs text-slate-300">
-          Admin
-        </span>
+        <span id="adminName" class="text-xs text-slate-300">Admin</span>
         <a href="index.html" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded transition">
-          <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i>
-          ဆိုင်ကြည့်မည်
+          <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> ဆိုင်ကြည့်မည်
         </a>
         <button onclick="handleLogout()" class="text-xs bg-rose-600 hover:bg-rose-700 px-3 py-1.5 rounded transition">
-          <i class="fa-solid fa-right-from-bracket mr-1"></i>
-          ထွက်မည်
+          <i class="fa-solid fa-right-from-bracket mr-1"></i> ထွက်မည်
         </button>
       </div>
     </div>
@@ -78,7 +74,7 @@
   <!-- ================= MAIN ================= -->
   <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
 
-    <!-- ================= DASHBOARD ================= -->
+    <!-- DASHBOARD -->
     <section id="section-dashboard" class="tab-content space-y-6">
       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
@@ -100,7 +96,7 @@
       </div>
     </section>
 
-    <!-- ================= ORDERS ================= -->
+    <!-- ORDERS -->
     <section id="section-orders" class="tab-content hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center">
         <h2 class="font-bold text-slate-800 text-lg">အော်ဒါစာရင်းအားလုံး (Escrow Admin Flow)</h2>
@@ -127,7 +123,7 @@
       </div>
     </section>
 
-    <!-- ================= SHOPS ================= -->
+    <!-- SHOPS -->
     <section id="section-shops" class="tab-content hidden space-y-4">
       <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
         <h3 class="text-base font-bold text-slate-800 mb-3">
@@ -163,7 +159,6 @@
           </button>
         </form>
       </div>
-
       <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-x-auto">
         <table class="w-full text-left text-sm text-slate-600">
           <thead class="bg-slate-50 text-xs uppercase text-slate-400 border-b">
@@ -184,7 +179,7 @@
       </div>
     </section>
 
-    <!-- ================= PRODUCTS ================= -->
+    <!-- PRODUCTS -->
     <section id="section-products" class="tab-content hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center">
         <h2 class="font-bold text-slate-800 text-lg">ပစ္စည်းများ စီမံခန့်ခွဲခြင်း</h2>
@@ -203,13 +198,13 @@
             </tr>
           </thead>
           <tbody id="products-tbody" class="divide-y">
-            <tr><td colspan="6" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr>
+            <tr><td colspan="6" class="p-4 text-center">ပစ္စည်းမရှိသေးပါ</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- ================= USERS ================= -->
+    <!-- USERS -->
     <section id="section-users" class="tab-content hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200">
         <h2 class="font-bold text-slate-800 text-lg">အသင်းဝင်များနှင့် Role သတ်မှတ်ခြင်း</h2>
@@ -226,13 +221,13 @@
             </tr>
           </thead>
           <tbody id="users-tbody" class="divide-y">
-            <tr><td colspan="5" class="p-4 text-center">အသင်းဝင်မရှိသေးပါ</td></tr>
+            <tr><td colspan="5" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr>
           </tbody>
         </table>
       </div>
     </section>
 
-    <!-- ================= BANNERS ================= -->
+    <!-- BANNERS -->
     <section id="section-banners" class="tab-content hidden space-y-6">
       <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
         <h3 class="text-base font-bold text-slate-800 mb-3">
@@ -244,20 +239,18 @@
             <input type="text" id="banner-title" placeholder="Banner ခေါင်းစဉ်" class="border rounded p-2 w-full" />
           </div>
           <div>
-            <label for="banner-file" class="block text-xs font-bold text-slate-700 mb-1">ပုံဖိုင် ရွေးချယ်ရန် (Local Image)</label>
+            <label for="banner-file" class="block text-xs font-bold text-slate-700 mb-1">ပုံဖိုင် ရွေးချယ်ရန်</label>
             <input type="file" id="banner-file" accept="image/*" required class="border rounded p-1.5 w-full bg-white text-xs cursor-pointer" />
           </div>
           <div class="flex items-end">
-            <button type="submit" id="bannerSubmitBtn" class="bg-slate-900 text-white rounded p-2 hover:bg-slate-800 font-bold w-full">
-              Banner တင်မည်
-            </button>
+            <button type="submit" id="bannerSubmitBtn" class="bg-slate-900 text-white rounded p-2 hover:bg-slate-800 font-bold w-full">Banner တင်မည်</button>
           </div>
         </form>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="banners-container"></div>
     </section>
 
-    <!-- ================= PAYMENTS ================= -->
+    <!-- PAYMENTS -->
     <section id="section-payments" class="tab-content hidden space-y-4">
       <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
         <h3 class="text-base font-bold text-slate-800 mb-3">
@@ -266,20 +259,18 @@
         <form onsubmit="handleAddPayment(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-sm">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">Provider</label>
-            <input type="text" id="pay-provider" placeholder="Provider (KBZPay / Wave)" required class="border rounded p-2 w-full" />
+            <input type="text" id="pay-provider" placeholder="KBZPay / Wave" required class="border rounded p-2 w-full" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">အကောင့်ပိုင်ရှင် အမည်</label>
-            <input type="text" id="pay-name" placeholder="အကောင့်ပိုင်ရှင် အမည်" required class="border rounded p-2 w-full" />
+            <input type="text" id="pay-name" placeholder="အမည်" required class="border rounded p-2 w-full" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">အကောင့်နံပါတ် / ဖုန်း</label>
-            <input type="text" id="pay-number" placeholder="အကောင့်နံပါတ် / ဖုန်း" required class="border rounded p-2 w-full" />
+            <input type="text" id="pay-number" placeholder="နံပါတ်" required class="border rounded p-2 w-full" />
           </div>
           <div class="flex items-end">
-            <button type="submit" class="bg-slate-900 text-white rounded p-2 hover:bg-slate-800 font-bold w-full">
-              ထည့်သွင်းမည်
-            </button>
+            <button type="submit" class="bg-slate-900 text-white rounded p-2 hover:bg-slate-800 font-bold w-full">ထည့်သွင်းမည်</button>
           </div>
         </form>
       </div>
@@ -298,7 +289,7 @@
       </div>
     </section>
 
-    <!-- ================= COUPONS ================= -->
+    <!-- COUPONS -->
     <section id="section-coupons" class="tab-content hidden space-y-4">
       <div class="bg-white p-5 rounded-xl shadow-sm border border-slate-200">
         <h3 class="text-base font-bold text-slate-800 mb-3">
@@ -307,20 +298,18 @@
         <form onsubmit="handleAddCoupon(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-sm">
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">ကူပွန်ကုဒ်</label>
-            <input type="text" id="coupon-code" placeholder="ကူပွန်ကုဒ်" required class="border rounded p-2 uppercase w-full" />
+            <input type="text" id="coupon-code" placeholder="ကုဒ်" required class="border rounded p-2 uppercase w-full" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">လျှော့ငွေ (Ks)</label>
-            <input type="number" id="coupon-discount" placeholder="လျှော့ငွေ (Ks)" required class="border rounded p-2 w-full" />
+            <input type="number" id="coupon-discount" placeholder="လျှော့ငွေ" required class="border rounded p-2 w-full" />
           </div>
           <div>
             <label class="block text-xs font-bold text-slate-700 mb-1">အနည်းဆုံးဝယ်ယူငွေ</label>
-            <input type="number" id="coupon-min" placeholder="အနည်းဆုံးဝယ်ယူငွေ" value="0" class="border rounded p-2 w-full" />
+            <input type="number" id="coupon-min" placeholder="အနည်းဆုံး" value="0" class="border rounded p-2 w-full" />
           </div>
           <div class="flex items-end">
-            <button type="submit" class="bg-slate-900 text-white rounded p-2 hover:bg-slate-800 font-bold w-full">
-              ကူပွန်ထုတ်မည်
-            </button>
+            <button type="submit" class="bg-slate-900 text-white rounded p-2 hover:bg-slate-800 font-bold w-full">ကူပွန်ထုတ်မည်</button>
           </div>
         </form>
       </div>
@@ -341,7 +330,7 @@
 
   </main>
 
-  <!-- ================= JAVASCRIPT ================= -->
+  <!-- JAVASCRIPT -->
   <script>
     const SUPABASE_URL = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
     const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8';
@@ -354,33 +343,35 @@
       }[m]));
     }
 
+    // ⏳ ကျန်ရှိသောရက် (Days Left) တွက်ချက်ပေးမည့် Function
+    function calculateDaysLeft(shippedAtString) {
+      if (!shippedAtString) return '';
+      const shippedDate = new Date(shippedAtString);
+      const now = new Date();
+      const AUTO_COMPLETE_DAYS = 5;
+      const targetDate = new Date(shippedDate.getTime() + (AUTO_COMPLETE_DAYS * 24 * 60 * 60 * 1000));
+      const diffTime = targetDate - now;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays > 1) return `<span class="text-blue-600 font-bold text-[10px] block">⏳ ကျန်ရက်: ${diffDays} ရက်</span>`;
+      if (diffDays === 1) return `<span class="text-amber-600 font-bold text-[10px] block">⚠️ ကျန်ရက်: ၁ ရက်</span>`;
+      if (diffDays === 0) return `<span class="text-rose-600 font-bold text-[10px] block">🔥 ယနေ့ ရက်ပြည့်မည်</span>`;
+      return `<span class="text-emerald-600 font-bold text-[10px] block">✅ ရက်ပြည့်ပြီး</span>`;
+    }
+
     async function requireAdmin() {
       try {
         const { data: { session }, error: sessionError } = await client.auth.getSession();
-        if (sessionError || !session) {
-          window.location.href = 'login.html';
-          return false;
-        }
-
-        const { data: profile, error } = await client
-          .from('profiles')
-          .select('id, full_name, phone, role')
-          .eq('id', session.user.id)
-          .maybeSingle();
-
+        if (sessionError || !session) { window.location.href = 'login.html'; return false; }
+        const { data: profile, error } = await client.from('profiles').select('id, full_name, phone, role').eq('id', session.user.id).maybeSingle();
         if (error || !profile || (profile.role !== 'admin' && profile.role !== 'super_admin')) {
           alert('⛔ Admin Access Only');
           window.location.href = 'index.html';
           return false;
         }
-
-        const adminName = document.getElementById('adminName');
-        if (adminName) {
-          adminName.textContent = profile.full_name || 'Admin';
-        }
+        document.getElementById('adminName').textContent = profile.full_name || 'Admin';
         return true;
       } catch (error) {
-        console.error('Admin authentication error:', error);
         window.location.href = 'login.html';
         return false;
       }
@@ -392,15 +383,10 @@
         btn.classList.remove('text-amber-400', 'border-amber-400', 'font-bold');
         btn.classList.add('text-gray-400', 'border-transparent');
       });
-
-      const section = document.getElementById(`section-${tabId}`);
+      document.getElementById(`section-${tabId}`).classList.remove('hidden');
       const activeBtn = document.getElementById(`tab-${tabId}`);
-
-      if (section) section.classList.remove('hidden');
-      if (activeBtn) {
-        activeBtn.classList.remove('text-gray-400', 'border-transparent');
-        activeBtn.classList.add('text-amber-400', 'border-amber-400', 'font-bold');
-      }
+      activeBtn.classList.remove('text-gray-400', 'border-transparent');
+      activeBtn.classList.add('text-amber-400', 'border-amber-400', 'font-bold');
 
       if (tabId === 'orders') loadOrders();
       if (tabId === 'shops') loadShops();
@@ -415,63 +401,40 @@
       try {
         const { data: orders } = await client.from('orders').select('total_amount');
         if (orders) {
-          const totalSales = orders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0);
-          document.getElementById('stat-sales').innerText = totalSales.toLocaleString() + ' Ks';
+          document.getElementById('stat-sales').innerText = orders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0).toLocaleString() + ' Ks';
           document.getElementById('stat-orders').innerText = orders.length;
         }
-
         const { data: shopOrders } = await client.from('shop_orders').select('commission_amount, platform_commission');
         if (shopOrders) {
-          const totalCommission = shopOrders.reduce((sum, so) => sum + Number(so.commission_amount || so.platform_commission || 0), 0);
-          document.getElementById('stat-commission').innerText = totalCommission.toLocaleString() + ' Ks';
+          document.getElementById('stat-commission').innerText = shopOrders.reduce((sum, so) => sum + Number(so.commission_amount || so.platform_commission || 0), 0).toLocaleString() + ' Ks';
         }
-
         const { data: shops } = await client.from('shops').select('id');
-        if (shops) {
-          document.getElementById('stat-shops').innerText = shops.length;
-        }
-      } catch (error) {
-        console.error('Dashboard error:', error);
-      }
+        if (shops) document.getElementById('stat-shops').innerText = shops.length;
+      } catch (error) { console.error(error); }
     }
 
-    // 🔄 Auto-Complete Orders Logic using shipped_at (ရက် ၅ ရက်ကျော်ပါက အလိုအလျောက် completed သို့ပြောင်းရန်)
     async function checkAndProcessAutoCompletes() {
       try {
-        const { data: shippingOrders, error } = await client
-          .from('shop_orders')
-          .select('id, order_id, status, shipped_at')
-          .eq('status', 'shipping');
-
-        if (error || !shippingOrders) return;
-
+        const { data: shippingOrders } = await client.from('shop_orders').select('id, order_id, status, shipped_at').eq('status', 'shipping');
+        if (!shippingOrders) return;
         const now = new Date();
-        const AUTO_COMPLETE_DAYS = 5;
-
         for (const so of shippingOrders) {
-          if (!so.shipped_at) continue; // shipped_at မရှိသေးရင် ကျော်မည်
-
-          const shippedAt = new Date(so.shipped_at);
-          const diffDays = (now - shippedAt) / (1000 * 60 * 60 * 24);
-
-          if (diffDays >= AUTO_COMPLETE_DAYS) {
+          if (!so.shipped_at) continue;
+          if ((now - new Date(so.shipped_at)) / (1000 * 60 * 60 * 24) >= 5) {
             await client.from('shop_orders').update({ status: 'completed' }).eq('id', so.id);
             await client.from('orders').update({ order_status: 'completed', status: 'completed' }).eq('id', so.order_id);
           }
         }
-      } catch (err) {
-        console.error('Auto-complete check error:', err);
-      }
+      } catch (err) { console.error(err); }
     }
 
     async function loadOrders() {
-      // အော်ဒါစာရင်းမတင်မီ shipped_at ကိုအခြေခံသော Auto-Complete ကို အရင်စစ်ဆေးပေးမည်
       await checkAndProcessAutoCompletes();
-
       const tbody = document.getElementById('orders-tbody');
       tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr>';
 
-      const { data: orders, error } = await client.from('orders').select('*').order('created_at', { ascending: false });
+      // orders နှင့် သက်ဆိုင်သော shop_orders များကိုပါ တွဲဖက်ခေါ်ယူရန်
+      const { data: orders, error } = await client.from('orders').select('*, shop_orders(status, shipped_at)').order('created_at', { ascending: false });
       if (error || !orders || !orders.length) {
         tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-rose-600">အော်ဒါမရှိသေးပါ</td></tr>`;
         return;
@@ -479,154 +442,76 @@
 
       tbody.innerHTML = orders.map(o => {
         const status = o.status || o.order_status || 'pending';
-        const isPending = (status === 'pending');
+        const voucherLink = o.payment_voucher ? `<a href="${escapeHtml(o.payment_voucher)}" target="_blank" class="text-orange-600 font-bold underline"><i class="fa-solid fa-image"></i> ပုံကြည့်ရန်</a>` : '<span class="text-slate-400">ဘောက်ချာမရှိ</span>';
         
-        const voucherLink = o.payment_voucher 
-          ? `<a href="${escapeHtml(o.payment_voucher)}" target="_blank" class="text-orange-600 font-bold underline flex items-center gap-1"><i class="fa-solid fa-image"></i> ပုံကြည့်ရန်</a>` 
-          : '<span class="text-slate-400">ဘောက်ချာမရှိ</span>';
-        
-        let actionButtons = `<span class="px-2.5 py-1 text-xs rounded font-bold ${status === 'confirmed' || status === 'completed' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-600'}">${escapeHtml(status)}</span>`;
-        
-        if (isPending) {
+        let actionButtons = `<span class="px-2.5 py-1 text-xs rounded font-bold bg-slate-100 text-slate-600">${escapeHtml(status)}</span>`;
+        if (status === 'pending') {
           actionButtons = `
             <div class="flex items-center gap-1.5">
-              <button onclick="approveOrder(${o.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-xs font-bold transition shadow-xs">
-                <i class="fa-solid fa-check mr-1"></i> အတည်ပြု
-              </button>
-              <button onclick="rejectOrder(${o.id})" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded text-xs font-bold transition shadow-xs">
-                <i class="fa-solid fa-xmark mr-1"></i> ပယ်ဖျက်
-              </button>
-            </div>
-          `;
+              <button onclick="approveOrder(${o.id})" class="bg-emerald-600 text-white px-3 py-1.5 rounded text-xs font-bold shadow"><i class="fa-solid fa-check mr-1"></i> အတည်ပြု</button>
+              <button onclick="rejectOrder(${o.id})" class="bg-rose-600 text-white px-3 py-1.5 rounded text-xs font-bold shadow"><i class="fa-solid fa-xmark mr-1"></i> ပယ်ဖျက်</button>
+            </div>`;
+        } else if (status === 'shipping') {
+          // Sub-order တစ်ခုချင်းစီ၏ shipped_at ကိုစစ်ဆေးပြီး ကျန်ရက်ပြသရန်
+          const subOrd = o.shop_orders?.[0];
+          const daysLeftHTML = subOrd ? calculateDaysLeft(subOrd.shipped_at) : '';
+          actionButtons = `<span class="px-2.5 py-1 text-xs rounded font-bold bg-blue-50 text-blue-600">🚚 Shipping</span> ${daysLeftHTML}`;
+        } else if (status === 'confirmed' || status === 'completed') {
+          actionButtons = `<span class="px-2.5 py-1 text-xs rounded font-bold bg-emerald-50 text-emerald-600">${escapeHtml(status)}</span>`;
         }
 
         return `
-          <tr class="hover:bg-slate-50">
-            <td class="p-4 font-mono text-xs">#${escapeHtml(o.id)}</td>
+          <tr class="hover:bg-slate-50 border-b">
+            <td class="p-4 font-mono text-xs font-bold">#${escapeHtml(o.id)}</td>
             <td class="p-4 font-bold text-slate-800">${escapeHtml(o.customer_name || '-')}</td>
             <td class="p-4">${escapeHtml(o.customer_phone || '-')}<br><span class="text-xs text-slate-400">${escapeHtml((o.township || '') + ' ' + (o.delivery_address || ''))}</span></td>
             <td class="p-4 font-bold text-emerald-600">${Number(o.total_amount || 0).toLocaleString()} Ks</td>
             <td class="p-4">${voucherLink}</td>
             <td class="p-4">${actionButtons}</td>
-          </tr>
-        `;
+          </tr>`;
       }).join('');
     }
 
     async function approveOrder(orderId) {
-      if (!confirm(`အော်ဒါ #${orderId} ကို ငွေဝင်ရောက်မှု မှန်ကန်ကြောင်း အတည်ပြုပြီး ဆိုင်ရှင်ဆီ ပေးပို့မှာ သေချာပါသလား?`)) return;
-      try {
-        const { error: orderErr } = await client.from('orders')
-          .update({ order_status: 'confirmed', status: 'confirmed' })
-          .eq('id', orderId);
-        if (orderErr) throw orderErr;
-
-        const { error: shopOrderErr } = await client.from('shop_orders')
-          .update({ status: 'confirmed' })
-          .eq('order_id', orderId);
-        if (shopOrderErr) throw shopOrderErr;
-
-        alert(`🎉 အော်ဒါ #${orderId} အောင်မြင်စွာ အတည်ပြုပြီးပါပြီ!`);
-        await loadOrders();
-        await loadDashboardStats();
-      } catch (err) {
-        alert('❌ အတည်ပြု၍ မရပါ: ' + err.message);
-      }
+      if (!confirm(`အော်ဒါ #${orderId} ကို အတည်ပြုမှာ သေချာပါသလား?`)) return;
+      await client.from('orders').update({ order_status: 'confirmed', status: 'confirmed' }).eq('id', orderId);
+      await client.from('shop_orders').update({ status: 'confirmed' }).eq('order_id', orderId);
+      alert('အတည်ပြုပြီးပါပြီ');
+      await loadOrders();
     }
 
     async function rejectOrder(orderId) {
       if (!confirm(`အော်ဒါ #${orderId} ကို ပယ်ဖျက်မှာ သေချာပါသလား?`)) return;
-      try {
-        const { error: orderErr } = await client.from('orders')
-          .update({ order_status: 'cancelled', status: 'cancelled' })
-          .eq('id', orderId);
-        if (orderErr) throw orderErr;
-
-        const { error: shopOrderErr } = await client.from('shop_orders')
-          .update({ status: 'cancelled' })
-          .eq('order_id', orderId);
-        if (shopOrderErr) throw shopOrderErr;
-
-        alert(`အော်ဒါ #${orderId} ကို ပယ်ဖျက်လိုက်ပါပြီ။`);
-        await loadOrders();
-      } catch (err) {
-        alert('❌ ပယ်ဖျက်၍ မရပါ: ' + err.message);
-      }
+      await client.from('orders').update({ order_status: 'cancelled', status: 'cancelled' }).eq('id', orderId);
+      await client.from('shop_orders').update({ status: 'cancelled' }).eq('order_id', orderId);
+      alert('ပယ်ဖျက်ပြီးပါပြီ');
+      await loadOrders();
     }
 
     async function loadShops() {
       const tbody = document.getElementById('shops-tbody');
-      const { data: shops, error } = await client.from('shops').select('*');
-      if (error || !shops || !shops.length) {
-        tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center">ဆိုင်မရှိသေးပါ</td></tr>';
-        return;
-      }
-
+      const { data: shops } = await client.from('shops').select('*');
+      if (!shops || !shops.length) { tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center">ဆိုင်မရှိသေးပါ</td></tr>'; return; }
       tbody.innerHTML = shops.map(s => `
-        <tr class="hover:bg-slate-50">
-          <td class="p-4">
-            <img src="${escapeHtml(s.logo_url || 'https://placehold.co/50')}" class="w-10 h-10 object-cover rounded-xl border shadow-xs" onerror="this.src='https://placehold.co/50'">
-          </td>
-          <td class="p-4 font-bold text-slate-800">${escapeHtml(s.name)}</td>
+        <tr class="hover:bg-slate-50 border-b">
+          <td class="p-4"><img src="${escapeHtml(s.logo_url || 'https://placehold.co/50')}" class="w-10 h-10 object-cover rounded-xl border"></td>
+          <td class="p-4 font-bold">${escapeHtml(s.name)}</td>
           <td class="p-4">${escapeHtml(s.phone || '-')}</td>
-          <td class="p-4">
-            <input type="number" value="${Number(s.commission_rate || 0)}" min="0" max="100" class="w-16 border rounded px-2 py-1 text-xs" onchange="updateCommission(${s.id}, this.value)" /> %
-          </td>
+          <td class="p-4"><input type="number" value="${Number(s.commission_rate || 0)}" class="w-16 border rounded px-2 py-1 text-xs" onchange="updateCommission(${s.id}, this.value)" /> %</td>
           <td class="p-4"><span class="text-xs font-bold ${s.is_active ? 'text-emerald-600' : 'text-rose-600'}">${s.is_active ? 'Active' : 'Closed'}</span></td>
-          <td class="p-4">
-            <div class="flex items-center gap-2">
-              <input type="file" id="logoFile-${s.id}" accept="image/*" class="text-[10px] w-36 cursor-pointer" />
-              <button onclick="adminUploadShopLogo(${s.id})" class="bg-slate-900 text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-slate-800">တင်မည်</button>
-            </div>
-          </td>
-          <td class="p-4">
-            <button onclick="toggleShop(${s.id}, ${Boolean(s.is_active)})" class="text-xs px-2 py-1 rounded ${s.is_active ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}">
-              ${s.is_active ? 'ဆိုင်ပိတ်မည်' : 'ဆိုင်ဖွင့်မည်'}
-            </button>
-          </td>
-        </tr>
-      `).join('');
+          <td class="p-4"><div class="flex items-center gap-2"><input type="file" id="logoFile-${s.id}" accept="image/*" class="text-[10px] w-36"/><button onclick="adminUploadShopLogo(${s.id})" class="bg-slate-900 text-white px-2 py-1 rounded text-xs">တင်မည်</button></div></td>
+          <td class="p-4"><button onclick="toggleShop(${s.id}, ${Boolean(s.is_active)})" class="text-xs px-2 py-1 rounded ${s.is_active ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}">${s.is_active ? 'ပိတ်မည်' : 'ဖွင့်မည်'}</button></td>
+        </tr>`).join('');
     }
 
     async function adminUploadShopLogo(shopId) {
-      const fileInput = document.getElementById(`logoFile-${shopId}`);
-      if (!fileInput.files || fileInput.files.length === 0) {
-        alert('ကျေးဇူးပြု၍ ပုံဖိုင် ရွေးချယ်ပါ။');
-        return;
-      }
-
-      const file = fileInput.files[0];
-      if (file.size > 5 * 1024 * 1024) {
-        alert('ပုံအရွယ်အစား 5MB ထက် မကြီးရပါ။');
-        return;
-      }
-
-      try {
-        const ext = (file.name.split('.').pop() || 'jpg').replace(/[^a-z0-9]/gi, '');
-        const fileName = `shop-logos/${Date.now()}-${crypto.randomUUID()}.${ext}`;
-
-        const { error: uploadError } = await client.storage
-          .from('product-images')
-          .upload(fileName, file, { upsert: false });
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = client.storage
-          .from('product-images')
-          .getPublicUrl(fileName);
-
-        const { error: updateError } = await client
-          .from('shops')
-          .update({ logo_url: publicUrl })
-          .eq('id', shopId);
-
-        if (updateError) throw updateError;
-
-        alert('🎉 ဆိုင် Logo အောင်မြင်စွာ တင်ပြီးပါပြီ!');
-        await loadShops();
-      } catch (err) {
-        alert('❌ Logo တင်မရပါ: ' + (err.message || err));
-      }
+      const f = document.getElementById(`logoFile-${shopId}`).files[0];
+      if (!f) return alert('ပုံရွေးပါ');
+      const name = `shop-logos/${Date.now()}.${f.name.split('.').pop()}`;
+      await client.storage.from('product-images').upload(name, f);
+      const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(name);
+      await client.from('shops').update({ logo_url: publicUrl }).eq('id', shopId);
+      alert('Logo တင်ပြီးပါပြီ'); loadShops();
     }
 
     async function handleCreateSellerAndShop(e) {
@@ -638,317 +523,103 @@
       const password = document.getElementById('seller-pass').value.trim();
       const commission = Number(document.getElementById('seller-commission').value);
 
-      if (password.length < 6) {
-        alert('စကားဝှက်သည် အနည်းဆုံး ၆ လုံး ရှိရပါမည်။');
-        return;
-      }
-
-      try {
-        const { data: authData, error: authError } = await client.auth.signUp({
-          email, password, options: { data: { full_name: name, phone } }
-        });
-        if (authError) throw authError;
-
-        const newUserId = authData.user?.id;
-        if (!newUserId) throw new Error('User ID ရယူမရနိုင်ပါ။');
-
-        await client.from('profiles').upsert({ id: newUserId, full_name: name, phone, role: 'seller' });
-        await client.from('shops').insert([{ name: shopName, phone, commission_rate: commission, owner_id: newUserId, is_active: true }]);
-
-        alert(`🎉 အောင်မြင်ပါသည်!\n\nဆိုင်: ${shopName}\nLogin Email: ${email}\nPassword: ${password}`);
-        e.target.reset();
-        await loadShops();
-      } catch (err) {
-        alert('❌ ဆိုင်ဖွင့်မရပါ:\n' + err.message);
-      }
+      const { data, error } = await client.auth.signUp({ email, password, options: { data: { full_name: name, phone } } });
+      if (error) return alert(error.message);
+      const uid = data.user.id;
+      await client.from('profiles').upsert({ id: uid, full_name: name, phone, role: 'seller' });
+      await client.from('shops').insert([{ name: shopName, phone, commission_rate: commission, owner_id: uid, is_active: true }]);
+      alert('ဆိုင်နှင့်အကောင့် ဖွင့်လှစ်ပြီးပါပြီ'); e.target.reset(); loadShops();
     }
 
-    async function updateCommission(shopId, rate) {
-      const commission = Number(rate);
-      const { error } = await client.from('shops').update({ commission_rate: commission }).eq('id', shopId);
-      if (error) {
-        alert('ပြင်ဆင်မရပါ: ' + error.message);
-        return;
-      }
-      alert('ကော်မရှင်နှုန်းထား ပြင်ဆင်ပြီးပါပြီ');
+    async function updateCommission(id, rate) {
+      await client.from('shops').update({ commission_rate: Number(rate) }).eq('id', id);
+      alert('ကော်မရှင် ပြင်ဆင်ပြီး');
     }
-
     async function toggleShop(id, current) {
-      const { error } = await client.from('shops').update({ is_active: !current }).eq('id', id);
-      if (error) {
-        alert('ဆိုင်အခြေအနေ ပြောင်းမရပါ: ' + error.message);
-        return;
-      }
-      await loadShops();
+      await client.from('shops').update({ is_active: !current }).eq('id', id); loadShops();
     }
 
     async function loadProducts() {
-      const tbody = document.getElementById('products-tbody');
-      const { data: products, error } = await client.from('products').select('*, shops(name)');
-      if (error || !products || !products.length) {
-        tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center">ပစ္စည်းမရှိသေးပါ</td></tr>';
-        document.getElementById('product-count').innerText = 'စုစုပေါင်း: 0';
-        return;
-      }
-
-      document.getElementById('product-count').innerText = `စုစုပေါင်း: ${products.length}`;
-      tbody.innerHTML = products.map(p => `
-        <tr class="hover:bg-slate-50">
-          <td class="p-4"><img src="${escapeHtml(p.image || p.image_url || 'https://placehold.co/50')}" class="w-10 h-10 object-cover rounded border" onerror="this.src='https://placehold.co/50'"></td>
-          <td class="p-4 font-semibold text-slate-800">${escapeHtml(p.title || p.name || '-')}</td>
-          <td class="p-4 text-xs font-bold text-slate-600">${p.shops ? escapeHtml(p.shops.name) : '-'}</td>
-          <td class="p-4 font-bold text-slate-700">${Number(p.price ?? p.priceMMK ?? 0).toLocaleString()} Ks</td>
-          <td class="p-4">${Number(p.stock || 0).toLocaleString()}</td>
-          <td class="p-4"><button onclick="deleteProduct(${p.id})" class="text-rose-600 hover:text-rose-800 text-xs"><i class="fa-solid fa-trash"></i> ဖျက်မည်</button></td>
-        </tr>
-      `).join('');
+      const { data: products } = await client.from('products').select('*, shops(name)');
+      document.getElementById('product-count').innerText = `စုစုပေါင်း: ${products?.length || 0}`;
+      document.getElementById('products-tbody').innerHTML = (products || []).map(p => `
+        <tr class="hover:bg-slate-50 border-b">
+          <td class="p-4"><img src="${escapeHtml(p.image || p.image_url || 'https://placehold.co/50')}" class="w-10 h-10 object-cover rounded"></td>
+          <td class="p-4 font-semibold">${escapeHtml(p.title || p.name)}</td>
+          <td class="p-4 text-xs font-bold">${p.shops ? escapeHtml(p.shops.name) : '-'}</td>
+          <td class="p-4 font-bold">${Number(p.price || 0).toLocaleString()} Ks</td>
+          <td class="p-4">${p.stock}</td>
+          <td class="p-4"><button onclick="deleteProduct(${p.id})" class="text-rose-600 text-xs"><i class="fa-solid fa-trash"></i> ဖျက်</button></td>
+        </tr>`).join('');
     }
-
-    async function deleteProduct(id) {
-      if (!confirm('ဤပစ္စည်းကို အပြီးတိုင် ဖျက်မှာ သေချာပါသလား?')) return;
-      const { error } = await client.from('products').delete().eq('id', id);
-      if (error) {
-        alert('ပစ္စည်းဖျက်မရပါ:\n' + error.message);
-        return;
-      }
-      await loadProducts();
-    }
+    async function deleteProduct(id) { if(confirm('ဖျက်မှာသေချာလား?')) { await client.from('products').delete().eq('id', id); loadProducts(); } }
 
     async function loadUsers() {
-      const tbody = document.getElementById('users-tbody');
-      const { data: users, error } = await client.from('profiles').select('*');
-      if (error || !users || !users.length) {
-        tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center">အသင်းဝင်မရှိသေးပါ</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = users.map(u => `
-        <tr class="hover:bg-slate-50">
-          <td class="p-4 font-semibold text-slate-800">${escapeHtml(u.full_name || 'No Name')}</td>
+      const { data: users } = await client.from('profiles').select('*');
+      document.getElementById('users-tbody').innerHTML = (users || []).map(u => `
+        <tr class="hover:bg-slate-50 border-b">
+          <td class="p-4 font-semibold">${escapeHtml(u.full_name || '-')}</td>
           <td class="p-4 text-xs">${escapeHtml(u.phone || '-')}</td>
-          <td class="p-4 font-bold text-xs uppercase text-slate-700">${escapeHtml(u.role || '-')}</td>
-          <td class="p-4">
-            <select onchange="updateUserRole('${u.id}', this.value)" class="border rounded text-xs px-2 py-1">
-              <option value="customer" ${u.role === 'customer' ? 'selected' : ''}>Customer</option>
-              <option value="seller" ${u.role === 'seller' ? 'selected' : ''}>Seller</option>
-              <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Admin</option>
-              <option value="super_admin" ${u.role === 'super_admin' ? 'selected' : ''}>Super Admin</option>
-            </select>
-          </td>
-          <td class="p-4">
-            <button onclick="deleteUser('${u.id}')" class="text-xs text-rose-600 hover:text-rose-800 font-bold">
-              <i class="fa-solid fa-trash mr-1"></i> ဖျက်မည်
-            </button>
-          </td>
-        </tr>
-      `).join('');
+          <td class="p-4 font-bold text-xs">${escapeHtml(u.role)}</td>
+          <td class="p-4"><select onchange="updateRole('${u.id}', this.value)" class="border rounded text-xs px-2 py-1"><option value="customer" ${u.role==='customer'?'selected':''}>Customer</option><option value="seller" ${u.role==='seller'?'selected':''}>Seller</option><option value="admin" ${u.role==='admin'?'selected':''}>Admin</option></select></td>
+          <td class="p-4"><button onclick="deleteUser('${u.id}')" class="text-xs text-rose-600">ဖျက်</button></td>
+        </tr>`).join('');
     }
-
-    async function updateUserRole(userId, newRole) {
-      if (!confirm(`Role ကို "${newRole}" သို့ ပြောင်းမှာ သေချာပါသလား?`)) {
-        await loadUsers();
-        return;
-      }
-      const { error } = await client.from('profiles').update({ role: newRole }).eq('id', userId);
-      if (error) {
-        alert('User Role ပြောင်းမရပါ:\n' + error.message);
-        await loadUsers();
-        return;
-      }
-      alert('User Role ပြောင်းလဲပြီးပါပြီ');
-      await loadUsers();
-    }
-
-    async function deleteUser(userId) {
-      if (!confirm('ဤသုံးစွဲသူကို ဖျက်မှာ သေချာပါသလား?')) return;
-      const { error } = await client.from('profiles').delete().eq('id', userId);
-      if (error) {
-        alert('❌ ဖျက်မရပါ: ' + error.message);
-        return;
-      }
-      alert('🎉 အသင်းဝင်ကို အောင်မြင်စွာ ဖျက်ပြီးပါပြီ');
-      await loadUsers();
-    }
+    async function updateRole(id, role) { await client.from('profiles').update({ role }).eq('id', id); alert('Role ပြောင်းပြီး'); loadUsers(); }
+    async function deleteUser(id) { if(confirm('ဖျက်မလား?')) { await client.from('profiles').delete().eq('id', id); loadUsers(); } }
 
     async function loadBanners() {
-      const container = document.getElementById('banners-container');
-      const { data: banners, error } = await client.from('banners').select('*');
-      if (error || !banners || !banners.length) {
-        container.innerHTML = '<p class="text-slate-400 p-4">Banner မရှိသေးပါ</p>';
-        return;
-      }
-
-      container.innerHTML = banners.map(b => `
-        <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm space-y-2">
-          <img src="${escapeHtml(b.image_url || b.img || 'https://placehold.co/600x300')}" class="w-full h-32 object-cover rounded" onerror="this.src='https://placehold.co/600x300'">
-          <p class="font-bold text-sm text-slate-800">${escapeHtml(b.title || 'Untitled')}</p>
-          <button onclick="deleteBanner(${b.id})" class="text-xs text-rose-600 hover:underline">ဖျက်မည်</button>
-        </div>
-      `).join('');
+      const { data: banners } = await client.from('banners').select('*');
+      document.getElementById('banners-container').innerHTML = (banners || []).map(b => `
+        <div class="bg-white p-3 rounded-xl border shadow-sm space-y-2">
+          <img src="${escapeHtml(b.image_url || b.img)}" class="w-full h-32 object-cover rounded">
+          <p class="font-bold text-sm">${escapeHtml(b.title)}</p>
+          <button onclick="deleteBanner(${b.id})" class="text-xs text-rose-600">ဖျက်</button>
+        </div>`).join('');
     }
-
     async function handleAddBanner(e) {
       e.preventDefault();
-      const title = document.getElementById('banner-title').value.trim();
-      const fileInput = document.getElementById('banner-file');
-      const btn = document.getElementById('bannerSubmitBtn');
-
-      if (!fileInput.files || fileInput.files.length === 0) {
-        alert('ကျေးဇူးပြု၍ ပုံဖိုင် ရွေးချယ်ပါ။');
-        return;
-      }
-
-      const file = fileInput.files[0];
-      if (file.size > 5 * 1024 * 1024) {
-        alert('ပုံအရွယ်အစား 5MB ထက် မကြီးရပါ။');
-        return;
-      }
-
-      btn.disabled = true;
-      btn.innerText = 'ပုံတင်နေပါသည်...';
-
-      try {
-        const ext = (file.name.split('.').pop() || 'jpg').replace(/[^a-z0-9]/gi, '');
-        const fileName = `banners/${Date.now()}-${crypto.randomUUID()}.${ext}`;
-
-        const { error: uploadError } = await client.storage
-          .from('product-images')
-          .upload(fileName, file, { upsert: false });
-
-        if (uploadError) throw uploadError;
-
-        const { data: { publicUrl } } = client.storage
-          .from('product-images')
-          .getPublicUrl(fileName);
-
-        const { error: dbError } = await client.from('banners').insert([{
-          title: title || 'Untitled',
-          image_url: publicUrl,
-          img: publicUrl
-        }]);
-
-        if (dbError) throw dbError;
-
-        alert('🎉 Banner ပုံ အောင်မြင်စွာ တင်ပြီးပါပြီ!');
-        e.target.reset();
-        await loadBanners();
-      } catch (err) {
-        alert('❌ Banner တင်မရပါ:\n' + (err.message || err));
-      } finally {
-        btn.disabled = false;
-        btn.innerText = 'Banner တင်မည်';
-      }
+      const f = document.getElementById('banner-file').files[0];
+      const name = `banners/${Date.now()}.${f.name.split('.').pop()}`;
+      await client.storage.from('product-images').upload(name, f);
+      const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(name);
+      await client.from('banners').insert([{ title: document.getElementById('banner-title').value, image_url: publicUrl, img: publicUrl }]);
+      alert('Banner တင်ပြီး'); e.target.reset(); loadBanners();
     }
-
-    async function deleteBanner(id) {
-      if (!confirm('ဖျက်မှာ သေချာပါသလား?')) return;
-      const { error } = await client.from('banners').delete().eq('id', id);
-      if (error) {
-        alert('Banner ဖျက်မရပါ:\n' + error.message);
-        return;
-      }
-      await loadBanners();
-    }
+    async function deleteBanner(id) { await client.from('banners').delete().eq('id', id); loadBanners(); }
 
     async function loadPayments() {
-      const tbody = document.getElementById('payments-tbody');
-      const { data: payments, error } = await client.from('payment_methods').select('*');
-      if (error || !payments || !payments.length) {
-        tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center">Payment မရှိသေးပါ</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = payments.map(p => `
-        <tr class="hover:bg-slate-50">
-          <td class="p-4 font-bold text-slate-800">${escapeHtml(p.provider_name)}</td>
-          <td class="p-4">${escapeHtml(p.account_name)}</td>
-          <td class="p-4 font-mono">${escapeHtml(p.account_number)}</td>
-          <td class="p-4"><button onclick="deletePayment(${p.id})" class="text-xs text-rose-600 hover:underline">ဖျက်မည်</button></td>
-        </tr>
-      `).join('');
+      const { data: payments } = await client.from('payment_methods').select('*');
+      document.getElementById('payments-tbody').innerHTML = (payments || []).map(p => `
+        <tr class="hover:bg-slate-50 border-b"><td class="p-4 font-bold">${escapeHtml(p.provider_name)}</td><td class="p-4">${escapeHtml(p.account_name)}</td><td class="p-4">${escapeHtml(p.account_number)}</td><td class="p-4"><button onclick="deletePay(${p.id})" class="text-xs text-rose-600">ဖျက်</button></td></tr>`).join('');
     }
-
     async function handleAddPayment(e) {
       e.preventDefault();
-      const provider_name = document.getElementById('pay-provider').value.trim();
-      const account_name = document.getElementById('pay-name').value.trim();
-      const account_number = document.getElementById('pay-number').value.trim();
-
-      const { error } = await client.from('payment_methods').insert([{ provider_name, account_name, account_number }]);
-      if (error) {
-        alert('Payment ထည့်မရပါ:\n' + error.message);
-        return;
-      }
-      e.target.reset();
-      await loadPayments();
+      await client.from('payment_methods').insert([{ provider_name: document.getElementById('pay-provider').value, account_name: document.getElementById('pay-name').value, account_number: document.getElementById('pay-number').value }]);
+      e.target.reset(); loadPayments();
     }
-
-    async function deletePayment(id) {
-      if (!confirm('ဖျက်မှာ သေချာပါသလား?')) return;
-      const { error } = await client.from('payment_methods').delete().eq('id', id);
-      if (error) {
-        alert('Payment ဖျက်မရပါ:\n' + error.message);
-        return;
-      }
-      await loadPayments();
-    }
+    async function deletePay(id) { await client.from('payment_methods').delete().eq('id', id); loadPayments(); }
 
     async function loadCoupons() {
-      const tbody = document.getElementById('coupons-tbody');
-      const { data: coupons, error } = await client.from('coupons').select('*');
-      if (error || !coupons || !coupons.length) {
-        tbody.innerHTML = '<tr><td colspan="4" class="p-4 text-center">ကူပွန်မရှိသေးပါ</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = coupons.map(c => `
-        <tr class="hover:bg-slate-50">
-          <td class="p-4 font-mono font-bold text-amber-600">${escapeHtml(c.code)}</td>
-          <td class="p-4 font-bold text-emerald-600">${Number(c.discount_value || c.discount_amount || c.val || 0).toLocaleString()} Ks</td>
-          <td class="p-4">${Number(c.min_order_amount || 0).toLocaleString()} Ks</td>
-          <td class="p-4"><button onclick="deleteCoupon(${c.id})" class="text-xs text-rose-600 hover:underline">ဖျက်မည်</button></td>
-        </tr>
-      `).join('');
+      const { data: coupons } = await client.from('coupons').select('*');
+      document.getElementById('coupons-tbody').innerHTML = (coupons || []).map(c => `
+        <tr class="hover:bg-slate-50 border-b"><td class="p-4 font-mono font-bold text-amber-600">${escapeHtml(c.code)}</td><td class="p-4">${c.discount_value} Ks</td><td class="p-4">${c.min_order_amount} Ks</td><td class="p-4"><button onclick="deleteCoupon(${c.id})" class="text-xs text-rose-600">ဖျက်</button></td></tr>`).join('');
     }
-
     async function handleAddCoupon(e) {
       e.preventDefault();
-      const code = document.getElementById('coupon-code').value.trim().toUpperCase();
-      const discount_value = Number(document.getElementById('coupon-discount').value);
-      const min_order_amount = Number(document.getElementById('coupon-min').value);
-
-      const { error } = await client.from('coupons').insert([{ code, discount_value, min_order_amount }]);
-      if (error) {
-        alert('Coupon ထည့်မရပါ:\n' + error.message);
-        return;
-      }
-      e.target.reset();
-      await loadCoupons();
+      await client.from('coupons').insert([{ code: document.getElementById('coupon-code').value.toUpperCase(), discount_value: Number(document.getElementById('coupon-discount').value), min_order_amount: Number(document.getElementById('coupon-min').value) }]);
+      e.target.reset(); loadCoupons();
     }
+    async function deleteCoupon(id) { await client.from('coupons').delete().eq('id', id); loadCoupons(); }
 
-    async function deleteCoupon(id) {
-      if (!confirm('ဖျက်မှာ သေချာပါသလား?')) return;
-      const { error } = await client.from('coupons').delete().eq('id', id);
-      if (error) {
-        alert('Coupon ဖျက်မရပါ:\n' + error.message);
-        return;
-      }
-      await loadCoupons();
-    }
-
-    async function handleLogout() {
-      await client.auth.signOut();
-      window.location.href = 'index.html';
-    }
+    async function handleLogout() { await client.auth.signOut(); window.location.href = 'index.html'; }
 
     async function init() {
       const allowed = await requireAdmin();
       if (!allowed) return;
-      console.log('✅ Aura Admin Panel Authorized');
       await loadDashboardStats();
       await loadShops();
     }
-
     document.addEventListener('DOMContentLoaded', init);
   </script>
 </body>
