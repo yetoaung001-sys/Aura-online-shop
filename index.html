@@ -24,8 +24,8 @@
         <span>📢 အသိပေးချက်: ဝယ်ယူရန် Checkout လုပ်သည့်အခါ အကောင့်ဝင်ရန် လိုအပ်ပါသည်။</span>
       </div>
       <div class="flex items-center gap-4">
-        <!-- Auth Status & Profile Link Trigger -->
-        <button onclick="openProfileModal()" id="userAuthStatusBtn" class="font-bold bg-white/20 px-3 py-0.5 rounded-full text-[11px] hover:bg-white/30 transition">Guest</button>
+        <!-- Customer Profile / Login Button -->
+        <button onclick="handleUserNavClick()" id="userAuthStatusBtn" class="font-bold bg-white/20 px-3 py-0.5 rounded-full text-[11px] hover:bg-white/30 transition">Guest (Login)</button>
         <a href="#" onclick="openPolicyModal(); return false;" class="hover:underline opacity-90">မူဝါဒများ</a>
         <a href="#" onclick="openContactModal(); return false;" class="hover:underline opacity-90">📞 ဆက်သွယ်ရန်</a>
         <a href="seller.html" class="hover:underline opacity-90">Seller Center</a>
@@ -96,29 +96,29 @@
     </div>
   </footer>
 
-  <!-- ================= CUSTOMER LOGIN / SIGNUP MODAL ================= -->
+  <!-- ================= 1. DEDICATED LOGIN / SIGNUP MODAL (AUTH BOX) ================= -->
   <div id="authModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-4 text-xs shadow-2xl animate-in fade-in zoom-in-95 duration-200">
+    <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-4 text-xs shadow-2xl">
       <div class="flex justify-between items-center border-b pb-3">
         <h3 id="authModalTitle" class="font-extrabold text-sm text-slate-900">🔐 အကောင့်ဝင်ရန် (Login)</h3>
         <button onclick="closeAuthModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition"><i class="ph ph-x text-base"></i></button>
       </div>
-      <p id="authModalSubtitle" class="text-slate-500 text-[11px]">အော်ဒါဆက်လက်တင်ရန် သင့်အမည်နှင့် Gmail (သို့) ဖုန်းနံပါတ်ဖြင့် အကောင့်ဝင်ရန် လိုအပ်ပါသည်။</p>
+      <p id="authModalSubtitle" class="text-slate-500 text-[11px]">အော်ဒါဆက်လက်တင်ရန် သင့်အမည်နှင့် Email (သို့) ဖုန်းနံပါတ်ဖြင့် အကောင့်ဝင်ရန် လိုအပ်ပါသည်။</p>
       
       <form onsubmit="handleCustomerAuth(event)" class="space-y-3">
         <div id="authNameField" class="hidden">
-          <label class="font-bold block mb-1 text-slate-700">အမည် (Full Name) *</label>
-          <input type="text" id="authName" placeholder="သင်၏အမည်" class="w-full border p-2.5 rounded-xl outline-none focus:border-orange-500" />
+          <label for="authName" class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label>
+          <input type="text" id="authName" name="full_name" placeholder="သင်၏အမည်" class="w-full border p-2.5 rounded-xl outline-none focus:border-orange-500" />
         </div>
         <div>
-          <label class="font-bold block mb-1 text-slate-700">Gmail (သို့) ဖုန်းနံပါတ် *</label>
-          <input type="text" id="authEmailOrPhone" required placeholder="example@gmail.com (သို့) 09..." class="w-full border p-2.5 rounded-xl outline-none focus:border-orange-500" />
+          <label for="authEmailOrPhone" class="font-bold block mb-1 text-slate-700">Email (သို့) ဖုန်းနံပါတ် *</label>
+          <input type="text" id="authEmailOrPhone" name="email_or_phone" required placeholder="example@gmail.com (သို့) 09..." class="w-full border p-2.5 rounded-xl outline-none focus:border-orange-500" />
         </div>
         <div>
-          <label class="font-bold block mb-1 text-slate-700">စကားဝှက် (Password) *</label>
-          <input type="password" id="authPassword" required placeholder="အနည်းဆုံး ၆ လုံး" class="w-full border p-2.5 rounded-xl outline-none focus:border-orange-500" />
+          <label for="authPassword" class="font-bold block mb-1 text-slate-700">စကားဝှက် (Password) *</label>
+          <input type="password" id="authPassword" name="password" required placeholder="အနည်းဆုံး ၆ လုံး" class="w-full border p-2.5 rounded-xl outline-none focus:border-orange-500" />
         </div>
-        <button type="submit" id="authSubmitBtn" class="w-full bg-orange-600 text-white font-bold py-3 rounded-2xl shadow-lg hover:bg-orange-700 transition">
+        <button type="submit" id="authSubmitBtn" name="auth_submit" class="w-full bg-orange-600 text-white font-bold py-3 rounded-2xl shadow-lg hover:bg-orange-700 transition">
           အကောင့်ဝင်မည်
         </button>
       </form>
@@ -130,7 +130,7 @@
     </div>
   </div>
 
-  <!-- ================= CUSTOMER PROFILE & ORDER HISTORY MODAL ================= -->
+  <!-- ================= 2. CUSTOMER PROFILE & ORDER HISTORY MODAL ================= -->
   <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-xl rounded-3xl p-6 space-y-5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -138,28 +138,28 @@
         <button onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition"><i class="ph ph-x text-base"></i></button>
       </div>
 
-      <!-- Profile Form -->
+      <!-- Profile Update Form -->
       <form onsubmit="handleProfileUpdate(event)" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
         <h4 class="font-extrabold text-slate-800">📝 ကိုယ်ရေးအချက်အလက် ပြင်ဆင်ရန်</h4>
         <div>
-          <label class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label>
-          <input type="text" id="profileName" required class="w-full border p-2.5 rounded-xl bg-white outline-none" />
+          <label for="profileName" class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label>
+          <input type="text" id="profileName" name="profile_name" required class="w-full border p-2.5 rounded-xl bg-white outline-none" />
         </div>
         <div class="grid grid-cols-2 gap-2">
           <div>
-            <label class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label>
-            <input type="tel" id="profilePhone" required class="w-full border p-2.5 rounded-xl bg-white outline-none" />
+            <label for="profilePhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label>
+            <input type="tel" id="profilePhone" name="profile_phone" required class="w-full border p-2.5 rounded-xl bg-white outline-none" />
           </div>
           <div>
-            <label class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label>
-            <input type="text" id="profileTownship" class="w-full border p-2.5 rounded-xl bg-white outline-none" />
+            <label for="profileTownship" class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label>
+            <input type="text" id="profileTownship" name="profile_township" class="w-full border p-2.5 rounded-xl bg-white outline-none" />
           </div>
         </div>
         <div>
-          <label class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label>
-          <textarea id="profileAddress" rows="2" class="w-full border p-2.5 rounded-xl bg-white outline-none"></textarea>
+          <label for="profileAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label>
+          <textarea id="profileAddress" name="profile_address" rows="2" class="w-full border p-2.5 rounded-xl bg-white outline-none"></textarea>
         </div>
-        <button type="submit" id="updateProfileBtn" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl hover:bg-slate-800 transition">ပြောင်းလဲမှုများ သိမ်းဆည်းမည်</button>
+        <button type="submit" id="updateProfileBtn" name="update_profile" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl hover:bg-slate-800 transition">ပြောင်းလဲမှုများ သိမ်းဆည်းမည်</button>
       </form>
 
       <!-- Order History List -->
@@ -185,7 +185,7 @@
       <div id="detailDescArea" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-slate-600 space-y-1 hidden"><span class="font-bold text-slate-700 block">📝 ပစ္စည်းအကြောင်းအရာ:</span><p id="detailDescText" class="leading-relaxed"></p></div>
       <div id="sizeSelectionArea" class="space-y-2 hidden"><label class="font-bold text-slate-700 block">📏 Size ရွေးပါ:</label><div id="sizeOptionsList" class="flex flex-wrap gap-2"></div></div>
       <div id="colorSelectionArea" class="space-y-2 hidden"><label class="font-bold text-slate-700 block">🎨 Color ရွေးပါ:</label><div id="colorOptionsList" class="flex flex-wrap gap-2"></div></div>
-      <div><label class="font-bold block mb-1.5 text-slate-700">အရေအတွက်</label><input id="buyQty" type="number" min="1" value="1" class="w-full border border-slate-200 bg-slate-50 p-3 rounded-2xl outline-none font-bold text-slate-800" /></div>
+      <div><label for="buyQty" class="font-bold block mb-1.5 text-slate-700">အရေအတွက်</label><input id="buyQty" name="buy_qty" type="number" min="1" value="1" class="w-full border border-slate-200 bg-slate-50 p-3 rounded-2xl outline-none font-bold text-slate-800" /></div>
       <button onclick="confirmAddToCart()" class="w-full bg-gradient-to-r from-orange-600 to-rose-600 text-white font-bold py-3.5 rounded-2xl shadow-lg text-sm">ဈေးတောင်းထဲသို့ ထည့်မည်</button>
     </div>
   </div>
@@ -194,7 +194,7 @@
   <div id="cartModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden justify-end">
     <div class="bg-white w-full max-w-md h-full flex flex-col p-5 shadow-2xl">
       <div class="flex justify-between items-center pb-4 border-b"><h3 class="font-extrabold text-base text-slate-900">🛒 စျေးဝယ်တွန်းလှည်း</h3><button onclick="closeCart()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition"><i class="ph ph-x text-base"></i></button></div>
-      <div class="py-3 border-b flex justify-between items-center text-xs bg-slate-50 px-3 rounded-xl my-2"><label class="flex items-center gap-2.5 font-bold cursor-pointer text-slate-700"><input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" class="w-4 h-4 rounded text-orange-600 accent-orange-600 cursor-pointer" /><span>အားလုံးကို ရွေးမည်</span></label><span id="selectedCountBadge" class="text-orange-600 font-extrabold bg-orange-50 px-2 py-0.5 rounded-md">0 ခု ရွေးထားသည်</span></div>
+      <div class="py-3 border-b flex justify-between items-center text-xs bg-slate-50 px-3 rounded-xl my-2"><label class="flex items-center gap-2.5 font-bold cursor-pointer text-slate-700"><input type="checkbox" id="selectAllCheckbox" name="select_all" onchange="toggleSelectAll(this)" class="w-4 h-4 rounded text-orange-600 accent-orange-600 cursor-pointer" /><span>အားလုံးကို ရွေးမည်</span></label><span id="selectedCountBadge" class="text-orange-600 font-extrabold bg-orange-50 px-2 py-0.5 rounded-md">0 ခု ရွေးထားသည်</span></div>
       <div id="cartItems" class="flex-1 overflow-y-auto divide-y divide-slate-100 text-xs py-2 pr-1"></div>
       <div class="border-t pt-4 space-y-3 text-xs bg-white">
         <div class="flex justify-between text-sm font-black px-1"><span class="text-slate-600">ရွေးချယ်ထားပြီး စုစုပေါင်း:</span><span id="cartTotal" class="text-orange-600 text-base">0 MMK</span></div>
@@ -209,19 +209,19 @@
       <div class="flex justify-between items-center border-b pb-3"><h3 class="font-extrabold text-sm text-slate-900">🛒 အော်ဒါ အချက်အလက် နှင့် ငွေပေးချေမှု</h3><button onclick="closeCheckout()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button></div>
       <form onsubmit="handleOrderSubmit(event)" class="space-y-3.5">
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2"><span class="font-extrabold text-slate-800 block border-b pb-1.5 text-xs">📦 ဝယ်ယူမည့် ရွေးချယ်ထားသော ပစ္စည်းများ</span><div id="checkoutItemsList" class="max-h-40 overflow-y-auto divide-y divide-slate-200 space-y-2"></div></div>
-        <div><label class="font-bold block mb-1 text-slate-700">ဝယ်သူအမည် *</label><input type="text" id="custName" required class="w-full border p-3 rounded-2xl outline-none bg-slate-50" /></div>
-        <div><label class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="custPhone" required class="w-full border p-3 rounded-2xl outline-none bg-slate-50" /></div>
-        <div><label class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label><input type="text" id="custTownship" required class="w-full border p-3 rounded-2xl outline-none bg-slate-50" /></div>
-        <div><label class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="custAddress" required class="w-full border p-3 rounded-2xl outline-none bg-slate-50" rows="2"></textarea></div>
-        <div><label class="font-bold block mb-1 text-slate-700">🚚 ကားဂိတ်ပို့ခ (Shipping Fee)</label><input type="text" id="shippingFeeDisplay" readonly value="0 MMK" class="w-full border p-3 rounded-2xl bg-slate-100 font-extrabold text-slate-600 outline-none" /></div>
-        <div><label class="font-bold block mb-1 text-slate-700">ငွေပေးချေမှုစနစ် ရွေးချယ်ရန်</label><select id="custPayment" class="w-full border p-3 rounded-2xl bg-slate-50 font-bold outline-none"></select></div>
-        <div class="bg-orange-50/50 p-4 rounded-2xl border border-orange-100 space-y-1.5"><label class="font-extrabold block text-slate-800">💳 ငွေလွှဲဘောက်ချာ (Screenshot) *</label><input type="file" id="checkoutVoucherFile" accept="image/*" required class="w-full border p-2.5 rounded-xl bg-white cursor-pointer text-xs" /></div>
+        <div><label for="custName" class="font-bold block mb-1 text-slate-700">ဝယ်သူအမည် *</label><input type="text" id="custName" name="customer_name" required class="w-full border p-3 rounded-2xl outline-none bg-slate-50" /></div>
+        <div><label for="custPhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="custPhone" name="customer_phone" required class="w-full border p-3 rounded-2xl outline-none bg-slate-50" /></div>
+        <div><label for="custTownship" class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label><input type="text" id="custTownship" name="customer_township" required class="w-full border p-3 rounded-2xl outline-none bg-slate-50" /></div>
+        <div><label for="custAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="custAddress" name="customer_address" required class="w-full border p-3 rounded-2xl outline-none bg-slate-50" rows="2"></textarea></div>
+        <div><label for="shippingFeeDisplay" class="font-bold block mb-1 text-slate-700">🚚 ကားဂိတ်ပို့ခ (Shipping Fee)</label><input type="text" id="shippingFeeDisplay" name="shipping_fee_display" readonly value="0 MMK" class="w-full border p-3 rounded-2xl bg-slate-100 font-extrabold text-slate-600 outline-none" /></div>
+        <div><label for="custPayment" class="font-bold block mb-1 text-slate-700">ငွေပေးချေမှုစနစ် ရွေးချယ်ရန်</label><select id="custPayment" name="payment_method" class="w-full border p-3 rounded-2xl bg-slate-50 font-bold outline-none"></select></div>
+        <div class="bg-orange-50/50 p-4 rounded-2xl border border-orange-100 space-y-1.5"><label for="checkoutVoucherFile" class="font-extrabold block text-slate-800">💳 ငွေလွှဲဘောက်ချာ (Screenshot) *</label><input type="file" id="checkoutVoucherFile" name="voucher_file" accept="image/*" required class="w-full border p-2.5 rounded-xl bg-white cursor-pointer text-xs" /></div>
         <div class="pt-3 border-t space-y-1.5 text-xs font-bold bg-slate-50 p-4 rounded-2xl border">
           <div class="flex justify-between text-slate-600"><span>ပစ္စည်းတန်ဖိုး (Subtotal):</span><span id="summarySubtotal">0 MMK</span></div>
           <div class="flex justify-between text-slate-600"><span>ကားဂိတ်ပို့ခ (Shipping Fee):</span><span id="summaryShipping">0 MMK</span></div>
-          <div class="flex justify-between text-sm font-black text-orange-600 border-t pt-2"><span>စုစုပေါင်း ကျသင့်ငွေ (Total):</span><span id="summaryTotal" class="text-base">0 MMK</span></div>
+          <div class="flex justify-between text-sm font-black text-orange-600 border-t pt-2"><span>စုစုပေါင်း ကျသင့်ငွေ (Total):</span><span id="summaryTotal">0 MMK</span></div>
         </div>
-        <button type="submit" id="submitOrderBtn" class="w-full bg-gradient-to-r from-orange-600 to-rose-600 text-white py-3.5 rounded-2xl font-extrabold shadow-lg">အော်ဒါ အတည်ပြုမည်</button>
+        <button type="submit" id="submitOrderBtn" name="submit_order" class="w-full bg-gradient-to-r from-orange-600 to-rose-600 text-white py-3.5 rounded-2xl font-extrabold shadow-lg">အော်ဒါ အတည်ပြုမည်</button>
       </form>
     </div>
   </div>
@@ -262,14 +262,16 @@
         currentAuthSessionUser = session.user;
         const { data: profile } = await client.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
         if (profile) {
-          document.getElementById('userAuthStatusBtn').innerText = profile.full_name || 'Customer';
+          document.getElementById('userAuthStatusBtn').innerText = profile.full_name || 'Customer Profile';
           document.getElementById('custName').value = profile.full_name || '';
           document.getElementById('custPhone').value = profile.phone || '';
           document.getElementById('custTownship').value = profile.township || '';
           document.getElementById('custAddress').value = profile.delivery_address || profile.address || '';
+        } else {
+          document.getElementById('userAuthStatusBtn').innerText = session.user.email || 'Customer Profile';
         }
       } else {
-        document.getElementById('userAuthStatusBtn').innerText = 'Guest (Login)';
+        document.getElementById('userAuthStatusBtn').innerText = 'Guest (Login / Signup)';
       }
 
       const [prodRes, payRes, bannerRes] = await Promise.all([
@@ -286,6 +288,16 @@
       renderProducts();
       populatePaymentMethods();
       updateCartUI();
+    }
+
+    // Top Header Button Handler: Opens Profile if logged in, or Auth Modal if Guest
+    async function handleUserNavClick() {
+      const { data: { session } } = await client.auth.getSession();
+      if (session) {
+        openProfileModal();
+      } else {
+        openAuthModal('login');
+      }
     }
 
     function renderBanners(banners) {
@@ -435,7 +447,7 @@
       `).join('');
     }
 
-    // 🛑 CHECKOUT & AUTH MODAL LOGIC
+    // 🛑 CHECKOUT & AUTH CHECK
     async function openCheckout() {
       const selectedItems = cart.filter(i => i.checked);
       if (!selectedItems.length) return alert('ဝယ်ယူရန် ပစ္စည်းအနည်းဆုံး တစ်ခု ရွေးချယ်ပါ');
@@ -480,7 +492,6 @@
       }
       currentAuthSessionUser = session.user;
       
-      // Load Profile Data
       const { data: profile } = await client.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
       if (profile) {
         document.getElementById('profileName').value = profile.full_name || '';
@@ -531,7 +542,6 @@
       const container = document.getElementById('customerOrdersContainer');
       container.innerHTML = '<div class="text-center py-4 text-slate-400">အော်ဒါများ ရှာဖွေနေပါသည်...</div>';
 
-      // Fetch orders matching current user's phone or customer_id if applicable, or all orders if linked by auth
       const { data: orders, error } = await client.from('orders').select('*').order('created_at', { ascending: false });
       if (error || !orders || !orders.length) {
         container.innerHTML = '<div class="text-center py-4 text-slate-400 text-xs">ဝယ်ယူထားသော အော်ဒါမှတ်တမ်း မရှိသေးပါ။</div>';
@@ -566,11 +576,11 @@
       location.reload();
     }
 
-    // 🔐 AUTH MODAL LOGIC (LOGIN / SIGNUP)
+    // 🔐 DEDICATED AUTH MODAL LOGIC (LOGIN / SIGNUP)
     function openAuthModal(mode) {
       isSignupMode = (mode === 'signup');
       document.getElementById('authModalTitle').innerText = isSignupMode ? '🔐 အကောင့်အသစ်ဖွင့်ရန် (Sign Up)' : '🔐 အကောင့်ဝင်ရန် (Login)';
-      document.getElementById('authModalSubtitle').innerText = isSignupMode ? 'Aura Marketplace တွင် အကောင့်အသစ်ဖွင့်ရန် အချက်အလက်များ ဖြည့်ပါ။' : 'အော်ဒါဆက်လက်တင်ရန် သင့်အမည်နှင့် Gmail (သို့) ဖုန်းနံပါတ်ဖြင့် အကောင့်ဝင်ရန် လိုအပ်ပါသည်။';
+      document.getElementById('authModalSubtitle').innerText = isSignupMode ? 'Aura Marketplace တွင် အကောင့်အသစ်ဖွင့်ရန် အချက်အလက်များ ဖြည့်ပါ။' : 'အော်ဒါဆက်လက်တင်ရန် သင့်အမည်နှင့် Email (သို့) ဖုန်းနံပါတ်ဖြင့် အကောင့်ဝင်ရန် လိုအပ်ပါသည်။';
       document.getElementById('authNameField').classList.toggle('hidden', !isSignupMode);
       document.getElementById('authSubmitBtn').innerText = isSignupMode ? 'အကောင့်အသစ်ဖွင့်မည်' : 'အကောင့်ဝင်မည်';
       document.getElementById('authToggleBtn').innerText = isSignupMode ? 'အကောင့်ရှိပြီးသားဆိုလျှင် ဝင်ရန် (Login)' : 'အကောင့်မရှိသေးပါက အသစ်စာရင်းသွင်းရန် (Sign Up)';
