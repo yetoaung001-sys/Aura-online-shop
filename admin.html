@@ -200,11 +200,16 @@
       return String(value ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
     }
 
+    // ⏳ ကျန်ရှိသောရက် (Days Left) တွက်ချက်ပေးမည့် Function
     function calculateDaysLeft(shippedAtString) {
       if (!shippedAtString) return '';
       const shippedDate = new Date(shippedAtString);
       const now = new Date();
-      const diffDays = Math.ceil((new Date(shippedDate.getTime() + (5 * 24 * 60 * 60 * 1000)) - now) / (1000 * 60 * 60 * 24));
+      const AUTO_COMPLETE_DAYS = 5;
+      const targetDate = new Date(shippedDate.getTime() + (AUTO_COMPLETE_DAYS * 24 * 60 * 60 * 1000));
+      const diffTime = targetDate - now;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
       if (diffDays > 1) return `<span class="text-blue-600 font-bold text-[10px] block">⏳ ကျန်ရက်: ${diffDays} ရက်</span>`;
       if (diffDays === 1) return `<span class="text-amber-600 font-bold text-[10px] block">⚠️ ကျန်ရက်: ၁ ရက်</span>`;
       if (diffDays === 0) return `<span class="text-rose-600 font-bold text-[10px] block">🔥 ယနေ့ ရက်ပြည့်မည်</span>`;
@@ -292,7 +297,11 @@
         } else if (status === 'shipping') {
           const subOrd = o.shop_orders?.[0];
           const daysLeftHTML = subOrd ? calculateDaysLeft(subOrd.shipped_at) : '';
-          actionButtons = `<span class="px-2.5 py-1 text-xs rounded font-bold bg-blue-50 text-blue-600">🚚 Shipping</span> ${daysLeftHTML}`;
+          actionButtons = `
+            <div class="space-y-1">
+              <span class="px-2.5 py-1 text-xs rounded font-bold bg-blue-50 text-blue-600 inline-block">🚚 Shipping</span>
+              <div>${daysLeftHTML}</div>
+            </div>`;
         } else if (status === 'confirmed' || status === 'completed') {
           actionButtons = `<span class="px-2.5 py-1 text-xs rounded font-bold bg-emerald-50 text-emerald-600">${escapeHtml(status)}</span>`;
         }
