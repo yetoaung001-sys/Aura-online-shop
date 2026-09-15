@@ -173,15 +173,14 @@
           </div>
         </div>
 
-        <!-- SIZES & COLORS INPUT -->
         <div class="grid grid-cols-2 gap-2 bg-slate-50 p-3 rounded-xl border">
           <div>
-            <label for="prodSizes" class="font-bold block mb-1">📏 အရွယ်အစားများ (Sizes - comma ဖြင့်ခွဲရန်)</label>
+            <label for="prodSizes" class="font-bold block mb-1">📏 အရွယ်အစားများ (Sizes)</label>
             <input type="text" id="prodSizes" class="w-full border p-2 rounded-xl bg-white font-mono uppercase" placeholder="S, M, L, XL" />
           </div>
           <div>
-            <label for="prodColors" class="font-bold block mb-1">🎨 အရောင်များ (Colors - comma ဖြင့်ခွဲရန်)</label>
-            <input type="text" id="prodColors" class="w-full border p-2 rounded-xl bg-white font-mono" placeholder="Black, White, Red" />
+            <label for="prodColors" class="font-bold block mb-1">🎨 အရောင်များ (Colors)</label>
+            <input type="text" id="prodColors" class="w-full border p-2 rounded-xl bg-white font-mono" placeholder="Black, White" />
           </div>
         </div>
 
@@ -213,19 +212,19 @@
             <input type="text" id="prodCouponCode" class="w-full border p-2 rounded-xl uppercase font-mono" placeholder="AURA10" />
           </div>
           <div>
-            <label for="prodCouponDiscount" class="font-bold block mb-1">🎫 ကူပွန်လျှော့စျေး</label>
-            <input type="number" id="prodCouponDiscount" class="w-full border p-2 rounded-xl" placeholder="10 (or 5000)" />
+            <label for="prodCouponDiscount" class="font-bold block mb-1">🎫 လျှော့စျေး</label>
+            <input type="number" id="prodCouponDiscount" class="w-full border p-2 rounded-xl" placeholder="5000" />
           </div>
         </div>
 
         <div>
-          <label for="prodImageFiles" class="font-bold block mb-1 text-orange-600">📸 ကုန်ပစ္စည်းဓာတ်ပုံများ (Multiple Photos)</label>
+          <label for="prodImageFiles" class="font-bold block mb-1 text-orange-600">📸 ကုန်ပစ္စည်းဓာတ်ပုံများ</label>
           <input type="file" id="prodImageFiles" multiple accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 cursor-pointer text-xs" />
         </div>
 
         <div>
           <label for="prodDesc" class="font-bold block mb-1">အကြောင်းအရာ အသေးစိတ်</label>
-          <textarea id="prodDesc" rows="2" class="w-full border p-2.5 rounded-xl outline-none" placeholder="ပစ္စည်းအကြောင်းအရာ..."></textarea>
+          <textarea id="prodDesc" rows="2" class="w-full border p-2.5 rounded-xl outline-none" placeholder="အကြောင်းအရာ..."></textarea>
         </div>
 
         <button type="submit" id="saveProdBtn" class="w-full bg-orange-600 hover:bg-orange-700 text-white py-3 rounded-2xl font-bold shadow transition">
@@ -244,53 +243,51 @@
     let shopProducts = [];
     let shopOrders = [];
 
+    // ⏳ ကျန်ရှိသောရက် (Days Left) တွက်ချက်ပေးမည့် Function
+    function calculateDaysLeft(shippedAtString) {
+      if (!shippedAtString) return '';
+      const shippedDate = new Date(shippedAtString);
+      const now = new Date();
+      const AUTO_COMPLETE_DAYS = 5;
+      const targetDate = new Date(shippedDate.getTime() + (AUTO_COMPLETE_DAYS * 24 * 60 * 60 * 1000));
+      const diffTime = targetDate - now;
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+      
+      if (diffDays > 1) return `<span class="text-blue-600 font-bold text-[10px] block mt-1">⏳ ကျန်ရက်: ${diffDays} ရက်</span>`;
+      if (diffDays === 1) return `<span class="text-amber-600 font-bold text-[10px] block mt-1">⚠️ ကျန်ရက်: ၁ ရက်</span>`;
+      if (diffDays === 0) return `<span class="text-rose-600 font-bold text-[10px] block mt-1">🔥 ယနေ့ ရက်ပြည့်မည်</span>`;
+      return `<span class="text-emerald-600 font-bold text-[10px] block mt-1">✅ ရက်ပြည့်ပြီး (Completed)</span>`;
+    }
+
     async function checkAuthSession() {
       const { data: { session }, error: sessionError } = await supabaseClient.auth.getSession();
-      if (sessionError) { console.error(sessionError); showLoginView(); return; }
-      if (!session) { showLoginView(); return; }
-
+      if (sessionError || !session) { showLoginView(); return; }
       const { data: shop, error: shopError } = await supabaseClient.from('shops').select('*').eq('owner_id', session.user.id).maybeSingle();
-      if (shopError) { alert('❌ ဆိုင်အချက်အလက် ရယူမရပါ: ' + shopError.message); showLoginView(); return; }
-      if (!shop) {
-        alert("❌ သင့်အကောင့်သည် ဆိုင်ဖွင့်ထားခြင်း မရှိသေးပါ");
-        await supabaseClient.auth.signOut();
-        showLoginView();
-        return;
-      }
-
+      if (shopError || !shop) { alert("❌ ဆိုင်အချက်အလက် မရှိပါ"); await supabaseClient.auth.signOut(); showLoginView(); return; }
       myShop = shop;
       showDashboardView(session.user.email);
       await loadShopData();
     }
 
-    function showLoginView() {
-      document.getElementById('sellerLoginSection').classList.remove('hidden');
-      document.getElementById('sellerDashboardSection').classList.add('hidden');
-    }
-
+    function showLoginView() { document.getElementById('sellerLoginSection').classList.remove('hidden'); document.getElementById('sellerDashboardSection').classList.add('hidden'); }
     function showDashboardView(email) {
       document.getElementById('sellerLoginSection').classList.add('hidden');
       document.getElementById('sellerDashboardSection').classList.remove('hidden');
-      document.getElementById('sellerShopName').innerText = `${myShop.name}`;
+      document.getElementById('sellerShopName').innerText = myShop.name;
       document.getElementById('sellerEmailBadge').innerText = email;
     }
 
     async function handleSellerLogin(e) {
       e.preventDefault();
-      const email = document.getElementById('sellerEmailInput').value.trim();
-      const password = document.getElementById('sellerPassInput').value;
-      const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
+      const { error } = await supabaseClient.auth.signInWithPassword({ email: document.getElementById('sellerEmailInput').value.trim(), password: document.getElementById('sellerPassInput').value });
       if (error) alert("❌ Login မအောင်မြင်ပါ: " + error.message);
       else await checkAuthSession();
     }
 
     async function loadShopData() {
-      const { data: prods, error: prodError } = await supabaseClient.from('products').select('*').eq('shop_id', myShop.id).order('id', { ascending: false });
-      if (prodError) { alert('❌ ပစ္စည်းများ ရယူမရပါ: ' + prodError.message); return; }
+      const { data: prods } = await supabaseClient.from('products').select('*').eq('shop_id', myShop.id).order('id', { ascending: false });
       shopProducts = prods || [];
-
-      const { data: ords, error: orderError } = await supabaseClient.from('shop_orders').select('*, orders(customer_name, customer_phone, delivery_address, township)').eq('shop_id', myShop.id).order('id', { ascending: false });
-      if (orderError) { console.error(orderError); }
+      const { data: ords } = await supabaseClient.from('shop_orders').select('*, orders(customer_name, customer_phone, delivery_address, township)').eq('shop_id', myShop.id).order('id', { ascending: false });
       shopOrders = ords || [];
 
       updateAnalytics();
@@ -299,115 +296,91 @@
     }
 
     function updateAnalytics() {
-      const totalSales = shopOrders.reduce((s, o) => s + Number(o.subtotal || 0), 0);
-      const netPayout = shopOrders.reduce((s, o) => s + Number(o.seller_payout || 0), 0);
-
-      document.getElementById('statTotalSales').innerText = totalSales.toLocaleString() + ' MMK';
-      document.getElementById('statNetPayout').innerText = netPayout.toLocaleString() + ' MMK';
+      document.getElementById('statTotalSales').innerText = shopOrders.reduce((s, o) => s + Number(o.subtotal || 0), 0).toLocaleString() + ' MMK';
+      document.getElementById('statNetPayout').innerText = shopOrders.reduce((s, o) => s + Number(o.seller_payout || 0), 0).toLocaleString() + ' MMK';
       document.getElementById('statTotalOrders').innerText = shopOrders.length + ' ခု';
       document.getElementById('statTotalProds').innerText = shopProducts.length + ' မျိုး';
     }
 
     function renderProductsTable() {
       const tbody = document.getElementById('sellerProductsTable');
-      if (!shopProducts.length) {
-        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">ပစ္စည်းစာရင်း မရှိသေးပါ</td></tr>`;
-        return;
-      }
-      tbody.innerHTML = shopProducts.map(p => {
-        const sizesStr = (p.sizes && p.sizes.length) ? p.sizes.join(', ') : '-';
-        const colorsStr = (p.colors && p.colors.length) ? p.colors.join(', ') : '-';
-        return `
-          <tr class="hover:bg-slate-50">
-            <td class="py-2"><img src="${p.image || p.image_url || 'https://placehold.co/100'}" class="w-10 h-10 object-cover rounded-lg" /></td>
-            <td class="font-bold">${p.title || p.name}</td>
-            <td class="font-bold text-orange-600">${Number(p.price || p.priceMMK || 0).toLocaleString()} MMK</td>
-            <td>
-              <div class="text-[10px]">📏 Size: <span class="font-bold text-slate-700">${sizesStr}</span></div>
-              <div class="text-[10px]">🎨 Color: <span class="font-bold text-slate-700">${colorsStr}</span></div>
-            </td>
-            <td>${p.stock}</td>
-            <td>${p.allow_cod ? '✓ COD' : '✕'} | ပို့ခ: ${p.shipping_fee || 0}</td>
-            <td class="space-x-2">
-              <button onclick="editProduct(${p.id})" class="text-blue-600 font-bold hover:underline">ပြင်မည်</button><button onclick="deleteProduct(${p.id})" class="text-rose-500 font-bold hover:underline">ဖျက်မည်</button>
-            </td>
-          </tr>
-        `;
-      }).join('');
+      if (!shopOrders.length && !shopProducts.length) { tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">ပစ္စည်းမရှိသေးပါ</td></tr>`; return; }
+      tbody.innerHTML = shopProducts.map(p => `
+        <tr class="hover:bg-slate-50 border-b">
+          <td class="py-2"><img src="${p.image || p.image_url || 'https://placehold.co/100'}" class="w-10 h-10 object-cover rounded-lg" /></td>
+          <td class="font-bold">${escapeHtml(p.title || p.name)}</td>
+          <td class="font-bold text-orange-600">${Number(p.price || p.priceMMK || 0).toLocaleString()} MMK</td>
+          <td><div class="text-[10px]">📏 Size: ${p.sizes?.join(', ') || '-'}</div><div class="text-[10px]">🎨 Color: ${p.colors?.join(', ') || '-'}</div></td>
+          <td>${p.stock}</td>
+          <td>${p.allow_cod ? '✓ COD' : '✕'} | ပို့ခ: ${p.shipping_fee || 0}</td>
+          <td class="space-x-2"><button onclick="editProduct(${p.id})" class="text-blue-600 font-bold">ပြင်</button><button onclick="deleteProduct(${p.id})" class="text-rose-500 font-bold">ဖျက်</button></td>
+        </tr>`).join('');
     }
 
     function renderOrdersTable() {
       const tbody = document.getElementById('sellerOrdersTable');
-      if (!shopOrders.length) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">အော်ဒါများ မရှိသေးပါ</td></tr>`;
-        return;
-      }
+      if (!shopOrders.length) { tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-400">အော်ဒါမရှိသေးပါ</td></tr>`; return; }
+      
       tbody.innerHTML = shopOrders.map(o => {
         const custName = o.orders?.customer_name || 'အမည်မသိ';
         const custPhone = o.orders?.customer_phone || '-';
         const address = `${o.orders?.township || ''}, ${o.orders?.delivery_address || ''}`;
-        const items = o.items || [];
-        const itemsStr = items.map(i => `${i.title} [Size: ${i.selectedSize || '-'}, Color: ${i.selectedColor || '-'}] (${i.qty}ခု)`).join(', ');
+        const itemsStr = (o.items || []).map(i => `${i.title} [Size: ${i.selectedSize || '-'}, Color: ${i.selectedColor || '-'}] (${i.qty}ခု)`).join(', ');
 
         const currentStatus = o.status || 'pending';
         let statusElement = '';
 
         if (currentStatus === 'pending') {
-          statusElement = `
-            <span class="px-2.5 py-1 text-xs rounded bg-amber-50 text-amber-600 font-bold inline-block">
-              ⏳ Admin ငွေစစ်ဆေးဆဲ (Pending)
-            </span>
-          `;
+          statusElement = `<span class="px-2.5 py-1 text-xs rounded bg-amber-50 text-amber-600 font-bold inline-block">⏳ Admin ငွေစစ်ဆေးဆဲ</span>`;
         } else if (currentStatus === 'confirmed') {
           statusElement = `
             <div class="space-y-1">
-              <span class="px-2 py-0.5 text-[10px] rounded bg-emerald-50 text-emerald-600 font-bold block text-center">
-                ✅ Admin အတည်ပြုပြီး (Confirmed)
-              </span>
+              <span class="px-2 py-0.5 text-[10px] rounded bg-emerald-50 text-emerald-600 font-bold block text-center">✅ Admin အတည်ပြုပြီး</span>
               <select onchange="updateSubOrderStatus(${o.id}, this.value)" class="border rounded px-2 py-1 bg-white font-bold text-[11px] w-full text-orange-600 border-orange-300">
                 <option value="confirmed" selected disabled>👉 အဆင့်ရွေးပါ</option>
-                <option value="packing">📦 Packing (ထုတ်ပိုးနေဆဲ)</option>
-                <option value="shipping">🚚 Shipping (ပို့ဆောင်နေပြီ)</option>
-                <option value="delivered">🎉 Delivered (ရောက်ရှိပြီ)</option>
+                <option value="packing">📦 Packing</option>
+                <option value="shipping">🚚 Shipping</option>
+                <option value="delivered">🎉 Delivered</option>
               </select>
-            </div>
-          `;
+            </div>`;
+        } else if (currentStatus === 'shipping') {
+          const daysLeftHTML = calculateDaysLeft(o.shipped_at);
+          statusElement = `
+            <div class="space-y-1">
+              <span class="px-2 py-0.5 text-[10px] rounded bg-blue-50 text-blue-600 font-bold block text-center">🚚 Shipping</span>
+              ${daysLeftHTML}
+              <select onchange="updateSubOrderStatus(${o.id}, this.value)" class="border rounded px-2 py-1 bg-white font-bold text-[11px] w-full">
+                <option value="shipping" selected>🚚 Shipping</option>
+                <option value="delivered">🎉 Delivered</option>
+              </select>
+            </div>`;
         } else {
           statusElement = `
             <select onchange="updateSubOrderStatus(${o.id}, this.value)" class="border rounded px-2 py-1 bg-white font-bold text-[11px]">
               <option value="packing" ${currentStatus === 'packing' ? 'selected' : ''}>📦 Packing</option>
               <option value="shipping" ${currentStatus === 'shipping' ? 'selected' : ''}>🚚 Shipping</option>
               <option value="delivered" ${currentStatus === 'delivered' ? 'selected' : ''}>🎉 Delivered</option>
-            </select>
-          `;
+              <option value="completed" ${currentStatus === 'completed' ? 'selected' : ''}>✅ Completed</option>
+            </select>`;
         }
 
         return `
-          <tr class="hover:bg-slate-50">
+          <tr class="hover:bg-slate-50 border-b">
             <td class="py-3 font-mono font-bold text-orange-600">#SUB-${o.id}</td>
-            <td>
-              <div class="font-bold">${custName}</div>
-              <div class="text-[10px] text-slate-400">📞 ${custPhone}</div>
-              <div class="text-[10px] text-slate-500">📍 ${address}</div>
-            </td>
-            <td class="max-w-xs text-[11px]">${itemsStr}</td>
+            <td><div class="font-bold">${escapeHtml(custName)}</div><div class="text-[10px] text-slate-400">📞 ${escapeHtml(custPhone)}</div><div class="text-[10px] text-slate-500">📍 ${escapeHtml(address)}</div></td>
+            <td class="max-w-xs text-[11px]">${escapeHtml(itemsStr)}</td>
             <td class="font-bold">${Number(o.subtotal || 0).toLocaleString()} MMK</td>
             <td class="font-bold text-emerald-600">${Number(o.seller_payout || 0).toLocaleString()} MMK</td>
             <td>${statusElement}</td>
-          </tr>
-        `;
+          </tr>`;
       }).join('');
     }
 
-    // 🚚 ဆိုင်ရှင်မှ ပစ္စည်းပို့ဆောင်သည့်အခါ shipped_at ပါ အတူ မှတ်သားမည့် function
     async function updateSubOrderStatus(subId, status) {
       let updateData = { status: status };
-      
-      // အကယ်၍ ဆိုင်ရှင်က shipping လို့ ပြောင်းလိုက်ရင် shipped_at ကို လက်ရှိအချိန်နဲ့ မှတ်သားမည်
       if (status === 'shipping') {
         updateData.shipped_at = new Date().toISOString();
       }
-
       const { error } = await supabaseClient.from('shop_orders').update(updateData).eq('id', subId);
       if (error) alert(error.message);
       else {
@@ -416,108 +389,57 @@
       }
     }
 
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
+    }
+
     async function handleProductSubmit(e) {
       e.preventDefault();
       const btn = document.getElementById('saveProdBtn');
-      btn.innerText = "ပုံများကို Upload တင်နေပါသည်...";
-      btn.disabled = true;
-
+      btn.innerText = "သိမ်းဆည်းနေပါသည်..."; btn.disabled = true;
       try {
         const title = document.getElementById('prodTitle').value.trim();
-        const category_id = Number(document.getElementById('prodCategory').value);
-        const priceVal = Number(document.getElementById('prodPrice').value);
-        const flash_price = Number(document.getElementById('prodFlashPrice').value) || 0;
+        const price = Number(document.getElementById('prodPrice').value);
         const stock = Number(document.getElementById('prodStock').value);
-        const allow_cod = document.getElementById('prodAllowCod').checked;
-        const shipping_fee = Number(document.getElementById('prodShippingFee').value) || 0;
-        const coupon_code = document.getElementById('prodCouponCode').value.trim().toUpperCase();
-        const coupon_discount = Number(document.getElementById('prodCouponDiscount').value) || 0;
-        const description = document.getElementById('prodDesc').value.trim();
-
-        const sizesText = document.getElementById('prodSizes').value.trim();
-        const colorsText = document.getElementById('prodColors').value.trim();
-        const sizesArr = sizesText ? sizesText.split(',').map(s => s.trim()).filter(s => s) : [];
-        const colorsArr = colorsText ? colorsText.split(',').map(c => c.trim()).filter(c => c) : [];
-
-        const fileInput = document.getElementById('prodImageFiles');
-        let imageUrls = [];
-
-        if (fileInput.files.length > 0) {
-          for (let i = 0; i < fileInput.files.length; i++) {
-            const file = fileInput.files[i];
-            const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}-${file.name}`;
-            
-            const { error: uploadError } = await supabaseClient.storage
-              .from('product-images')
-              .upload(fileName, file);
-
-            if (uploadError) throw uploadError;
-
-            const { data: { publicUrl } } = supabaseClient.storage
-              .from('product-images')
-              .getPublicUrl(fileName);
-
-            imageUrls.push(publicUrl);
-          }
+        const sizes = document.getElementById('prodSizes').value.split(',').map(s => s.trim()).filter(Boolean);
+        const colors = document.getElementById('prodColors').value.split(',').map(c => c.trim()).filter(Boolean);
+        
+        const f = document.getElementById('prodImageFiles').files[0];
+        let imgUrl = 'https://placehold.co/300';
+        if (f) {
+          const name = `products/${Date.now()}.${f.name.split('.').pop()}`;
+          await supabaseClient.storage.from('product-images').upload(name, f);
+          const { data: { publicUrl } } = supabaseClient.storage.from('product-images').getPublicUrl(name);
+          imgUrl = publicUrl;
         }
 
-        const primaryImage = imageUrls.length > 0 ? imageUrls[0] : 'https://placehold.co/300';
-
-        if (!title) throw new Error('ပစ္စည်းအမည်ထည့်ပါ');
-        if (!Number.isFinite(priceVal) || priceVal <= 0) throw new Error('ဈေးနှုန်းမှန်ကန်စွာထည့်ပါ');
-        if (!Number.isInteger(stock) || stock < 0) throw new Error('Stock မှန်ကန်စွာထည့်ပါ');
-
         const payload = {
-          shop_id: myShop.id,
-          category_id,
-          title, 
-          name: title,
-          price: priceVal,
-          "priceMMK": priceVal,
-          flash_price, 
-          stock, 
-          allow_cod,
-          shipping_fee, 
-          coupon_code, 
-          coupon_discount,
-          sizes: sizesArr,
-          colors: colorsArr,
-          image: primaryImage,
-          image_url: primaryImage,
-          images: imageUrls,
-          description
+          shop_id: myShop.id, title, name: title, price, priceMMK: price, stock,
+          sizes, colors, image: imgUrl, image_url: imgUrl,
+          allow_cod: document.getElementById('prodAllowCod').checked,
+          shipping_fee: Number(document.getElementById('prodShippingFee').value) || 0,
+          description: document.getElementById('prodDesc').value
         };
 
         const editId = document.getElementById('editProductId').value;
-        const result = editId
-          ? await supabaseClient.from('products').update(payload).eq('id', editId).eq('shop_id', myShop.id)
-          : await supabaseClient.from('products').insert([payload]);
-        const error = result.error;
-        if (error) throw error;
+        const res = editId ? await supabaseClient.from('products').update(payload).eq('id', editId) : await supabaseClient.from('products').insert([payload]);
+        if (res.error) throw res.error;
 
-        closeProductModal();
-        await loadShopData();
-        alert('🎉 ပစ္စည်းအသစ် (Size & Color နှင့်တကွ) တင်ခြင်း အောင်မြင်ပါသည်!');
-      } catch (err) {
-        alert("❌ Error: " + err.message);
-      } finally {
-        btn.innerText = "အတည်ပြု သိမ်းဆည်းမည်";
-        btn.disabled = false;
-      }
+        closeProductModal(); await loadShopData(); alert('အောင်မြင်ပါသည်!');
+      } catch (err) { alert('Error: ' + err.message); }
+      finally { btn.innerText = "အတည်ပြု သိမ်းဆည်းမည်"; btn.disabled = false; }
     }
 
     async function deleteProduct(id) {
-      if (confirm('ဤပစ္စည်းကို ဖျက်ရန် သေချာပါသလား?')) {
-        const { error } = await supabaseClient.from('products').delete().eq('id', id).eq('shop_id', myShop.id);
-        if (error) return alert('❌ ဖျက်မရပါ: ' + error.message);
+      if (confirm('ဖျက်မှာ သေချာပါသလား?')) {
+        await supabaseClient.from('products').delete().eq('id', id);
         await loadShopData();
       }
     }
 
     function switchTab(tab) {
-      document.getElementById('tabBtn-products').className = tab === 'products' ? 'px-4 py-2 rounded-xl font-bold bg-orange-600 text-white shadow' : 'px-4 py-2 rounded-xl font-bold bg-white text-slate-700 border hover:bg-slate-50';
-      document.getElementById('tabBtn-orders').className = tab === 'orders' ? 'px-4 py-2 rounded-xl font-bold bg-orange-600 text-white shadow' : 'px-4 py-2 rounded-xl font-bold bg-white text-slate-700 border hover:bg-slate-50';
-
+      document.getElementById('tabBtn-products').className = tab === 'products' ? 'px-4 py-2 rounded-xl font-bold bg-orange-600 text-white shadow' : 'px-4 py-2 rounded-xl font-bold bg-white text-slate-700 border';
+      document.getElementById('tabBtn-orders').className = tab === 'orders' ? 'px-4 py-2 rounded-xl font-bold bg-orange-600 text-white shadow' : 'px-4 py-2 rounded-xl font-bold bg-white text-slate-700 border';
       document.getElementById('panel-products').classList.toggle('hidden', tab !== 'products');
       document.getElementById('panel-orders').classList.toggle('hidden', tab !== 'orders');
     }
@@ -526,44 +448,20 @@
       const p = shopProducts.find(x => Number(x.id) === Number(id));
       if (!p) return;
       document.getElementById('editProductId').value = p.id;
-      document.getElementById('productModalTitle').innerText = 'ကုန်ပစ္စည်း ပြင်ဆင်ရန်';
       document.getElementById('prodTitle').value = p.title || p.name || '';
-      document.getElementById('prodCategory').value = p.category_id || 1;
-      document.getElementById('prodStock').value = p.stock ?? 0;
+      document.getElementById('prodStock').value = p.stock || 0;
       document.getElementById('prodSizes').value = (p.sizes || []).join(', ');
       document.getElementById('prodColors').value = (p.colors || []).join(', ');
-      document.getElementById('prodPrice').value = p.price ?? p.priceMMK ?? 0;
-      document.getElementById('prodFlashPrice').value = p.flash_price || 0;
+      document.getElementById('prodPrice').value = p.price || p.priceMMK || 0;
       document.getElementById('prodAllowCod').checked = p.allow_cod !== false;
       document.getElementById('prodShippingFee').value = p.shipping_fee || 0;
-      document.getElementById('prodCouponCode').value = p.coupon_code || '';
-      document.getElementById('prodCouponDiscount').value = p.coupon_discount || 0;
       document.getElementById('prodDesc').value = p.description || '';
       openProductModal();
     }
 
-    function openProductModal() {
-      if (!document.getElementById('editProductId').value) {
-        document.getElementById('productModalTitle').innerText = 'ကုန်ပစ္စည်း အသစ်တင်ရန် (Size & Color ပါ)';
-        document.querySelector('#productModal form').reset();
-        document.getElementById('prodStock').value = 10;
-        document.getElementById('prodAllowCod').checked = true;
-        document.getElementById('prodShippingFee').value = 0;
-      }
-      document.getElementById('productModal').classList.remove('hidden');
-      document.getElementById('productModal').classList.add('flex');
-    }
-
-    function closeProductModal() {
-      document.getElementById('editProductId').value = '';
-      document.getElementById('productModal').classList.add('hidden');
-      document.getElementById('productModal').classList.remove('flex');
-    }
-
-    async function sellerLogout() {
-      await supabaseClient.auth.signOut();
-      showLoginView();
-    }
+    function openProductModal() { document.getElementById('productModal').classList.remove('hidden'); document.getElementById('productModal').classList.add('flex'); }
+    function closeProductModal() { document.getElementById('editProductId').value = ''; document.getElementById('productModal').classList.add('hidden'); document.getElementById('productModal').classList.remove('flex'); }
+    async function sellerLogout() { await supabaseClient.auth.signOut(); showLoginView(); }
 
     checkAuthSession();
   </script>
