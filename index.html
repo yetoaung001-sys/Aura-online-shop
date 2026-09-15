@@ -32,7 +32,7 @@
     </div>
   </div>
 
-  <!-- ================= HEADER (BIGGER SHOP LOGO) ================= -->
+  <!-- ================= HEADER ================= -->
   <header class="bg-white/80 backdrop-blur-xl border-b border-slate-100 sticky top-0 z-40 shadow-xs">
     <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between gap-4">
       <div class="flex items-center gap-3.5 cursor-pointer group" onclick="location.reload()">
@@ -68,7 +68,6 @@
 
   <!-- ================= MAIN CONTENT ================= -->
   <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
-    <!-- SELLER BANNERS (SHOP တစ်ခုလျှင် BANNER တစ်ခုကျစီ ပြသခြင်း) -->
     <section id="indexBannersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden"></section>
 
     <div class="flex justify-between items-center bg-white p-5 rounded-3xl border border-slate-100 shadow-xs">
@@ -138,7 +137,7 @@
     </div>
   </div>
 
-  <!-- ================= 2. CUSTOMER PROFILE & ORDER HISTORY MODAL ================= -->
+  <!-- ================= 2. PROFILE MODAL ================= -->
   <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-xl rounded-3xl p-7 space-y-5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -183,7 +182,7 @@
     </div>
   </div>
 
-  <!-- ================= 3. ORDER DETAIL & STATUS TRACKING ================= -->
+  <!-- ================= 3. ORDER DETAIL MODAL ================= -->
   <div id="orderDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -373,10 +372,6 @@
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
     const client = supabase.createClient(SUPABASE_URL, SB_KEY);
 
-    // 🤖 TELEGRAM BOT CREDENTIALS
-    const TELEGRAM_BOT_TOKEN = "8999186526:AAFS6cmrN-f0zZCo9ut6vJExT5xiGzRl8h4";
-    const ADMIN_GROUP_CHAT_ID = "-1004371157457"; // "Market order" Group ID အမှန်
-
     let products = [], paymentMethods = [], cart = JSON.parse(localStorage.getItem('aura_cart') || '[]');
     let searchQuery = '', selectedProductForBuy = null, chosenSize = '', chosenColor = '', shopShippingFee = 0;
     let isSignupMode = false;
@@ -418,7 +413,7 @@
       }
 
       const [prodRes, payRes, bannerRes] = await Promise.all([
-        client.from('products').select('*, shops(id, name, is_active, shipping_fee, delivery_fee, logo_url, telegram_chat_id)').order('id', { ascending: false }),
+        client.from('products').select('*, shops(id, name, is_active, shipping_fee, delivery_fee, logo_url)').order('id', { ascending: false }),
         client.from('payment_methods').select('*'),
         client.from('shop_banners').select('*, shops(id, name, logo_url, is_active)').order('id', { ascending: false })
       ]);
@@ -612,7 +607,7 @@
       const colorList = document.getElementById('colorOptionsList');
       if (product.colors && product.colors.length > 0) {
         colorArea.classList.remove('hidden');
-        colorList.innerHTML = product.colors.map((c, idx) => `<button type="button" onclick="selectColor('${c}', this)" class="color-btn px-3.5 py-2 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-violet-600 bg-violet-50 text-violet-700' : 'border-slate-200 bg-slate-50'}">${c}</button>`).join('');
+        colorList.innerHTML = product.colors.map((c, idx) => `<button type="button" onclick="selectColor('${c}', this)" class="color-btn px-3.5 py-2 rounded-xl border font-bold text-xs border-slate-200 bg-slate-50"}">${c}</button>`).join('');
         chosenColor = product.colors[0];
       } else { colorArea.classList.add('hidden'); }
 
@@ -637,7 +632,6 @@
       const existing = cart.find(i => i.key === key);
       const shopId = selectedProductForBuy.shop_id || selectedProductForBuy.shops?.id;
       const shopName = selectedProductForBuy.shops?.name || 'Aura Store';
-      const telegramChatId = selectedProductForBuy.shops?.telegram_chat_id || null;
       const shippingFee = Number(selectedProductForBuy.shipping_fee ?? selectedProductForBuy.shops?.shipping_fee ?? selectedProductForBuy.shops?.delivery_fee ?? 0);
       const imagesList = selectedProductForBuy.images || (selectedProductForBuy.image ? [selectedProductForBuy.image] : ['https://placehold.co/100']);
       
@@ -656,7 +650,6 @@
           checked: true,
           shop_id: shopId,
           shop_name: shopName,
-          telegram_chat_id: telegramChatId,
           shipping_fee: shippingFee
         });
       }
@@ -983,83 +976,7 @@
 
     function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 
-    // 🚀 TELEGRAM NOTIFICATION DISPATCHER (COMPANY ADMIN + SELLERS)
-    async function sendTelegramRawMessage(chatId, text) {
-      if (!chatId) return;
-      try {
-        const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            chat_id: chatId,
-            text: text,
-            parse_mode: 'HTML',
-            disable_web_page_preview: false
-          })
-        });
-        const result = await res.json();
-        if (!result.ok) {
-          console.error(`❌ Telegram Error to ${chatId}:`, result.description);
-        } else {
-          console.log(`✅ Telegram alert sent successfully to ${chatId}`);
-        }
-      } catch (err) {
-        console.error(`Telegram fetch error to ${chatId}:`, err);
-      }
-    }
-
-    async function dispatchOrderTelegramNotifications(order, itemsByShop, totalAmount, voucherUrl) {
-      // ၁။ Company Super Admin Group (-1004371157457) သို့ Master Notification ပို့ခြင်း
-      const allItemsList = order.items.map(i => `• ${i.title} (${i.qty}ခု) - ${(Number(i.price) * i.qty).toLocaleString()} Ks`).join('\n');
-      
-      const adminMessage = `
-🚨 <b>[AURA COMPANY ALERT] အော်ဒါအသစ် ရောက်ရှိပါသည်!</b>
-
-🆔 <b>Order ID:</b> #${order.id}
-👤 <b>ဝယ်သူအမည်:</b> ${order.customer_name}
-📞 <b>ဖုန်းနံပါတ်:</b> ${order.customer_phone}
-📍 <b>မြို့နယ်/လိပ်စာ:</b> ${order.township}, ${order.delivery_address}
-
-📦 <b>မှာယူထားသော ပစ္စည်းများ:</b>
-${allItemsList}
-
-🚚 <b>ကားဂိတ်ပို့ခ:</b> ${Number(order.shipping_fee || 0).toLocaleString()} Ks
-💰 <b>စုစုပေါင်း ကျသင့်ငွေ:</b> <b>${Number(totalAmount).toLocaleString()} Ks</b>
-
-🧾 <b>ငွေလွှဲဘောက်ချာ:</b> <a href="${voucherUrl}">ဒီမှာနှိပ်၍ စစ်ဆေးပါ</a>
-⏰ <b>မှာယူချိန်:</b> ${new Date().toLocaleString()}
-      `.trim();
-
-      await sendTelegramRawMessage(ADMIN_GROUP_CHAT_ID, adminMessage);
-
-      // ၂။ ဆိုင်ရှင် (Seller) တစ်ဦးချင်းစီဆီသို့ Sub-order Notification ခွဲပို့ခြင်း
-      for (const [shopId, shopData] of Object.entries(itemsByShop)) {
-        const sellerChatId = shopData.telegram_chat_id;
-        if (!sellerChatId) continue;
-
-        const sellerItemsList = shopData.items.map(i => `• ${i.title} [Size: ${i.selectedSize || '-'}, Color: ${i.selectedColor || '-'}] (${i.qty}ခု) - ${(Number(i.price) * i.qty).toLocaleString()} Ks`).join('\n');
-
-        const sellerMessage = `
-🏪 <b>[${shopData.shop_name}] သင့်ဆိုင်အတွက် အော်ဒါအသစ် ရောက်ပါပြီ!</b>
-
-🆔 <b>Order Ref:</b> #${order.id}
-👤 <b>ဝယ်သူအမည်:</b> ${order.customer_name}
-📍 <b>မြို့နယ်:</b> ${order.township}
-
-📦 <b>သင့်ဆိုင်မှ မှာယူသော ပစ္စည်းများ:</b>
-${sellerItemsList}
-
-💵 <b>စုစုပေါင်း ရောင်းရငွေ:</b> ${shopData.subtotal.toLocaleString()} Ks
-💰 <b>သင့်ရငွေ (Net Payout):</b> <b>${shopData.seller_payout.toLocaleString()} Ks</b>
-
-⚠️ <i>Aura Company မှ ငွေလွှဲစစ်ဆေး အတည်ပြုပြီးပါက ပစ္စည်းစတင် Packing ပြုလုပ်ပေးပါရန်။</i>
-        `.trim();
-
-        await sendTelegramRawMessage(sellerChatId, sellerMessage);
-      }
-    }
-
-    // 🛑 CLEAN ORDER SUBMIT WITH TELEGRAM TRIGGER
+    // 🛑 CLEAN & SECURE ORDER SUBMIT (TELEGRAM TRIGGER WILL BE HANDLED AUTOMATICALLY BY SUPABASE BACKEND)
     async function handleOrderSubmit(e) {
       e.preventDefault();
       const selectedItems = cart.filter(i => i.checked);
@@ -1127,8 +1044,6 @@ ${sellerItemsList}
 
         const groups = {};
         selectedItems.forEach(i => { const sid = i.shop_id || i.shops?.id; (groups[sid] ||= []).push(i); });
-        
-        const itemsByShop = {};
 
         for (const [sid, items] of Object.entries(groups)) {
           const itemSubtotal = items.reduce((s, i) => s + Number(i.price || 0) * Number(i.qty || 0), 0);
@@ -1153,18 +1068,7 @@ ${sellerItemsList}
             seller_payout: payout, 
             status: 'pending'
           }]);
-
-          itemsByShop[sid] = {
-            shop_name: items[0].shop_name || items[0].shops?.name || 'Aura Store',
-            telegram_chat_id: items[0].telegram_chat_id || items[0].shops?.telegram_chat_id || null,
-            subtotal: itemSubtotal,
-            seller_payout: payout,
-            items: items
-          };
         }
-
-        // 📲 TELEGRAM သို့ ချက်ချင်း NOTIFICATION ပို့ဆောင်ခြင်း
-        await dispatchOrderTelegramNotifications(order, itemsByShop, total, voucherUrl);
 
         cart = cart.filter(i => !i.checked); 
         saveCart(); 
