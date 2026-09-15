@@ -24,7 +24,7 @@
         <span>အသိပေးချက်:</span>
       </div>
       <marquee behavior="scroll" direction="left" scrollamount="5" class="text-white font-medium text-xs">
-        ✨ Aura Company Marketplace မှ နွေးထွေးစွာ ကြိုဆိုပါတယ်။ စိတ်ချယုံကြည်စွာဖြင့် အရည်အသွေးမြင့် ကုန်ပစ္စည်းများကို အထူးဈေးနှုန်းများဖြင့် ဝယ်ယူနိုင်ပါပြီ။ Company ဘက်မှ အတည်ပြု (Confirm) ပြီးသည်နှင့် ပစ္စည်းလက်ကျန် (Stock) အလိုအလျောက် လျော့သွားမည်ဖြစ်ပါသည်။
+        ✨ Aura Company Marketplace မှ နွေးထွေးစွာ ကြိုဆိုပါတယ်။ စိတ်ချယုံကြည်စွာဖြင့် အရည်အသွေးမြင့် ကုန်ပစ္စည်းများကို အထူးဈေးနှုန်းများဖြင့် ဝယ်ယူနိုင်ပါပြီ။ Aura Company ဘက်မှ အတည်ပြု (Confirm) ပြီးသည်နှင့် ကုန်ပစ္စည်းလက်ကျန် (Stock) အလိုအလျောက် လျော့သွားမည်ဖြစ်ပါသည်။
       </marquee>
       <div class="shrink-0 pl-4 hidden sm:block">
         <a href="seller.html" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition">Seller Center</a>
@@ -48,7 +48,7 @@
       <!-- Search Bar -->
       <div class="flex-1 max-w-2xl relative">
         <label for="searchInput" class="sr-only">ကုန်ပစ္စည်းရှာဖွေရန်</label>
-        <input type="text" id="searchInput" name="search_query" oninput="handleSearch(this.value)" autocomplete="off" placeholder="ပစ္စည်းအမည်၊ ဆိုင်နာမည် ဖြင့် ရှာဖွေရန်..." class="w-full pl-12 pr-4 py-3.5 bg-slate-100/80 border border-slate-200 rounded-2xl text-xs outline-none focus:bg-white focus:border-violet-600 focus:ring-4 focus:ring-violet-600/10 transition font-medium" />
+        <input type="text" id="searchInput" name="search_keyword" oninput="handleSearch(this.value)" autocomplete="off" placeholder="ပစ္စည်းအမည်၊ ဆိုင်နာမည် ဖြင့် ရှာဖွေရန်..." class="w-full pl-12 pr-4 py-3.5 bg-slate-100/80 border border-slate-200 rounded-2xl text-xs outline-none focus:bg-white focus:border-violet-600 focus:ring-4 focus:ring-violet-600/10 transition font-medium" />
         <i class="ph ph-magnifying-glass absolute left-4 top-4 text-slate-400 text-base"></i>
       </div>
 
@@ -90,7 +90,7 @@
       </div>
       <div class="space-y-2">
         <h4 class="text-white font-bold">အသုံးဝင်သော လင့်ခ်များ</h4>
-        <p><a href="#" onclick="openPolicyModal(); return false;" class="hover:text-white transition">📄 ဝယ်ယူရေး မူဝါဒများနှင့် စည်းကမ်းများ</a></p>
+        <p><a href="#" onclick="openPolicyModal(); return false;" class="hover:text-white transition">📄 ဝယ်ယူရေး မူဝါဒများနှင့် စည်းကမ်းချက်များ</a></p>
         <p><a href="#" onclick="openContactModal(); return false;" class="hover:text-white transition">📞 Company သို့ ဆက်သွယ်ရန်</a></p>
       </div>
       <div class="space-y-2">
@@ -101,7 +101,7 @@
     </div>
   </footer>
 
-  <!-- ================= AUTH MODAL (LOGIN / SIGNUP) ================= -->
+  <!-- ================= 1. AUTH MODAL (LOGIN / SIGNUP) ================= -->
   <div id="authModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl p-7 space-y-5 text-xs shadow-2xl animate-in fade-in zoom-in-95 duration-200">
       <div class="flex justify-between items-center border-b pb-3">
@@ -135,7 +135,7 @@
     </div>
   </div>
 
-  <!-- ================= CUSTOMER PROFILE & ORDER HISTORY MODAL ================= -->
+  <!-- ================= 2. CUSTOMER PROFILE & ORDER HISTORY MODAL ================= -->
   <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-xl rounded-3xl p-7 space-y-5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -182,7 +182,7 @@
     </div>
   </div>
 
-  <!-- ================= ORDER DETAIL & STATUS TRACKING (WITH DAYS LEFT & RATING) ================= -->
+  <!-- ================= 3. ORDER DETAIL & STATUS TRACKING MODAL ================= -->
   <div id="orderDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -192,7 +192,7 @@
       
       <div id="orderDetailContent" class="space-y-3"></div>
 
-      <!-- Shop Rating Section (Available after Order Completed / Delivered) -->
+      <!-- Shop Rating Section -->
       <div id="shopRatingSection" class="hidden bg-amber-50/70 border border-amber-200 p-4 rounded-2xl space-y-2">
         <span class="font-extrabold text-amber-900 block">⭐ ဆိုင်ကို သုံးသပ်ချက်နှင့် Rating ပေးရန်</span>
         <div class="flex gap-2 text-2xl text-amber-400 cursor-pointer" id="ratingStars">
@@ -202,7 +202,10 @@
           <i class="ph ph-star star-btn" data-val="4" onclick="setRating(4)"></i>
           <i class="ph ph-star star-btn" data-val="5" onclick="setRating(5)"></i>
         </div>
-        <textarea id="shopReviewText" rows="2" placeholder="ဆိုင်နှင့် ပတ်သက်သည့် အတွေ့အကြုံ ရေးပေးပါ..." class="w-full border border-amber-200 rounded-xl p-2.5 bg-white outline-none"></textarea>
+        <div>
+          <label for="shopReviewText" class="sr-only">ဆိုင်သုံးသပ်ချက်</label>
+          <textarea id="shopReviewText" name="shop_review" rows="2" placeholder="ဆိုင်နှင့် ပတ်သက်သည့် အတွေ့အကြုံ ရေးပေးပါ..." class="w-full border border-amber-200 rounded-xl p-2.5 bg-white outline-none font-medium"></textarea>
+        </div>
         <button type="button" onclick="submitShopRating()" class="bg-amber-600 hover:bg-amber-700 text-white font-bold px-4 py-2 rounded-xl text-xs">Rating ပေးပို့မည်</button>
       </div>
 
@@ -210,7 +213,7 @@
     </div>
   </div>
 
-  <!-- ================= PRODUCT DETAIL MODAL (5 IMAGES SUPPORT) ================= -->
+  <!-- ================= 4. PRODUCT DETAIL MODAL (5 IMAGES SUPPORT) ================= -->
   <div id="buyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-4">
@@ -218,7 +221,7 @@
         <button type="button" onclick="closeBuyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition"><i class="ph ph-x text-base"></i></button>
       </div>
       
-      <!-- Multi-Images Gallery (Up to 5 images) -->
+      <!-- Multi-Images Gallery -->
       <div class="space-y-3">
         <div class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm">
           <img id="detailMainImg" src="" alt="Product Detail" class="w-full h-64 object-cover transition duration-300" />
@@ -261,7 +264,7 @@
     </div>
   </div>
 
-  <!-- ================= CART DRAWER ================= -->
+  <!-- ================= 5. CART DRAWER ================= -->
   <div id="cartModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden justify-end">
     <div class="bg-white w-full max-w-md h-full flex flex-col p-6 shadow-2xl">
       <div class="flex justify-between items-center pb-4 border-b">
@@ -288,7 +291,7 @@
     </div>
   </div>
 
-  <!-- ================= CHECKOUT MODAL ================= -->
+  <!-- ================= 6. CHECKOUT MODAL ================= -->
   <div id="checkoutModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-7 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -340,7 +343,7 @@
     </div>
   </div>
 
-  <!-- ================= POLICY MODAL ================= -->
+  <!-- ================= 7. POLICY MODAL ================= -->
   <div id="policyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-3 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -352,7 +355,7 @@
     </div>
   </div>
 
-  <!-- ================= CONTACT COMPANY MODAL ================= -->
+  <!-- ================= 8. CONTACT COMPANY MODAL ================= -->
   <div id="contactModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-4 text-xs shadow-2xl">
       <div class="flex justify-between items-center border-b pb-3">
@@ -526,7 +529,7 @@
       const colorList = document.getElementById('colorOptionsList');
       if (product.colors && product.colors.length > 0) {
         colorArea.classList.remove('hidden');
-        colorList.innerHTML = product.colors.map((c, idx) => `<button type="button" onclick="selectColor('${c}', this)" class="color-btn px-3.5 py-2 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-violet-600 bg-violet-50 text-violet-700' : 'border-slate-200 bg-slate-50'}">${c}</button>`).join('');
+        colorList.innerHTML = product.colors.map((c, idx) => `<button type="button" onclick="selectColor('${c}', this)" class="color-btn px-3.5 py-2 rounded-xl border font-bold text-xs border-slate-200 bg-slate-50"}">${c}</button>`).join('');
         chosenColor = product.colors[0];
       } else { colorArea.classList.add('hidden'); }
 
@@ -571,7 +574,7 @@
       if (!cart.length) { box.innerHTML = '<div class="py-16 text-center text-slate-400">စျေးဝယ်တွန်းလှည်းထဲ ဘာမှမရှိသေးပါ</div>'; return; }
       box.innerHTML = cart.map((i, idx) => `
         <div class="py-3 flex items-center gap-3">
-          <input type="checkbox" id="cart-item-${idx}" ${i.checked ? 'checked' : ''} onchange="toggleItemCheck(${idx})" class="w-4 h-4 rounded text-violet-600 accent-violet-600 cursor-pointer" />
+          <input type="checkbox" id="cart-item-${idx}" name="cart_items[]" ${i.checked ? 'checked' : ''} onchange="toggleItemCheck(${idx})" class="w-4 h-4 rounded text-violet-600 accent-violet-600 cursor-pointer" />
           <label for="cart-item-${idx}" class="sr-only">${esc(i.title || i.name)} ကို ရွေးချယ်ရန်</label>
           <img src="${i.image || i.image_url}" alt="Cart Item" class="w-14 h-14 object-cover rounded-2xl border border-slate-200" />
           <div class="flex-1">
@@ -673,7 +676,7 @@
       }
     }
 
-    // 🔍 LOAD CUSTOMER ORDERS WITH SHOP ORDERS (DAYS LEFT DATA)
+    // 🔍 LOAD CUSTOMER ORDERS WITH DAYS LEFT DATA
     async function loadCustomerOrderHistory(userId) {
       const container = document.getElementById('customerOrdersContainer');
       container.innerHTML = '<div class="text-center py-4 text-slate-400">သင့်အော်ဒါများကို ရှာဖွေနေပါသည်...</div>';
@@ -761,7 +764,6 @@
         </div>
       `;
 
-      // Rating Section Handling: Shows only when delivered/completed
       currentRatingOrderId = order.id;
       currentRatingShopId = subOrd?.shop_id || items[0]?.shop_id || null;
 
@@ -782,7 +784,6 @@
       document.getElementById('orderDetailModal').classList.remove('flex');
     }
 
-    // ⭐ SHOP RATING SYSTEM
     function setRating(val) {
       currentSelectedStars = val;
       const stars = document.querySelectorAll('.star-btn');
@@ -878,6 +879,7 @@
 
     function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 
+    // 🛑 CLEAN ORDER SUBMIT WITH EXPLICIT TYPES
     async function handleOrderSubmit(e) {
       e.preventDefault();
       const selectedItems = cart.filter(i => i.checked);
@@ -906,20 +908,41 @@
         if (file) {
           const fileName = `voucher-${Date.now()}-${file.name}`;
           const { error: upErr } = await client.storage.from('product-images').upload(fileName, file);
-          if (!upErr) { const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(fileName); voucherUrl = publicUrl; }
+          if (!upErr) { 
+            const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(fileName); 
+            voucherUrl = publicUrl; 
+          }
         }
 
         const { data: { session } } = await client.auth.getSession();
         const customerId = session ? session.user.id : null;
 
-        const { data: order, error } = await client.from('orders').insert([{
+        const orderPayload = {
           customer_id: customerId,
-          customer_name: name, customer_phone: phone, township, delivery_address: address,
+          customer_name: name,
+          customer_phone: phone,
+          township: township,
+          delivery_address: address,
           payment_method_id: paymentMethodId ? Number(paymentMethodId) : null,
-          payment_voucher: voucherUrl, subtotal, shipping_fee: shopShippingFee, total, total_amount: total,
-          items: selectedItems.map(i => ({ product_id: i.id, title: i.title || i.name, image: i.image || i.image_url || '', qty: i.qty, price: Number(i.price || i.priceMMK || 0), selectedSize: i.selectedSize || '', selectedColor: i.selectedColor || '' })),
-          status: 'pending', order_status: 'pending'
-        }]).select().single();
+          payment_voucher: voucherUrl || null,
+          subtotal: Number(subtotal) || 0,
+          shipping_fee: Number(shopShippingFee) || 0,
+          total: Number(total) || 0,
+          total_amount: Number(total) || 0,
+          items: selectedItems.map(i => ({ 
+            product_id: Number(i.id), 
+            title: i.title || i.name, 
+            image: i.image || i.image_url || '', 
+            qty: Number(i.qty) || 1, 
+            price: Number(i.price || i.priceMMK || 0), 
+            selectedSize: i.selectedSize || '', 
+            selectedColor: i.selectedColor || '' 
+          })),
+          status: 'pending',
+          order_status: 'pending'
+        };
+
+        const { data: order, error } = await client.from('orders').insert([orderPayload]).select().single();
         if (error) throw error;
 
         const groups = {};
@@ -930,17 +953,37 @@
           const commission = Number((itemSubtotal * shopRate / 100).toFixed(2));
           const payout = itemSubtotal - commission;
           await client.from('shop_orders').insert([{
-            order_id: order.id, shop_id: Number(sid),
-            items: items.map(i => ({ product_id: i.id, title: i.title || i.name, qty: i.qty, price: Number(i.price || i.priceMMK || 0), selectedSize: i.selectedSize || '', selectedColor: i.selectedColor || '' })),
-            subtotal: itemSubtotal, commission_amount: commission, platform_commission: commission, seller_payout: payout, status: 'pending'
+            order_id: order.id, 
+            shop_id: Number(sid),
+            items: items.map(i => ({ 
+              product_id: Number(i.id), 
+              title: i.title || i.name, 
+              qty: Number(i.qty) || 1, 
+              price: Number(i.price || i.priceMMK || 0), 
+              selectedSize: i.selectedSize || '', 
+              selectedColor: i.selectedColor || '' 
+            })),
+            subtotal: itemSubtotal, 
+            commission_amount: commission, 
+            platform_commission: commission, 
+            seller_payout: payout, 
+            status: 'pending'
           }]);
         }
 
-        cart = cart.filter(i => !i.checked); saveCart(); updateCartUI();
+        cart = cart.filter(i => !i.checked); 
+        saveCart(); 
+        updateCartUI();
         alert(`🎉 အော်ဒါ #${order.id} တင်ပြီးပါပြီ! Aura Company မှ အတည်ပြုပြီးပါက Stock လျော့သွားပါမည်။`);
         document.getElementById('checkoutModal').classList.add('hidden');
         location.reload();
-      } catch (err) { alert("❌ Error: " + err.message); } finally { btn.innerText = "အော်ဒါ အတည်ပြုမည်"; btn.disabled = false; }
+      } catch (err) { 
+        console.error('Submit Order Error:', err);
+        alert("❌ Error: " + (err.message || err.details || err)); 
+      } finally { 
+        btn.innerText = "အော်ဒါ အတည်ပြုမည်"; 
+        btn.disabled = false; 
+      }
     }
 
     function openCart() { document.getElementById('cartModal').classList.remove('hidden'); document.getElementById('cartModal').classList.add('flex'); }
