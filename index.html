@@ -16,7 +16,7 @@
 </head>
 <body class="pb-28">
 
-  <!-- ================= TOP RUNNING NOTIFICATION BAR (MARQUEE) ================= -->
+  <!-- ================= TOP RUNNING NOTIFICATION BAR ================= -->
   <div class="bg-gradient-to-r from-violet-600 via-indigo-600 to-rose-600 text-white text-xs py-2.5 px-4 shadow-md overflow-hidden whitespace-nowrap">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-2 font-bold shrink-0">
@@ -24,7 +24,7 @@
         <span>အသိပေးချက်:</span>
       </div>
       <marquee behavior="scroll" direction="left" scrollamount="5" class="text-white font-medium text-xs">
-        ✨ Aura Company Marketplace မှ နွေးထွေးစွာ ကြိုဆိုပါတယ်။ စိတ်ချယုံကြည်စွာဖြင့် အရည်အသွေးမြင့် ကုန်ပစ္စည်းများကို အထူးဈေးနှုန်းများဖြင့် ဝယ်ယူနိုင်ပါပြီ။ Aura Company ဘက်မှ အတည်ပြု (Confirm) ပြီးသည်နှင့် ကုန်ပစ္စည်းလက်ကျန် (Stock) အလိုအလျောက် လျော့သွားမည်ဖြစ်ပါသည်။
+        ✨ Aura Company Marketplace မှ နွေးထွေးစွာ ကြိုဆိုပါတယ်။ စိတ်ချယုံကြည်စွာဖြင့် အရည်အသွေးမြင့် ကုန်ပစ္စည်းများကို အထူးလျှော့ဈေးများဖြင့် ဝယ်ယူနိုင်ပါပြီ။ Aura Company ဘက်မှ အတည်ပြု (Confirm) ပြီးသည်နှင့် ကုန်ပစ္စည်းလက်ကျန် (Stock) အလိုအလျောက် လျော့သွားမည်ဖြစ်ပါသည်။
       </marquee>
       <div class="shrink-0 pl-4 hidden sm:block">
         <a href="seller.html" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition">Seller Center</a>
@@ -32,16 +32,17 @@
     </div>
   </div>
 
-  <!-- ================= HEADER ================= -->
+  <!-- ================= HEADER (BIGGER SHOP LOGO) ================= -->
   <header class="bg-white/80 backdrop-blur-xl border-b border-slate-100 sticky top-0 z-40 shadow-xs">
     <div class="max-w-7xl mx-auto px-4 h-20 flex items-center justify-between gap-4">
-      <div class="flex items-center gap-3 cursor-pointer group" onclick="location.reload()">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-600 to-rose-500 text-white font-black flex items-center justify-center text-xl shadow-lg shadow-violet-500/25 group-hover:scale-105 transition">
+      <div class="flex items-center gap-3.5 cursor-pointer group" onclick="location.reload()">
+        <!-- ကြီးမားထင်ရှားသော Platform Logo -->
+        <div class="w-14 h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-rose-500 text-white font-black flex items-center justify-center text-2xl shadow-lg shadow-violet-500/30 group-hover:scale-105 transition duration-300">
           <i class="ph-bold ph-storefront"></i>
         </div>
         <div>
           <span class="font-black text-2xl leading-none block text-slate-900 tracking-tight">AURA</span>
-          <span class="text-[10px] text-violet-600 font-extrabold uppercase tracking-widest">Company Marketplace</span>
+          <span class="text-[10px] text-violet-600 font-extrabold uppercase tracking-widest mt-0.5 block">Company Marketplace</span>
         </div>
       </div>
 
@@ -68,13 +69,12 @@
 
   <!-- ================= MAIN CONTENT ================= -->
   <main class="max-w-7xl mx-auto px-4 py-8 space-y-8">
-    <!-- SELLER BANNERS (SHOP တစ်ခုလျှင် BANNER တစ်ခုကျစီ ပြသခြင်း) -->
     <section id="indexBannersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden"></section>
 
     <div class="flex justify-between items-center bg-white p-5 rounded-3xl border border-slate-100 shadow-xs">
       <div>
         <h2 class="font-black text-slate-900 text-lg">လူကြိုက်များသော ကုန်ပစ္စည်းများ</h2>
-        <p class="text-xs text-slate-500 font-medium">အရည်အသွေးမြင့် ကုန်ပစ္စည်းများကို စိတ်ကြိုက်ရွေးချယ် ဝယ်ယူနိုင်ပါပြီ</p>
+        <p class="text-xs text-slate-500 font-medium">မူလဈေးထက် သက်သာသော လျှော့ဈေးပရိုမိုးရှင်းများဖြင့် ဝယ်ယူပါ</p>
       </div>
       <span id="productCountBadge" class="text-xs font-extrabold bg-violet-50 text-violet-700 px-3.5 py-2 rounded-2xl border border-violet-100">Loading...</span>
     </div>
@@ -104,7 +104,7 @@
     </div>
   </footer>
 
-  <!-- ================= 1. AUTH MODAL (LOGIN / SIGNUP) ================= -->
+  <!-- ================= AUTH MODAL ================= -->
   <div id="authModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl p-7 space-y-5 text-xs shadow-2xl animate-in fade-in zoom-in-95 duration-200">
       <div class="flex justify-between items-center border-b pb-3">
@@ -138,7 +138,7 @@
     </div>
   </div>
 
-  <!-- ================= 2. CUSTOMER PROFILE & ORDER HISTORY MODAL ================= -->
+  <!-- ================= PROFILE MODAL ================= -->
   <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-xl rounded-3xl p-7 space-y-5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -146,7 +146,6 @@
         <button type="button" onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition"><i class="ph ph-x text-base"></i></button>
       </div>
 
-      <!-- Profile Form -->
       <form onsubmit="handleProfileUpdate(event)" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
         <h4 class="font-black text-slate-800">📝 ကိုယ်ရေးအချက်အလက် ပြင်ဆင်ရန်</h4>
         <div>
@@ -170,7 +169,6 @@
         <button type="submit" id="updateProfileBtn" name="update_profile" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl hover:bg-slate-800 transition">ပြောင်းလဲမှုများ သိမ်းဆည်းမည်</button>
       </form>
 
-      <!-- Customer Orders Container -->
       <div class="space-y-3">
         <h4 class="font-black text-slate-800">📦 ကျွန်ုပ်၏ အော်ဒါမှတ်တမ်းများနှင့် အခြေအနေ</h4>
         <div id="customerOrdersContainer" class="space-y-2.5 max-h-60 overflow-y-auto pr-1">
@@ -185,7 +183,7 @@
     </div>
   </div>
 
-  <!-- ================= 3. ORDER DETAIL & STATUS TRACKING (DAYS LEFT & RATING) ================= -->
+  <!-- ================= ORDER DETAIL MODAL ================= -->
   <div id="orderDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -195,7 +193,6 @@
       
       <div id="orderDetailContent" class="space-y-3"></div>
 
-      <!-- Shop Rating Section -->
       <div id="shopRatingSection" class="hidden bg-amber-50/70 border border-amber-200 p-4 rounded-2xl space-y-2">
         <span class="font-extrabold text-amber-900 block">⭐ ဆိုင်ကို သုံးသပ်ချက်နှင့် Rating ပေးရန်</span>
         <div class="flex gap-2 text-2xl text-amber-400 cursor-pointer" id="ratingStars">
@@ -216,7 +213,7 @@
     </div>
   </div>
 
-  <!-- ================= 4. PRODUCT DETAIL MODAL (5 IMAGES SUPPORT) ================= -->
+  <!-- ================= PRODUCT DETAIL MODAL (မူလဈေး နှင့် လျှော့ဈေး ပါဝင်) ================= -->
   <div id="buyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-4">
@@ -224,7 +221,6 @@
         <button type="button" onclick="closeBuyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition"><i class="ph ph-x text-base"></i></button>
       </div>
       
-      <!-- Multi-Images Gallery -->
       <div class="space-y-3">
         <div class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm">
           <img id="detailMainImg" src="" alt="Product Detail" class="w-full h-64 object-cover transition duration-300" />
@@ -238,7 +234,9 @@
           <div id="detailShop" class="text-violet-700 font-bold bg-violet-50 px-3 py-1 rounded-xl inline-block border border-violet-100"></div>
           <span id="detailStockBadge" class="px-3 py-1 rounded-xl font-bold text-[10px]"></span>
         </div>
-        <div id="detailPrice" class="text-rose-600 font-black text-xl pt-1"></div>
+
+        <!-- 🏷️ မူလဈေး နှင့် လျှော့ဈေး ပူးတွဲပြသမှု အကွက် -->
+        <div id="detailPriceContainer" class="pt-1.5 flex items-baseline gap-3"></div>
       </div>
 
       <div id="detailDescArea" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-slate-600 space-y-1 hidden">
@@ -267,7 +265,7 @@
     </div>
   </div>
 
-  <!-- ================= 5. CART DRAWER ================= -->
+  <!-- ================= CART DRAWER ================= -->
   <div id="cartModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden justify-end">
     <div class="bg-white w-full max-w-md h-full flex flex-col p-6 shadow-2xl">
       <div class="flex justify-between items-center pb-4 border-b">
@@ -294,7 +292,7 @@
     </div>
   </div>
 
-  <!-- ================= 6. CHECKOUT MODAL ================= -->
+  <!-- ================= CHECKOUT MODAL ================= -->
   <div id="checkoutModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-7 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -346,7 +344,7 @@
     </div>
   </div>
 
-  <!-- ================= 7. POLICY MODAL ================= -->
+  <!-- ================= POLICY MODAL ================= -->
   <div id="policyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-3 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -358,7 +356,7 @@
     </div>
   </div>
 
-  <!-- ================= 8. CONTACT COMPANY MODAL ================= -->
+  <!-- ================= CONTACT COMPANY MODAL ================= -->
   <div id="contactModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-4 text-xs shadow-2xl">
       <div class="flex justify-between items-center border-b pb-3">
@@ -417,7 +415,6 @@
         document.getElementById('headerUserName').innerText = 'အကောင့်ဝင်ရန်';
       }
 
-      // Products, Payment Methods နှင့် Seller တင်ထားသော Shop Banners များကို တစ်ပြိုင်နက် ခေါ်ယူခြင်း
       const [prodRes, payRes, bannerRes] = await Promise.all([
         client.from('products').select('*, shops(id, name, is_active, shipping_fee, delivery_fee, logo_url)').order('id', { ascending: false }),
         client.from('payment_methods').select('*'),
@@ -428,21 +425,15 @@
       products = prodRes.data || [];
       paymentMethods = payRes.data || [];
       
-      // ဆိုင်တစ်ခုလျှင် Banner ၁ ခုသာ ရွေးချယ်ပြသခြင်း
       filterAndRenderOneBannerPerShop(bannerRes.data || []);
-
       renderProducts();
       populatePaymentMethods();
       updateCartUI();
     }
 
-    // 🖼️ SELLER BANNERS: ဆိုင်တစ်ခုလျှင် BANNER ၁ ခုသာ ရွေးထုတ်ပြသသည့် FUNCTION
     function filterAndRenderOneBannerPerShop(allBanners) {
       const container = document.getElementById('indexBannersContainer');
-      if (!allBanners || !allBanners.length) {
-        container.classList.add('hidden');
-        return;
-      }
+      if (!allBanners || !allBanners.length) { container.classList.add('hidden'); return; }
 
       const seenShops = new Set();
       const uniqueShopBanners = [];
@@ -455,10 +446,7 @@
         }
       }
 
-      if (!uniqueShopBanners.length) {
-        container.classList.add('hidden');
-        return;
-      }
+      if (!uniqueShopBanners.length) { container.classList.add('hidden'); return; }
 
       container.classList.remove('hidden');
       container.innerHTML = uniqueShopBanners.map(b => {
@@ -472,8 +460,8 @@
             
             <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-between p-5">
               <div class="self-start">
-                <span class="inline-flex items-center gap-1.5 bg-white/90 backdrop-blur-md text-slate-900 font-extrabold text-[11px] px-3 py-1 rounded-full shadow-sm">
-                  <img src="${esc(shopLogo)}" alt="Shop" class="w-4 h-4 rounded-full object-cover" />
+                <span class="inline-flex items-center gap-2 bg-white/95 backdrop-blur-md text-slate-900 font-extrabold text-xs px-3.5 py-1.5 rounded-full shadow-md">
+                  <img src="${esc(shopLogo)}" alt="Shop" class="w-6 h-6 rounded-full object-cover border border-slate-200" />
                   ${esc(shopName)}
                 </span>
               </div>
@@ -483,7 +471,7 @@
                   <h3 class="text-white font-black text-sm sm:text-base leading-snug drop-shadow-md">
                     ${esc(b.title || shopName)}
                   </h3>
-                  <p class="text-[11px] text-slate-300 mt-0.5">ဆိုင်သို့ ဝင်ရောက်ကြည့်ရှုရန် နှိပ်ပါ →</p>
+                  <p class="text-[11px] text-slate-300 mt-0.5 font-medium">ဆိုင်သို့ ဝင်ရောက်ကြည့်ရှုရန် နှိပ်ပါ →</p>
                 </div>
                 <span class="bg-violet-600 group-hover:bg-rose-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl shadow transition shrink-0">
                   Shop Now
@@ -501,6 +489,7 @@
       select.innerHTML = paymentMethods.map(pm => `<option value="${pm.id}">${pm.provider_name} - ${pm.account_name} (${pm.account_number})</option>`).join('');
     }
 
+    // 🌟 RENDER PRODUCTS WITH ORIGINAL & DISCOUNT PRICE & EYE-CATCHING STOCK BADGE
     function renderProducts() {
       const grid = document.getElementById('productGrid');
       let list = products;
@@ -510,26 +499,56 @@
 
       grid.innerHTML = list.map(p => {
         const title = p.title || p.name || 'အမည်မရှိပစ္စည်း';
-        const price = Number(p.price || p.priceMMK || 0);
+        const originalPrice = Number(p.price || p.priceMMK || 0);
+        const flashPrice = Number(p.flash_price || 0);
+        
+        // ဈေးနှုန်းတွက်ချက်မှု (Discount ရှိ/မရှိ စစ်ဆေးခြင်း)
+        const hasDiscount = flashPrice > 0 && flashPrice < originalPrice;
+        const displayPrice = hasDiscount ? flashPrice : originalPrice;
+        const discountPercent = hasDiscount ? Math.round(((originalPrice - flashPrice) / originalPrice) * 100) : 0;
+
         const imagesList = p.images || (p.image ? [p.image] : (p.image_url ? [p.image_url] : ['https://placehold.co/300']));
         const image = imagesList[0];
         const shopName = p.shops?.name || 'Aura Store';
-        const shopLogo = p.shops?.logo_url || 'https://placehold.co/30';
+        const shopLogo = p.shops?.logo_url || 'https://placehold.co/40';
         const shopId = p.shop_id || p.shops?.id;
         const stock = Number(p.stock || 0);
+
+        // 🟢 ထင်ရှားသော Stock Badge အရောင်စုံ
+        let stockBadgeHtml = '';
+        if (stock > 5) {
+          stockBadgeHtml = `<span class="absolute top-2.5 right-2.5 bg-emerald-600/90 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-full font-extrabold shadow-sm border border-emerald-400/30 flex items-center gap-1"><i class="ph-bold ph-package"></i> လက်ကျန်: ${stock}</span>`;
+        } else if (stock > 0) {
+          stockBadgeHtml = `<span class="absolute top-2.5 right-2.5 bg-amber-500/95 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-full font-black animate-pulse shadow-sm border border-amber-300 flex items-center gap-1"><i class="ph-bold ph-warning"></i> လက်ကျန်နည်း: ${stock}</span>`;
+        } else {
+          stockBadgeHtml = `<span class="absolute top-2.5 right-2.5 bg-rose-600/95 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-full font-black shadow-sm border border-rose-400 flex items-center gap-1"><i class="ph-bold ph-x-circle"></i> ပစ္စည်းကုန်ပြီ</span>`;
+        }
+
         return `
           <div class="bg-white rounded-3xl border border-slate-100 p-3.5 flex flex-col justify-between hover:shadow-xl transition duration-300 group shadow-xs">
             <div>
               <div class="relative cursor-pointer overflow-hidden rounded-2xl bg-slate-100 mb-3" onclick='openBuyModal(${JSON.stringify(p)})'>
                 <img src="${image}" alt="${esc(title)}" class="w-full h-40 sm:h-48 object-cover group-hover:scale-105 transition duration-500" />
-                <span class="absolute top-2.5 right-2.5 bg-slate-900/70 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-full font-bold">လက်ကျန်: ${stock}</span>
-                <a href="shop.html?id=${shopId}" onclick="event.stopPropagation()" class="absolute bottom-2.5 left-2.5 bg-white/90 text-slate-900 text-[10px] font-extrabold px-2.5 py-1 rounded-xl shadow-xs flex items-center gap-1.5">
-                  <img src="${esc(shopLogo)}" alt="Shop" class="w-4 h-4 rounded-full object-cover" /> ${shopName}
+                ${stockBadgeHtml}
+                
+                ${hasDiscount ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-black uppercase tracking-tight shadow-md">${discountPercent}% OFF</span>` : ''}
+
+                <!-- ပိုမိုကြီးမားသော Shop Logo ပါဝင်သည့် Card Header -->
+                <a href="shop.html?id=${shopId}" onclick="event.stopPropagation()" class="absolute bottom-2.5 left-2.5 bg-white/95 backdrop-blur-md text-slate-900 text-[11px] font-extrabold px-2.5 py-1.5 rounded-xl shadow-xs flex items-center gap-2 hover:bg-violet-50 transition border border-slate-100">
+                  <img src="${esc(shopLogo)}" alt="Shop" class="w-6 h-6 rounded-full object-cover border border-slate-200" />
+                  <span class="truncate max-w-[90px] sm:max-w-[120px]">${shopName}</span>
                 </a>
               </div>
+
               <h4 class="font-bold text-xs text-slate-800 line-clamp-2 cursor-pointer group-hover:text-violet-600 transition" onclick='openBuyModal(${JSON.stringify(p)})'>${title}</h4>
-              <div class="text-base font-black text-rose-600 mt-1.5">${price.toLocaleString()} MMK</div>
+              
+              <!-- 🏷️ မူလဈေး မျဉ်းခြစ် နှင့် လျှော့ဈေး ပေါ်လွင်စွာ ပြသခြင်း -->
+              <div class="mt-2 flex items-baseline gap-2 flex-wrap">
+                <span class="text-base font-black text-rose-600">${displayPrice.toLocaleString()} MMK</span>
+                ${hasDiscount ? `<span class="text-[11px] font-bold text-slate-400 line-through">${originalPrice.toLocaleString()} MMK</span>` : ''}
+              </div>
             </div>
+
             <button type="button" onclick='openBuyModal(${JSON.stringify(p)})' ${stock<=0?'disabled':''} class="mt-4 w-full ${stock<=0?'bg-slate-200 text-slate-400 cursor-not-allowed':'bg-slate-900 hover:bg-violet-600 text-white'} py-2.5 rounded-2xl text-xs font-bold transition shadow-xs">
               ${stock<=0?'ကုန်နေပါသည်':'အသေးစိတ်ကြည့်မည်'}
             </button>
@@ -540,6 +559,7 @@
 
     function handleSearch(val) { searchQuery = val.trim().toLowerCase(); renderProducts(); }
     
+    // 📦 BUY MODAL (WITH DISCOUNT & ORIGINAL PRICE DISPLAY)
     function openBuyModal(product) {
       selectedProductForBuy = product; chosenSize = ''; chosenColor = '';
       const imagesList = product.images || (product.image ? [product.image] : (product.image_url ? [product.image_url] : ['https://placehold.co/300']));
@@ -552,16 +572,35 @@
 
       document.getElementById('detailTitle').innerText = product.title || product.name || '';
       document.getElementById('detailShop').innerText = `ဆိုင်: ${product.shops?.name || 'Aura Store'}`;
-      document.getElementById('detailPrice').innerText = `${Number(product.price || product.priceMMK || 0).toLocaleString()} MMK`;
       
+      // 🏷️ Detail Modal ထဲတွင် မူလဈေးနှင့် လျှော့ဈေး တွက်ချက်ပြသခြင်း
+      const originalPrice = Number(product.price || product.priceMMK || 0);
+      const flashPrice = Number(product.flash_price || 0);
+      const hasDiscount = flashPrice > 0 && flashPrice < originalPrice;
+      const displayPrice = hasDiscount ? flashPrice : originalPrice;
+      const discountPercent = hasDiscount ? Math.round(((originalPrice - flashPrice) / originalPrice) * 100) : 0;
+
+      const priceBox = document.getElementById('detailPriceContainer');
+      priceBox.innerHTML = `
+        <span class="text-2xl font-black text-rose-600">${displayPrice.toLocaleString()} MMK</span>
+        ${hasDiscount ? `
+          <span class="text-xs font-bold text-slate-400 line-through">${originalPrice.toLocaleString()} MMK</span>
+          <span class="bg-rose-100 text-rose-700 text-[10px] font-black px-2 py-0.5 rounded-md uppercase">-${discountPercent}% OFF</span>
+        ` : ''}
+      `;
+
+      // 📦 Detail Modal ထဲရှိ ထင်ရှားသော လက်ကျန် Badge
       const stock = Number(product.stock || 0);
       const stockBadge = document.getElementById('detailStockBadge');
-      if (stock > 0) {
+      if (stock > 5) {
         stockBadge.className = "px-3 py-1 rounded-xl font-bold text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200";
         stockBadge.innerText = `📦 လက်ကျန်ရှိသည် (${stock} ခု)`;
+      } else if (stock > 0) {
+        stockBadge.className = "px-3 py-1 rounded-xl font-black text-[10px] bg-amber-50 text-amber-700 border border-amber-200 animate-pulse";
+        stockBadge.innerText = `⚠️ လက်ကျန်နည်းနေပါသည် (${stock} ခုသာ)`;
       } else {
-        stockBadge.className = "px-3 py-1 rounded-xl font-bold text-[10px] bg-rose-50 text-rose-700 border border-rose-200";
-        stockBadge.innerText = `❌ ကုန်နေပါသည်`;
+        stockBadge.className = "px-3 py-1 rounded-xl font-black text-[10px] bg-rose-50 text-rose-700 border border-rose-200";
+        stockBadge.innerText = `❌ ပစ္စည်းကုန်နေပါသည်`;
       }
 
       const descArea = document.getElementById('detailDescArea');
@@ -580,7 +619,7 @@
       const colorList = document.getElementById('colorOptionsList');
       if (product.colors && product.colors.length > 0) {
         colorArea.classList.remove('hidden');
-        colorList.innerHTML = product.colors.map((c, idx) => `<button type="button" onclick="selectColor('${c}', this)" class="color-btn px-3.5 py-2 rounded-xl border font-bold text-xs border-slate-200 bg-slate-50"}">${c}</button>`).join('');
+        colorList.innerHTML = product.colors.map((c, idx) => `<button type="button" onclick="selectColor('${c}', this)" class="color-btn px-3.5 py-2 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-violet-600 bg-violet-50 text-violet-700' : 'border-slate-200 bg-slate-50'}">${c}</button>`).join('');
         chosenColor = product.colors[0];
       } else { colorArea.classList.add('hidden'); }
 
@@ -596,6 +635,11 @@
       const qty = Math.max(1, Number(document.getElementById('buyQty').value) || 1);
       const stock = Number(selectedProductForBuy.stock || 0);
       if (qty > stock) return alert(`လက်ကျန် ${stock} ခုသာရှိပါသည်`);
+      
+      const originalPrice = Number(selectedProductForBuy.price || selectedProductForBuy.priceMMK || 0);
+      const flashPrice = Number(selectedProductForBuy.flash_price || 0);
+      const activeFinalPrice = (flashPrice > 0 && flashPrice < originalPrice) ? flashPrice : originalPrice;
+
       const key = `${selectedProductForBuy.id}|${chosenSize}|${chosenColor}`;
       const existing = cart.find(i => i.key === key);
       const shopId = selectedProductForBuy.shop_id || selectedProductForBuy.shops?.id;
@@ -603,8 +647,24 @@
       const shippingFee = Number(selectedProductForBuy.shipping_fee ?? selectedProductForBuy.shops?.shipping_fee ?? selectedProductForBuy.shops?.delivery_fee ?? 0);
       const imagesList = selectedProductForBuy.images || (selectedProductForBuy.image ? [selectedProductForBuy.image] : ['https://placehold.co/100']);
       
-      if (existing) existing.qty = Math.min(existing.qty + qty, stock);
-      else cart.push({ key, ...selectedProductForBuy, image: imagesList[0], selectedSize: chosenSize, selectedColor: chosenColor, qty, checked: true, shop_id: shopId, shop_name: shopName, shipping_fee: shippingFee });
+      if (existing) {
+        existing.qty = Math.min(existing.qty + qty, stock);
+      } else {
+        cart.push({
+          key,
+          ...selectedProductForBuy,
+          price: activeFinalPrice,
+          original_price: originalPrice,
+          image: imagesList[0],
+          selectedSize: chosenSize,
+          selectedColor: chosenColor,
+          qty,
+          checked: true,
+          shop_id: shopId,
+          shop_name: shopName,
+          shipping_fee: shippingFee
+        });
+      }
       saveCart(); updateCartUI(); closeBuyModal(); openCart();
     }
 
@@ -617,7 +677,7 @@
       document.getElementById('cartBadge').innerText = totalQty;
       document.getElementById('cartBadge').style.transform = totalQty > 0 ? 'scale(1)' : 'scale(0)';
       const selectedItems = cart.filter(i => i.checked);
-      document.getElementById('cartTotal').innerText = (selectedItems.reduce((s, i) => s + (Number(i.price || i.priceMMK || 0) * i.qty), 0)).toLocaleString() + ' MMK';
+      document.getElementById('cartTotal').innerText = (selectedItems.reduce((s, i) => s + (Number(i.price || 0) * i.qty), 0)).toLocaleString() + ' MMK';
       document.getElementById('selectedCountBadge').innerText = `${selectedItems.length} ခု ရွေးထားသည်`;
       document.getElementById('selectAllCheckbox').checked = cart.length > 0 && cart.every(i => i.checked);
       
@@ -631,7 +691,7 @@
           <div class="flex-1">
             <h5 class="font-bold line-clamp-1 text-slate-900">${i.title || i.name}</h5>
             <div class="text-[10px] text-slate-500">${i.shop_name || ''} · Size: ${i.selectedSize || '-'} | Color: ${i.selectedColor || '-'}</div>
-            <div class="text-rose-600 font-extrabold mt-0.5">${Number(i.price || i.priceMMK || 0).toLocaleString()} MMK x ${i.qty}</div>
+            <div class="text-rose-600 font-extrabold mt-0.5">${Number(i.price || 0).toLocaleString()} MMK x ${i.qty}</div>
           </div>
           <button type="button" onclick="cart.splice(${idx}, 1); saveCart(); updateCartUI();" class="text-rose-500 p-2"><i class="ph ph-trash text-base"></i></button>
         </div>
@@ -659,14 +719,14 @@
           <div class="flex-1 space-y-0.5">
             <div class="font-bold text-slate-800 line-clamp-1">${esc(i.title || i.name)}</div>
             <div class="text-[10px] text-slate-500">📏 Size: ${esc(i.selectedSize || '-')} | Color: ${esc(i.selectedColor || '-')}</div>
-            <div class="text-[10px] text-slate-600 font-bold">${Number(i.price || i.priceMMK || 0).toLocaleString()} MMK × ${i.qty}</div>
+            <div class="text-[10px] text-slate-600 font-bold">${Number(i.price || 0).toLocaleString()} MMK × ${i.qty}</div>
           </div>
-          <div class="font-black text-rose-600 text-sm">${(Number(i.price || i.priceMMK || 0) * i.qty).toLocaleString()} MMK</div>
+          <div class="font-black text-rose-600 text-sm">${(Number(i.price || 0) * i.qty).toLocaleString()} MMK</div>
         </div>
       `).join('');
 
       document.getElementById('shippingFeeDisplay').value = shopShippingFee.toLocaleString() + ' MMK';
-      const subtotal = selectedItems.reduce((s, i) => s + (Number(i.price || i.priceMMK || 0) * i.qty), 0);
+      const subtotal = selectedItems.reduce((s, i) => s + (Number(i.price || 0) * i.qty), 0);
       document.getElementById('summarySubtotal').innerText = subtotal.toLocaleString() + ' MMK';
       document.getElementById('summaryShipping').innerText = shopShippingFee.toLocaleString() + ' MMK';
       document.getElementById('summaryTotal').innerText = (subtotal + shopShippingFee).toLocaleString() + ' MMK';
@@ -727,7 +787,6 @@
       }
     }
 
-    // 🔍 LOAD CUSTOMER ORDERS WITH SHOP ORDERS (DAYS LEFT DATA)
     async function loadCustomerOrderHistory(userId) {
       const container = document.getElementById('customerOrdersContainer');
       container.innerHTML = '<div class="text-center py-4 text-slate-400">သင့်အော်ဒါများကို ရှာဖွေနေပါသည်...</div>';
@@ -773,7 +832,6 @@
       }).join('');
     }
 
-    // 📄 OPEN ORDER DETAIL & STATUS TRACKING
     function openOrderDetail(order) {
       const content = document.getElementById('orderDetailContent');
       const items = order.items || [];
@@ -835,7 +893,6 @@
       document.getElementById('orderDetailModal').classList.remove('flex');
     }
 
-    // ⭐ SHOP RATING SYSTEM
     function setRating(val) {
       currentSelectedStars = val;
       const stars = document.querySelectorAll('.star-btn');
@@ -931,7 +988,6 @@
 
     function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 
-    // 🛑 CLEAN ORDER SUBMIT WITH EXPLICIT DATA TYPES
     async function handleOrderSubmit(e) {
       e.preventDefault();
       const selectedItems = cart.filter(i => i.checked);
@@ -948,7 +1004,7 @@
       const township = document.getElementById('custTownship').value.trim();
       const address = document.getElementById('custAddress').value.trim();
       const paymentMethodId = document.getElementById('custPayment').value;
-      const subtotal = selectedItems.reduce((s, i) => s + (Number(i.price || i.priceMMK || 0) * i.qty), 0);
+      const subtotal = selectedItems.reduce((s, i) => s + (Number(i.price || 0) * i.qty), 0);
       const total = subtotal + shopShippingFee;
 
       const btn = document.getElementById('submitOrderBtn');
@@ -986,7 +1042,7 @@
             title: i.title || i.name, 
             image: i.image || i.image_url || '', 
             qty: Number(i.qty) || 1, 
-            price: Number(i.price || i.priceMMK || 0), 
+            price: Number(i.price || 0), 
             selectedSize: i.selectedSize || '', 
             selectedColor: i.selectedColor || '' 
           })),
@@ -1000,7 +1056,7 @@
         const groups = {};
         selectedItems.forEach(i => { const sid = i.shop_id || i.shops?.id; (groups[sid] ||= []).push(i); });
         for (const [sid, items] of Object.entries(groups)) {
-          const itemSubtotal = items.reduce((s, i) => s + Number(i.price || i.priceMMK || 0) * Number(i.qty || 0), 0);
+          const itemSubtotal = items.reduce((s, i) => s + Number(i.price || 0) * Number(i.qty || 0), 0);
           const shopRate = Number(items[0].commission_rate || 0);
           const commission = Number((itemSubtotal * shopRate / 100).toFixed(2));
           const payout = itemSubtotal - commission;
@@ -1011,7 +1067,7 @@
               product_id: Number(i.id), 
               title: i.title || i.name, 
               qty: Number(i.qty) || 1, 
-              price: Number(i.price || i.priceMMK || 0), 
+              price: Number(i.price || 0), 
               selectedSize: i.selectedSize || '', 
               selectedColor: i.selectedColor || '' 
             })),
