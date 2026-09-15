@@ -103,7 +103,7 @@
     <!-- ================= ORDERS ================= -->
     <section id="section-orders" class="tab-content hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex justify-between items-center">
-        <h2 class="font-bold text-slate-800 text-lg">အော်ဒါစာရင်းအားလုံး</h2>
+        <h2 class="font-bold text-slate-800 text-lg">အော်ဒါစာရင်းအားလုံး (Escrow Admin Flow)</h2>
         <button onclick="loadOrders()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded text-slate-700">
           <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh
         </button>
@@ -116,8 +116,8 @@
               <th class="p-4">ဝယ်သူ</th>
               <th class="p-4">ဖုန်း / လိပ်စာ</th>
               <th class="p-4">ကျသင့်ငွေ</th>
-              <th class="p-4">အခြေအနေ</th>
-              <th class="p-4">ရက်စွဲ</th>
+              <th class="p-4">ဘောက်ချာ</th>
+              <th class="p-4">အခြေအနေ / အတည်ပြုရန်</th>
             </tr>
           </thead>
           <tbody id="orders-tbody" class="divide-y">
@@ -445,16 +445,81 @@
         return;
       }
 
-      tbody.innerHTML = orders.map(o => `
-        <tr class="hover:bg-slate-50">
-          <td class="p-4 font-mono text-xs">#${escapeHtml(o.id)}</td>
-          <td class="p-4 font-bold text-slate-800">${escapeHtml(o.customer_name || '-')}</td>
-          <td class="p-4">${escapeHtml(o.customer_phone || '-')}<br><span class="text-xs text-slate-400">${escapeHtml((o.township || '') + ' ' + (o.delivery_address || ''))}</span></td>
-          <td class="p-4 font-bold text-emerald-600">${Number(o.total_amount || 0).toLocaleString()} Ks</td>
-          <td class="p-4"><span class="px-2 py-1 text-xs rounded bg-amber-50 text-amber-600 font-bold">${escapeHtml(o.status || o.order_status || 'Pending')}</span></td>
-          <td class="p-4 text-xs text-slate-400">${o.created_at ? new Date(o.created_at).toLocaleDateString() : '-'}</td>
-        </tr>
-      `).join('');
+      tbody.innerHTML = orders.map(o => {
+        const status = o.status || o.order_status || 'pending';
+        const isPending = (status === 'pending');
+        
+        const voucherLink = o.payment_voucher 
+          ? `<a href="${escapeHtml(o.payment_voucher)}" target="_blank" class="text-orange-600 font-bold underline flex items-center gap-1"><i class="fa-solid fa-image"></i> ပုံကြည့်ရန်</a>` 
+          : '<span class="text-slate-400">ဘောက်ချာမရှိ</span>';
+        
+        let actionButtons = `<span class="px-2.5 py-1 text-xs rounded font-bold ${status === 'confirmed' ? 'bg-emerald-50 text-emerald-600' : 'bg-slate-100 text-slate-600'}">${escapeHtml(status)}</span>`;
+        
+        if (isPending) {
+          actionButtons = `
+            <div class="flex items-center gap-1.5">
+              <button onclick="approveOrder(${o.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded text-xs font-bold transition shadow-xs">
+                <i class="fa-solid fa-check mr-1"></i> အတည်ပြု
+              </button>
+              <button onclick="rejectOrder(${o.id})" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded text-xs font-bold transition shadow-xs">
+                <i class="fa-solid fa-xmark mr-1"></i> ပယ်ဖျက်
+              </button>
+            </div>
+          `;
+        }
+
+        return `
+          <tr class="hover:bg-slate-50">
+            <td class="p-4 font-mono text-xs">#${escapeHtml(o.id)}</td>
+            <td class="p-4 font-bold text-slate-800">${escapeHtml(o.customer_name || '-')}</td>
+            <td class="p-4">${escapeHtml(o.customer_phone || '-')}<br><span class="text-xs text-slate-400">${escapeHtml((o.township || '') + ' ' + (o.delivery_address || ''))}</span></td>
+            <td class="p-4 font-bold text-emerald-600">${Number(o.total_amount || 0).toLocaleString()} Ks</td>
+            <td class="p-4">${voucherLink}</td>
+            <td class="p-4">${actionButtons}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function approveOrder(orderId) {
+      if (!confirm(`အော်ဒါ #${orderId} ကို ငွေဝင်ရောက်မှု မှန်ကန်ကြောင်း အတည်ပြုပြီး ဆိုင်ရှင်ဆီ ပေးပို့မှာ သေချာပါသလား?`)) return;
+      try {
+        const { error: orderErr } = await client.from('orders')
+          .update({ order_status: 'confirmed', status: 'confirmed' })
+          .eq('id', orderId);
+        if (orderErr) throw orderErr;
+
+        const { error: shopOrderErr } = await client.from('shop_orders')
+          .update({ status: 'confirmed' })
+          .eq('order_id', orderId);
+        if (shopOrderErr) throw shopOrderErr;
+
+        alert(`🎉 အော်ဒါ #${orderId} အောင်မြင်စွာ အတည်ပြုပြီးပါပြီ!`);
+        await loadOrders();
+        await loadDashboardStats();
+      } catch (err) {
+        alert('❌ အတည်ပြု၍ မရပါ: ' + err.message);
+      }
+    }
+
+    async function rejectOrder(orderId) {
+      if (!confirm(`အော်ဒါ #${orderId} ကို ပယ်ဖျက်မှာ သေချာပါသလား?`)) return;
+      try {
+        const { error: orderErr } = await client.from('orders')
+          .update({ order_status: 'cancelled', status: 'cancelled' })
+          .eq('id', orderId);
+        if (orderErr) throw orderErr;
+
+        const { error: shopOrderErr } = await client.from('shop_orders')
+          .update({ status: 'cancelled' })
+          .eq('order_id', orderId);
+        if (shopOrderErr) throw shopOrderErr;
+
+        alert(`အော်ဒါ #${orderId} ကို ပယ်ဖျက်လိုက်ပါပြီ။`);
+        await loadOrders();
+      } catch (err) {
+        alert('❌ ပယ်ဖျက်၍ မရပါ: ' + err.message);
+      }
     }
 
     async function loadShops() {
