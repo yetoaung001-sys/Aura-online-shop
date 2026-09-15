@@ -291,19 +291,31 @@
         const status = o.status || o.order_status || 'pending';
         const voucherLink = o.payment_voucher ? `<a href="${escapeHtml(o.payment_voucher)}" target="_blank" class="text-orange-600 font-bold underline"><i class="fa-solid fa-image"></i> ပုံကြည့်ရန်</a>` : '<span class="text-slate-400">ဘောက်ချာမရှိ</span>';
         
-        let actionButtons = `<span class="px-2.5 py-1 text-xs rounded font-bold bg-slate-100 text-slate-600">${escapeHtml(status)}</span>`;
+        const subOrd = o.shop_orders?.[0];
+        const subOrderStatus = subOrd ? (subOrd.status || 'pending') : status;
+        const daysLeftHTML = subOrderStatus === 'shipping' ? calculateDaysLeft(subOrd?.shipped_at) : '';
+
+        let actionButtons = '';
         if (status === 'pending') {
-          actionButtons = `<div class="flex items-center gap-1.5"><button onclick="approveOrder(${o.id})" class="bg-emerald-600 text-white px-3 py-1.5 rounded text-xs font-bold shadow"><i class="fa-solid fa-check mr-1"></i> အတည်ပြု</button><button onclick="rejectOrder(${o.id})" class="bg-rose-600 text-white px-3 py-1.5 rounded text-xs font-bold shadow"><i class="fa-solid fa-xmark mr-1"></i> ပယ်ဖျက်</button></div>`;
-        } else if (status === 'shipping') {
-          const subOrd = o.shop_orders?.[0];
-          const daysLeftHTML = subOrd ? calculateDaysLeft(subOrd.shipped_at) : '';
+          actionButtons = `
+            <div class="flex items-center gap-1.5">
+              <button onclick="approveOrder(${o.id})" class="bg-emerald-600 text-white px-3 py-1.5 rounded text-xs font-bold shadow"><i class="fa-solid fa-check mr-1"></i> အတည်ပြု</button>
+              <button onclick="rejectOrder(${o.id})" class="bg-rose-600 text-white px-3 py-1.5 rounded text-xs font-bold shadow"><i class="fa-solid fa-xmark mr-1"></i> ပယ်ဖျက်</button>
+            </div>`;
+        } else {
+          let statusText = subOrderStatus.toUpperCase();
+          if(subOrderStatus === 'packing') statusText = '📦 Packing';
+          else if(subOrderStatus === 'shipping') statusText = '🚚 Shipping';
+          else if(subOrderStatus === 'delivered') statusText = '🎉 Delivered';
+          else if(subOrderStatus === 'completed') statusText = '✅ Completed';
+
           actionButtons = `
             <div class="space-y-1">
-              <span class="px-2.5 py-1 text-xs rounded font-bold bg-blue-50 text-blue-600 inline-block">🚚 Shipping</span>
-              <div>${daysLeftHTML}</div>
+              <select disabled class="border rounded px-2 py-1 bg-slate-100 font-bold text-[11px] text-slate-700 cursor-not-allowed opacity-90 w-full">
+                <option selected>${statusText}</option>
+              </select>
+              ${daysLeftHTML}
             </div>`;
-        } else if (status === 'confirmed' || status === 'completed') {
-          actionButtons = `<span class="px-2.5 py-1 text-xs rounded font-bold bg-emerald-50 text-emerald-600">${escapeHtml(status)}</span>`;
         }
 
         return `
