@@ -123,7 +123,7 @@
     </div>
   </footer>
 
-  <!-- PRODUCT DETAIL MODAL (5 IMAGES SUPPORT) -->
+  <!-- PRODUCT DETAIL MODAL -->
   <div id="buyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
       <div class="flex justify-between items-center border-b pb-4">
@@ -145,7 +145,7 @@
           <div id="detailShop" class="text-violet-700 font-bold bg-violet-50 px-2.5 py-1 rounded-lg inline-block border border-violet-100"></div>
           <span id="detailStockBadge" class="px-2.5 py-1 rounded-lg font-bold text-[10px]"></span>
         </div>
-        <div id="detailPrice" class="text-rose-600 font-black text-lg pt-1"></div>
+        <div id="detailPriceContainer" class="pt-1 flex items-baseline gap-3"></div>
       </div>
 
       <div id="detailDescArea" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-slate-600 space-y-1 hidden">
@@ -302,7 +302,6 @@
     async function init() {
       if (!shopId) { alert('ဆိုင် ID မမှန်ပါ'); return; }
 
-      // ဆိုင်အချက်အလက်၊ ကုန်ပစ္စည်းများ၊ Payment များနှင့် ဆိုင် Banner များကို ပြိုင်တူခေါ်ယူခြင်း
       const [sr, pr, pmr, sbr, rtr] = await Promise.all([
         client.from('shops').select('*').eq('id', shopId).maybeSingle(),
         client.from('products').select('*').eq('shop_id', shopId).order('id', { ascending: false }),
@@ -320,7 +319,6 @@
       document.getElementById('shopTitle').innerText = shop.name || 'Aura Store';
       document.getElementById('shopPhone').innerText = `📞 ဖုန်းနံပါတ်: ${shop.phone || 'မဖော်ပြထားပါ'}`;
       
-      // ⭐ Method A: Standard Average Rating တွက်ချက်ပြသခြင်း
       if (rtr.data && rtr.data.avg_rating) {
         document.getElementById('shopRating').innerText = `⭐ ${Number(rtr.data.avg_rating).toFixed(1)} (${rtr.data.total_reviews})`;
       } else {
@@ -336,7 +334,6 @@
         document.getElementById('shopLogo').innerHTML = `<img src="${esc(shop.logo_url)}" alt="Logo" class="w-full h-full object-cover rounded-2xl" />`;
       }
 
-      // 🖼️ SELLER BANNERS ပြသခြင်း
       renderShopBanners(sbr.data || []);
 
       if (pr.error) { console.error(pr.error); return; }
@@ -351,7 +348,6 @@
       updateCartUI();
     }
 
-    // 🖼️ SELLER SHOP BANNERS RENDERING
     function renderShopBanners(banners) {
       const container = document.getElementById('shopBannersContainer');
       if (!banners || !banners.length) {
@@ -376,26 +372,57 @@
       select.innerHTML = paymentMethods.map(pm => `<option value="${pm.id}">${pm.provider_name} - ${pm.account_name} (${pm.account_number})</option>`).join('');
     }
 
+    // 🛍️ PRODUCTS RENDERING WITH DISCOUNT & STOCK BADGES
     function renderProducts() {
       const grid = document.getElementById('shopProductGrid');
       if (!products.length) { grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-400 text-xs">ဤဆိုင်တွင် ကုန်ပစ္စည်း မရှိသေးပါ</div>'; return; }
+      
       grid.innerHTML = products.map(p => {
         const title = esc(p.title || p.name || 'အမည်မရှိပစ္စည်း');
-        const price = Number(p.price ?? p.priceMMK ?? 0);
+        const originalPrice = Number(p.price ?? p.priceMMK ?? 0);
+        const flashPrice = Number(p.flash_price || 0);
+
+        // လျှော့ဈေး တွက်ချက်ခြင်း
+        const hasDiscount = flashPrice > 0 && flashPrice < originalPrice;
+        const displayPrice = hasDiscount ? flashPrice : originalPrice;
+        const discountPercent = hasDiscount ? Math.round(((originalPrice - flashPrice) / originalPrice) * 100) : 0;
+
         const imagesList = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : (p.image_url ? [p.image_url] : ['https://placehold.co/300']));
         const mainImg = esc(imagesList[0]);
         const stock = Number(p.stock || 0);
+
+        // လက်ကျန် Stock Badge ပြသမှု
+        let stockBadgeHtml = '';
+        if (stock > 5) {
+          stockBadgeHtml = `<span class="absolute top-2.5 right-2.5 bg-emerald-600/90 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-full font-extrabold shadow-sm border border-emerald-400/30 flex items-center gap-1"><i class="ph-bold ph-package"></i> လက်ကျန်: ${stock}</span>`;
+        } else if (stock > 0) {
+          stockBadgeHtml = `<span class="absolute top-2.5 right-2.5 bg-amber-500/95 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-full font-black animate-pulse shadow-sm border border-amber-300 flex items-center gap-1"><i class="ph-bold ph-warning"></i> လက်ကျန်နည်း: ${stock}</span>`;
+        } else {
+          stockBadgeHtml = `<span class="absolute top-2.5 right-2.5 bg-rose-600/95 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-full font-black shadow-sm border border-rose-400 flex items-center gap-1"><i class="ph-bold ph-x-circle"></i> ပစ္စည်းကုန်ပြီ</span>`;
+        }
 
         return `
           <div class="bg-white rounded-3xl border border-slate-200/80 p-3.5 flex flex-col justify-between hover:shadow-xl hover:border-violet-500/30 transition duration-300 group">
             <div>
               <div class="relative cursor-pointer overflow-hidden rounded-2xl bg-slate-100 mb-3" onclick='openBuy(${Number(p.id)})'>
                 <img src="${mainImg}" onerror="this.src='https://placehold.co/300'" alt="${title}" class="w-full h-40 sm:h-48 object-cover group-hover:scale-105 transition duration-500" />
-                <span class="absolute top-2.5 right-2.5 bg-slate-900/70 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-full font-bold">လက်ကျန်: ${stock}</span>
+                
+                <!-- Stock Badge -->
+                ${stockBadgeHtml}
+
+                <!-- % လျှော့ဈေး Badge -->
+                ${hasDiscount ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-black uppercase tracking-tight shadow-md">${discountPercent}% OFF</span>` : ''}
               </div>
+
               <h4 class="font-bold text-xs text-slate-800 line-clamp-2 cursor-pointer group-hover:text-violet-600 transition" onclick='openBuy(${Number(p.id)})'>${title}</h4>
-              <div class="text-base font-black text-rose-600 mt-1.5">${price.toLocaleString()} MMK</div>
+              
+              <!-- ဈေးနှုန်း နှင့် မူလဈေး မျဉ်းသားပြသမှု -->
+              <div class="mt-2 flex items-baseline gap-2 flex-wrap">
+                <span class="text-base font-black text-rose-600">${displayPrice.toLocaleString()} MMK</span>
+                ${hasDiscount ? `<span class="text-[11px] font-bold text-slate-400 line-through">${originalPrice.toLocaleString()} MMK</span>` : ''}
+              </div>
             </div>
+
             <button type="button" onclick='openBuy(${Number(p.id)})' ${stock <= 0 || shop.is_active === false ? 'disabled' : ''} class="mt-4 w-full ${stock <= 0 || shop.is_active === false ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-slate-900 hover:bg-violet-600 text-white'} py-2.5 rounded-2xl text-xs font-bold transition shadow-xs">
               ${stock <= 0 ? 'ကုန်နေပါသည်' : shop.is_active === false ? 'ပိတ်ထားသည်' : 'အသေးစိတ်ကြည့်မည်'}
             </button>
@@ -404,7 +431,7 @@
       }).join('');
     }
 
-    // 📸 PRODUCT DETAIL WITH 5 IMAGES GALLERY
+    // 📸 PRODUCT DETAIL WITH GALLERY & DISCOUNT
     function openBuy(id) {
       selected = products.find(p => Number(p.id) === id);
       if (!selected) return;
@@ -423,13 +450,31 @@
 
       document.getElementById('detailTitle').innerText = selected.title || selected.name || '';
       document.getElementById('detailShop').innerText = `ဆိုင်: ${shop?.name || 'Aura Store'}`;
-      document.getElementById('detailPrice').innerText = `${Number(selected.price || selected.priceMMK || 0).toLocaleString()} MMK`;
+
+      // Detail Modal ရှိ ဈေးနှုန်းတွက်ချက်မှု
+      const originalPrice = Number(selected.price || selected.priceMMK || 0);
+      const flashPrice = Number(selected.flash_price || 0);
+      const hasDiscount = flashPrice > 0 && flashPrice < originalPrice;
+      const displayPrice = hasDiscount ? flashPrice : originalPrice;
+      const discountPercent = hasDiscount ? Math.round(((originalPrice - flashPrice) / originalPrice) * 100) : 0;
+
+      const priceBox = document.getElementById('detailPriceContainer');
+      priceBox.innerHTML = `
+        <span class="text-2xl font-black text-rose-600">${displayPrice.toLocaleString()} MMK</span>
+        ${hasDiscount ? `
+          <span class="text-xs font-bold text-slate-400 line-through">${originalPrice.toLocaleString()} MMK</span>
+          <span class="bg-rose-100 text-rose-700 text-[10px] font-black px-2 py-0.5 rounded-md uppercase">-${discountPercent}% OFF</span>
+        ` : ''}
+      `;
 
       const stock = Number(selected.stock || 0);
       const stockBadge = document.getElementById('detailStockBadge');
-      if (stock > 0) {
+      if (stock > 5) {
         stockBadge.className = "px-2.5 py-1 rounded-lg font-bold text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200";
         stockBadge.innerText = `📦 လက်ကျန်ရှိသည် (${stock} ခု)`;
+      } else if (stock > 0) {
+        stockBadge.className = "px-2.5 py-1 rounded-lg font-bold text-[10px] bg-amber-50 text-amber-700 border border-amber-200 animate-pulse";
+        stockBadge.innerText = `⚠️ လက်ကျန်နည်း (${stock} ခုသာ)`;
       } else {
         stockBadge.className = "px-2.5 py-1 rounded-lg font-bold text-[10px] bg-rose-50 text-rose-700 border border-rose-200";
         stockBadge.innerText = `❌ ကုန်နေပါသည်`;
@@ -474,12 +519,31 @@
       const stock = Number(selected.stock || 0);
       if (qty > stock) return alert(`လက်ကျန် ${stock} ခုသာရှိပါသည်`);
 
+      const originalPrice = Number(selected.price || selected.priceMMK || 0);
+      const flashPrice = Number(selected.flash_price || 0);
+      const activeFinalPrice = (flashPrice > 0 && flashPrice < originalPrice) ? flashPrice : originalPrice;
+
       const key = `${selected.id}|${chosenSize}|${chosenColor}`;
       const old = cart.find(i => i.key === key);
       const imagesList = selected.images && selected.images.length > 0 ? selected.images : [selected.image || selected.image_url || 'https://placehold.co/100'];
 
-      if (old) old.qty = Math.min(old.qty + qty, stock);
-      else cart.push({ key, ...selected, image: imagesList[0], selectedSize: chosenSize, selectedColor: chosenColor, qty, checked: true, shop_id: shop.id, shop_name: shop.name });
+      if (old) {
+        old.qty = Math.min(old.qty + qty, stock);
+      } else {
+        cart.push({
+          key,
+          ...selected,
+          price: activeFinalPrice,
+          original_price: originalPrice,
+          image: imagesList[0],
+          selectedSize: chosenSize,
+          selectedColor: chosenColor,
+          qty,
+          checked: true,
+          shop_id: shop.id,
+          shop_name: shop.name
+        });
+      }
       saveCart();
       closeBuyModal();
       openCart();
@@ -554,7 +618,6 @@
       document.getElementById('checkoutModal').classList.remove('flex');
     }
 
-    // 🛑 CLEAN ORDER SUBMISSION WITH SUPABASE AUTH & EXPLICIT TYPES
     async function handleOrderSubmit(e) {
       e.preventDefault();
       const selectedItems = cart.filter(i => i.checked);
