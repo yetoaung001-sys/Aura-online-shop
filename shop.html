@@ -146,6 +146,7 @@
           <span id="detailStockBadge" class="px-2.5 py-1 rounded-lg font-bold text-[10px]"></span>
         </div>
         <div id="detailPriceContainer" class="pt-1 flex items-baseline gap-3"></div>
+        <div id="detailGateFeeNotice" class="text-[11px] text-orange-600 font-bold hidden"></div>
       </div>
 
       <div id="detailDescArea" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-slate-600 space-y-1 hidden">
@@ -242,9 +243,12 @@
           <p class="text-[11px] text-slate-500">ငွေလွှဲထားသော Screenshot ပုံကို မဖြစ်မနေ တင်ပေးရပါမည်။</p>
           <input type="file" id="checkoutVoucherFile" name="voucher_file" accept="image/*" required class="w-full border border-slate-200 p-2.5 rounded-xl bg-white cursor-pointer text-xs" />
         </div>
+        
+        <!-- စုစုပေါင်း ကျသင့်ငွေစာရင်း (ဂိတ်တင်ခ ပါဝင်သည်) -->
         <div class="pt-3 border-t space-y-1.5 text-xs font-bold bg-slate-50 p-4 rounded-2xl border border-slate-200">
           <div class="flex justify-between text-slate-600"><span>ပစ္စည်းတန်ဖိုး (Subtotal):</span><span id="summarySubtotal">0 MMK</span></div>
           <div class="flex justify-between text-slate-600"><span>ကားဂိတ်ပို့ခ (Shipping Fee):</span><span id="summaryShipping">0 MMK</span></div>
+          <div class="flex justify-between text-slate-600"><span>ကားဂိတ်တင်ခ (Gate Fee):</span><span id="summaryGateFee" class="text-orange-600">0 MMK</span></div>
           <div class="flex justify-between text-sm font-black text-rose-600 border-t pt-2"><span>စုစုပေါင်း ကျသင့်ငွေ (Total):</span><span id="summaryTotal" class="text-base">0 MMK</span></div>
         </div>
         <button type="submit" id="submitOrderBtn" name="submit_order" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white py-3.5 rounded-2xl font-extrabold shadow-lg shadow-violet-500/20 hover:opacity-95 transition text-sm">
@@ -292,7 +296,8 @@
 
     const shopId = Number(new URLSearchParams(location.search).get('id'));
     let shop = null, products = [], paymentMethods = [], cart = JSON.parse(localStorage.getItem('aura_cart') || '[]');
-    let selected = null, chosenSize = '', chosenColor = '', shopShippingFee = 0;
+    let selected = null, chosenSize = '', chosenColor = '';
+    let shopShippingFee = 0, totalGateFee = 0;
 
     cart.forEach(i => { if (i.checked === undefined) i.checked = true; });
 
@@ -372,7 +377,6 @@
       select.innerHTML = paymentMethods.map(pm => `<option value="${pm.id}">${pm.provider_name} - ${pm.account_name} (${pm.account_number})</option>`).join('');
     }
 
-    // 🛍️ PRODUCTS RENDERING WITH DISCOUNT & STOCK BADGES
     function renderProducts() {
       const grid = document.getElementById('shopProductGrid');
       if (!products.length) { grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-400 text-xs">ဤဆိုင်တွင် ကုန်ပစ္စည်း မရှိသေးပါ</div>'; return; }
@@ -382,7 +386,6 @@
         const originalPrice = Number(p.price ?? p.priceMMK ?? 0);
         const flashPrice = Number(p.flash_price || 0);
 
-        // လျှော့ဈေး တွက်ချက်ခြင်း
         const hasDiscount = flashPrice > 0 && flashPrice < originalPrice;
         const displayPrice = hasDiscount ? flashPrice : originalPrice;
         const discountPercent = hasDiscount ? Math.round(((originalPrice - flashPrice) / originalPrice) * 100) : 0;
@@ -390,8 +393,8 @@
         const imagesList = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : (p.image_url ? [p.image_url] : ['https://placehold.co/300']));
         const mainImg = esc(imagesList[0]);
         const stock = Number(p.stock || 0);
+        const gateFee = Number(p.gate_fee || 0);
 
-        // လက်ကျန် Stock Badge ပြသမှု
         let stockBadgeHtml = '';
         if (stock > 5) {
           stockBadgeHtml = `<span class="absolute top-2.5 right-2.5 bg-emerald-600/90 backdrop-blur-md text-white text-[10px] px-2.5 py-1 rounded-full font-extrabold shadow-sm border border-emerald-400/30 flex items-center gap-1"><i class="ph-bold ph-package"></i> လက်ကျန်: ${stock}</span>`;
@@ -406,21 +409,18 @@
             <div>
               <div class="relative cursor-pointer overflow-hidden rounded-2xl bg-slate-100 mb-3" onclick='openBuy(${Number(p.id)})'>
                 <img src="${mainImg}" onerror="this.src='https://placehold.co/300'" alt="${title}" class="w-full h-40 sm:h-48 object-cover group-hover:scale-105 transition duration-500" />
-                
-                <!-- Stock Badge -->
                 ${stockBadgeHtml}
-
-                <!-- % လျှော့ဈေး Badge -->
                 ${hasDiscount ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-black uppercase tracking-tight shadow-md">${discountPercent}% OFF</span>` : ''}
               </div>
 
               <h4 class="font-bold text-xs text-slate-800 line-clamp-2 cursor-pointer group-hover:text-violet-600 transition" onclick='openBuy(${Number(p.id)})'>${title}</h4>
               
-              <!-- ဈေးနှုန်း နှင့် မူလဈေး မျဉ်းသားပြသမှု -->
               <div class="mt-2 flex items-baseline gap-2 flex-wrap">
                 <span class="text-base font-black text-rose-600">${displayPrice.toLocaleString()} MMK</span>
                 ${hasDiscount ? `<span class="text-[11px] font-bold text-slate-400 line-through">${originalPrice.toLocaleString()} MMK</span>` : ''}
               </div>
+
+              ${gateFee > 0 ? `<div class="mt-1 text-[10px] text-orange-600 font-bold">ဂိတ်တင်ခ: +${gateFee.toLocaleString()} MMK</div>` : ''}
             </div>
 
             <button type="button" onclick='openBuy(${Number(p.id)})' ${stock <= 0 || shop.is_active === false ? 'disabled' : ''} class="mt-4 w-full ${stock <= 0 || shop.is_active === false ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-slate-900 hover:bg-violet-600 text-white'} py-2.5 rounded-2xl text-xs font-bold transition shadow-xs">
@@ -431,7 +431,6 @@
       }).join('');
     }
 
-    // 📸 PRODUCT DETAIL WITH GALLERY & DISCOUNT
     function openBuy(id) {
       selected = products.find(p => Number(p.id) === id);
       if (!selected) return;
@@ -451,7 +450,6 @@
       document.getElementById('detailTitle').innerText = selected.title || selected.name || '';
       document.getElementById('detailShop').innerText = `ဆိုင်: ${shop?.name || 'Aura Store'}`;
 
-      // Detail Modal ရှိ ဈေးနှုန်းတွက်ချက်မှု
       const originalPrice = Number(selected.price || selected.priceMMK || 0);
       const flashPrice = Number(selected.flash_price || 0);
       const hasDiscount = flashPrice > 0 && flashPrice < originalPrice;
@@ -466,6 +464,15 @@
           <span class="bg-rose-100 text-rose-700 text-[10px] font-black px-2 py-0.5 rounded-md uppercase">-${discountPercent}% OFF</span>
         ` : ''}
       `;
+
+      const gateFeeNotice = document.getElementById('detailGateFeeNotice');
+      const gateFee = Number(selected.gate_fee || 0);
+      if (gateFee > 0) {
+        gateFeeNotice.innerText = `🚚 ကားဂိတ်တင်ခ: +${gateFee.toLocaleString()} MMK (အော်ဒါတင်ချိန်တွင် ပေါင်းစည်းပါမည်)`;
+        gateFeeNotice.classList.remove('hidden');
+      } else {
+        gateFeeNotice.classList.add('hidden');
+      }
 
       const stock = Number(selected.stock || 0);
       const stockBadge = document.getElementById('detailStockBadge');
@@ -526,6 +533,7 @@
       const key = `${selected.id}|${chosenSize}|${chosenColor}`;
       const old = cart.find(i => i.key === key);
       const imagesList = selected.images && selected.images.length > 0 ? selected.images : [selected.image || selected.image_url || 'https://placehold.co/100'];
+      const gateFee = Number(selected.gate_fee || 0);
 
       if (old) {
         old.qty = Math.min(old.qty + qty, stock);
@@ -541,7 +549,8 @@
           qty,
           checked: true,
           shop_id: shop.id,
-          shop_name: shop.name
+          shop_name: shop.name,
+          gate_fee: gateFee
         });
       }
       saveCart();
@@ -572,6 +581,7 @@
             <h5 class="font-bold line-clamp-1 text-slate-900">${esc(i.title || i.name)}</h5>
             <div class="text-[10px] text-slate-500">Size: ${esc(i.selectedSize || '-')} · Color: ${esc(i.selectedColor || '-')}</div>
             <div class="text-rose-600 font-extrabold mt-0.5">${Number(i.price ?? i.priceMMK ?? 0).toLocaleString()} MMK × ${i.qty}</div>
+            ${Number(i.gate_fee || 0) > 0 ? `<div class="text-[9px] text-orange-600 font-bold">ဂိတ်တင်ခ: +${(Number(i.gate_fee) * i.qty).toLocaleString()} MMK</div>` : ''}
           </div>
           <button type="button" onclick="cart.splice(${idx},1);saveCart();updateCartUI();" class="text-rose-500 hover:text-rose-700 p-2 transition"><i class="ph ph-trash text-base"></i></button>
         </div>
@@ -587,6 +597,7 @@
       closeCart();
 
       shopShippingFee = Number(shop.shipping_fee ?? shop.delivery_fee ?? 0);
+      totalGateFee = selectedItems.reduce((sum, item) => sum + (Number(item.gate_fee || 0) * item.qty), 0);
 
       document.getElementById('checkoutItemsList').innerHTML = selectedItems.map(i => {
         const unitPrice = Number(i.price ?? i.priceMMK ?? 0), itemTotal = unitPrice * i.qty;
@@ -597,6 +608,7 @@
               <div class="font-bold text-slate-800 line-clamp-1">${esc(i.title || i.name)}</div>
               <div class="text-[10px] text-slate-500">📏 Size: ${esc(i.selectedSize || '-')} | 🎨 Color: ${esc(i.selectedColor || '-')}</div>
               <div class="text-[10px] text-slate-600 font-bold">${unitPrice.toLocaleString()} MMK × ${i.qty} ခု</div>
+              ${Number(i.gate_fee || 0) > 0 ? `<div class="text-[9px] text-orange-600 font-bold">ဂိတ်တင်ခ: ${(Number(i.gate_fee) * i.qty).toLocaleString()} MMK</div>` : ''}
             </div>
             <div class="font-black text-rose-600 text-sm">${itemTotal.toLocaleString()} MMK</div>
           </div>
@@ -605,9 +617,12 @@
 
       document.getElementById('shippingFeeDisplay').value = shopShippingFee.toLocaleString() + ' MMK';
       const subtotal = selectedItems.reduce((s, i) => s + Number(i.price ?? i.priceMMK ?? 0) * Number(i.qty || 0), 0);
+      const grandTotal = subtotal + shopShippingFee + totalGateFee;
+
       document.getElementById('summarySubtotal').innerText = subtotal.toLocaleString() + ' MMK';
       document.getElementById('summaryShipping').innerText = shopShippingFee.toLocaleString() + ' MMK';
-      document.getElementById('summaryTotal').innerText = (subtotal + shopShippingFee).toLocaleString() + ' MMK';
+      document.getElementById('summaryGateFee').innerText = totalGateFee.toLocaleString() + ' MMK';
+      document.getElementById('summaryTotal').innerText = grandTotal.toLocaleString() + ' MMK';
       
       document.getElementById('checkoutModal').classList.remove('hidden');
       document.getElementById('checkoutModal').classList.add('flex');
@@ -640,7 +655,7 @@
         const paymentMethodId = document.getElementById('custPayment').value;
 
         const subtotal = selectedItems.reduce((s, i) => s + Number(i.price ?? i.priceMMK ?? 0) * Number(i.qty || 0), 0);
-        const total = subtotal + shopShippingFee;
+        const total = subtotal + shopShippingFee + totalGateFee;
 
         let voucherUrl = '';
         const file = voucherInput.files[0];
@@ -666,6 +681,7 @@
           payment_voucher: voucherUrl || null,
           subtotal: Number(subtotal) || 0,
           shipping_fee: Number(shopShippingFee) || 0,
+          gate_fee: Number(totalGateFee) || 0,
           total: Number(total) || 0,
           total_amount: Number(total) || 0,
           items: selectedItems.map(i => ({
@@ -674,6 +690,7 @@
             image: i.image || i.image_url || '',
             qty: Number(i.qty) || 1,
             price: Number(i.price ?? i.priceMMK ?? 0),
+            gate_fee: Number(i.gate_fee || 0),
             selectedSize: i.selectedSize || '',
             selectedColor: i.selectedColor || ''
           })),
@@ -705,6 +722,7 @@
               title: i.title || i.name,
               qty: Number(i.qty) || 1,
               price: Number(i.price ?? i.priceMMK ?? 0),
+              gate_fee: Number(i.gate_fee || 0),
               selectedSize: i.selectedSize || '',
               selectedColor: i.selectedColor || ''
             })),
