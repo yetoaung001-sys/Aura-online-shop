@@ -101,7 +101,6 @@
     </section>
   </main>
 
-  <!-- FOOTER -->
   <footer class="bg-slate-900 text-slate-400 py-12 px-4 mt-20 text-xs border-t border-slate-800">
     <div class="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
       <div class="space-y-3">
@@ -110,7 +109,7 @@
       </div>
       <div class="space-y-2">
         <h4 class="text-white font-bold">အသုံးဝင်သော လင့်ခ်များ</h4>
-        <p><a href="#" onclick="openPolicyModal(); return false;" class="hover:text-white transition">📄 ဝယ်ယူရေး မူဝါဒများနှင့် စည်းကမ်းများ</a></p>
+        <p><a href="#" onclick="openPolicyModal(); return false;" class="hover:text-white transition">📄 ဝယ်ယူရေး မူဝါဒများနှင့် စည်းကမ်းချက်များ</a></p>
         <p><a href="#" onclick="openContactModal(); return false;" class="hover:text-white transition">📞 Company သို့ ဆက်သွယ်ရန်</a></p>
         <p><a href="index.html" class="hover:text-white transition">🏠 ပင်မစျေးဆိုင်သို့ သွားရန်</a></p>
       </div>
@@ -125,20 +124,15 @@
 
   <!-- PRODUCT DETAIL MODAL -->
   <div id="buyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
-    <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto animate-in fade-in zoom-in-95 duration-200">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-4">
         <h3 class="font-extrabold text-sm text-slate-900">📦 ကုန်ပစ္စည်း အသေးစိတ်နှင့် ဝယ်ယူရန်</h3>
-        <button type="button" onclick="closeBuyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition"><i class="ph ph-x text-base"></i></button>
+        <button type="button" onclick="closeBuyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button>
       </div>
-
-      <!-- Multi-Images Gallery -->
       <div class="space-y-3">
-        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100 shadow-sm">
-          <img id="detailMainImg" src="" alt="Product Detail" class="w-full h-64 object-cover transition duration-300" />
-        </div>
+        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100"><img id="detailMainImg" src="" alt="Product Detail" class="w-full h-64 object-cover" /></div>
         <div id="detailThumbnails" class="flex gap-2 overflow-x-auto pb-1"></div>
       </div>
-
       <div class="space-y-2">
         <h4 id="detailTitle" class="font-extrabold text-sm text-slate-900 leading-snug"></h4>
         <div class="flex items-center gap-2">
@@ -146,41 +140,25 @@
           <span id="detailStockBadge" class="px-2.5 py-1 rounded-lg font-bold text-[10px]"></span>
         </div>
         <div id="detailPriceContainer" class="pt-1 flex items-baseline gap-3"></div>
-        <div id="detailGateFeeNotice" class="text-[11px] text-orange-600 font-bold hidden"></div>
+        <div id="detailShippingNotice" class="text-[11px] font-bold text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-200"></div>
       </div>
-
       <div id="detailDescArea" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-slate-600 space-y-1 hidden">
         <span class="font-bold text-slate-700 block">📝 ပစ္စည်းအကြောင်းအရာ:</span>
         <p id="detailDescText" class="leading-relaxed"></p>
       </div>
-
-      <div id="sizeSelectionArea" class="space-y-2 hidden">
-        <span class="font-bold text-slate-700 block">📏 Size ရွေးပါ:</span>
-        <div id="sizeOptionsList" class="flex flex-wrap gap-2"></div>
-      </div>
-
-      <div id="colorSelectionArea" class="space-y-2 hidden">
-        <span class="font-bold text-slate-700 block">🎨 Color ရွေးပါ:</span>
-        <div id="colorOptionsList" class="flex flex-wrap gap-2"></div>
-      </div>
-
-      <div>
-        <label for="buyQty" class="font-bold block mb-1.5 text-slate-700">အရေအတွက်</label>
-        <input id="buyQty" name="buy_qty" type="number" min="1" value="1" class="w-full border border-slate-200 bg-slate-50 p-3 rounded-2xl outline-none font-bold text-slate-800 focus:bg-white focus:border-violet-500 transition" />
-      </div>
-
-      <button type="button" onclick="confirmAddToCart()" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-bold py-3.5 rounded-2xl shadow-lg shadow-violet-500/20 hover:opacity-95 transition text-sm">
-        ဈေးတောင်းထဲသို့ ထည့်မည်
-      </button>
+      <div id="sizeSelectionArea" class="space-y-2 hidden"><span class="font-bold text-slate-700 block">📏 Size ရွေးပါ:</span><div id="sizeOptionsList" class="flex flex-wrap gap-2"></div></div>
+      <div id="colorSelectionArea" class="space-y-2 hidden"><span class="font-bold text-slate-700 block">🎨 Color ရွေးပါ:</span><div id="colorOptionsList" class="flex flex-wrap gap-2"></div></div>
+      <div><label for="buyQty" class="font-bold block mb-1.5 text-slate-700">အရေအတွက်</label><input id="buyQty" name="buy_qty" type="number" min="1" value="1" class="w-full border border-slate-200 bg-slate-50 p-3 rounded-2xl outline-none font-bold text-slate-800" /></div>
+      <button type="button" onclick="confirmAddToCart()" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-bold py-3.5 rounded-2xl shadow-lg text-sm">ဈေးတောင်းထဲသို့ ထည့်မည်</button>
     </div>
   </div>
 
   <!-- CART DRAWER -->
   <div id="cartModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden justify-end">
-    <div class="bg-white w-full max-w-md h-full flex flex-col p-5 shadow-2xl animate-in slide-in-from-right duration-200">
+    <div class="bg-white w-full max-w-md h-full flex flex-col p-5 shadow-2xl">
       <div class="flex justify-between items-center pb-4 border-b">
         <h3 class="font-extrabold text-base text-slate-900">🛒 စျေးဝယ်တွန်းလှည်း</h3>
-        <button type="button" onclick="closeCart()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition"><i class="ph ph-x text-base"></i></button>
+        <button type="button" onclick="closeCart()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button>
       </div>
       <div class="py-3 border-b flex justify-between items-center text-xs bg-slate-50 px-3 rounded-xl my-2">
         <div class="flex items-center gap-2.5">
@@ -191,13 +169,8 @@
       </div>
       <div id="cartItems" class="flex-1 overflow-y-auto divide-y divide-slate-100 text-xs py-2 pr-1"></div>
       <div class="border-t pt-4 space-y-3 text-xs bg-white">
-        <div class="flex justify-between text-sm font-black px-1">
-          <span class="text-slate-600">ရွေးချယ်ထားပြီး စုစုပေါင်း:</span>
-          <span id="cartTotal" class="text-rose-600 text-base">0 MMK</span>
-        </div>
-        <button type="button" onclick="openCheckout()" class="w-full bg-violet-600 hover:bg-violet-700 text-white py-3.5 rounded-2xl font-extrabold shadow-lg shadow-violet-600/20 transition">
-          ရွေးချယ်ထားသည်များ ဝယ်မည် (Checkout)
-        </button>
+        <div class="flex justify-between text-sm font-black px-1"><span>ရွေးချယ်ထားပြီး စုစုပေါင်း:</span><span id="cartTotal" class="text-rose-600 text-base">0 MMK</span></div>
+        <button type="button" onclick="openCheckout()" class="w-full bg-violet-600 hover:bg-violet-700 text-white py-3.5 rounded-2xl font-extrabold shadow-lg">ရွေးချယ်ထားသည်များ ဝယ်မည် (Checkout)</button>
       </div>
     </div>
   </div>
@@ -207,7 +180,7 @@
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
         <h3 class="font-extrabold text-sm text-slate-900">🛒 အော်ဒါ အချက်အလက် နှင့် ငွေပေးချေမှု</h3>
-        <button type="button" onclick="closeCheckout()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition"><i class="ph ph-x text-base"></i></button>
+        <button type="button" onclick="closeCheckout()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button>
       </div>
       <form onsubmit="handleOrderSubmit(event)" class="space-y-3.5">
         <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2">
@@ -226,34 +199,36 @@
           <label for="custTownship" class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label>
           <input type="text" id="custTownship" name="customer_township" autocomplete="address-level2" required placeholder="မြို့နယ် ထည့်ရန်" class="w-full border border-slate-200 bg-slate-50 p-3 rounded-2xl outline-none focus:bg-white focus:border-violet-500 transition font-medium" />
         </div>
+
+        <!-- 🚚 ပို့ဆောင်မည့် ဒေသ ရွေးချယ်မှု (Seller သတ်မှတ်သည့် Free နေရာ ပေါ်မည်) -->
+        <div>
+          <label for="deliveryAreaType" class="font-bold block mb-1 text-slate-700">🚚 ပို့ဆောင်မည့် ဒေသ ရွေးချယ်ရန် *</label>
+          <select id="deliveryAreaType" name="delivery_area_type" onchange="recalculateCheckoutFees()" class="w-full border border-slate-200 bg-slate-50 p-3 rounded-2xl font-bold outline-none focus:bg-white focus:border-violet-500 transition"></select>
+        </div>
+
         <div>
           <label for="custAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label>
           <textarea id="custAddress" name="customer_address" autocomplete="street-address" required placeholder="လမ်းနာမည်၊ ရပ်ကွက်၊ အိမ်နံပါတ်..." class="w-full border border-slate-200 bg-slate-50 p-3 rounded-2xl outline-none focus:bg-white focus:border-violet-500 transition font-medium" rows="2"></textarea>
         </div>
         <div>
           <label for="shippingFeeDisplay" class="font-bold block mb-1 text-slate-700">🚚 ကားဂိတ်ပို့ခ (Shipping Fee)</label>
-          <input type="text" id="shippingFeeDisplay" name="shipping_fee_display" readonly value="0 MMK" class="w-full border border-slate-200 p-3 rounded-2xl bg-slate-100 font-extrabold text-slate-600 outline-none cursor-not-allowed" />
+          <input type="text" id="shippingFeeDisplay" name="shipping_fee_display" readonly value="0 MMK" class="w-full border border-slate-200 p-3 rounded-2xl bg-slate-100 font-extrabold text-slate-600 outline-none" />
         </div>
         <div>
           <label for="custPayment" class="font-bold block mb-1 text-slate-700">ငွေပေးချေမှုစနစ် ရွေးချယ်ရန်</label>
-          <select id="custPayment" name="payment_method" class="w-full border border-slate-200 bg-slate-50 p-3 rounded-2xl font-bold outline-none focus:bg-white focus:border-violet-500 transition"></select>
+          <select id="custPayment" name="payment_method" class="w-full border border-slate-200 bg-slate-50 p-3 rounded-2xl font-bold outline-none"></select>
         </div>
         <div class="bg-violet-50/50 p-4 rounded-2xl border border-violet-100 space-y-1.5">
           <label for="checkoutVoucherFile" class="font-extrabold block text-slate-800">💳 ငွေလွှဲဘောက်ချာ (Screenshot) *</label>
-          <p class="text-[11px] text-slate-500">ငွေလွှဲထားသော Screenshot ပုံကို မဖြစ်မနေ တင်ပေးရပါမည်။</p>
           <input type="file" id="checkoutVoucherFile" name="voucher_file" accept="image/*" required class="w-full border border-slate-200 p-2.5 rounded-xl bg-white cursor-pointer text-xs" />
         </div>
-        
-        <!-- စုစုပေါင်း ကျသင့်ငွေစာရင်း (ဂိတ်တင်ခ ပါဝင်သည်) -->
         <div class="pt-3 border-t space-y-1.5 text-xs font-bold bg-slate-50 p-4 rounded-2xl border border-slate-200">
           <div class="flex justify-between text-slate-600"><span>ပစ္စည်းတန်ဖိုး (Subtotal):</span><span id="summarySubtotal">0 MMK</span></div>
-          <div class="flex justify-between text-slate-600"><span>ကားဂိတ်ပို့ခ (Shipping Fee):</span><span id="summaryShipping">0 MMK</span></div>
+          <div class="flex justify-between text-slate-600"><span>ပို့ဆောင်ခ (Shipping Fee):</span><span id="summaryShipping">0 MMK</span></div>
           <div class="flex justify-between text-slate-600"><span>ကားဂိတ်တင်ခ (Gate Fee):</span><span id="summaryGateFee" class="text-orange-600">0 MMK</span></div>
           <div class="flex justify-between text-sm font-black text-rose-600 border-t pt-2"><span>စုစုပေါင်း ကျသင့်ငွေ (Total):</span><span id="summaryTotal" class="text-base">0 MMK</span></div>
         </div>
-        <button type="submit" id="submitOrderBtn" name="submit_order" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white py-3.5 rounded-2xl font-extrabold shadow-lg shadow-violet-500/20 hover:opacity-95 transition text-sm">
-          အော်ဒါ အတည်ပြုမည်
-        </button>
+        <button type="submit" id="submitOrderBtn" name="submit_order" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white py-3.5 rounded-2xl font-extrabold shadow-lg">အော်ဒါ အတည်ပြုမည်</button>
       </form>
     </div>
   </div>
@@ -261,31 +236,18 @@
   <!-- POLICY MODAL -->
   <div id="policyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-3 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
-      <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-extrabold text-sm text-slate-900">📄 မူဝါဒများနှင့် စည်းကမ်းချက်များ (Policy)</h3>
-        <button type="button" onclick="closePolicyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition"><i class="ph ph-x text-base"></i></button>
-      </div>
-      <div class="space-y-2.5 text-slate-600 leading-relaxed text-xs">
-        <p><b>၁။ ငွေပေးချေမှု မူဝါဒ:</b> အော်ဒါတင်ရာတွင် ငွေလွှဲဘောက်ချာ (Payment Voucher Screenshot) ကို မဖြစ်မနေ ပူးတွဲတင်ပြရပါမည်။ Aura Company ဘက်မှ အတည်ပြုစစ်ဆေးပြီးမှသာ ပစ္စည်းပို့ဆောင်ပါမည်။</p>
-        <p><b>၂။ ပို့ဆောင်ခနှင့် ကားဂိတ်ပို့ခ:</b> ကားဂိတ်ပို့ခများကို ဆိုင်မှ သတ်မှတ်ထားသည့်အတိုင်း ပေးချေရမည်ဖြစ်ပါသည်။</p>
-        <p><b>၃။ ပစ္စည်းလဲလှယ်ခြင်း:</b> ပစ္စည်းလက်ခံရရှိချိန်တွင် ပျက်စီးချို့ယွင်းမှုရှိပါက ချက်ချင်း ဆက်သွယ်အကြောင်းကြားပေးရပါမည်။</p>
-      </div>
-      <button type="button" onclick="closePolicyModal()" class="w-full bg-slate-900 hover:bg-slate-800 text-white py-3 rounded-2xl font-bold mt-3 transition">နားလည်လက်ခံပါသည်</button>
+      <div class="flex justify-between items-center border-b pb-3"><h3 class="font-extrabold text-sm text-slate-900">📄 မူဝါဒများနှင့် စည်းကမ်းချက်များ</h3><button type="button" onclick="closePolicyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button></div>
+      <p class="text-slate-600 leading-relaxed">အော်ဒါတင်ရာတွင် ငွေလွှဲဘောက်ချာ မဖြစ်မနေ ပူးတွဲတင်ပြရပါမည်။ Aura Company ဘက်မှ အတည်ပြုစစ်ဆေးပြီးမှသာ ပစ္စည်းပို့ဆောင်ပါမည်။</p>
+      <button type="button" onclick="closePolicyModal()" class="w-full bg-slate-900 text-white py-3 rounded-2xl font-bold mt-3">နားလည်လက်ခံပါသည်</button>
     </div>
   </div>
 
   <!-- CONTACT ADMIN MODAL -->
   <div id="contactModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-4 text-xs shadow-2xl">
-      <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-extrabold text-sm text-slate-900">📞 Aura Company သို့ ဆက်သွယ်ရန်</h3>
-        <button type="button" onclick="closeContactModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center hover:bg-slate-200 transition"><i class="ph ph-x text-base"></i></button>
-      </div>
-      <div class="space-y-3 text-slate-700">
-        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center gap-3.5"><i class="ph-fill ph-phone-call text-3xl text-violet-600"></i><div><div class="font-extrabold text-sm text-slate-900">ဖုန်းနံပါတ်</div><div class="text-slate-500 font-medium">09-9789588064</div></div></div>
-        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 flex items-center gap-3.5"><i class="ph-fill ph-chat-circle-dots text-3xl text-emerald-600"></i><div><div class="font-extrabold text-sm text-slate-900">Telegram / Viber</div><div class="text-slate-500 font-medium">09-9789588064 သို့ တိုက်ရိုက်ဆက်သွယ်နိုင်ပါသည်</div></div></div>
-      </div>
-      <button type="button" onclick="closeContactModal()" class="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-2xl font-bold transition">ပိတ်မည်</button>
+      <div class="flex justify-between items-center border-b pb-3"><h3 class="font-extrabold text-sm text-slate-900">📞 Aura Company သို့ ဆက်သွယ်ရန်</h3><button type="button" onclick="closeContactModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button></div>
+      <p class="text-slate-700 font-bold">ဖုန်း: 09-9789588064</p>
+      <button type="button" onclick="closeContactModal()" class="w-full bg-violet-600 text-white py-3 rounded-2xl font-bold">ပိတ်မည်</button>
     </div>
   </div>
 
@@ -297,7 +259,7 @@
     const shopId = Number(new URLSearchParams(location.search).get('id'));
     let shop = null, products = [], paymentMethods = [], cart = JSON.parse(localStorage.getItem('aura_cart') || '[]');
     let selected = null, chosenSize = '', chosenColor = '';
-    let shopShippingFee = 0, totalGateFee = 0;
+    let shopShippingFee = 0, totalGateFee = 0, activeShippingFee = 0, activeGateFee = 0;
 
     cart.forEach(i => { if (i.checked === undefined) i.checked = true; });
 
@@ -355,18 +317,12 @@
 
     function renderShopBanners(banners) {
       const container = document.getElementById('shopBannersContainer');
-      if (!banners || !banners.length) {
-        container.classList.add('hidden');
-        return;
-      }
+      if (!banners || !banners.length) { container.classList.add('hidden'); return; }
       container.classList.remove('hidden');
       container.innerHTML = banners.map(b => `
         <div class="relative overflow-hidden rounded-3xl shadow-md border border-slate-200 group bg-slate-900">
           <img src="${esc(b.image_url)}" alt="Shop Banner" class="w-full h-44 sm:h-52 object-cover group-hover:scale-105 transition duration-500 opacity-90" />
-          ${b.title ? `
-            <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-5">
-              <h3 class="text-white font-extrabold text-sm sm:text-base">${esc(b.title)}</h3>
-            </div>` : ''}
+          ${b.title ? `<div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-5"><h3 class="text-white font-extrabold text-sm sm:text-base">${esc(b.title)}</h3></div>` : ''}
         </div>
       `).join('');
     }
@@ -420,7 +376,10 @@
                 ${hasDiscount ? `<span class="text-[11px] font-bold text-slate-400 line-through">${originalPrice.toLocaleString()} MMK</span>` : ''}
               </div>
 
-              ${gateFee > 0 ? `<div class="mt-1 text-[10px] text-orange-600 font-bold">ဂိတ်တင်ခ: +${gateFee.toLocaleString()} MMK</div>` : ''}
+              <div class="mt-1 flex flex-wrap gap-1 text-[10px]">
+                ${p.is_free_delivery ? `<span class="text-emerald-600 font-bold bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-100">🎉 ${esc(p.free_delivery_area || 'မြို့တွင်း')} Free</span>` : ''}
+                ${gateFee > 0 ? `<span class="text-orange-600 font-bold bg-orange-50 px-1.5 py-0.5 rounded border border-orange-100">ဂိတ်တင်ခ: +${gateFee.toLocaleString()} MMK</span>` : ''}
+              </div>
             </div>
 
             <button type="button" onclick='openBuy(${Number(p.id)})' ${stock <= 0 || shop.is_active === false ? 'disabled' : ''} class="mt-4 w-full ${stock <= 0 || shop.is_active === false ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-slate-900 hover:bg-violet-600 text-white'} py-2.5 rounded-2xl text-xs font-bold transition shadow-xs">
@@ -465,14 +424,13 @@
         ` : ''}
       `;
 
-      const gateFeeNotice = document.getElementById('detailGateFeeNotice');
+      const shippingNotice = document.getElementById('detailShippingNotice');
+      const freeArea = selected.free_delivery_area || 'မြို့တွင်း/အနီးအနား';
       const gateFee = Number(selected.gate_fee || 0);
-      if (gateFee > 0) {
-        gateFeeNotice.innerText = `🚚 ကားဂိတ်တင်ခ: +${gateFee.toLocaleString()} MMK (အော်ဒါတင်ချိန်တွင် ပေါင်းစည်းပါမည်)`;
-        gateFeeNotice.classList.remove('hidden');
-      } else {
-        gateFeeNotice.classList.add('hidden');
-      }
+      shippingNotice.innerHTML = `
+        <div>🚚 <b>ပို့ဆောင်ခ:</b> ${selected.is_free_delivery ? `<span class="text-emerald-600 font-black">${esc(freeArea)} (ပို့ခ Free)</span>` : `${Number(selected.shipping_fee || 0).toLocaleString()} MMK`}</div>
+        ${gateFee > 0 ? `<div class="text-orange-600 font-bold mt-0.5">🚛 နယ်ဝေးကားဂိတ်တင်ခ: +${gateFee.toLocaleString()} MMK</div>` : ''}
+      `;
 
       const stock = Number(selected.stock || 0);
       const stockBadge = document.getElementById('detailStockBadge');
@@ -534,6 +492,7 @@
       const old = cart.find(i => i.key === key);
       const imagesList = selected.images && selected.images.length > 0 ? selected.images : [selected.image || selected.image_url || 'https://placehold.co/100'];
       const gateFee = Number(selected.gate_fee || 0);
+      const freeArea = selected.free_delivery_area || 'မြို့တွင်း/အနီးအနား';
 
       if (old) {
         old.qty = Math.min(old.qty + qty, stock);
@@ -550,7 +509,9 @@
           checked: true,
           shop_id: shop.id,
           shop_name: shop.name,
-          gate_fee: gateFee
+          gate_fee: gateFee,
+          free_delivery_area: freeArea,
+          is_free_delivery: selected.is_free_delivery
         });
       }
       saveCart();
@@ -596,8 +557,17 @@
       if (!selectedItems.length) return alert('ဝယ်ယူရန် ပစ္စည်းအနည်းဆုံး တစ်ခု ရွေးချယ်ပါ');
       closeCart();
 
-      shopShippingFee = Number(shop.shipping_fee ?? shop.delivery_fee ?? 0);
+      const firstItem = selectedItems[0];
+      shopShippingFee = Number(firstItem.shipping_fee ?? firstItem.shops?.shipping_fee ?? 0);
       totalGateFee = selectedItems.reduce((sum, item) => sum + (Number(item.gate_fee || 0) * item.qty), 0);
+
+      // Seller သတ်မှတ်ထားသော Free နေရာအမည် ထည့်သွင်းခြင်း
+      const freeAreaName = firstItem.free_delivery_area || firstItem.shops?.township || 'မြို့တွင်း/အနီးအနား';
+      const areaSelect = document.getElementById('deliveryAreaType');
+      areaSelect.innerHTML = `
+        <option value="local">📍 ${esc(freeAreaName)} (ပို့ခ Free 🎉)</option>
+        <option value="regional">🚛 နယ်ဝေး / ကားဂိတ်ပို့ (ဂိတ်တင်ခ ကျသင့်ပါမည်)</option>
+      `;
 
       document.getElementById('checkoutItemsList').innerHTML = selectedItems.map(i => {
         const unitPrice = Number(i.price ?? i.priceMMK ?? 0), itemTotal = unitPrice * i.qty;
@@ -615,17 +585,36 @@
         `;
       }).join('');
 
-      document.getElementById('shippingFeeDisplay').value = shopShippingFee.toLocaleString() + ' MMK';
-      const subtotal = selectedItems.reduce((s, i) => s + Number(i.price ?? i.priceMMK ?? 0) * Number(i.qty || 0), 0);
-      const grandTotal = subtotal + shopShippingFee + totalGateFee;
+      recalculateCheckoutFees();
 
-      document.getElementById('summarySubtotal').innerText = subtotal.toLocaleString() + ' MMK';
-      document.getElementById('summaryShipping').innerText = shopShippingFee.toLocaleString() + ' MMK';
-      document.getElementById('summaryGateFee').innerText = totalGateFee.toLocaleString() + ' MMK';
-      document.getElementById('summaryTotal').innerText = grandTotal.toLocaleString() + ' MMK';
-      
       document.getElementById('checkoutModal').classList.remove('hidden');
       document.getElementById('checkoutModal').classList.add('flex');
+    }
+
+    function recalculateCheckoutFees() {
+      const selectedItems = cart.filter(i => i.checked);
+      if (!selectedItems.length) return;
+
+      const areaType = document.getElementById('deliveryAreaType').value;
+      const subtotal = selectedItems.reduce((s, i) => s + Number(i.price ?? i.priceMMK ?? 0) * Number(i.qty || 0), 0);
+
+      if (areaType === 'local') {
+        activeShippingFee = 0;
+        activeGateFee = 0;
+        document.getElementById('shippingFeeDisplay').value = '0 MMK (Free Delivery)';
+      } else {
+        const firstItem = selectedItems[0];
+        activeShippingFee = Number(firstItem.shipping_fee ?? firstItem.shops?.shipping_fee ?? 0);
+        activeGateFee = selectedItems.reduce((sum, item) => sum + (Number(item.gate_fee || 0) * item.qty), 0);
+        document.getElementById('shippingFeeDisplay').value = activeShippingFee.toLocaleString() + ' MMK';
+      }
+
+      const grandTotal = subtotal + activeShippingFee + activeGateFee;
+
+      document.getElementById('summarySubtotal').innerText = subtotal.toLocaleString() + ' MMK';
+      document.getElementById('summaryShipping').innerText = activeShippingFee.toLocaleString() + ' MMK';
+      document.getElementById('summaryGateFee').innerText = activeGateFee.toLocaleString() + ' MMK';
+      document.getElementById('summaryTotal').innerText = grandTotal.toLocaleString() + ' MMK';
     }
 
     function closeCheckout() {
@@ -652,10 +641,11 @@
         const phone = document.getElementById('custPhone').value.trim();
         const township = document.getElementById('custTownship').value.trim();
         const address = document.getElementById('custAddress').value.trim();
+        const deliveryType = document.getElementById('deliveryAreaType').value;
         const paymentMethodId = document.getElementById('custPayment').value;
 
         const subtotal = selectedItems.reduce((s, i) => s + Number(i.price ?? i.priceMMK ?? 0) * Number(i.qty || 0), 0);
-        const total = subtotal + shopShippingFee + totalGateFee;
+        const total = subtotal + activeShippingFee + activeGateFee;
 
         let voucherUrl = '';
         const file = voucherInput.files[0];
@@ -680,10 +670,11 @@
           payment_method_id: paymentMethodId ? Number(paymentMethodId) : null,
           payment_voucher: voucherUrl || null,
           subtotal: Number(subtotal) || 0,
-          shipping_fee: Number(shopShippingFee) || 0,
-          gate_fee: Number(totalGateFee) || 0,
+          shipping_fee: Number(activeShippingFee) || 0,
+          gate_fee: Number(activeGateFee) || 0,
           total: Number(total) || 0,
           total_amount: Number(total) || 0,
+          delivery_type: deliveryType === 'local' ? 'အနီးအနား (Free Delivery)' : 'နယ်ဝေး (ကားဂိတ်တင်)',
           items: selectedItems.map(i => ({
             product_id: Number(i.id),
             title: i.title || i.name,
