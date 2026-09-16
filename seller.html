@@ -81,7 +81,7 @@
       <div id="panel-products" class="space-y-4">
         <div class="bg-white rounded-2xl border shadow-sm p-4 overflow-x-auto text-xs">
           <table class="w-full text-left">
-            <thead><tr class="border-b text-slate-400"><th class="py-2.5">ပုံများ</th><th>အမည်</th><th>အမျိုးအစား</th><th>ဈေးနှုန်း</th><th>အရွယ်အစား & အရောင်</th><th>Stock</th><th>COD / ပို့ခ</th><th>လုပ်ဆောင်ချက်</th></tr></thead>
+            <thead><tr class="border-b text-slate-400"><th class="py-2.5">ပုံများ</th><th>အမည်</th><th>အမျိုးအစား</th><th>ဈေးနှုန်း</th><th>အရွယ်အစား & အရောင်</th><th>Stock</th><th>COD / ပို့ခ / ဂိတ်တင်ခ</th><th>လုပ်ဆောင်ချက်</th></tr></thead>
             <tbody id="sellerProductsTable" class="divide-y"><tr><td colspan="8" class="py-8 text-center text-slate-400">ပစ္စည်းများ ရှာဖွေနေပါသည်...</td></tr></tbody>
           </table>
         </div>
@@ -162,7 +162,7 @@
           <div><label for="prodFlashPrice" class="font-bold block mb-1">Flash Sale ဈေး</label><input type="number" id="prodFlashPrice" name="flash_price" class="w-full border p-2.5 rounded-xl outline-none" placeholder="12000" /></div>
         </div>
 
-        <!-- ပို့ဆောင်ခ၊ COD နှင့် နေရာအလိုက်ပို့ခ စီမံမှုအပိုင်း -->
+        <!-- ပို့ဆောင်ခ၊ Free နေရာ၊ ဂိတ်တင်ခ၊ COD စီမံမှုအပိုင်း -->
         <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
             <label class="flex items-center gap-2 cursor-pointer font-bold text-slate-700">
@@ -172,21 +172,31 @@
 
             <label class="flex items-center gap-2 cursor-pointer font-bold text-emerald-600">
               <input type="checkbox" id="prodFreeDelivery" name="is_free_delivery" onchange="toggleFreeDelivery(this)" class="w-4 h-4 rounded text-emerald-600 accent-emerald-600 cursor-pointer" />
-              <span>🎉 ပို့ခ အခမဲ့ (Free Delivery)</span>
+              <span>🎉 ပို့ခ အခမဲ့ (Free Delivery) ရမည်</span>
             </label>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-200">
+          <!-- Free Delivery ပေးမည့် နေရာအမည် ထည့်သည့်အကွက် -->
+          <div id="freeAreaInputBox" class="hidden pt-2 border-t border-slate-200">
+            <label for="prodFreeArea" class="font-bold block mb-1 text-slate-700">Free ပေးမည့် မြို့/နေရာ သတ်မှတ်ရန် *</label>
+            <input type="text" id="prodFreeArea" name="free_delivery_area" placeholder="ဥပမာ - မန္တလေးမြို့တွင်း (သို့) ကျောက်ဆည်" class="w-full border border-slate-200 p-2.5 rounded-xl bg-white outline-none font-bold text-slate-800 focus:border-orange-500" />
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 border-t border-slate-200">
             <div>
-              <label for="prodShippingFee" class="font-bold block mb-1 text-slate-700">ပို့ခ (MMK)</label>
-              <input type="number" id="prodShippingFee" name="shipping_fee" value="0" min="0" placeholder="ဥပမာ- 2500" class="w-full border border-slate-200 p-2.5 rounded-xl bg-white outline-none font-bold text-slate-800 focus:border-orange-500" />
+              <label for="prodShippingFee" class="font-bold block mb-1 text-slate-700">အိမ်ရောက်ပို့ခ (MMK)</label>
+              <input type="number" id="prodShippingFee" name="shipping_fee" value="0" min="0" placeholder="2500" class="w-full border border-slate-200 p-2.5 rounded-xl bg-white outline-none font-bold text-slate-800 focus:border-orange-500" />
             </div>
             <div>
-              <label for="prodAreaShipping" class="font-bold block mb-1 text-slate-700">နေရာအလိုက် ပို့ခ (Area Rates)</label>
-              <input type="text" id="prodAreaShipping" name="area_shipping" placeholder="ဥပမာ- ရန်ကုန်:2000, မန္တလေး:3000, နယ်:4000" class="w-full border border-slate-200 p-2.5 rounded-xl bg-white outline-none font-medium text-slate-800 focus:border-orange-500" />
+              <label for="prodGateFee" class="font-bold block mb-1 text-slate-700">ဂိတ်တင်ခ (MMK)</label>
+              <input type="number" id="prodGateFee" name="gate_fee" value="0" min="0" placeholder="1000" class="w-full border border-slate-200 p-2.5 rounded-xl bg-white outline-none font-bold text-slate-800 focus:border-orange-500" />
+            </div>
+            <div>
+              <label for="prodAreaShipping" class="font-bold block mb-1 text-slate-700">နေရာအလိုက် ပို့ခ</label>
+              <input type="text" id="prodAreaShipping" name="area_shipping" placeholder="ရန်ကုန်:2000, မန္တလေး:3000" class="w-full border border-slate-200 p-2.5 rounded-xl bg-white outline-none font-medium text-slate-800 focus:border-orange-500" />
             </div>
           </div>
-          <p class="text-[11px] text-slate-400 font-medium">💡 ပို့ခ Free ပေးလိုပါက အမှန်ခြစ်ပါ။ မြို့နယ်အလိုက် သတ်မှတ်လိုပါက ကော်မာ ( , ) ခြား၍ ရိုက်ထည့်နိုင်ပါသည်။</p>
+          <p class="text-[11px] text-slate-400 font-medium">💡 Free Delivery အမှန်ခြစ်ပါက မြို့တွင်းပို့ခ 0 ဖြစ်ပြီး နယ်ဝေးပို့ပါက ဂိတ်တင်ခ အလိုအလျောက် ပေါင်းတွက်ပါမည်။</p>
         </div>
 
         <div>
@@ -275,12 +285,11 @@
         const mainImg = imgs[0];
         const imgCountBadge = imgs.length > 1 ? `<span class="absolute bottom-0 right-0 bg-slate-900/80 text-white text-[9px] px-1 rounded font-mono">+${imgs.length}</span>` : '';
 
-        // Free Delivery သို့မဟုတ် သတ်မှတ်ထားသော ပို့ခ ပြသမှု
         let shippingBadge = '';
-        if (p.is_free_delivery || Number(p.shipping_fee) === 0) {
-          shippingBadge = '<span class="text-emerald-600 font-bold">Free</span>';
+        if (p.is_free_delivery) {
+          shippingBadge = `<span class="text-emerald-600 font-bold">Free (${escapeHtml(p.free_delivery_area || 'မြို့တွင်း')})</span>`;
         } else {
-          shippingBadge = `${Number(p.shipping_fee).toLocaleString()} MMK`;
+          shippingBadge = `${Number(p.shipping_fee || 0).toLocaleString()} MMK`;
         }
 
         const areaRates = p.area_shipping_rates ? `<div class="text-[10px] text-slate-400 truncate max-w-[120px]" title="${escapeHtml(p.area_shipping_rates)}">📍 ${escapeHtml(p.area_shipping_rates)}</div>` : '';
@@ -300,6 +309,7 @@
             <td><span class="font-bold ${Number(p.stock) <= 0 ? 'text-rose-600' : 'text-slate-800'}">${p.stock}</span></td>
             <td>
               <div>${p.allow_cod ? '<span class="text-emerald-600 font-bold">✓ COD</span>' : '<span class="text-slate-400">✕</span>'} | ပို့ခ: ${shippingBadge}</div>
+              <div class="text-[10px] text-slate-500 font-semibold">ဂိတ်တင်ခ: ${Number(p.gate_fee || 0).toLocaleString()} MMK</div>
               ${areaRates}
             </td>
             <td class="space-x-2"><button type="button" onclick="editProduct(${p.id})" class="text-blue-600 font-bold">ပြင်</button><button type="button" onclick="deleteProduct(${p.id})" class="text-rose-500 font-bold">ဖျက်</button></td>
@@ -400,23 +410,15 @@
       });
     }
 
-    // Free Delivery Checkbox ပြောင်းလဲမှု logic
     function toggleFreeDelivery(el) {
-      const feeInput = document.getElementById('prodShippingFee');
-      const areaInput = document.getElementById('prodAreaShipping');
+      const freeAreaBox = document.getElementById('freeAreaInputBox');
       if (el.checked) {
-        feeInput.value = 0;
-        feeInput.disabled = true;
-        feeInput.classList.add('bg-slate-100', 'cursor-not-allowed');
-        areaInput.value = 'ပို့ခအခမဲ့ (Free Delivery)';
-        areaInput.disabled = true;
-        areaInput.classList.add('bg-slate-100', 'cursor-not-allowed');
+        freeAreaBox.classList.remove('hidden');
+        if (!document.getElementById('prodFreeArea').value) {
+          document.getElementById('prodFreeArea').value = 'မြို့တွင်း/အနီးအနား';
+        }
       } else {
-        feeInput.disabled = false;
-        feeInput.classList.remove('bg-slate-100', 'cursor-not-allowed');
-        areaInput.disabled = false;
-        areaInput.classList.remove('bg-slate-100', 'cursor-not-allowed');
-        areaInput.value = '';
+        freeAreaBox.classList.add('hidden');
       }
     }
 
@@ -434,8 +436,10 @@
         const colors = document.getElementById('prodColors').value.split(',').map(c => c.trim()).filter(Boolean);
         
         const isFree = document.getElementById('prodFreeDelivery').checked;
-        const shippingFee = isFree ? 0 : (Number(document.getElementById('prodShippingFee').value) || 0);
-        const areaShippingRates = isFree ? 'Free Delivery' : document.getElementById('prodAreaShipping').value.trim();
+        const freeDeliveryArea = isFree ? (document.getElementById('prodFreeArea').value.trim() || 'မြို့တွင်း/အနီးအနား') : null;
+        const shippingFee = Number(document.getElementById('prodShippingFee').value) || 0;
+        const gateFee = Number(document.getElementById('prodGateFee').value) || 0;
+        const areaShippingRates = document.getElementById('prodAreaShipping').value.trim();
 
         const fileInput = document.getElementById('prodImageFiles');
         const selectedFiles = fileInput.files ? Array.from(fileInput.files).slice(0, 5) : [];
@@ -470,8 +474,10 @@
           allow_cod: document.getElementById('prodAllowCod').checked,
           is_cod: document.getElementById('prodAllowCod').checked,
           is_free_delivery: isFree,
+          free_delivery_area: freeDeliveryArea,
           shipping_fee: shippingFee,
           delivery_fee: shippingFee,
+          gate_fee: gateFee,
           area_shipping_rates: areaShippingRates,
           description: document.getElementById('prodDesc').value
         };
@@ -600,14 +606,15 @@
       document.getElementById('prodPrice').value = p.price || p.priceMMK || 0;
       document.getElementById('prodFlashPrice').value = p.flash_price || '';
       document.getElementById('prodAllowCod').checked = p.allow_cod !== false;
+      document.getElementById('prodShippingFee').value = p.shipping_fee || 0;
+      document.getElementById('prodGateFee').value = p.gate_fee || 0;
+      document.getElementById('prodAreaShipping').value = p.area_shipping_rates || '';
       document.getElementById('prodDesc').value = p.description || '';
 
-      // Free Delivery & Area Rates တန်ဖိုးများ ပြန်လည်ဖြည့်သွင်းခြင်း
-      const isFree = Boolean(p.is_free_delivery || (Number(p.shipping_fee) === 0 && !p.area_shipping_rates));
+      const isFree = Boolean(p.is_free_delivery);
       const freeCheckbox = document.getElementById('prodFreeDelivery');
       freeCheckbox.checked = isFree;
-      document.getElementById('prodShippingFee').value = p.shipping_fee || 0;
-      document.getElementById('prodAreaShipping').value = p.area_shipping_rates || '';
+      document.getElementById('prodFreeArea').value = p.free_delivery_area || 'မြို့တွင်း/အနီးအနား';
       toggleFreeDelivery(freeCheckbox);
 
       existingImages = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
@@ -625,6 +632,8 @@
         document.getElementById('prodFreeDelivery').checked = false;
         toggleFreeDelivery(document.getElementById('prodFreeDelivery'));
         document.getElementById('prodShippingFee').value = 0;
+        document.getElementById('prodGateFee').value = 0;
+        document.getElementById('prodFreeArea').value = 'မြို့တွင်း/အနီးအနား';
         document.getElementById('prodAreaShipping').value = '';
       }
       document.getElementById('productModal').classList.remove('hidden'); 
