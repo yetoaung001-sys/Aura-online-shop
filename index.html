@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aura Marketplace - Modern E-Commerce</title>
 
-  <!-- PWA Manifest ချိတ်ဆက်မှု -->
+  <!-- PWA Manifest Link -->
   <link rel="manifest" href="manifest.json" />
 
   <!-- Mobile App / PWA Meta Tags -->
@@ -57,7 +57,6 @@
         </div>
       </div>
 
-      <!-- Search Bar -->
       <div class="flex-1 max-w-2xl relative">
         <label for="searchInput" class="sr-only">ကုန်ပစ္စည်းရှာဖွေရန်</label>
         <input type="text" id="searchInput" name="search_keyword" oninput="handleSearch(this.value)" autocomplete="off" placeholder="ပစ္စည်းအမည်၊ ဆိုင်နာမည် ဖြင့် ရှာဖွေရန်..." class="w-full pl-12 pr-4 py-3.5 bg-slate-100/80 border border-slate-200 rounded-2xl text-xs outline-none focus:bg-white focus:border-violet-600 focus:ring-4 focus:ring-violet-600/10 transition font-medium" />
@@ -246,6 +245,7 @@
           <span id="detailStockBadge" class="px-3 py-1 rounded-xl font-bold text-[10px]"></span>
         </div>
         <div id="detailPriceContainer" class="pt-1.5 flex items-baseline gap-3"></div>
+        <div id="detailGateFeeNotice" class="text-[11px] text-orange-600 font-bold hidden"></div>
       </div>
 
       <div id="detailDescArea" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-slate-600 space-y-1 hidden">
@@ -341,9 +341,12 @@
           <label for="checkoutVoucherFile" class="font-extrabold block text-slate-800">💳 ငွေလွှဲဘောက်ချာ (Screenshot) *</label>
           <input type="file" id="checkoutVoucherFile" name="voucher_file" accept="image/*" required class="w-full border p-2.5 rounded-xl bg-white cursor-pointer text-xs" />
         </div>
+        
+        <!-- စုစုပေါင်း ကျသင့်ငွေစာရင်း (ဂိတ်တင်ခ ပါဝင်သည်) -->
         <div class="pt-3 border-t space-y-1.5 text-xs font-bold bg-slate-50 p-4 rounded-2xl border">
           <div class="flex justify-between text-slate-600"><span>ပစ္စည်းတန်ဖိုး (Subtotal):</span><span id="summarySubtotal">0 MMK</span></div>
           <div class="flex justify-between text-slate-600"><span>ကားဂိတ်ပို့ခ (Shipping Fee):</span><span id="summaryShipping">0 MMK</span></div>
+          <div class="flex justify-between text-slate-600"><span>ကားဂိတ်တင်ခ (Gate Fee):</span><span id="summaryGateFee" class="text-orange-600">0 MMK</span></div>
           <div class="flex justify-between text-sm font-black text-rose-600 border-t pt-2"><span>စုစုပေါင်း ကျသင့်ငွေ (Total):</span><span id="summaryTotal">0 MMK</span></div>
         </div>
         <button type="submit" id="submitOrderBtn" name="submit_order" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white py-3.5 rounded-2xl font-extrabold shadow-lg">
@@ -385,7 +388,8 @@
     const client = supabase.createClient(SUPABASE_URL, SB_KEY);
 
     let products = [], paymentMethods = [], cart = JSON.parse(localStorage.getItem('aura_cart') || '[]');
-    let searchQuery = '', selectedProductForBuy = null, chosenSize = '', chosenColor = '', shopShippingFee = 0;
+    let searchQuery = '', selectedProductForBuy = null, chosenSize = '', chosenColor = '';
+    let shopShippingFee = 0, totalGateFee = 0;
     let isSignupMode = false;
     let currentAuthSessionUser = null;
     let currentRatingOrderId = null, currentRatingShopId = null, currentSelectedStars = 5;
@@ -520,6 +524,7 @@
         const shopLogo = p.shops?.logo_url || 'https://placehold.co/40';
         const shopId = p.shop_id || p.shops?.id;
         const stock = Number(p.stock || 0);
+        const gateFee = Number(p.gate_fee || 0);
 
         let stockBadgeHtml = '';
         if (stock > 5) {
@@ -550,6 +555,8 @@
                 <span class="text-base font-black text-rose-600">${displayPrice.toLocaleString()} MMK</span>
                 ${hasDiscount ? `<span class="text-[11px] font-bold text-slate-400 line-through">${originalPrice.toLocaleString()} MMK</span>` : ''}
               </div>
+
+              ${gateFee > 0 ? `<div class="mt-1 text-[10px] text-orange-600 font-bold">ဂိတ်တင်ခ: +${gateFee.toLocaleString()} MMK</div>` : ''}
             </div>
 
             <button type="button" onclick='openBuyModal(${JSON.stringify(p)})' ${stock<=0?'disabled':''} class="mt-4 w-full ${stock<=0?'bg-slate-200 text-slate-400 cursor-not-allowed':'bg-slate-900 hover:bg-violet-600 text-white'} py-2.5 rounded-2xl text-xs font-bold transition shadow-xs">
@@ -589,6 +596,15 @@
           <span class="bg-rose-100 text-rose-700 text-[10px] font-black px-2 py-0.5 rounded-md uppercase">-${discountPercent}% OFF</span>
         ` : ''}
       `;
+
+      const gateFeeNotice = document.getElementById('detailGateFeeNotice');
+      const gateFee = Number(product.gate_fee || 0);
+      if (gateFee > 0) {
+        gateFeeNotice.innerText = `🚚 ကားဂိတ်တင်ခ: +${gateFee.toLocaleString()} MMK (အော်ဒါတင်ချိန်တွင် ပေါင်းစည်းပါမည်)`;
+        gateFeeNotice.classList.remove('hidden');
+      } else {
+        gateFeeNotice.classList.add('hidden');
+      }
 
       const stock = Number(product.stock || 0);
       const stockBadge = document.getElementById('detailStockBadge');
@@ -645,6 +661,7 @@
       const shopId = selectedProductForBuy.shop_id || selectedProductForBuy.shops?.id;
       const shopName = selectedProductForBuy.shops?.name || 'Aura Store';
       const shippingFee = Number(selectedProductForBuy.shipping_fee ?? selectedProductForBuy.shops?.shipping_fee ?? selectedProductForBuy.shops?.delivery_fee ?? 0);
+      const gateFee = Number(selectedProductForBuy.gate_fee || 0);
       const imagesList = selectedProductForBuy.images || (selectedProductForBuy.image ? [selectedProductForBuy.image] : ['https://placehold.co/100']);
       
       if (existing) {
@@ -662,7 +679,8 @@
           checked: true,
           shop_id: shopId,
           shop_name: shopName,
-          shipping_fee: shippingFee
+          shipping_fee: shippingFee,
+          gate_fee: gateFee
         });
       }
       saveCart(); updateCartUI(); closeBuyModal(); openCart();
@@ -692,6 +710,7 @@
             <h5 class="font-bold line-clamp-1 text-slate-900">${i.title || i.name}</h5>
             <div class="text-[10px] text-slate-500">${i.shop_name || ''} · Size: ${i.selectedSize || '-'} | Color: ${i.selectedColor || '-'}</div>
             <div class="text-rose-600 font-extrabold mt-0.5">${Number(i.price || 0).toLocaleString()} MMK x ${i.qty}</div>
+            ${Number(i.gate_fee || 0) > 0 ? `<div class="text-[9px] text-orange-600 font-bold">ဂိတ်တင်ခ: +${(Number(i.gate_fee) * i.qty).toLocaleString()} MMK</div>` : ''}
           </div>
           <button type="button" onclick="cart.splice(${idx}, 1); saveCart(); updateCartUI();" class="text-rose-500 p-2"><i class="ph ph-trash text-base"></i></button>
         </div>
@@ -712,6 +731,7 @@
       closeCart();
       const firstItem = selectedItems[0];
       shopShippingFee = Number(firstItem.shipping_fee ?? firstItem.shops?.shipping_fee ?? firstItem.shops?.delivery_fee ?? 0);
+      totalGateFee = selectedItems.reduce((sum, item) => sum + (Number(item.gate_fee || 0) * item.qty), 0);
 
       document.getElementById('checkoutItemsList').innerHTML = selectedItems.map(i => `
         <div class="flex items-center gap-3 py-2 text-xs">
@@ -720,6 +740,7 @@
             <div class="font-bold text-slate-800 line-clamp-1">${esc(i.title || i.name)}</div>
             <div class="text-[10px] text-slate-500">📏 Size: ${esc(i.selectedSize || '-')} | Color: ${esc(i.selectedColor || '-')}</div>
             <div class="text-[10px] text-slate-600 font-bold">${Number(i.price || 0).toLocaleString()} MMK × ${i.qty}</div>
+            ${Number(i.gate_fee || 0) > 0 ? `<div class="text-[9px] text-orange-600 font-bold">ဂိတ်တင်ခ: ${(Number(i.gate_fee) * i.qty).toLocaleString()} MMK</div>` : ''}
           </div>
           <div class="font-black text-rose-600 text-sm">${(Number(i.price || 0) * i.qty).toLocaleString()} MMK</div>
         </div>
@@ -727,9 +748,13 @@
 
       document.getElementById('shippingFeeDisplay').value = shopShippingFee.toLocaleString() + ' MMK';
       const subtotal = selectedItems.reduce((s, i) => s + (Number(i.price || 0) * i.qty), 0);
+      const grandTotal = subtotal + shopShippingFee + totalGateFee;
+
       document.getElementById('summarySubtotal').innerText = subtotal.toLocaleString() + ' MMK';
       document.getElementById('summaryShipping').innerText = shopShippingFee.toLocaleString() + ' MMK';
-      document.getElementById('summaryTotal').innerText = (subtotal + shopShippingFee).toLocaleString() + ' MMK';
+      document.getElementById('summaryGateFee').innerText = totalGateFee.toLocaleString() + ' MMK';
+      document.getElementById('summaryTotal').innerText = grandTotal.toLocaleString() + ' MMK';
+      
       document.getElementById('checkoutModal').classList.remove('hidden'); document.getElementById('checkoutModal').classList.add('flex');
     }
 
@@ -868,6 +893,7 @@
           <div class="bg-violet-50 p-3.5 rounded-2xl border border-violet-100 space-y-1 text-xs font-bold">
             <div class="flex justify-between"><span>ပစ္စည်းတန်ဖိုး:</span> <span>${Number(order.subtotal||0).toLocaleString()} MMK</span></div>
             <div class="flex justify-between"><span>ကားဂိတ်ပို့ခ:</span> <span>${Number(order.shipping_fee||0).toLocaleString()} MMK</span></div>
+            ${Number(order.gate_fee||0) > 0 ? `<div class="flex justify-between text-orange-600"><span>ကားဂိတ်တင်ခ:</span> <span>${Number(order.gate_fee).toLocaleString()} MMK</span></div>` : ''}
             <div class="flex justify-between text-sm text-rose-600 border-t pt-1.5"><span>စုစုပေါင်း ကျသင့်ငွေ:</span> <span>${Number(order.total_amount||order.total||0).toLocaleString()} MMK</span></div>
           </div>
         </div>
@@ -902,7 +928,7 @@
           star.classList.add('ph-fill');
         } else {
           star.classList.remove('ph-fill');
-          star.classList.add('ph');
+          star.classList.add('ph-star');
         }
       });
     }
@@ -988,7 +1014,6 @@
 
     function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 
-    // 🛑 CLEAN & SECURE ORDER SUBMIT (TELEGRAM TRIGGER WILL BE HANDLED AUTOMATICALLY BY SUPABASE BACKEND)
     async function handleOrderSubmit(e) {
       e.preventDefault();
       const selectedItems = cart.filter(i => i.checked);
@@ -1006,7 +1031,7 @@
       const address = document.getElementById('custAddress').value.trim();
       const paymentMethodId = document.getElementById('custPayment').value;
       const subtotal = selectedItems.reduce((s, i) => s + (Number(i.price || 0) * i.qty), 0);
-      const total = subtotal + shopShippingFee;
+      const total = subtotal + shopShippingFee + totalGateFee;
 
       const btn = document.getElementById('submitOrderBtn');
       btn.innerText = "တင်နေပါသည်..."; btn.disabled = true;
@@ -1036,6 +1061,7 @@
           payment_voucher: voucherUrl || null,
           subtotal: Number(subtotal) || 0,
           shipping_fee: Number(shopShippingFee) || 0,
+          gate_fee: Number(totalGateFee) || 0,
           total: Number(total) || 0,
           total_amount: Number(total) || 0,
           items: selectedItems.map(i => ({ 
@@ -1044,6 +1070,7 @@
             image: i.image || i.image_url || '', 
             qty: Number(i.qty) || 1, 
             price: Number(i.price || 0), 
+            gate_fee: Number(i.gate_fee || 0),
             selectedSize: i.selectedSize || '', 
             selectedColor: i.selectedColor || '' 
           })),
@@ -1071,6 +1098,7 @@
               title: i.title || i.name, 
               qty: Number(i.qty) || 1, 
               price: Number(i.price || 0), 
+              gate_fee: Number(i.gate_fee || 0),
               selectedSize: i.selectedSize || '', 
               selectedColor: i.selectedColor || '' 
             })),
@@ -1104,6 +1132,16 @@
     function closePolicyModal() { document.getElementById('policyModal').classList.add('hidden'); document.getElementById('policyModal').classList.remove('flex'); }
     function openContactModal() { document.getElementById('contactModal').classList.remove('hidden'); document.getElementById('contactModal').classList.add('flex'); }
     function closeContactModal() { document.getElementById('contactModal').classList.add('hidden'); document.getElementById('contactModal').classList.remove('flex'); }
+
+    // Service Worker Register
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('/sw.js').then(
+          (reg) => console.log('SW Registered:', reg.scope),
+          (err) => console.log('SW Failed:', err)
+        );
+      });
+    }
 
     init();
   </script>
