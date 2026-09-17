@@ -50,7 +50,6 @@
 
   <!-- ================= SELLER DASHBOARD ================= -->
   <div id="sellerDashboardSection" class="space-y-6">
-    <!-- HEADER -->
     <header class="bg-slate-900 text-white sticky top-0 z-40 shadow">
       <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
         <div class="flex items-center space-x-3">
@@ -87,6 +86,27 @@
         </div>
       </div>
 
+      <!-- 🌟 PAYOUT PROTECTION NOTICE BANNER -->
+      <div class="bg-gradient-to-r from-amber-500/10 via-amber-500/5 to-transparent border border-amber-200/80 rounded-2xl p-4 sm:p-5 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+        <div class="flex items-start gap-3.5">
+          <div class="w-10 h-10 rounded-xl bg-amber-500 text-slate-900 flex items-center justify-center font-bold text-lg shrink-0 shadow-xs">
+            <i class="fa-solid fa-shield-halved"></i>
+          </div>
+          <div class="space-y-1">
+            <div class="flex items-center gap-2">
+              <h4 class="font-extrabold text-sm text-slate-800">Payout Protection (၃ ရက် Escrow Hold စနစ်)</h4>
+              <span class="bg-amber-100 text-amber-800 text-[10px] font-black px-2 py-0.5 rounded-full">Seller Guarantee</span>
+            </div>
+            <p class="text-xs text-slate-600 leading-relaxed">
+              အော်ဒါ Completed ဖြစ်ပြီးနောက် ဝယ်သူ၏ ၃ ရက် Return Window ကျော်လွန်သည်နှင့် သင့်ငွေသည် <b>Ready for Payout</b> သို့ ရောက်ရှိပြီး Admin မှ KPay/Wave ဖြင့် ရှင်းပေးပါမည်။
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="document.getElementById('sellerPolicyModal').classList.remove('hidden'); document.getElementById('sellerPolicyModal').classList.add('flex');" class="bg-white hover:bg-slate-50 text-slate-800 border border-slate-200 text-xs font-bold px-4 py-2 rounded-xl transition shadow-2xs whitespace-nowrap shrink-0">
+          <i class="fa-solid fa-circle-info mr-1 text-amber-600"></i> စည်းမျဉ်း အသေးစိတ်ဖတ်ရန်
+        </button>
+      </div>
+
       <!-- TABS & ACTION BAR -->
       <div class="flex flex-wrap justify-between items-center gap-3">
         <div class="flex gap-2 text-xs">
@@ -108,7 +128,7 @@
                 <th>မှာယူထားသော ပစ္စည်းများ</th>
                 <th>စုစုပေါင်းတန်ဖိုး</th>
                 <th>Company ကော်မရှင်</th>
-                <th>သင့်ရငွေ (Net)</th>
+                <th>သင့်ရငွေ (Net / Payout အခြေအနေ)</th>
                 <th>အခြေအနေ (Status)</th>
               </tr>
             </thead>
@@ -167,7 +187,51 @@
     </main>
   </div>
 
-  <!-- ================= PRODUCT ADD/EDIT MODAL ================= -->
+  <!-- SELLER PAYOUT POLICY MODAL -->
+  <div id="sellerPolicyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-7 space-y-4 text-xs shadow-2xl max-h-[85vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center font-bold text-base">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+          </div>
+          <h3 class="font-extrabold text-sm text-slate-900">ဆိုင်ရှင်များအတွက် Payout စည်းမျဉ်း</h3>
+        </div>
+        <button type="button" onclick="document.getElementById('sellerPolicyModal').classList.add('hidden'); document.getElementById('sellerPolicyModal').classList.remove('flex');" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200">
+          <i class="fa-solid fa-xmark text-base"></i>
+        </button>
+      </div>
+
+      <div class="space-y-3.5 text-slate-600 leading-relaxed">
+        <div class="p-3 bg-amber-50 border border-amber-200 rounded-2xl text-amber-900 font-bold space-y-1">
+          <div>⏳ ၃ ရက် Escrow Hold ဆိုသည်မှာ အဘယ်နည်း?</div>
+          <p class="font-normal text-[11px] text-amber-800">ဝယ်သူမှ ပစ္စည်းလက်ခံရရှိပြီးနောက် ချို့ယွင်းချက်ရှိပါက Unboxing Video ဖြင့် Return လျှောက်ထားနိုင်ရန် အော်ဒါ Completed ပြီးနောက် ၇၂ နာရီအတွင်း ငွေလွှဲပေးချေမှုကို စနစ်မှ ခေတ္တထိန်းဆိုင်းထားခြင်း ဖြစ်ပါသည်။</p>
+        </div>
+
+        <div class="space-y-1.5">
+          <h4 class="font-bold text-slate-800">၁။ ငွေရှင်းပေးမည့် အချိန်သတ်မှတ်ချက်</h4>
+          <ul class="list-disc list-inside space-y-1 text-[11px]">
+            <li>Completed ဖြစ်ပြီး <b>၃ ရက် (၇၂ နာရီ) ပြည့်သည်အထိ</b> ဝယ်သူဘက်မှ Return တောင်းဆိုမှု မရှိပါက <b>Ready for Payout</b> စာရင်းသို့ အလိုအလျောက် ရောက်ရှိမည်။</li>
+            <li>Ready for Payout ဖြစ်ပြီးပါက ကုမ္ပဏီ Admin မှ သင်၏ ဆိုင်ဖွင့်စဉ်က ပေးထားသော KPay/Wave သို့ တိုက်ရိုက် ငွေရှင်းပေးပါမည်။</li>
+          </ul>
+        </div>
+
+        <div class="space-y-1.5">
+          <h4 class="font-bold text-slate-800">၂။ Return & Refund ဖြစ်ပေါ်ပါက</h4>
+          <ul class="list-disc list-inside space-y-1 text-[11px]">
+            <li>၃ ရက်အတွင်း ဝယ်သူမှ သက်သေဖြင့် Return တင်လာပါက စစ်ဆေးဆဲကာလတွင် ထိုအော်ဒါ၏ ငွေထုတ်ယူမှုကို ဆိုင်းငံ့မည်။</li>
+            <li>Return ခိုင်လုံ၍ Admin အတည်ပြုပါက ထိုအော်ဒါအတွက် Payout ရှင်းပေးမည် မဟုတ်ဘဲ ပစ္စည်း Stock အား ဆိုင်စာရင်းထဲ ပြန်လည်ပေါင်းထည့်ပေးမည်။</li>
+          </ul>
+        </div>
+      </div>
+
+      <button type="button" onclick="document.getElementById('sellerPolicyModal').classList.add('hidden'); document.getElementById('sellerPolicyModal').classList.remove('flex');" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl">
+        နားလည်သဘောတူပါသည်
+      </button>
+    </div>
+  </div>
+
+  <!-- PRODUCT ADD/EDIT MODAL -->
   <div id="productModal" class="fixed inset-0 bg-black/60 z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-3.5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -215,7 +279,6 @@
           </div>
         </div>
 
-        <!-- ပို့ဆောင်ခ၊ Free နေရာ၊ ဂိတ်တင်ခ၊ COD စီမံမှု -->
         <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 items-center">
             <label class="flex items-center gap-2 cursor-pointer font-bold text-slate-700">
@@ -273,43 +336,29 @@
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
     const supabaseClient = supabase.createClient(SUPABASE_URL, SB_KEY);
 
-    let myShop = null;
-    let shopProducts = [];
-    let shopOrders = [];
-    let existingImages = [];
+    let myShop = null, shopProducts = [], shopOrders = [], existingImages = [];
 
     function escapeHtml(value) {
       return String(value ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
     }
 
-    // ၇ ရက် ကျန်ရှိချိန် တွက်ချက်ခြင်း
     function calculateDaysLeft(shippedAtString) {
       if (!shippedAtString) return '';
       const shippedDate = new Date(shippedAtString);
       const now = new Date();
-      const AUTO_COMPLETE_DAYS = 7;
-      const targetDate = new Date(shippedDate.getTime() + (AUTO_COMPLETE_DAYS * 24 * 60 * 60 * 1000));
-      const diffDays = Math.ceil((targetDate - now) / (1000 * 60 * 60 * 24));
-      
+      const diffDays = Math.ceil((new Date(shippedDate.getTime() + (7 * 24 * 60 * 60 * 1000)) - now) / (1000 * 60 * 60 * 24));
       if (diffDays > 1) return `<span class="text-blue-600 font-bold text-[10px] block mt-1">⏳ ကျန်ရက်: ${diffDays} ရက်</span>`;
       if (diffDays === 1) return `<span class="text-amber-600 font-bold text-[10px] block mt-1">⚠️ ကျန်ရက်: ၁ ရက်</span>`;
       if (diffDays === 0) return `<span class="text-rose-600 font-bold text-[10px] block mt-1">🔥 ယနေ့ ရက်ပြည့်မည်</span>`;
       return `<span class="text-emerald-600 font-bold text-[10px] block mt-1">✅ ၇ ရက်ပြည့်ပြီး (Completed)</span>`;
     }
 
-    // ၇ ရက်ကျော်ပါက AUTO COMPLETE လုပ်ဆောင်ခြင်း
     async function checkSellerAutoCompletes() {
       if (!myShop) return;
       try {
-        const { data: shippingOrders } = await supabaseClient
-          .from('shop_orders')
-          .select('id, order_id, status, shipped_at')
-          .eq('shop_id', myShop.id)
-          .eq('status', 'shipping');
-
+        const { data: shippingOrders } = await supabaseClient.from('shop_orders').select('id, order_id, status, shipped_at').eq('shop_id', myShop.id).eq('status', 'shipping');
         if (!shippingOrders) return;
         const now = new Date();
-
         for (const so of shippingOrders) {
           if (!so.shipped_at) continue;
           const diffDays = (now - new Date(so.shipped_at)) / (1000 * 60 * 60 * 24);
@@ -318,9 +367,7 @@
             await supabaseClient.from('orders').update({ order_status: 'completed', status: 'completed', updated_at: now.toISOString() }).eq('id', so.order_id);
           }
         }
-      } catch (err) {
-        console.error("Auto Complete Error:", err);
-      }
+      } catch (err) { console.error("Auto Complete Error:", err); }
     }
 
     async function checkAuthSession() {
@@ -348,11 +395,7 @@
       await loadShopData();
     }
 
-    function showLoginView() { 
-      document.getElementById('sellerLoginSection').classList.remove('hidden'); 
-      document.getElementById('sellerLoginSection').classList.add('flex'); 
-    }
-
+    function showLoginView() { document.getElementById('sellerLoginSection').classList.remove('hidden'); document.getElementById('sellerLoginSection').classList.add('flex'); }
     function showDashboardView(email) {
       document.getElementById('sellerLoginSection').classList.add('hidden');
       document.getElementById('sellerLoginSection').classList.remove('flex');
@@ -365,33 +408,23 @@
       const email = document.getElementById('sellerEmailInput').value.trim();
       const password = document.getElementById('sellerPassInput').value.trim();
       const btn = document.getElementById('sellerLoginBtn');
-
-      btn.innerText = "စစ်ဆေးနေပါသည်...";
-      btn.disabled = true;
+      btn.innerText = "စစ်ဆေးနေပါသည်..."; btn.disabled = true;
 
       try {
         const { error } = await supabaseClient.auth.signInWithPassword({ email, password });
         if (error) throw error;
         await checkAuthSession();
-      } catch (err) {
-        alert("❌ Login မအောင်မြင်ပါ: " + err.message);
-      } finally {
-        btn.innerText = "ဆိုင်ရှင်အကောင့် ဝင်မည်";
-        btn.disabled = false;
-      }
+      } catch (err) { alert("❌ Login မအောင်မြင်ပါ: " + err.message); } finally { btn.innerText = "ဆိုင်ရှင်အကောင့် ဝင်မည်"; btn.disabled = false; }
     }
 
     async function loadShopData() {
       await checkSellerAutoCompletes();
-
       const [prodsRes, ordsRes] = await Promise.all([
         supabaseClient.from('products').select('*').eq('shop_id', myShop.id).order('id', { ascending: false }),
         supabaseClient.from('shop_orders').select('*, orders(customer_name, customer_phone, delivery_address, township)').eq('shop_id', myShop.id).order('id', { ascending: false })
       ]);
-
       shopProducts = prodsRes.data || [];
       shopOrders = ordsRes.data || [];
-
       updateAnalytics();
       renderProductsTable();
       renderOrdersTable();
@@ -412,21 +445,12 @@
         const imgs = p.images && p.images.length > 0 ? p.images : [p.image || p.image_url || 'https://placehold.co/100'];
         const mainImg = imgs[0];
         const imgCountBadge = imgs.length > 1 ? `<span class="absolute bottom-0 right-0 bg-slate-900/80 text-white text-[9px] px-1 rounded font-mono">+${imgs.length}</span>` : '';
-
-        let shippingBadge = p.is_free_delivery 
-          ? `<span class="text-emerald-600 font-bold">Free (${escapeHtml(p.free_delivery_area || 'မြို့တွင်း')})</span>` 
-          : `${Number(p.shipping_fee || 0).toLocaleString()} MMK`;
-
+        let shippingBadge = p.is_free_delivery ? `<span class="text-emerald-600 font-bold">Free (${escapeHtml(p.free_delivery_area || 'မြို့တွင်း')})</span>` : `${Number(p.shipping_fee || 0).toLocaleString()} MMK`;
         const areaRates = p.area_shipping_rates ? `<div class="text-[10px] text-slate-400 truncate max-w-[120px]" title="${escapeHtml(p.area_shipping_rates)}">📍 ${escapeHtml(p.area_shipping_rates)}</div>` : '';
 
         return `
           <tr class="hover:bg-slate-50 border-b">
-            <td class="py-2">
-              <div class="relative w-10 h-10">
-                <img src="${mainImg}" alt="Product" class="w-10 h-10 object-cover rounded-lg border" />
-                ${imgCountBadge}
-              </div>
-            </td>
+            <td class="py-2"><div class="relative w-10 h-10"><img src="${mainImg}" alt="Product" class="w-10 h-10 object-cover rounded-lg border" />${imgCountBadge}</div></td>
             <td class="font-bold">${escapeHtml(p.title || p.name)}</td>
             <td><span class="bg-slate-100 text-slate-700 px-2 py-0.5 rounded text-[11px] font-semibold">${escapeHtml(p.category || '-')}</span></td>
             <td class="font-bold text-orange-600">${Number(p.price || p.priceMMK || 0).toLocaleString()} MMK</td>
@@ -445,7 +469,7 @@
       }).join('');
     }
 
-    // 🌟 SELLER ORDERS စာရင်း (COMPLETED ကို DISABLE လုပ်ထားပြီး ဝယ်သူသာ အတည်ပြုနိုင်သည်)
+    // 🌟 SELLER ORDERS စာရင်း (COMPLETED DISABLE နှင့် PAYOUT STATUS ပြသခြင်း)
     function renderOrdersTable() {
       const tbody = document.getElementById('sellerOrdersTable');
       if (!shopOrders.length) { tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-400">အော်ဒါများ မရှိသေးပါ</td></tr>`; return; }
@@ -455,10 +479,26 @@
         const custPhone = o.orders?.customer_phone || '-';
         const address = `${o.orders?.township || ''}, ${o.orders?.delivery_address || ''}`;
         const itemsStr = (o.items || []).map(i => `${i.title} [Size: ${i.selectedSize || '-'}, Color: ${i.selectedColor || '-'}] (${i.qty}ခု)`).join(', ');
-
         const currentStatus = o.status || 'pending';
-        let statusElement = '';
 
+        // 👉 Payout Status နှင့် Escrow Hold စစ်ဆေးခြင်း
+        const completedDate = o.completed_at ? new Date(o.completed_at) : null;
+        const now = new Date();
+        let holdNotice = '';
+
+        if (currentStatus === 'completed' && completedDate) {
+          const diffDays = (now - completedDate) / (1000 * 60 * 60 * 24);
+          if (o.payout_status === 'paid') {
+            holdNotice = '<div class="text-[10px] text-emerald-600 font-bold mt-0.5">✅ ငွေရှင်းပြီး (Paid)</div>';
+          } else if (diffDays >= 3) {
+            holdNotice = '<div class="text-[10px] text-blue-600 font-bold mt-0.5">🎉 ရှင်းရန်အသင့် (Ready to Pay)</div>';
+          } else {
+            const hoursLeft = Math.max(0, Math.ceil(72 - (diffDays * 24)));
+            holdNotice = `<div class="text-[10px] text-amber-600 font-bold mt-0.5">⏳ Escrow Hold (${hoursLeft} နာရီကျန်)</div>`;
+          }
+        }
+
+        let statusElement = '';
         if (currentStatus === 'pending') {
           statusElement = `<span class="px-2.5 py-1 text-xs rounded bg-amber-50 text-amber-600 font-bold inline-block">⏳ Aura Company အတည်ပြုဆဲ</span>`;
         } else if (currentStatus === 'confirmed') {
@@ -503,7 +543,10 @@
             <td class="max-w-xs text-[11px]">${escapeHtml(itemsStr)}</td>
             <td class="font-bold">${Number(o.subtotal || 0).toLocaleString()} MMK</td>
             <td class="font-bold text-amber-600">${Number(o.commission_amount || 0).toLocaleString()} MMK</td>
-            <td class="font-bold text-emerald-600">${Number(o.seller_payout || 0).toLocaleString()} MMK</td>
+            <td>
+              <div class="font-bold text-emerald-600">${Number(o.seller_payout || 0).toLocaleString()} MMK</div>
+              ${holdNotice}
+            </td>
             <td>${statusElement}</td>
           </tr>`;
       }).join('');
@@ -513,23 +556,17 @@
       try {
         let updateData = { status: status };
         if (status === 'shipping') { updateData.shipped_at = new Date().toISOString(); }
-
         await supabaseClient.from('shop_orders').update(updateData).eq('id', subId);
         await supabaseClient.from('orders').update({ status: status, order_status: status }).eq('id', orderId);
-
         alert(`အော်ဒါ #SUB-${subId} အား ${status.toUpperCase()} သို့ ပြောင်းလဲပြီးပါပြီ`);
         await loadShopData();
-      } catch (err) {
-        alert('❌ ပြောင်းမရပါ: ' + err.message);
-      }
+      } catch (err) { alert('❌ ပြောင်းမရပါ: ' + err.message); }
     }
 
     function previewSelectedImages(input) {
       const container = document.getElementById('imagePreviewContainer');
       container.innerHTML = '';
-      if (input.files && input.files.length > 5) {
-        alert('⚠️ ဓာတ်ပုံ ၅ ပုံထက် ပိုမရွေးပါနှင့်။ ပထမဆုံး ၅ ပုံကိုသာ အသုံးပြုပါမည်။');
-      }
+      if (input.files && input.files.length > 5) { alert('⚠️ ဓာတ်ပုံ ၅ ပုံထက် ပိုမရွေးပါနှင့်။'); }
       const filesToPreview = Array.from(input.files).slice(0, 5);
       filesToPreview.forEach(file => {
         const reader = new FileReader();
@@ -547,9 +584,7 @@
       const freeAreaBox = document.getElementById('freeAreaInputBox');
       if (el.checked) {
         freeAreaBox.classList.remove('hidden');
-        if (!document.getElementById('prodFreeArea').value) {
-          document.getElementById('prodFreeArea').value = 'မြို့တွင်း/အနီးအနား';
-        }
+        if (!document.getElementById('prodFreeArea').value) document.getElementById('prodFreeArea').value = 'မြို့တွင်း/အနီးအနား';
       } else {
         freeAreaBox.classList.add('hidden');
       }
@@ -593,26 +628,15 @@
 
         const payload = {
           shop_id: myShop.id,
-          title: title,
-          name: title,
-          category: category,
-          price: price,
-          priceMMK: price,
-          flash_price: flashPrice,
-          stock: stock,
-          sizes: sizes,
-          colors: colors,
-          image: primaryImg,
-          image_url: primaryImg,
-          images: finalImages,
+          title: title, name: title, category: category,
+          price: price, priceMMK: price, flash_price: flashPrice,
+          stock: stock, sizes: sizes, colors: colors,
+          image: primaryImg, image_url: primaryImg, images: finalImages,
           allow_cod: document.getElementById('prodAllowCod').checked,
           is_cod: document.getElementById('prodAllowCod').checked,
-          is_free_delivery: isFree,
-          free_delivery_area: freeDeliveryArea,
-          shipping_fee: shippingFee,
-          delivery_fee: shippingFee,
-          gate_fee: gateFee,
-          area_shipping_rates: areaShippingRates,
+          is_free_delivery: isFree, free_delivery_area: freeDeliveryArea,
+          shipping_fee: shippingFee, delivery_fee: shippingFee,
+          gate_fee: gateFee, area_shipping_rates: areaShippingRates,
           description: document.getElementById('prodDesc').value
         };
 
@@ -626,12 +650,7 @@
         closeProductModal(); 
         await loadShopData(); 
         alert('🎉 ကုန်ပစ္စည်း သိမ်းဆည်းပြီးပါပြီ!');
-      } catch (err) { 
-        alert('❌ Error: ' + err.message); 
-      } finally { 
-        btn.innerText = "အတည်ပြု သိမ်းဆည်းမည်"; 
-        btn.disabled = false; 
-      }
+      } catch (err) { alert('❌ Error: ' + err.message); } finally { btn.innerText = "အတည်ပြု သိမ်းဆည်းမည်"; btn.disabled = false; }
     }
 
     async function deleteProduct(id) {
@@ -657,12 +676,7 @@
       const grid = document.getElementById('shopBannersGrid');
       grid.innerHTML = '<div class="col-span-full py-4 text-center text-slate-400 text-xs">Banner များ ရယူနေပါသည်...</div>';
 
-      const { data: banners, error } = await supabaseClient
-        .from('shop_banners')
-        .select('*')
-        .eq('shop_id', myShop.id)
-        .order('id', { ascending: false });
-
+      const { data: banners, error } = await supabaseClient.from('shop_banners').select('*').eq('shop_id', myShop.id).order('id', { ascending: false });
       if (error || !banners || !banners.length) {
         grid.innerHTML = '<div class="col-span-full py-6 text-center text-slate-400 text-xs">Banner တင်ထားခြင်း မရှိသေးပါ</div>';
         return;
@@ -703,26 +717,16 @@
         }]);
 
         if (insErr) throw insErr;
-
         alert('🎉 Banner အောင်မြင်စွာ တင်ပြီးပါပြီ!');
         e.target.reset();
         await loadShopBanners();
-      } catch (err) {
-        alert('❌ Error: ' + err.message);
-      } finally {
-        btn.innerText = "Banner တင်မည်";
-        btn.disabled = false;
-      }
+      } catch (err) { alert('❌ Error: ' + err.message); } finally { btn.innerText = "Banner တင်မည်"; btn.disabled = false; }
     }
 
     async function deleteShopBanner(bannerId) {
       if (!confirm('ဤ Banner ကို ဖျက်မှာ သေချာပါသလား?')) return;
       const { error } = await supabaseClient.from('shop_banners').delete().eq('id', bannerId);
-      if (error) alert(error.message);
-      else {
-        alert('ဖျက်ပြီးပါပြီ');
-        await loadShopBanners();
-      }
+      if (error) alert(error.message); else { alert('ဖျက်ပြီးပါပြီ'); await loadShopBanners(); }
     }
 
     function editProduct(id) {
@@ -751,7 +755,7 @@
 
       existingImages = p.images && p.images.length > 0 ? p.images : (p.image ? [p.image] : []);
       const previewBox = document.getElementById('imagePreviewContainer');
-      previewBox.innerHTML = existingImages.map(img => `<img src="${img}" alt="Preview" class="w-14 h-14 object-cover rounded-xl border border-slate-200" title="လက်ရှိပုံ" />`).join('');
+      previewBox.innerHTML = existingImages.map(img => `<img src="${img}" alt="Preview" class="w-14 h-14 object-cover rounded-xl border border-slate-200" />`).join('');
 
       openProductModal();
     }
