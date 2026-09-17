@@ -64,7 +64,7 @@
     <section id="section-orders" class="tab-content hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
         <h2 class="font-bold text-slate-800 text-lg">အော်ဒါစာရင်းအားလုံး (Escrow Admin Flow)</h2>
-        <button type="button" onclick="loadOrders()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded text-slate-700"><i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh</button>
+        <button type="button" onclick="loadOrders()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded text-slate-700 font-bold"><i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh</button>
       </div>
       <div class="bg-white rounded-xl shadow-sm border overflow-x-auto">
         <table class="w-full text-left text-sm text-slate-600">
@@ -83,7 +83,7 @@
       </div>
     </section>
 
-    <!-- PAYOUTS REPORT (NEW SECTION) -->
+    <!-- PAYOUTS REPORT (ငွေစာရင်းရှင်းတမ်း) -->
     <section id="section-payouts" class="tab-content hidden space-y-6">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="bg-white p-5 rounded-xl shadow-sm border">
@@ -95,7 +95,7 @@
           <h3 id="payout-stat-commission" class="text-2xl font-bold text-amber-600 mt-1">0 Ks</h3>
         </div>
         <div class="bg-white p-5 rounded-xl shadow-sm border border-emerald-200 bg-emerald-50/30">
-          <p class="text-xs text-emerald-700 font-bold uppercase">ဆိုင်ရှင်များသို့ လွှဲပေးရန် ကျန်ငွေ (Total Payout)</p>
+          <p class="text-xs text-emerald-700 font-bold uppercase">ဆိုင်ရှင်များသို့ လွှဲပေးရန် ကျန်ငွေ (Unpaid Payout)</p>
           <h3 id="payout-stat-payout" class="text-2xl font-bold text-emerald-600 mt-1">0 Ks</h3>
         </div>
       </div>
@@ -103,7 +103,7 @@
       <div class="bg-white p-4 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
         <div>
           <h2 class="font-bold text-slate-800 text-lg">ဆိုင်ရှင်များအလိုက် ငွေစာရင်းရှင်းတမ်း အစီရင်ခံစာ</h2>
-          <p class="text-xs text-slate-500">ဆိုင်ရှင်များထံသို့ ကော်မရှင်နုတ်ပြီး လွှဲပြောင်းပေးရမည့် အသေးစိတ်စာရင်း</p>
+          <p class="text-xs text-slate-500">ဆိုင်ရှင်ထံသို့ KPay/Wave ဖြင့် ငွေလွှဲပြီးပါက "ငွေရှင်းပြီး" ခလုတ်ကို နှိပ်၍ လက်ကျန်ငွေ နှုတ်ယူနိုင်ပါသည်</p>
         </div>
         <button type="button" onclick="loadPayoutsReport()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded text-slate-700 font-bold">
           <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh စာရင်းစစ်မည်
@@ -118,11 +118,12 @@
               <th class="p-4">ဆိုင်ဖုန်း</th>
               <th class="p-4">အော်ဒါ အရေအတွက်</th>
               <th class="p-4">ရောင်းရငွေ (Subtotal)</th>
-              <th class="p-4 text-amber-600">Company ကော်မရှင်</th>
-              <th class="p-4 text-emerald-600 font-black">ဆိုင်ရှင်အား လွှဲပေးရမည့်ငွေ</th>
+              <th class="p-4 text-amber-600 font-bold">Company ကော်မရှင်</th>
+              <th class="p-4 text-rose-600 font-black">လွှဲပေးရန် ကျန်ငွေ (Unpaid)</th>
+              <th class="p-4">လုပ်ဆောင်ချက်</th>
             </tr>
           </thead>
-          <tbody id="payouts-tbody" class="divide-y"><tr><td colspan="6" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr></tbody>
+          <tbody id="payouts-tbody" class="divide-y"><tr><td colspan="7" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr></tbody>
         </table>
       </div>
     </section>
@@ -385,12 +386,12 @@
     // ================= PAYOUTS REPORT FUNCTION =================
     async function loadPayoutsReport() {
       const tbody = document.getElementById('payouts-tbody');
-      tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center">စာရင်းများ တွက်ချက်နေပါသည်...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center">စာရင်းများ တွက်ချက်နေပါသည်...</td></tr>';
 
       try {
         const [shopsRes, shopOrdersRes] = await Promise.all([
           client.from('shops').select('id, name, phone, commission_rate'),
-          client.from('shop_orders').select('shop_id, subtotal, commission_amount, platform_commission, seller_payout, status')
+          client.from('shop_orders').select('shop_id, subtotal, commission_amount, platform_commission, seller_payout, payout_status')
         ]);
 
         const shops = shopsRes.data || [];
@@ -398,34 +399,39 @@
 
         let grandSubtotal = 0;
         let grandCommission = 0;
-        let grandPayout = 0;
+        let grandPendingPayout = 0;
 
         const reportData = shops.map(shop => {
           const ordersForShop = shopOrders.filter(so => Number(so.shop_id) === Number(shop.id));
           const totalSubtotal = ordersForShop.reduce((sum, o) => sum + Number(o.subtotal || 0), 0);
           const totalCommission = ordersForShop.reduce((sum, o) => sum + Number(o.commission_amount || o.platform_commission || 0), 0);
-          const totalPayout = ordersForShop.reduce((sum, o) => sum + Number(o.seller_payout || 0), 0);
+          
+          // ရှင်းရန်ကျန်ငွေ (unpaid သို့မဟုတ် null ဖြစ်နေသော အော်ဒါများ)
+          const pendingPayout = ordersForShop
+            .filter(o => o.payout_status !== 'paid')
+            .reduce((sum, o) => sum + Number(o.seller_payout || 0), 0);
 
           grandSubtotal += totalSubtotal;
           grandCommission += totalCommission;
-          grandPayout += totalPayout;
+          grandPendingPayout += pendingPayout;
 
           return {
+            shopId: shop.id,
             shopName: shop.name,
             shopPhone: shop.phone || '-',
             orderCount: ordersForShop.length,
             subtotal: totalSubtotal,
             commission: totalCommission,
-            payout: totalPayout
+            pendingPayout: pendingPayout
           };
         });
 
         document.getElementById('payout-stat-subtotal').innerText = grandSubtotal.toLocaleString() + ' Ks';
         document.getElementById('payout-stat-commission').innerText = grandCommission.toLocaleString() + ' Ks';
-        document.getElementById('payout-stat-payout').innerText = grandPayout.toLocaleString() + ' Ks';
+        document.getElementById('payout-stat-payout').innerText = grandPendingPayout.toLocaleString() + ' Ks';
 
         if (!reportData.length) {
-          tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">ဆိုင်စာရင်း မရှိသေးပါ</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-400">ဆိုင်စာရင်း မရှိသေးပါ</td></tr>';
           return;
         }
 
@@ -436,13 +442,38 @@
             <td class="p-4 font-bold text-blue-600">${r.orderCount} စောင်</td>
             <td class="p-4 font-bold text-slate-700">${r.subtotal.toLocaleString()} Ks</td>
             <td class="p-4 font-bold text-amber-600">${r.commission.toLocaleString()} Ks</td>
-            <td class="p-4 font-black text-emerald-600 text-base">${r.payout.toLocaleString()} Ks</td>
+            <td class="p-4 font-black text-rose-600 text-base">${r.pendingPayout.toLocaleString()} Ks</td>
+            <td class="p-4">
+              ${r.pendingPayout > 0 ? `
+                <button type="button" onclick="confirmSellerPayout(${r.shopId}, '${escapeHtml(r.shopName)}', ${r.pendingPayout})" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs px-3 py-1.5 rounded-xl shadow transition flex items-center gap-1">
+                  <i class="fa-solid fa-check"></i> ငွေရှင်းပြီး
+                </button>
+              ` : `
+                <span class="text-xs font-bold text-slate-400 bg-slate-100 px-2.5 py-1 rounded-lg">ရှင်းပြီးပါပြီ</span>
+              `}
+            </td>
           </tr>
         `).join('');
 
       } catch (err) {
         console.error("Payout Report Error:", err);
-        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-rose-600">စာရင်းရယူရာတွင် အမှားဖြစ်ပေါ်ပါသည်: ${err.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-rose-600">စာရင်းရယူရာတွင် အမှားဖြစ်ပေါ်ပါသည်: ${err.message}</td></tr>`;
+      }
+    }
+
+    // ဆိုင်ရှင်အား ငွေရှင်းပြီးကြောင်း အတည်ပြုခြင်းနှင့် လက်ကျန်ငွေ နှုတ်ယူခြင်း Function
+    async function confirmSellerPayout(shopId, shopName, amount) {
+      if (!confirm(`${shopName} ဆိုင်ထံသို့ ကျသင့်ငွေ ${amount.toLocaleString()} Ks အား KPay/Wave ဖြင့် လွှဲပေးပြီးပါသလား?\n\nအတည်ပြုပါက စာရင်းမှ လက်ကျန်ငွေ နှုတ်ယူသွားပါမည်။`)) return;
+
+      try {
+        const { data: res, error } = await client.rpc('admin_mark_seller_payout_paid', { target_shop_id: shopId });
+        if (error) throw error;
+        if (res && res.success === false) throw new Error(res.message);
+
+        alert(`🎉 ${shopName} ဆိုင်အတွက် ${Number(res.cleared_amount).toLocaleString()} Ks အား စာရင်းရှင်းပြီးကြောင်း အတည်ပြုပြီးပါပြီ!`);
+        await loadPayoutsReport();
+      } catch (err) {
+        alert('❌ မအောင်မြင်ပါ: ' + (err.message || err));
       }
     }
 
