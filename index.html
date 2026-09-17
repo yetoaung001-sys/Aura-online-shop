@@ -1,4 +1,4 @@
-      <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="my" class="scroll-smooth">
 <head>
   <meta charset="UTF-8" />
@@ -17,7 +17,7 @@
 </head>
 <body class="pb-28">
 
-  <!-- NOTIFICATION -->
+  <!-- NOTIFICATION BAR -->
   <div class="bg-gradient-to-r from-violet-600 via-indigo-600 to-rose-600 text-white text-xs py-2.5 px-4 shadow-md overflow-hidden whitespace-nowrap">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-2 font-bold shrink-0">
@@ -25,10 +25,13 @@
         <span>အသိပေးချက်:</span>
       </div>
       <marquee behavior="scroll" direction="left" scrollamount="5" class="text-white font-medium text-xs">
-        ✨ Aura Marketplace မှ ကြိုဆိုပါတယ်။ ပစ္စည်းရောက်ရှိပြီး ၃ ရက်အတွင်း ချို့ယွင်းချက်ရှိပါက သက်သေဓာတ်ပုံဖြင့် Return လျှောက်ထားနိုင်ပါသည်။
+        ✨ Aura Marketplace မှ နွေးထွေးစွာ ကြိုဆိုပါတယ်။ ဆိုင်ဖွင့်လှစ်လိုပါက "ဆိုင်ဖွင့်ရန် လျှောက်ထားမည်" ခလုတ်ကို နှိပ်၍ လျှောက်ထားနိုင်ပါသည်။ ပစ္စည်းလက်ခံရရှိပြီး ၃ ရက်အတွင်း ချို့ယွင်းချက်ရှိပါက သက်သေဓာတ်ပုံဖြင့် Return လျှောက်ထားနိုင်ပါသည်။
       </marquee>
-      <div class="shrink-0 pl-4 hidden sm:block">
-        <a href="seller.html" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition">Seller Center</a>
+      <div class="shrink-0 pl-4 flex items-center gap-2">
+        <button type="button" onclick="openSellerApplyModal()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition flex items-center gap-1">
+          <i class="ph-bold ph-storefront"></i> ဆိုင်ဖွင့်ရန် လျှောက်ထားမည်
+        </button>
+        <a href="seller.html" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition hidden sm:inline-block">Seller Center</a>
       </div>
     </div>
   </div>
@@ -80,6 +83,75 @@
     <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 sm:gap-6"></div>
   </main>
 
+  <!-- ================= BECOME A SELLER MODAL ================= -->
+  <div id="sellerApplyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-7 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-violet-100 text-violet-600 flex items-center justify-center font-bold text-base">
+            <i class="ph-bold ph-storefront"></i>
+          </div>
+          <div>
+            <h3 class="font-extrabold text-sm text-slate-900">ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ</h3>
+            <p class="text-[11px] text-slate-500 font-medium">Aura Marketplace တွင် သင့်ဆိုင်ခွဲဖွင့်လှစ်ပြီး ရောင်းချပါ</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeSellerApplyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200">
+          <i class="ph ph-x text-base"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSellerApplicationSubmit(event)" class="space-y-3.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="applyShopName" class="font-bold text-slate-700 block mb-1">ဆိုင်အမည် (Shop Name) *</label>
+            <input type="text" id="applyShopName" required placeholder="ဥပမာ- ရွှေဖူး အထည်ဆိုင်" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none focus:bg-white focus:border-violet-600" />
+          </div>
+          <div>
+            <label for="applyOwnerName" class="font-bold text-slate-700 block mb-1">ဆိုင်ရှင်အမည် (Owner Name) *</label>
+            <input type="text" id="applyOwnerName" required placeholder="သင့်အမည်" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none focus:bg-white focus:border-violet-600" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="applyPhone" class="font-bold text-slate-700 block mb-1">ဆက်သွယ်ရန် ဖုန်းနံပါတ် *</label>
+            <input type="tel" id="applyPhone" required placeholder="09xxxxxxxxx" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none focus:bg-white focus:border-violet-600" />
+          </div>
+          <div>
+            <label for="applyBusinessType" class="font-bold text-slate-700 block mb-1">ရောင်းချမည့် ပစ္စည်းအမျိုးအစား *</label>
+            <input type="text" id="applyBusinessType" required placeholder="ဥပမာ- အဝတ်အထည်၊ ဖိနပ်၊ အလှကုန်" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none focus:bg-white focus:border-violet-600" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label for="applyShopLogoFile" class="font-bold text-slate-700 block mb-1">ဆိုင် Logo ပုံ (ရွေးချယ်နိုင်သည်)</label>
+            <input type="file" id="applyShopLogoFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-slate-50 text-[11px] cursor-pointer" />
+          </div>
+          <div>
+            <label for="applyNrcFile" class="font-bold text-slate-700 block mb-1">မှတ်ပုံတင် (သို့) လိုင်စင်ပုံ (ရွေးချယ်နိုင်သည်)</label>
+            <input type="file" id="applyNrcFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-slate-50 text-[11px] cursor-pointer" />
+          </div>
+        </div>
+
+        <div>
+          <label for="applyPaymentInfo" class="font-bold text-slate-700 block mb-1">KBZPay / WavePay နံပါတ် (ငွေစာရင်းရှင်းရန်) *</label>
+          <input type="text" id="applyPaymentInfo" required placeholder="ဥပမာ- KPay: 0912345678 (U Aye), Wave: 0912345678" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none focus:bg-white focus:border-violet-600" />
+        </div>
+
+        <div>
+          <label for="applyAddress" class="font-bold text-slate-700 block mb-1">ဆိုင်လိပ်စာ / မြို့နယ် *</label>
+          <textarea id="applyAddress" rows="2" required placeholder="လိပ်စာအပြည့်အစုံ ရေးသားပေးပါ..." class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none focus:bg-white focus:border-violet-600"></textarea>
+        </div>
+
+        <button type="submit" id="applySubmitBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3 rounded-2xl shadow-lg hover:opacity-95 transition">
+          ဆိုင်ဖွင့် လျှောက်ထားလွှာ ပေးပို့မည်
+        </button>
+      </form>
+    </div>
+  </div>
+
   <!-- AUTH MODAL -->
   <div id="authModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl p-7 space-y-5 text-xs shadow-2xl">
@@ -108,7 +180,7 @@
     </div>
   </div>
 
-  <!-- PROFILE MODAL -->
+  <!-- PROFILE & ORDERS MODAL -->
   <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-xl rounded-3xl p-7 space-y-5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -117,12 +189,12 @@
       </div>
       <form onsubmit="handleProfileUpdate(event)" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
         <h4 class="font-black text-slate-800">📝 ကိုယ်ရေးအချက်အလက် ပြင်ဆင်ရန်</h4>
-        <div><label class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label><input type="text" id="profileName" required class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
+        <div><label for="profileName" class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label><input type="text" id="profileName" required class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
         <div class="grid grid-cols-2 gap-2">
-          <div><label class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="profilePhone" required class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
-          <div><label class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label><input type="text" id="profileTownship" class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
+          <div><label for="profilePhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="profilePhone" required class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
+          <div><label for="profileTownship" class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label><input type="text" id="profileTownship" class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
         </div>
-        <div><label class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="profileAddress" rows="2" class="w-full border p-2.5 rounded-xl bg-white outline-none"></textarea></div>
+        <div><label for="profileAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="profileAddress" rows="2" class="w-full border p-2.5 rounded-xl bg-white outline-none"></textarea></div>
         <button type="submit" id="updateProfileBtn" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl hover:bg-slate-800 transition">ပြောင်းလဲမှုများ သိမ်းဆည်းမည်</button>
       </form>
       <div class="space-y-3">
@@ -145,11 +217,7 @@
       </div>
       
       <div id="orderDetailContent" class="space-y-3"></div>
-
-      <!-- RETURN & REFUND CONTAINER -->
       <div id="returnRequestContainer"></div>
-
-      <!-- RATING SECTION -->
       <div id="shopRatingSection" class="hidden bg-amber-50/70 border border-amber-200 p-4 rounded-2xl space-y-2"></div>
 
       <button type="button" onclick="closeOrderDetailModal()" class="w-full bg-slate-900 text-white py-3 rounded-2xl font-bold">ပိတ်မည်</button>
@@ -274,14 +342,27 @@
       if (diffDays > 1) return `<span class="text-blue-600 font-extrabold text-[10px]">⏳ ပစ္စည်းရောက်ရန်: ${diffDays} ရက်ခန့်ကျန်</span>`;
       if (diffDays === 1) return `<span class="text-amber-600 font-extrabold text-[10px]">⚠️ မနက်ဖြန် ရက်ပြည့်ပါမည်</span>`;
       if (diffDays === 0) return `<span class="text-rose-600 font-extrabold text-[10px]">🔥 ယနေ့ ရက်ပြည့်ပါမည်</span>`;
-      return `<span class="text-emerald-600 font-extrabold text-[10px]">✅ ရက်ပြည့်ပြီး</span>`;
+      return `<span class="text-emerald-600 font-extrabold text-[10px]">✅ ၇ ရက်ပြည့်ပြီး</span>`;
     }
 
+    // 🌟 PAGE LOAD (SELLER/ADMIN အား CUSTOMER စာမျက်နှာတွင် သုံးခွင့်မပြုဘဲ ကန်ထုတ်သည့် စနစ်ပါဝင်သည်)
     async function init() {
       const { data: { session } } = await client.auth.getSession();
       if (session) {
+        const { data: profile } = await client
+          .from('profiles')
+          .select('*')
+          .eq('id', session.user.id)
+          .maybeSingle();
+
+        if (profile && (profile.role === 'seller' || profile.role === 'admin' || profile.role === 'super_admin')) {
+          await client.auth.signOut();
+          alert('⛔ ဤအကောင့်သည် Seller/Admin အကောင့် ဖြစ်ပါသည်။ ဝယ်သူအဖြစ် အသုံးပြုခွင့် မရှိပါ။ ဆိုင်ရှင်များ Seller Center သို့သာ သီးသန့် ဝင်ရောက်ပေးပါရန်။');
+          location.reload();
+          return;
+        }
+
         currentAuthSessionUser = session.user;
-        const { data: profile } = await client.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
         if (profile) {
           document.getElementById('headerUserName').innerText = profile.full_name || 'My Profile';
           document.getElementById('custName').value = profile.full_name || '';
@@ -541,6 +622,13 @@
       const { data: { session } } = await client.auth.getSession();
       if (!session) { closeCart(); openAuthModal('login'); return; }
 
+      const { data: profile } = await client.from('profiles').select('role').eq('id', session.user.id).maybeSingle();
+      if (profile && (profile.role === 'seller' || profile.role === 'admin' || profile.role === 'super_admin')) {
+        closeCart();
+        alert('⛔ Seller/Admin အကောင့်ဖြင့် ပစ္စည်းများ ဝယ်ယူခွင့် (Checkout ပြုလုပ်ခွင့်) မရှိပါ။');
+        return;
+      }
+
       closeCart();
       const firstItem = selectedItems[0];
       shopShippingFee = Number(firstItem.shipping_fee ?? 0);
@@ -600,19 +688,27 @@
       const voucherInput = document.getElementById('checkoutVoucherFile');
       if (!voucherInput.files.length) return alert('❌ ကျေးဇူးပြု၍ ငွေပေးချေထားသော ဘောက်ချာပုံ ထည့်သွင်းပေးပါ။');
 
-      const name = document.getElementById('custName').value.trim();
-      const phone = document.getElementById('custPhone').value.trim();
-      const township = document.getElementById('custTownship').value.trim();
-      const address = document.getElementById('custAddress').value.trim();
-      const deliveryType = document.getElementById('deliveryAreaType').value;
-      const paymentMethodId = document.getElementById('custPayment').value;
-      const subtotal = selectedItems.reduce((s, i) => s + (Number(i.price || 0) * i.qty), 0);
-      const total = subtotal + activeShippingFee + activeGateFee;
-
       const btn = document.getElementById('submitOrderBtn');
       btn.innerText = "တင်နေပါသည်..."; btn.disabled = true;
 
       try {
+        const { data: { session } } = await client.auth.getSession();
+        if (session) {
+          const { data: profile } = await client.from('profiles').select('role').eq('id', session.user.id).maybeSingle();
+          if (profile && (profile.role === 'seller' || profile.role === 'admin' || profile.role === 'super_admin')) {
+            throw new Error('Seller/Admin အကောင့်ဖြင့် ပစ္စည်းများ ဝယ်ယူခွင့် (Order တင်ခွင့်) မရှိပါ။');
+          }
+        }
+
+        const name = document.getElementById('custName').value.trim();
+        const phone = document.getElementById('custPhone').value.trim();
+        const township = document.getElementById('custTownship').value.trim();
+        const address = document.getElementById('custAddress').value.trim();
+        const deliveryType = document.getElementById('deliveryAreaType').value;
+        const paymentMethodId = document.getElementById('custPayment').value;
+        const subtotal = selectedItems.reduce((s, i) => s + (Number(i.price || 0) * i.qty), 0);
+        const total = subtotal + activeShippingFee + activeGateFee;
+
         let voucherUrl = '';
         const file = voucherInput.files[0];
         if (file) {
@@ -624,7 +720,6 @@
           }
         }
 
-        const { data: { session } } = await client.auth.getSession();
         const orderPayload = {
           customer_id: session ? session.user.id : null,
           customer_name: name,
@@ -677,6 +772,90 @@
         alert("❌ Error: " + (err.message || err)); 
       } finally { 
         btn.innerText = "အော်ဒါ အတည်ပြုမည်"; btn.disabled = false; 
+      }
+    }
+
+    // 🌟 SELLER APPLICATION MODAL CONTROLS
+    function openSellerApplyModal() {
+      if (!currentAuthSessionUser) {
+        alert('ကျေးဇူးပြု၍ Customer အကောင့် အရင်ဝင်ပါ သို့မဟုတ် အသစ်ဖွင့်ပါ');
+        openAuthModal('login');
+        return;
+      }
+      document.getElementById('sellerApplyModal').classList.remove('hidden');
+      document.getElementById('sellerApplyModal').classList.add('flex');
+    }
+
+    function closeSellerApplyModal() {
+      document.getElementById('sellerApplyModal').classList.add('hidden');
+      document.getElementById('sellerApplyModal').classList.remove('flex');
+    }
+
+    async function handleSellerApplicationSubmit(e) {
+      e.preventDefault();
+      if (!currentAuthSessionUser) return alert('ကျေးဇူးပြု၍ အကောင့် အရင်ဝင်ပါ');
+
+      const btn = document.getElementById('applySubmitBtn');
+      btn.innerText = "ဖိုင်များနှင့် အချက်အလက်များ တင်နေပါသည်...";
+      btn.disabled = true;
+
+      try {
+        const shopName = document.getElementById('applyShopName').value.trim();
+        const ownerName = document.getElementById('applyOwnerName').value.trim();
+        const phone = document.getElementById('applyPhone').value.trim();
+        const businessType = document.getElementById('applyBusinessType').value.trim();
+        const paymentInfo = document.getElementById('applyPaymentInfo').value.trim();
+        const address = document.getElementById('applyAddress').value.trim();
+
+        const logoInput = document.getElementById('applyShopLogoFile');
+        const nrcInput = document.getElementById('applyNrcFile');
+
+        let logoUrl = null;
+        let nrcUrl = null;
+
+        if (logoInput.files.length > 0) {
+          const file = logoInput.files[0];
+          const fileName = `applications/logo-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
+          const { error: upErr } = await client.storage.from('product-images').upload(fileName, file);
+          if (!upErr) {
+            const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(fileName);
+            logoUrl = publicUrl;
+          }
+        }
+
+        if (nrcInput.files.length > 0) {
+          const file = nrcInput.files[0];
+          const fileName = `applications/nrc-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
+          const { error: upErr } = await client.storage.from('product-images').upload(fileName, file);
+          if (!upErr) {
+            const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(fileName);
+            nrcUrl = publicUrl;
+          }
+        }
+
+        const { error } = await client.from('seller_applications').insert([{
+          user_id: currentAuthSessionUser.id,
+          shop_name: shopName,
+          owner_name: ownerName,
+          phone: phone,
+          business_type: businessType,
+          shop_logo: logoUrl,
+          nrc_license_image: nrcUrl,
+          payment_info: paymentInfo,
+          address: address,
+          status: 'pending'
+        }]);
+
+        if (error) throw error;
+
+        alert('🎉 ဆိုင်ဖွင့် လျှောက်ထားလွှာ အောင်မြင်စွာ တင်ပြီးပါပြီ!\nAura Company မှ စစ်ဆေးအတည်ပြုပြီးပါက ဆိုင်ရှင်အဖြစ် စတင်ရောင်းချနိုင်ပါမည်။');
+        e.target.reset();
+        closeSellerApplyModal();
+      } catch (err) {
+        alert('❌ လျှောက်ထားမရပါ: ' + (err.message || err));
+      } finally {
+        btn.innerText = "ဆိုင်ဖွင့် လျှောက်ထားလွှာ ပေးပို့မည်";
+        btn.disabled = false;
       }
     }
 
@@ -762,7 +941,6 @@
       }).join('');
     }
 
-    // 🌟 3-DAY RETURN POLICY CALCULATION
     function openOrderDetail(order) {
       const content = document.getElementById('orderDetailContent');
       const returnContainer = document.getElementById('returnRequestContainer');
@@ -817,7 +995,6 @@
       currentRatingOrderId = order.id;
       currentRatingShopId = subOrd?.shop_id || items[0]?.shop_id || null;
 
-      // 👉 COMPLETED ဖြစ်ပြီး ၃ ရက် စစ်ဆေးခြင်း LOGIC
       const completedTime = subOrd?.completed_at ? new Date(subOrd.completed_at) : (order.updated_at ? new Date(order.updated_at) : new Date(order.created_at));
       const now = new Date();
       const diffHours = (now - completedTime) / (1000 * 60 * 60);
@@ -848,7 +1025,7 @@
             </div>
             <div id="returnForm" class="hidden space-y-2 pt-2 border-t border-rose-200">
               <div>
-                <label class="block font-bold text-slate-700 mb-1">အကြောင်းပြချက် အမျိုးအစား *</label>
+                <label for="returnReasonType" class="block font-bold text-slate-700 mb-1">အကြောင်းပြချက် အမျိုးအစား *</label>
                 <select id="returnReasonType" class="w-full border p-2 rounded-xl bg-white outline-none">
                   <option value="damaged">ပစ္စည်း ကျိုးပဲ့/ပျက်စီးနေခြင်း</option>
                   <option value="wrong_item">မှာယူသည့် ပစ္စည်း/Size/Color လွဲမှားနေခြင်း</option>
@@ -856,11 +1033,11 @@
                 </select>
               </div>
               <div>
-                <label class="block font-bold text-slate-700 mb-1">ချို့ယွင်းချက် အသေးစိတ် *</label>
+                <label for="returnReasonDetail" class="block font-bold text-slate-700 mb-1">ချို့ယွင်းချက် အသေးစိတ် *</label>
                 <textarea id="returnReasonDetail" rows="2" placeholder="အသေးစိတ် ရေးသားဖော်ပြပါ..." class="w-full border p-2 rounded-xl bg-white outline-none"></textarea>
               </div>
               <div>
-                <label class="block font-bold text-slate-700 mb-1">သက်သေဓာတ်ပုံ (အထုပ်ဖောက်ပြထားသောပုံ) *</label>
+                <label for="returnProofFile" class="block font-bold text-slate-700 mb-1">သက်သေဓာတ်ပုံ (အထုပ်ဖောက်ပြထားသောပုံ) *</label>
                 <input type="file" id="returnProofFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-white text-[11px]" />
               </div>
               <button type="button" id="submitReturnBtn" onclick="submitReturnRequest()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl transition shadow-xs">
@@ -1008,6 +1185,7 @@
 
     function closeOrderDetailModal() { document.getElementById('orderDetailModal').classList.add('hidden'); document.getElementById('orderDetailModal').classList.remove('flex'); }
 
+    // 🌟 CUSTOMER AUTH (SELLER / ADMIN ဖြစ်ပါက သက်ဆိုင်ရာ PANEL သို့သာ လမ်းကြောင်းလွှဲပေးခြင်း)
     async function handleCustomerAuth(e) {
       e.preventDefault();
       const emailOrPhone = document.getElementById('authEmailOrPhone').value.trim();
@@ -1031,9 +1209,16 @@
           if (error) throw error;
           
           const { data: profile } = await client.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
-          if (profile && (profile.role === 'seller' || profile.role === 'admin' || profile.role === 'super_admin')) {
-            await client.auth.signOut();
-            alert('⛔ ဤအကောင့်သည် Seller/Admin အကောင့် ဖြစ်ပါသည်။ ဆိုင်ရှင်များ Seller Center (seller.html) သို့သာ ဝင်ရောက်ပေးပါရန်။');
+          
+          if (profile && (profile.role === 'admin' || profile.role === 'super_admin')) {
+            alert('👑 Super Admin အဖြစ် အောင်မြင်စွာ ဝင်ရောက်ပါသည်!');
+            window.location.href = 'admin.html';
+            return;
+          }
+
+          if (profile && profile.role === 'seller') {
+            alert('🏪 ဆိုင်ရှင် (Seller) အဖြစ် အောင်မြင်စွာ ဝင်ရောက်ပါသည်!');
+            window.location.href = 'seller.html';
             return;
           }
 
