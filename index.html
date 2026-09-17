@@ -24,11 +24,14 @@
         <span>အသိပေးချက်:</span>
       </div>
       <marquee behavior="scroll" direction="left" scrollamount="5" class="text-white font-medium text-xs">
-        ✨ Aura Marketplace မှ နွေးထွေးစွာ ကြိုဆိုပါတယ်။ ဆိုင်ဖွင့်လှစ်လိုပါက "ဆိုင်ဖွင့်ရန် လျှောက်ထားမည်" ခလုတ်ကို နှိပ်၍ လျှောက်ထားနိုင်ပါသည်။ ပစ္စည်းလက်ခံရရှိပြီး ၃ ရက်အတွင်း ချို့ယွင်းချက်ရှိပါက Unboxing Video ဖြင့် Return လျှောက်ထားနိုင်ပါသည်။
+        ✨ Aura Marketplace မှ နွေးထွေးစွာ ကြိုဆိုပါတယ်။ ဆိုင်ဖွင့်လှစ်လိုပါက "ဆိုင်ဖွင့်ရန် လျှောက်ထားမည်" ကို နှိပ်ပါ။ ပစ္စည်းလက်ခံရရှိပြီး ၃ ရက်အတွင်း Unboxing Video + ဓာတ်ပုံ ၃ ပုံဖြင့် Return လျှောက်ထားနိုင်ပါသည်။
       </marquee>
       <div class="shrink-0 pl-4 flex items-center gap-2">
         <button type="button" onclick="openSellerApplyModal()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition flex items-center gap-1">
           <i class="ph-bold ph-storefront"></i> ဆိုင်ဖွင့်ရန် လျှောက်ထားမည်
+        </button>
+        <button type="button" onclick="openPolicyModal()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition flex items-center gap-1">
+          <i class="ph-bold ph-shield-check"></i> Return Policy
         </button>
         <a href="seller.html" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition hidden sm:inline-block">Seller Center</a>
       </div>
@@ -90,6 +93,7 @@
           </div>
           <div>
             <h3 class="font-extrabold text-sm text-slate-900">ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ</h3>
+            <p class="text-[11px] text-slate-500 font-medium">Aura Marketplace တွင် သင့်ဆိုင်ခွဲဖွင့်လှစ်ပြီး ရောင်းချပါ</p>
           </div>
         </div>
         <button type="button" onclick="closeSellerApplyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200">
@@ -98,21 +102,53 @@
       </div>
       <form onsubmit="handleSellerApplicationSubmit(event)" class="space-y-3.5">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label for="applyShopName" class="font-bold text-slate-700 block mb-1">ဆိုင်အမည် *</label><input type="text" id="applyShopName" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
-          <div><label for="applyOwnerName" class="font-bold text-slate-700 block mb-1">ဆိုင်ရှင်အမည် *</label><input type="text" id="applyOwnerName" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
+          <div><label for="applyShopName" class="font-bold text-slate-700 block mb-1">ဆိုင်အမည် (Shop Name) *</label><input type="text" id="applyShopName" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
+          <div><label for="applyOwnerName" class="font-bold text-slate-700 block mb-1">ဆိုင်ရှင်အမည် (Owner Name) *</label><input type="text" id="applyOwnerName" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label for="applyPhone" class="font-bold text-slate-700 block mb-1">ဖုန်းနံပါတ် *</label><input type="tel" id="applyPhone" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
-          <div><label for="applyBusinessType" class="font-bold text-slate-700 block mb-1">အမျိုးအစား *</label><input type="text" id="applyBusinessType" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
+          <div><label for="applyPhone" class="font-bold text-slate-700 block mb-1">ဆက်သွယ်ရန် ဖုန်းနံပါတ် *</label><input type="tel" id="applyPhone" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
+          <div><label for="applyBusinessType" class="font-bold text-slate-700 block mb-1">ရောင်းချမည့် ပစ္စည်းအမျိုးအစား *</label><input type="text" id="applyBusinessType" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label for="applyShopLogoFile" class="font-bold text-slate-700 block mb-1">ဆိုင် Logo</label><input type="file" id="applyShopLogoFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-slate-50 text-[11px]" /></div>
-          <div><label for="applyNrcFile" class="font-bold text-slate-700 block mb-1">မှတ်ပုံတင်/လိုင်စင်</label><input type="file" id="applyNrcFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-slate-50 text-[11px]" /></div>
+          <div><label for="applyShopLogoFile" class="font-bold text-slate-700 block mb-1">ဆိုင် Logo ပုံ</label><input type="file" id="applyShopLogoFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-slate-50 text-[11px]" /></div>
+          <div><label for="applyNrcFile" class="font-bold text-slate-700 block mb-1">မှတ်ပုံတင်/လိုင်စင်ပုံ</label><input type="file" id="applyNrcFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-slate-50 text-[11px]" /></div>
         </div>
-        <div><label for="applyPaymentInfo" class="font-bold text-slate-700 block mb-1">KBZPay / WavePay *</label><input type="text" id="applyPaymentInfo" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
-        <div><label for="applyAddress" class="font-bold text-slate-700 block mb-1">လိပ်စာ / မြို့နယ် *</label><textarea id="applyAddress" rows="2" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none"></textarea></div>
-        <button type="submit" id="applySubmitBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3 rounded-2xl shadow-lg transition">လျှောက်ထားလွှာ ပေးပို့မည်</button>
+        <div><label for="applyPaymentInfo" class="font-bold text-slate-700 block mb-1">KBZPay / WavePay နံပါတ် *</label><input type="text" id="applyPaymentInfo" required placeholder="KPay: 09..., Wave: 09..." class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
+        <div><label for="applyAddress" class="font-bold text-slate-700 block mb-1">ဆိုင်လိပ်စာ / မြို့နယ် *</label><textarea id="applyAddress" rows="2" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none"></textarea></div>
+        <button type="submit" id="applySubmitBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3 rounded-2xl shadow-lg transition">ဆိုင်ဖွင့် လျှောက်ထားလွှာ ပေးပို့မည်</button>
       </form>
+    </div>
+  </div>
+
+  <!-- RETURN POLICY MODAL -->
+  <div id="policyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 sm:p-7 space-y-4 text-xs shadow-2xl max-h-[85vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-rose-100 text-rose-600 flex items-center justify-center font-bold text-base">
+            <i class="ph-bold ph-shield-check"></i>
+          </div>
+          <h3 class="font-extrabold text-sm text-slate-900">Aura Return & Refund Policy</h3>
+        </div>
+        <button type="button" onclick="closePolicyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button>
+      </div>
+      <div class="space-y-3 text-slate-600 leading-relaxed">
+        <div class="p-3 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 font-bold">
+          ⏳ ပစ္စည်းလက်ခံရရှိပြီး ၃ ရက် (၇၂ နာရီ) အတွင်းသာ Return လျှောက်ထားနိုင်ပါသည်။
+        </div>
+        <div class="space-y-1">
+          <h4 class="font-black text-slate-800">၁။ မဖြစ်မနေ လိုအပ်သော အထောက်အထားများ:</h4>
+          <ul class="list-disc list-inside space-y-0.5 text-[11px]">
+            <li><b>Unboxing Video:</b> ပါဆယ်စတင်ဖောက်ချိန်မှ ချို့ယွင်းချက်ပြသသည့် ဗီဒီယိုဖိုင် မဖြစ်မနေ ပါဝင်ရပါမည်။</li>
+            <li><b>ချို့ယွင်းချက်ပြ ဓာတ်ပုံ:</b> ပျက်စီးနေသော နေရာအား ပြသသည့် ပုံ (အများဆုံး ၃ ပုံ)။</li>
+          </ul>
+        </div>
+        <div class="space-y-1">
+          <h4 class="font-black text-slate-800">၂။ Return လက်ခံသော အချက်များ:</h4>
+          <p class="text-[11px]">ပစ္စည်းကျိုးပဲ့ပျက်စီးနေခြင်း၊ ပစ္စည်းအမျိုးအစား/အရွယ်အစား/အရောင် လွဲမှားနေခြင်း နှင့် အရေအတွက် မပြည့်စုံခြင်းများအတွက်သာ အကျုံးဝင်ပါသည်။</p>
+        </div>
+      </div>
+      <button type="button" onclick="closePolicyModal()" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl">နားလည်သဘောတူပါသည်</button>
     </div>
   </div>
 
@@ -172,7 +208,7 @@
     </div>
   </div>
 
-  <!-- ORDER DETAIL MODAL -->
+  <!-- ORDER DETAIL & 3-DAY RETURN MODAL -->
   <div id="orderDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -292,7 +328,7 @@
 
     function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 
-    // 🌟 CART KEY GENERATOR (အကောင့်အလိုက် စျေးဝယ်တွန်းလှည်း ခွဲခြားခြင်း)
+    // 🌟 CART KEY GENERATOR (အကောင့်အလိုက် စျေးဝယ်တွန်းလှည်း သီးသန့်ခွဲခြားခြင်း)
     function getCartKey() {
       return currentAuthSessionUser ? `aura_cart_${currentAuthSessionUser.id}` : 'aura_cart_guest';
     }
@@ -341,7 +377,6 @@
         document.getElementById('headerUserName').innerText = 'အကောင့်ဝင်ရန်';
       }
 
-      // 👉 လက်ရှိ User အတွက် Cart ကို သီးသန့် ဆွဲထုတ်တင်ပြခြင်း
       loadUserCart();
 
       const [prodRes, payRes, bannerRes] = await Promise.all([
@@ -732,6 +767,9 @@
       document.getElementById('sellerApplyModal').classList.remove('hidden'); document.getElementById('sellerApplyModal').classList.add('flex');
     }
     function closeSellerApplyModal() { document.getElementById('sellerApplyModal').classList.add('hidden'); document.getElementById('sellerApplyModal').classList.remove('flex'); }
+
+    function openPolicyModal() { document.getElementById('policyModal').classList.remove('hidden'); document.getElementById('policyModal').classList.add('flex'); }
+    function closePolicyModal() { document.getElementById('policyModal').classList.add('hidden'); document.getElementById('policyModal').classList.remove('flex'); }
 
     async function handleSellerApplicationSubmit(e) {
       e.preventDefault();
