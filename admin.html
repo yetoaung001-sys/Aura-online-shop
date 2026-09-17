@@ -105,7 +105,7 @@
           </div>
           <div>
             <label for="seller-pass" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်ရှင် Password *</label>
-            <input type="password" id="seller-pass" name="password" autocomplete="new-password" placeholder="Password" required class="border rounded p-2 w-full text-xs" />
+            <input type="password" id="seller-pass" name="password" autocomplete="new-password" placeholder="အနည်းဆုံး ၆ လုံး" required class="border rounded p-2 w-full text-xs" />
           </div>
           <div>
             <label for="seller-commission" class="block text-xs font-bold text-slate-700 mb-1">Platform ကော်မရှင် (%) *</label>
@@ -207,7 +207,6 @@
       return String(value ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
     }
 
-    // ⏳ ကျန်ရှိသောရက် (Days Left) တွက်ချက်ပေးမည့် Function
     function calculateDaysLeft(shippedAtString) {
       if (!shippedAtString) return '';
       const shippedDate = new Date(shippedAtString);
@@ -226,14 +225,14 @@
     async function requireAdmin() {
       try {
         const { data: { session } } = await client.auth.getSession();
-        if (!session) { window.location.href = 'login.html'; return false; }
+        if (!session) { window.location.href = 'index.html'; return false; }
         const { data: profile } = await client.from('profiles').select('id, full_name, phone, role').eq('id', session.user.id).maybeSingle();
         if (!profile || (profile.role !== 'admin' && profile.role !== 'super_admin')) {
           alert('⛔ Admin Access Only'); window.location.href = 'index.html'; return false;
         }
         document.getElementById('adminName').textContent = profile.full_name || 'Admin';
         return true;
-      } catch (error) { window.location.href = 'login.html'; return false; }
+      } catch (error) { window.location.href = 'index.html'; return false; }
     }
 
     function switchTab(tabId) {
@@ -258,9 +257,9 @@
 
     async function loadDashboardStats() {
       try {
-        const { data: orders } = await client.from('orders').select('total_amount');
+        const { data: orders } = await client.from('orders').select('total_amount, total');
         if (orders) {
-          document.getElementById('stat-sales').innerText = orders.reduce((sum, o) => sum + Number(o.total_amount || 0), 0).toLocaleString() + ' Ks';
+          document.getElementById('stat-sales').innerText = orders.reduce((sum, o) => sum + Number(o.total_amount || o.total || 0), 0).toLocaleString() + ' Ks';
           document.getElementById('stat-orders').innerText = orders.length;
         }
         const { data: shopOrders } = await client.from('shop_orders').select('commission_amount, platform_commission');
@@ -330,69 +329,41 @@
             <td class="p-4 font-mono text-xs font-bold">#${escapeHtml(o.id)}</td>
             <td class="p-4 font-bold text-slate-800">${escapeHtml(o.customer_name || '-')}</td>
             <td class="p-4">${escapeHtml(o.customer_phone || '-')}<br><span class="text-xs text-slate-400">${escapeHtml((o.township || '') + ' ' + (o.delivery_address || ''))}</span></td>
-            <td class="p-4 font-bold text-emerald-600">${Number(o.total_amount || 0).toLocaleString()} Ks</td>
+            <td class="p-4 font-bold text-emerald-600">${Number(o.total_amount || o.total || 0).toLocaleString()} Ks</td>
             <td class="p-4">${voucherLink}</td>
             <td class="p-4">${actionButtons}</td>
           </tr>`;
       }).join('');
     }
 
-    // 🌟 COMPANY APPROVE ORDER (WITH AUTO STOCK REDUCTION)
     async function approveOrder(orderId) {
       if (!confirm(`အော်ဒါ #${orderId} ကို အတည်ပြုမှာ သေချာပါသလား?`)) return;
 
       try {
-        // ၁။ Order ၏ ကုန်ပစ္စည်းများကို ရယူခြင်း
-        const { data: order, error: orderErr } = await client
-          .from('orders')
-          .select('*')
-          .eq('id', orderId)
-          .single();
-
+        const { data: order, error: orderErr } = await client.from('orders').select('*').eq('id', orderId).single();
         if (orderErr) throw orderErr;
 
-        // ၂။ ပစ္စည်းတစ်ခုချင်းစီ၏ လက်ကျန် (Stock) ကို နုတ်ယူခြင်း
         if (order && Array.isArray(order.items)) {
           for (const item of order.items) {
             const prodId = Number(item.product_id);
             const orderQty = Math.max(1, Number(item.qty || 1));
 
-            const { data: prod, error: prodErr } = await client
-              .from('products')
-              .select('stock')
-              .eq('id', prodId)
-              .single();
+            const { data: prod, error: prodErr } = await client.from('products').select('stock').eq('id', prodId).single();
 
             if (!prodErr && prod) {
               const currentStock = Number(prod.stock || 0);
               const newStock = Math.max(0, currentStock - orderQty);
-
-              await client
-                .from('products')
-                .update({ stock: newStock })
-                .eq('id', prodId);
+              await client.from('products').update({ stock: newStock }).eq('id', prodId);
             }
           }
         }
 
-        // ၃။ Status အား Confirmed အဖြစ် သတ်မှတ်ခြင်း
-        const { error: updOrderErr } = await client
-          .from('orders')
-          .update({ order_status: 'confirmed', status: 'confirmed' })
-          .eq('id', orderId);
-        if (updOrderErr) throw updOrderErr;
-
-        const { error: updShopErr } = await client
-          .from('shop_orders')
-          .update({ status: 'confirmed' })
-          .eq('order_id', orderId);
-        if (updShopErr) throw updShopErr;
+        await client.from('orders').update({ order_status: 'confirmed', status: 'confirmed' }).eq('id', orderId);
+        await client.from('shop_orders').update({ status: 'confirmed' }).eq('order_id', orderId);
 
         alert('✅ Aura Company မှ အတည်ပြုပြီးပါပြီ (Stock အလိုအလျောက် လျှော့ချပြီးပါပြီ)');
         await loadOrders();
-
       } catch (err) {
-        console.error('Approve Order Error:', err);
         alert('❌ အတည်ပြုရာတွင် အမှားဖြစ်ပေါ်ပါသည်: ' + (err.message || err));
       }
     }
@@ -407,17 +378,17 @@
 
     async function loadShops() {
       const tbody = document.getElementById('shops-tbody');
-      const { data: shops } = await client.from('shops').select('*');
-      if (!shops || !shops.length) { tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center">ဆိုင်မရှိသေးပါ</td></tr>'; return; }
+      const { data: shops } = await client.from('shops').select('*').order('id', { ascending: false });
+      if (!shops || !shops.length) { tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-400">ဆိုင်မရှိသေးပါ</td></tr>'; return; }
       tbody.innerHTML = shops.map(s => `
         <tr class="hover:bg-slate-50 border-b">
           <td class="p-4"><img src="${escapeHtml(s.logo_url || 'https://placehold.co/50')}" alt="Logo" class="w-10 h-10 object-cover rounded-xl border"></td>
-          <td class="p-4 font-bold">${escapeHtml(s.name)}</td>
+          <td class="p-4 font-bold text-slate-800">${escapeHtml(s.name)}</td>
           <td class="p-4">${escapeHtml(s.phone || '-')}</td>
           <td class="p-4"><input type="number" id="commission-${s.id}" name="commission_${s.id}" value="${Number(s.commission_rate || 0)}" class="w-16 border rounded px-2 py-1 text-xs" onchange="updateCommission(${s.id}, this.value)" /> %</td>
           <td class="p-4"><span class="text-xs font-bold ${s.is_active ? 'text-emerald-600' : 'text-rose-600'}">${s.is_active ? 'Active' : 'Closed'}</span></td>
           <td class="p-4"><div class="flex items-center gap-2"><input type="file" id="logoFile-${s.id}" name="logo_file_${s.id}" accept="image/*" class="text-[10px] w-36"/><button type="button" onclick="adminUploadShopLogo(${s.id})" class="bg-slate-900 text-white px-2 py-1 rounded text-xs">တင်</button></div></td>
-          <td class="p-4"><button type="button" onclick="toggleShop(${s.id}, ${Boolean(s.is_active)})" class="text-xs px-2 py-1 rounded ${s.is_active ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}">${s.is_active ? 'ပိတ်' : 'ဖွင့်'}</button></td>
+          <td class="p-4"><button type="button" onclick="toggleShop(${s.id}, ${Boolean(s.is_active)})" class="text-xs px-2.5 py-1 rounded font-bold ${s.is_active ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}">${s.is_active ? 'ပိတ်' : 'ဖွင့်'}</button></td>
         </tr>`).join('');
     }
 
@@ -432,6 +403,7 @@
       loadShops();
     }
 
+    // ဆိုင်နှင့် ဆိုင်ရှင်အကောင့် တစ်ခါတည်း ဖွင့်ပေးခြင်း (Admin Session မပြုတ်စေရန် RPC အသုံးပြုထားပါသည်)
     async function handleCreateSellerAndShop(e) {
       e.preventDefault();
       const shopName = document.getElementById('seller-shop-name').value.trim();
@@ -441,97 +413,174 @@
       const password = document.getElementById('seller-pass').value.trim();
       const commission = Number(document.getElementById('seller-commission').value);
 
-      const { data, error } = await client.auth.signUp({ email, password, options: { data: { full_name: name, phone } } });
-      if (error) return alert(error.message);
-      const uid = data.user.id;
-      await client.from('profiles').upsert({ id: uid, full_name: name, phone, role: 'seller' });
-      await client.from('shops').insert([{ name: shopName, phone, commission_rate: commission, owner_id: uid, is_active: true }]);
-      alert('ဆိုင်နှင့်အကောင့် ဖွင့်လှစ်ပြီး'); 
-      e.target.reset(); 
-      loadShops();
+      const btn = document.getElementById('createSellerBtn');
+      btn.innerText = "ဖွင့်လှစ်ပေးနေပါသည်...";
+      btn.disabled = true;
+
+      try {
+        const { data: result, error } = await client.rpc('admin_create_seller_and_shop', {
+          p_email: email,
+          p_password: password,
+          p_full_name: name,
+          p_phone: phone,
+          p_shop_name: shopName,
+          p_commission: commission
+        });
+
+        if (error) throw error;
+        if (result && result.success === false) throw new Error(result.error);
+
+        alert(`🎉 ဆိုင်ရှင်အကောင့် (${email}) နှင့် ဆိုင် (${shopName}) အောင်မြင်စွာ ဖွင့်လှစ်ပြီးပါပြီ!`);
+        e.target.reset();
+        await loadShops();
+        await loadDashboardStats();
+      } catch (err) {
+        alert('❌ ဆိုင်ဖွင့်မရပါ: ' + (err.message || err));
+      } finally {
+        btn.innerText = "ဆိုင်နှင့် အကောင့် အတည်ပြုဖွင့်လှစ်မည်";
+        btn.disabled = false;
+      }
     }
 
-    async function updateCommission(id, rate) { await client.from('shops').update({ commission_rate: Number(rate) }).eq('id', id); alert('ပြင်ပြီး'); }
+    async function updateCommission(id, rate) { await client.from('shops').update({ commission_rate: Number(rate) }).eq('id', id); alert('ကော်မရှင်နှုန်း ပြင်ပြီး'); }
     async function toggleShop(id, current) { await client.from('shops').update({ is_active: !current }).eq('id', id); loadShops(); }
 
     async function loadProducts() {
-      const { data: products } = await client.from('products').select('*, shops(name)');
+      const { data: products } = await client.from('products').select('*, shops(name)').order('id', { ascending: false });
       document.getElementById('product-count').innerText = `စုစုပေါင်း: ${products?.length || 0}`;
       document.getElementById('products-tbody').innerHTML = (products || []).map(p => `
         <tr class="hover:bg-slate-50 border-b">
           <td class="p-4"><img src="${escapeHtml(p.image || p.image_url || 'https://placehold.co/50')}" alt="Product" class="w-10 h-10 object-cover rounded"></td>
-          <td class="p-4 font-semibold">${escapeHtml(p.title || p.name)}</td>
-          <td class="p-4 text-xs font-bold">${p.shops ? escapeHtml(p.shops.name) : '-'}</td>
-          <td class="p-4 font-bold">${Number(p.price || 0).toLocaleString()} Ks</td>
-          <td class="p-4">${p.stock}</td>
-          <td class="p-4"><button type="button" onclick="deleteProduct(${p.id})" class="text-rose-600 text-xs">ဖျက်</button></td>
+          <td class="p-4 font-semibold text-slate-800">${escapeHtml(p.title || p.name)}</td>
+          <td class="p-4 text-xs font-bold text-violet-600">${p.shops ? escapeHtml(p.shops.name) : '-'}</td>
+          <td class="p-4 font-bold text-rose-600">${Number(p.price || 0).toLocaleString()} Ks</td>
+          <td class="p-4 font-bold">${p.stock}</td>
+          <td class="p-4"><button type="button" onclick="deleteProduct(${p.id})" class="text-rose-600 text-xs font-bold hover:underline">ဖျက်</button></td>
         </tr>`).join('');
     }
-    async function deleteProduct(id) { if (confirm('ဖျက်မလား?')) { await client.from('products').delete().eq('id', id); loadProducts(); } }
+
+    async function deleteProduct(id) { if (confirm('ကုန်ပစ္စည်းကို ဖျက်မှာ သေချာပါသလား?')) { await client.from('products').delete().eq('id', id); loadProducts(); } }
 
     async function loadUsers() {
-      const { data: users } = await client.from('profiles').select('*');
-      document.getElementById('users-tbody').innerHTML = (users || []).map(u => `
+      const tbody = document.getElementById('users-tbody');
+      tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr>';
+      
+      const { data: users, error } = await client.from('profiles').select('*').order('created_at', { ascending: false });
+      if (error || !users || !users.length) { tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">အသင်းဝင် မရှိသေးပါ</td></tr>'; return; }
+
+      tbody.innerHTML = users.map(u => `
         <tr class="hover:bg-slate-50 border-b">
-          <td class="p-4 font-semibold">${escapeHtml(u.full_name || '-')}</td>
+          <td class="p-4 font-semibold text-slate-800">${escapeHtml(u.full_name || 'အမည်မရှိ')}</td>
           <td class="p-4 text-xs">${escapeHtml(u.phone || '-')}</td>
-          <td class="p-4 font-bold text-xs">${escapeHtml(u.role)}</td>
+          <td class="p-4 font-bold text-xs"><span class="px-2 py-0.5 rounded bg-slate-100 font-mono uppercase">${escapeHtml(u.role || 'customer')}</span></td>
           <td class="p-4">
-            <select id="user-role-${u.id}" name="user_role_${u.id}" onchange="updateRole('${u.id}', this.value)" class="border rounded text-xs px-2 py-1">
+            <select id="user-role-${u.id}" name="user_role_${u.id}" onchange="updateRole('${u.id}', this.value)" class="border rounded text-xs px-2 py-1 bg-white font-bold outline-none focus:border-amber-500">
               <option value="customer" ${u.role==='customer'?'selected':''}>Customer</option>
               <option value="seller" ${u.role==='seller'?'selected':''}>Seller</option>
               <option value="admin" ${u.role==='admin'?'selected':''}>Admin</option>
+              <option value="super_admin" ${u.role==='super_admin'?'selected':''}>Super Admin</option>
             </select>
           </td>
-          <td class="p-4"><button type="button" onclick="deleteUser('${u.id}')" class="text-xs text-rose-600">ဖျက်</button></td>
+          <td class="p-4"><button type="button" onclick="deleteUserCompletely('${u.id}')" class="text-xs text-rose-600 font-bold hover:underline">ဖျက်မည်</button></td>
         </tr>`).join('');
     }
-    async function updateRole(id, role) { await client.from('profiles').update({ role }).eq('id', id); alert('Role ပြောင်းပြီး'); loadUsers(); }
-    async function deleteUser(id) { if (confirm('ဖျက်မလား?')) { await client.from('profiles').delete().eq('id', id); loadUsers(); } }
+
+    // Role ပြောင်းလဲခြင်း Function (RPC ဖြင့် လုံခြုံစွာ လုပ်ဆောင်ခြင်း)
+    async function updateRole(userId, newRole) {
+      try {
+        const { error } = await client.rpc('admin_update_user_role', {
+          target_user_id: userId,
+          new_role: newRole
+        });
+        if (error) throw error;
+        alert(`✅ Role အား ${newRole.toUpperCase()} သို့ အောင်မြင်စွာ ပြောင်းပြီးပါပြီ!`);
+        await loadUsers();
+      } catch (err) {
+        alert('❌ Role ပြောင်းမရပါ: ' + (err.message || err));
+      }
+    }
+
+    // User အပြီးတိုင် ဖျက်ခြင်း Function (RPC ဖြင့် လုံခြုံစွာ လုပ်ဆောင်ခြင်း)
+    async function deleteUserCompletely(userId) {
+      if (!confirm('ဤ အသင်းဝင်ကို အပြီးတိုင် ဖျက်ပစ်မှာ သေချာပါသလား? (ဆိုင်ဖွင့်ထားပါက ဆိုင်နှင့် ပစ္စည်းများပါ ပျက်သွားပါမည်)')) return;
+
+      try {
+        const { error } = await client.rpc('admin_delete_user_completely', {
+          target_user_id: userId
+        });
+        if (error) throw error;
+        alert('🗑️ အသင်းဝင်အား အပြီးတိုင် ဖျက်ပစ်ပြီးပါပြီ!');
+        await loadUsers();
+        await loadShops();
+        await loadDashboardStats();
+      } catch (err) {
+        alert('❌ ဖျက်မရပါ: ' + (err.message || err));
+      }
+    }
 
     async function loadBanners() {
-      const { data: banners } = await client.from('banners').select('*');
+      const { data: banners } = await client.from('banners').select('*').order('id', { ascending: false });
       document.getElementById('banners-container').innerHTML = (banners || []).map(b => `
         <div class="bg-white p-3 rounded-xl border shadow-sm space-y-2">
           <img src="${escapeHtml(b.image_url || b.img)}" alt="Banner" class="w-full h-32 object-cover rounded">
-          <p class="font-bold text-sm">${escapeHtml(b.title)}</p>
-          <button type="button" onclick="deleteBanner(${b.id})" class="text-xs text-rose-600">ဖျက်</button>
+          <p class="font-bold text-sm">${escapeHtml(b.title || 'ခေါင်းစဉ်မရှိ')}</p>
+          <button type="button" onclick="deleteBanner(${b.id})" class="text-xs text-rose-600 font-bold hover:underline">ဖျက်</button>
         </div>`).join('');
     }
+
     async function handleAddBanner(e) {
       e.preventDefault();
       const f = document.getElementById('banner-file').files[0];
-      const name = `banners/${Date.now()}.${f.name.split('.').pop()}`;
-      await client.storage.from('product-images').upload(name, f);
-      const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(name);
-      await client.from('banners').insert([{ title: document.getElementById('banner-title').value, image_url: publicUrl, img: publicUrl }]);
-      alert('Banner တင်ပြီး'); e.target.reset(); loadBanners();
+      if (!f) return alert('ပုံရွေးပါ');
+      const btn = document.getElementById('bannerSubmitBtn');
+      btn.innerText = "တင်နေပါသည်..."; btn.disabled = true;
+
+      try {
+        const name = `banners/${Date.now()}.${f.name.split('.').pop()}`;
+        await client.storage.from('product-images').upload(name, f);
+        const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(name);
+        await client.from('banners').insert([{ title: document.getElementById('banner-title').value, image_url: publicUrl, img: publicUrl }]);
+        alert('Banner တင်ပြီးပါပြီ');
+        e.target.reset();
+        loadBanners();
+      } catch (err) {
+        alert('Banner တင်မရပါ: ' + err.message);
+      } finally {
+        btn.innerText = "Banner တင်မည်"; btn.disabled = false;
+      }
     }
-    async function deleteBanner(id) { await client.from('banners').delete().eq('id', id); loadBanners(); }
+
+    async function deleteBanner(id) { if (confirm('Banner ဖျက်မလား?')) { await client.from('banners').delete().eq('id', id); loadBanners(); } }
 
     async function loadPayments() {
-      const { data: payments } = await client.from('payment_methods').select('*');
+      const { data: payments } = await client.from('payment_methods').select('*').order('id', { ascending: false });
       document.getElementById('payments-tbody').innerHTML = (payments || []).map(p => `
-        <tr class="hover:bg-slate-50 border-b"><td class="p-4 font-bold">${escapeHtml(p.provider_name)}</td><td class="p-4">${escapeHtml(p.account_name)}</td><td class="p-4">${escapeHtml(p.account_number)}</td><td class="p-4"><button type="button" onclick="deletePay(${p.id})" class="text-xs text-rose-600">ဖျက်</button></td></tr>`).join('');
+        <tr class="hover:bg-slate-50 border-b"><td class="p-4 font-bold">${escapeHtml(p.provider_name)}</td><td class="p-4">${escapeHtml(p.account_name)}</td><td class="p-4 font-mono font-bold">${escapeHtml(p.account_number)}</td><td class="p-4"><button type="button" onclick="deletePay(${p.id})" class="text-xs text-rose-600 font-bold hover:underline">ဖျက်</button></td></tr>`).join('');
     }
+
     async function handleAddPayment(e) {
       e.preventDefault();
       await client.from('payment_methods').insert([{ provider_name: document.getElementById('pay-provider').value, account_name: document.getElementById('pay-name').value, account_number: document.getElementById('pay-number').value }]);
-      e.target.reset(); loadPayments();
+      e.target.reset(); 
+      loadPayments();
     }
-    async function deletePay(id) { await client.from('payment_methods').delete().eq('id', id); loadPayments(); }
+
+    async function deletePay(id) { if (confirm('Payment ဖျက်မလား?')) { await client.from('payment_methods').delete().eq('id', id); loadPayments(); } }
 
     async function loadCoupons() {
-      const { data: coupons } = await client.from('coupons').select('*');
+      const { data: coupons } = await client.from('coupons').select('*').order('id', { ascending: false });
       document.getElementById('coupons-tbody').innerHTML = (coupons || []).map(c => `
-        <tr class="hover:bg-slate-50 border-b"><td class="p-4 font-mono font-bold text-amber-600">${escapeHtml(c.code)}</td><td class="p-4">${c.discount_value} Ks</td><td class="p-4">${c.min_order_amount} Ks</td><td class="p-4"><button type="button" onclick="deleteCoupon(${c.id})" class="text-xs text-rose-600">ဖျက်</button></td></tr>`).join('');
+        <tr class="hover:bg-slate-50 border-b"><td class="p-4 font-mono font-bold text-amber-600">${escapeHtml(c.code)}</td><td class="p-4 font-bold">${c.discount_value} Ks</td><td class="p-4">${c.min_order_amount} Ks</td><td class="p-4"><button type="button" onclick="deleteCoupon(${c.id})" class="text-xs text-rose-600 font-bold hover:underline">ဖျက်</button></td></tr>`).join('');
     }
+
     async function handleAddCoupon(e) {
       e.preventDefault();
       await client.from('coupons').insert([{ code: document.getElementById('coupon-code').value.toUpperCase(), discount_value: Number(document.getElementById('coupon-discount').value), min_order_amount: Number(document.getElementById('coupon-min').value) }]);
-      e.target.reset(); loadCoupons();
+      e.target.reset(); 
+      loadCoupons();
     }
-    async function deleteCoupon(id) { await client.from('coupons').delete().eq('id', id); loadCoupons(); }
+
+    async function deleteCoupon(id) { if (confirm('ကူပွန် ဖျက်မလား?')) { await client.from('coupons').delete().eq('id', id); loadCoupons(); } }
 
     async function handleLogout() { await client.auth.signOut(); window.location.href = 'index.html'; }
 
