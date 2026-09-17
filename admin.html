@@ -171,7 +171,7 @@
       </div>
     </section>
 
-    <!-- ================= PAYOUTS REPORT (COMPLETED ဖြစ်ပြီး ၃ ရက် စစ်ဆေးခြင်း) ================= -->
+    <!-- ================= PAYOUTS REPORT ================= -->
     <section id="section-payouts" class="tab-content hidden space-y-6">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="bg-white p-5 rounded-xl shadow-sm border">
@@ -323,7 +323,6 @@
       return String(value ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
     }
 
-    // 🌟 ADMIN SESSION စစ်ဆေးခြင်း နှင့် DIRECT LOGIN စနစ်
     async function requireAdmin() {
       try {
         const { data: { session } } = await client.auth.getSession();
@@ -431,7 +430,6 @@
       } catch (error) { console.error(error); }
     }
 
-    // 🌟 SELLER APPLICATIONS စာရင်း ဆွဲတင်ခြင်း
     async function loadSellerApplications() {
       const tbody = document.getElementById('applications-tbody');
       tbody.innerHTML = '<tr><td colspan="8" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr>';
@@ -558,71 +556,84 @@
       }).join('');
     }
 
-    // 🌟 UNBOXING VIDEO & 3 PHOTOS စစ်ဆေးနိုင်သော RETURN LIST FUNCTION
+    // 🌟 RETURN LIST FUNCTION (FIXED QUERY & SAFE FETCH)
     async function loadReturnsList() {
       const tbody = document.getElementById('returns-tbody');
       tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr>';
 
-      const { data: returns, error } = await client
-        .from('order_returns')
-        .select('*, shops(name)')
-        .order('id', { ascending: false });
+      try {
+        const { data: returns, error } = await client
+          .from('order_returns')
+          .select('*, shops(name)')
+          .order('id', { ascending: false });
 
-      if (error || !returns || !returns.length) {
-        tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-400">Return တောင်းဆိုမှု မရှိသေးပါ</td></tr>';
-        return;
-      }
+        if (error) {
+          console.error("Return Data Fetch Error:", error);
+          tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-rose-600">Error: ${escapeHtml(error.message)}</td></tr>`;
+          return;
+        }
 
-      tbody.innerHTML = returns.map(r => {
-        const photos = r.proof_images && r.proof_images.length ? r.proof_images : (r.proof_image ? [r.proof_image] : []);
-        
-        const videoUI = r.proof_video ? `
-          <div class="mb-1">
-            <a href="${escapeHtml(r.proof_video)}" target="_blank" class="inline-flex items-center gap-1.5 bg-rose-50 text-rose-600 border border-rose-200 px-2 py-1 rounded-lg text-xs font-bold hover:bg-rose-100 transition">
-              <i class="fa-solid fa-video text-rose-500"></i> Unboxing Video ကြည့်မည်
-            </a>
-          </div>
-        ` : '<div class="text-[10px] text-slate-400 mb-1">ဗီဒီယို မရှိပါ</div>';
+        if (!returns || !returns.length) {
+          tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-400">Return တောင်းဆိုမှု မရှိသေးပါ</td></tr>';
+          return;
+        }
 
-        const photosUI = `
-          <div class="flex gap-1.5 flex-wrap">
-            ${photos.map(p => `
-              <a href="${escapeHtml(p)}" target="_blank">
-                <img src="${escapeHtml(p)}" alt="Proof" class="w-10 h-10 rounded-lg object-cover border border-slate-200 hover:scale-105 transition shadow-xs" />
+        tbody.innerHTML = returns.map(r => {
+          const photos = r.proof_images && r.proof_images.length ? r.proof_images : (r.proof_image ? [r.proof_image] : []);
+          
+          const videoUI = r.proof_video ? `
+            <div class="mb-1">
+              <a href="${escapeHtml(r.proof_video)}" target="_blank" class="inline-flex items-center gap-1.5 bg-rose-50 text-rose-600 border border-rose-200 px-2 py-1 rounded-lg text-xs font-bold hover:bg-rose-100 transition">
+                <i class="fa-solid fa-video text-rose-500"></i> Unboxing Video ကြည့်မည်
               </a>
-            `).join('')}
-          </div>
-        `;
+            </div>
+          ` : '<div class="text-[10px] text-slate-400 mb-1">ဗီဒီယို မရှိပါ</div>';
 
-        return `
-          <tr class="hover:bg-slate-50 border-b">
-            <td class="p-4 font-mono font-bold text-xs">#${r.order_id}</td>
-            <td class="p-4 font-bold text-slate-800">${escapeHtml(r.shops?.name || '-')}</td>
-            <td class="p-4 text-xs">
-              <span class="font-bold text-rose-600 block">[${escapeHtml(r.reason_type)}]</span>
-              ${escapeHtml(r.reason_detail)}
-            </td>
-            <td class="p-4">
-              ${videoUI}
-              ${photosUI}
-            </td>
-            <td class="p-4 font-bold text-emerald-600">${Number(r.refund_amount || 0).toLocaleString()} Ks</td>
-            <td class="p-4">
-              <span class="text-xs font-bold px-2 py-0.5 rounded ${r.status==='approved'?'bg-emerald-50 text-emerald-600':r.status==='rejected'?'bg-rose-50 text-rose-600':'bg-amber-50 text-amber-600'}">
-                ${r.status.toUpperCase()}
-              </span>
-            </td>
-            <td class="p-4">
-              ${r.status === 'pending' ? `
-                <div class="flex gap-1.5">
-                  <button type="button" onclick="approveReturnRequest(${r.id})" class="bg-emerald-600 text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-emerald-700 transition">Approve</button>
-                  <button type="button" onclick="rejectReturnRequest(${r.id})" class="bg-rose-600 text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-rose-700 transition">Reject</button>
-                </div>
-              ` : `<span class="text-xs text-slate-400 font-bold">ပြီးစီးပါပြီ</span>`}
-            </td>
-          </tr>
-        `;
-      }).join('');
+          const photosUI = `
+            <div class="flex gap-1.5 flex-wrap">
+              ${photos.map(p => `
+                <a href="${escapeHtml(p)}" target="_blank">
+                  <img src="${escapeHtml(p)}" alt="Proof" class="w-10 h-10 rounded-lg object-cover border border-slate-200 hover:scale-105 transition shadow-xs" />
+                </a>
+              `).join('')}
+            </div>
+          `;
+
+          const shopTitle = r.shops?.name || `Shop #${r.shop_id || '-'}`;
+
+          return `
+            <tr class="hover:bg-slate-50 border-b">
+              <td class="p-4 font-mono font-bold text-xs">#${r.order_id}</td>
+              <td class="p-4 font-bold text-slate-800">${escapeHtml(shopTitle)}</td>
+              <td class="p-4 text-xs">
+                <span class="font-bold text-rose-600 block">[${escapeHtml(r.reason_type || 'ချို့ယွင်းချက်')}]</span>
+                ${escapeHtml(r.reason_detail || '-')}
+              </td>
+              <td class="p-4">
+                ${videoUI}
+                ${photosUI}
+              </td>
+              <td class="p-4 font-bold text-emerald-600">${Number(r.refund_amount || 0).toLocaleString()} Ks</td>
+              <td class="p-4">
+                <span class="text-xs font-bold px-2 py-0.5 rounded ${r.status==='approved'?'bg-emerald-50 text-emerald-600':r.status==='rejected'?'bg-rose-50 text-rose-600':'bg-amber-50 text-amber-600'}">
+                  ${(r.status || 'pending').toUpperCase()}
+                </span>
+              </td>
+              <td class="p-4">
+                ${r.status === 'pending' ? `
+                  <div class="flex gap-1.5">
+                    <button type="button" onclick="approveReturnRequest(${r.id})" class="bg-emerald-600 text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-emerald-700 transition">Approve</button>
+                    <button type="button" onclick="rejectReturnRequest(${r.id})" class="bg-rose-600 text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-rose-700 transition">Reject</button>
+                  </div>
+                ` : `<span class="text-xs text-slate-400 font-bold">ပြီးစီးပါပြီ</span>`}
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        console.error("Catch Error:", err);
+        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-rose-600">Error: ${err.message}</td></tr>`;
+      }
     }
 
     async function approveReturnRequest(returnId) {
@@ -650,7 +661,6 @@
       }
     }
 
-    // 🌟 PAYOUTS REPORT (COMPLETED ဖြစ်ပြီး ၃ ရက် စစ်ဆေးခြင်း)
     async function loadPayoutsReport() {
       const tbody = document.getElementById('payouts-tbody');
       tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center">စာရင်းများ တွက်ချက်နေပါသည်...</td></tr>';
