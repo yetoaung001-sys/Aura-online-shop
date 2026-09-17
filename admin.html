@@ -17,7 +17,7 @@
 
 <body class="bg-slate-100 min-h-screen pb-12">
 
-  <!-- DIRECT ADMIN LOGIN MODAL -->
+  <!-- ================= DIRECT ADMIN LOGIN MODAL ================= -->
   <div id="adminLoginOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl p-7 shadow-2xl space-y-4 border border-slate-200 text-xs">
       <div class="text-center space-y-1">
@@ -47,7 +47,7 @@
     </div>
   </div>
 
-  <!-- HEADER -->
+  <!-- ================= HEADER ================= -->
   <header class="bg-slate-900 text-white sticky top-0 z-50 shadow">
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center space-x-3">
@@ -121,7 +121,7 @@
       </div>
     </section>
 
-    <!-- ORDERS -->
+    <!-- ORDERS TAB -->
     <section id="section-orders" class="tab-content hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
         <h2 class="font-bold text-slate-800 text-lg">အော်ဒါစာရင်းအားလုံး (Escrow Admin Flow)</h2>
@@ -144,12 +144,12 @@
       </div>
     </section>
 
-    <!-- RETURN REQUESTS TAB -->
+    <!-- ================= RETURN REQUESTS TAB (UNBOXING VIDEO + 3 PHOTOS) ================= -->
     <section id="section-returns" class="tab-content hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
         <div>
           <h2 class="font-bold text-slate-800 text-lg">Return & Refund တောင်းဆိုမှုများ စစ်ဆေးရန်</h2>
-          <p class="text-xs text-slate-500">ဝယ်သူတင်ပြထားသော သက်သေဓာတ်ပုံကို စစ်ဆေးပြီး အကြောင်းမဲ့ဖြစ်ပါက ပယ်ချ (Reject) နိုင်ပါသည်</p>
+          <p class="text-xs text-slate-500">Unboxing Video နှင့် သက်သေဓာတ်ပုံများကို စစ်ဆေးပြီး အတည်ပြု သို့မဟုတ် ပယ်ချနိုင်ပါသည်</p>
         </div>
         <button type="button" onclick="loadReturnsList()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded text-slate-700 font-bold"><i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh စစ်မည်</button>
       </div>
@@ -160,7 +160,7 @@
               <th class="p-4">Order ID</th>
               <th class="p-4">ဆိုင်အမည်</th>
               <th class="p-4">အကြောင်းပြချက်</th>
-              <th class="p-4">သက်သေဓာတ်ပုံ</th>
+              <th class="p-4">သက်သေ (Video + ပုံများ)</th>
               <th class="p-4">ပြန်အမ်းငွေ</th>
               <th class="p-4">အခြေအနေ</th>
               <th class="p-4">လုပ်ဆောင်ချက်</th>
@@ -171,7 +171,7 @@
       </div>
     </section>
 
-    <!-- PAYOUTS REPORT -->
+    <!-- ================= PAYOUTS REPORT (COMPLETED ဖြစ်ပြီး ၃ ရက် စစ်ဆေးခြင်း) ================= -->
     <section id="section-payouts" class="tab-content hidden space-y-6">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="bg-white p-5 rounded-xl shadow-sm border">
@@ -323,6 +323,7 @@
       return String(value ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
     }
 
+    // 🌟 ADMIN SESSION စစ်ဆေးခြင်း နှင့် DIRECT LOGIN စနစ်
     async function requireAdmin() {
       try {
         const { data: { session } } = await client.auth.getSession();
@@ -557,6 +558,7 @@
       }).join('');
     }
 
+    // 🌟 UNBOXING VIDEO & 3 PHOTOS စစ်ဆေးနိုင်သော RETURN LIST FUNCTION
     async function loadReturnsList() {
       const tbody = document.getElementById('returns-tbody');
       tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr>';
@@ -571,35 +573,56 @@
         return;
       }
 
-      tbody.innerHTML = returns.map(r => `
-        <tr class="hover:bg-slate-50 border-b">
-          <td class="p-4 font-mono font-bold text-xs">#${r.order_id}</td>
-          <td class="p-4 font-bold text-slate-800">${escapeHtml(r.shops?.name || '-')}</td>
-          <td class="p-4 text-xs">
-            <span class="font-bold text-rose-600 block">[${r.reason_type}]</span>
-            ${escapeHtml(r.reason_detail)}
-          </td>
-          <td class="p-4">
-            <a href="${escapeHtml(r.proof_image)}" target="_blank" class="text-indigo-600 font-bold underline text-xs">
-              <i class="fa-solid fa-image mr-1"></i> ပုံကြည့်ရန်
+      tbody.innerHTML = returns.map(r => {
+        const photos = r.proof_images && r.proof_images.length ? r.proof_images : (r.proof_image ? [r.proof_image] : []);
+        
+        const videoUI = r.proof_video ? `
+          <div class="mb-1">
+            <a href="${escapeHtml(r.proof_video)}" target="_blank" class="inline-flex items-center gap-1.5 bg-rose-50 text-rose-600 border border-rose-200 px-2 py-1 rounded-lg text-xs font-bold hover:bg-rose-100 transition">
+              <i class="fa-solid fa-video text-rose-500"></i> Unboxing Video ကြည့်မည်
             </a>
-          </td>
-          <td class="p-4 font-bold text-emerald-600">${Number(r.refund_amount || 0).toLocaleString()} Ks</td>
-          <td class="p-4">
-            <span class="text-xs font-bold px-2 py-0.5 rounded ${r.status==='approved'?'bg-emerald-50 text-emerald-600':r.status==='rejected'?'bg-rose-50 text-rose-600':'bg-amber-50 text-amber-600'}">
-              ${r.status.toUpperCase()}
-            </span>
-          </td>
-          <td class="p-4">
-            ${r.status === 'pending' ? `
-              <div class="flex gap-1.5">
-                <button type="button" onclick="approveReturnRequest(${r.id})" class="bg-emerald-600 text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-emerald-700">Approve</button>
-                <button type="button" onclick="rejectReturnRequest(${r.id})" class="bg-rose-600 text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-rose-700">Reject</button>
-              </div>
-            ` : `<span class="text-xs text-slate-400 font-bold">ပြီးစီးပါပြီ</span>`}
-          </td>
-        </tr>
-      `).join('');
+          </div>
+        ` : '<div class="text-[10px] text-slate-400 mb-1">ဗီဒီယို မရှိပါ</div>';
+
+        const photosUI = `
+          <div class="flex gap-1.5 flex-wrap">
+            ${photos.map(p => `
+              <a href="${escapeHtml(p)}" target="_blank">
+                <img src="${escapeHtml(p)}" alt="Proof" class="w-10 h-10 rounded-lg object-cover border border-slate-200 hover:scale-105 transition shadow-xs" />
+              </a>
+            `).join('')}
+          </div>
+        `;
+
+        return `
+          <tr class="hover:bg-slate-50 border-b">
+            <td class="p-4 font-mono font-bold text-xs">#${r.order_id}</td>
+            <td class="p-4 font-bold text-slate-800">${escapeHtml(r.shops?.name || '-')}</td>
+            <td class="p-4 text-xs">
+              <span class="font-bold text-rose-600 block">[${escapeHtml(r.reason_type)}]</span>
+              ${escapeHtml(r.reason_detail)}
+            </td>
+            <td class="p-4">
+              ${videoUI}
+              ${photosUI}
+            </td>
+            <td class="p-4 font-bold text-emerald-600">${Number(r.refund_amount || 0).toLocaleString()} Ks</td>
+            <td class="p-4">
+              <span class="text-xs font-bold px-2 py-0.5 rounded ${r.status==='approved'?'bg-emerald-50 text-emerald-600':r.status==='rejected'?'bg-rose-50 text-rose-600':'bg-amber-50 text-amber-600'}">
+                ${r.status.toUpperCase()}
+              </span>
+            </td>
+            <td class="p-4">
+              ${r.status === 'pending' ? `
+                <div class="flex gap-1.5">
+                  <button type="button" onclick="approveReturnRequest(${r.id})" class="bg-emerald-600 text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-emerald-700 transition">Approve</button>
+                  <button type="button" onclick="rejectReturnRequest(${r.id})" class="bg-rose-600 text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-rose-700 transition">Reject</button>
+                </div>
+              ` : `<span class="text-xs text-slate-400 font-bold">ပြီးစီးပါပြီ</span>`}
+            </td>
+          </tr>
+        `;
+      }).join('');
     }
 
     async function approveReturnRequest(returnId) {
@@ -627,6 +650,7 @@
       }
     }
 
+    // 🌟 PAYOUTS REPORT (COMPLETED ဖြစ်ပြီး ၃ ရက် စစ်ဆေးခြင်း)
     async function loadPayoutsReport() {
       const tbody = document.getElementById('payouts-tbody');
       tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center">စာရင်းများ တွက်ချက်နေပါသည်...</td></tr>';
