@@ -139,8 +139,8 @@
         <div class="space-y-1">
           <h4 class="font-black text-slate-800">၁။ မဖြစ်မနေ လိုအပ်သော အထောက်အထားများ:</h4>
           <ul class="list-disc list-inside space-y-0.5 text-[11px]">
-            <li><b>Unboxing Video:</b> ပါဆယ်စတင်ဖောက်ချိန်မှ ချို့ယွင်းချက်ပြသသည့် ဗီဒီယိုဖိုင် မဖြစ်မနေ ပါဝင်ရပါမည်။</li>
-            <li><b>ချို့ယွင်းချက်ပြ ဓာတ်ပုံ:</b> ပျက်စီးနေသော နေရာအား ပြသသည့် ပုံ (အများဆုံး ၃ ပုံ)။</li>
+            <li><b>Unboxing Video:</b> ပါဆယ်စတင်ဖောက်ချိန်မှ ချို့ယွင်းချက်ပြသသည့် ဗီဒီယိုဖိုင် (အများဆုံး 30MB) မဖြစ်မနေ ပါဝင်ရပါမည်။</li>
+            <li><b>ချို့ယွင်းချက်ပြ ဓာတ်ပုံ:</b> ပျက်စီးနေသော နေရာအား ပြသသည့် ပုံ (အများဆုံး ၃ ပုံ၊ ပုံတစ်ပုံလျှင် 5MB အောက်)။</li>
           </ul>
         </div>
         <div class="space-y-1">
@@ -328,7 +328,15 @@
 
     function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
 
-    // 🌟 CART KEY GENERATOR (အကောင့်အလိုက် စျေးဝယ်တွန်းလှည်း သီးသန့်ခွဲခြားခြင်း)
+    function validateFileSize(file, maxMb, label) {
+      const maxBytes = maxMb * 1024 * 1024;
+      if (file.size > maxBytes) {
+        alert(`⚠️ ${label} ဖိုင်အရွယ်အစားသည် ${maxMb}MB ထက် မကျော်ရပါ။ လက်ရှိ: ${(file.size / (1024*1024)).toFixed(1)}MB`);
+        return false;
+      }
+      return true;
+    }
+
     function getCartKey() {
       return currentAuthSessionUser ? `aura_cart_${currentAuthSessionUser.id}` : 'aura_cart_guest';
     }
@@ -675,6 +683,9 @@
       const voucherInput = document.getElementById('checkoutVoucherFile');
       if (!voucherInput.files.length) return alert('❌ ကျေးဇူးပြု၍ ငွေပေးချေထားသော ဘောက်ချာပုံ ထည့်သွင်းပေးပါ။');
 
+      const file = voucherInput.files[0];
+      if (!validateFileSize(file, 5, 'ငွေလွှဲဘောက်ချာ')) return;
+
       const btn = document.getElementById('submitOrderBtn');
       btn.innerText = "တင်နေပါသည်..."; btn.disabled = true;
 
@@ -697,7 +708,6 @@
         const total = subtotal + activeShippingFee + activeGateFee;
 
         let voucherUrl = '';
-        const file = voucherInput.files[0];
         if (file) {
           const fileName = `voucher-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
           const { error: upErr } = await client.storage.from('product-images').upload(fileName, file);
@@ -784,12 +794,14 @@
 
         if (logoInput.files.length > 0) {
           const file = logoInput.files[0];
+          if (!validateFileSize(file, 5, 'ဆိုင် Logo')) return;
           const fileName = `applications/logo-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
           const { error: upErr } = await client.storage.from('product-images').upload(fileName, file);
           if (!upErr) { const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(fileName); logoUrl = publicUrl; }
         }
         if (nrcInput.files.length > 0) {
           const file = nrcInput.files[0];
+          if (!validateFileSize(file, 5, 'မှတ်ပုံတင်ပုံ')) return;
           const fileName = `applications/nrc-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
           const { error: upErr } = await client.storage.from('product-images').upload(fileName, file);
           if (!upErr) { const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(fileName); nrcUrl = publicUrl; }
@@ -915,8 +927,8 @@
             <div id="returnForm" class="hidden space-y-3 pt-2 border-t border-rose-200">
               <div><label class="block font-bold text-slate-700 mb-1">အကြောင်းပြချက် အမျိုးအစား *</label><select id="returnReasonType" class="w-full border p-2 rounded-xl bg-white outline-none"><option value="damaged">ပစ္စည်း ကျိုးပဲ့/ပျက်စီးနေခြင်း</option><option value="wrong_item">ပစ္စည်း/Size/Color မှားနေခြင်း</option><option value="missing">ပစ္စည်း မပြည့်စုံခြင်း</option></select></div>
               <div><label class="block font-bold text-slate-700 mb-1">ချို့ယွင်းချက် အသေးစိတ် *</label><textarea id="returnReasonDetail" rows="2" class="w-full border p-2 rounded-xl bg-white outline-none"></textarea></div>
-              <div><label class="block font-bold text-rose-700 mb-1">📹 Unboxing Video (အထုပ်ဖောက်ပြထားသော ဗီဒီယို) *</label><input type="file" id="returnVideoFile" accept="video/*" class="w-full border p-2 rounded-xl bg-white text-[11px]" /><span class="text-[10px] text-slate-400">30MB အောက်သာ တင်ပေးပါ</span></div>
-              <div><label class="block font-bold text-rose-700 mb-1">📸 ဓာတ်ပုံများ (အများဆုံး ၃ ပုံ) *</label><input type="file" id="returnPhotoFiles" accept="image/*" multiple class="w-full border p-2 rounded-xl bg-white text-[11px]" /><span class="text-[10px] text-slate-400">Ctrl/Shift ဖြင့် ၃ ပုံရွေးပါ</span></div>
+              <div><label class="block font-bold text-rose-700 mb-1">📹 Unboxing Video (အထုပ်ဖောက်ပြထားသော ဗီဒီယို) *</label><input type="file" id="returnVideoFile" accept="video/*" class="w-full border p-2 rounded-xl bg-white text-[11px]" /><span class="text-[10px] text-slate-400">အများဆုံး 30MB အထိသာ တင်ပေးပါ</span></div>
+              <div><label class="block font-bold text-rose-700 mb-1">📸 ဓာတ်ပုံများ (အများဆုံး ၃ ပုံ) *</label><input type="file" id="returnPhotoFiles" accept="image/*" multiple class="w-full border p-2 rounded-xl bg-white text-[11px]" /><span class="text-[10px] text-slate-400">ပုံတစ်ပုံလျှင် 5MB အောက် (Ctrl/Shift ဖြင့် ၃ ပုံရွေးပါ)</span></div>
               <button type="button" id="submitReturnBtn" onclick="submitReturnRequest()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl shadow-xs">Return လျှောက်ထားလွှာ တင်မည်</button>
             </div>
           </div>`;
@@ -937,17 +949,23 @@
       if (!videoInput.files.length) return alert('❌ Unboxing Video ထည့်သွင်းပေးရပါမည်');
       if (!photosInput.files.length) return alert('❌ ချို့ယွင်းချက်ပြ ဓာတ်ပုံ အနည်းဆုံး ၁ ပုံ ထည့်သွင်းပေးပါ');
 
+      const videoFile = videoInput.files[0];
+      if (!validateFileSize(videoFile, 30, 'Unboxing Video')) return;
+
+      const photoFiles = Array.from(photosInput.files).slice(0, 3);
+      for (const p of photoFiles) {
+        if (!validateFileSize(p, 5, 'ဓာတ်ပုံ')) return;
+      }
+
       const btn = document.getElementById('submitReturnBtn');
       btn.innerText = "ဗီဒီယိုနှင့် ပုံများ တင်သွင်းနေပါသည် (ခေတ္တစောင့်ပါ)..."; btn.disabled = true;
 
       try {
-        const videoFile = videoInput.files[0];
         const videoName = `returns/video-${Date.now()}-${videoFile.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
         const { error: vErr } = await client.storage.from('product-images').upload(videoName, videoFile);
         if (vErr) throw new Error('Video Upload မအောင်မြင်ပါ: ' + vErr.message);
         const { data: { publicUrl: videoUrl } } = client.storage.from('product-images').getPublicUrl(videoName);
 
-        const photoFiles = Array.from(photosInput.files).slice(0, 3);
         const photoUrls = [];
         for (const pFile of photoFiles) {
           const pName = `returns/photo-${Date.now()}-${pFile.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
