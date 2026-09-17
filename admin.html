@@ -17,7 +17,7 @@
 
 <body class="bg-slate-100 min-h-screen pb-12">
 
-  <!-- ================= HEADER ================= -->
+  <!-- HEADER -->
   <header class="bg-slate-900 text-white sticky top-0 z-50 shadow">
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center space-x-3">
@@ -35,10 +35,11 @@
       </div>
     </div>
 
-    <!-- NAVIGATION -->
+    <!-- NAVIGATION TABS -->
     <div class="max-w-7xl mx-auto px-4 flex space-x-2 border-t border-slate-800 text-sm overflow-x-auto">
       <button type="button" onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn py-3 px-4 text-amber-400 border-b-2 border-amber-400 font-bold whitespace-nowrap"><i class="fa-solid fa-chart-pie mr-1"></i> Dashboard</button>
       <button type="button" onclick="switchTab('orders')" id="tab-orders" class="tab-btn py-3 px-4 text-gray-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-receipt mr-1"></i> အော်ဒါအားလုံး</button>
+      <button type="button" onclick="switchTab('returns')" id="tab-returns" class="tab-btn py-3 px-4 text-gray-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-rotate-left mr-1"></i> Return စစ်ဆေးရန်</button>
       <button type="button" onclick="switchTab('payouts')" id="tab-payouts" class="tab-btn py-3 px-4 text-gray-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> ငွေစာရင်းရှင်းတမ်း (Payouts)</button>
       <button type="button" onclick="switchTab('shops')" id="tab-shops" class="tab-btn py-3 px-4 text-gray-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-store mr-1"></i> ဆိုင်များနှင့် ကော်မရှင်</button>
       <button type="button" onclick="switchTab('products')" id="tab-products" class="tab-btn py-3 px-4 text-gray-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-boxes-stacked mr-1"></i> ပစ္စည်းများ</button>
@@ -83,7 +84,34 @@
       </div>
     </section>
 
-    <!-- PAYOUTS REPORT (ငွေစာရင်းရှင်းတမ်း) -->
+    <!-- RETURN REQUESTS TAB (NEW SECTION) -->
+    <section id="section-returns" class="tab-content hidden space-y-4">
+      <div class="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
+        <div>
+          <h2 class="font-bold text-slate-800 text-lg">Return & Refund တောင်းဆိုမှုများ စစ်ဆေးရန်</h2>
+          <p class="text-xs text-slate-500">ဝယ်သူတင်ပြထားသော သက်သေဓာတ်ပုံကို စစ်ဆေးပြီး အကြောင်းမဲ့ဖြစ်ပါက ပယ်ချ (Reject) နိုင်ပါသည်</p>
+        </div>
+        <button type="button" onclick="loadReturnsList()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded text-slate-700 font-bold"><i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh စစ်မည်</button>
+      </div>
+      <div class="bg-white rounded-xl shadow-sm border overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-600">
+          <thead class="bg-slate-50 text-xs uppercase text-slate-400 border-b">
+            <tr>
+              <th class="p-4">Order ID</th>
+              <th class="p-4">ဆိုင်အမည်</th>
+              <th class="p-4">အကြောင်းပြချက်</th>
+              <th class="p-4">သက်သေဓာတ်ပုံ</th>
+              <th class="p-4">ပြန်အမ်းငွေ</th>
+              <th class="p-4">အခြေအနေ</th>
+              <th class="p-4">လုပ်ဆောင်ချက်</th>
+            </tr>
+          </thead>
+          <tbody id="returns-tbody" class="divide-y"><tr><td colspan="7" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PAYOUTS REPORT -->
     <section id="section-payouts" class="tab-content hidden space-y-6">
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div class="bg-white p-5 rounded-xl shadow-sm border">
@@ -133,31 +161,13 @@
       <div class="bg-white p-5 rounded-xl shadow-sm border">
         <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-store text-amber-500 mr-1"></i> ဆိုင်နှင့် ဆိုင်ရှင်အကောင့် တစ်ခါတည်း ဖွင့်ပေးရန်</h3>
         <form onsubmit="handleCreateSellerAndShop(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-          <div>
-            <label for="seller-shop-name" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်အမည် *</label>
-            <input type="text" id="seller-shop-name" name="shop_name" autocomplete="organization" placeholder="ဆိုင်အမည်" required class="border rounded p-2 w-full text-xs" />
-          </div>
-          <div>
-            <label for="seller-name" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်ရှင် အမည် *</label>
-            <input type="text" id="seller-name" name="owner_name" autocomplete="name" placeholder="အမည်" required class="border rounded p-2 w-full text-xs" />
-          </div>
-          <div>
-            <label for="seller-phone" class="block text-xs font-bold text-slate-700 mb-1">ဖုန်းနံပါတ် *</label>
-            <input type="text" id="seller-phone" name="phone" autocomplete="tel" placeholder="ဖုန်း" required class="border rounded p-2 w-full text-xs" />
-          </div>
-          <div>
-            <label for="seller-email" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်ရှင် Login Email *</label>
-            <input type="email" id="seller-email" name="email" autocomplete="email" placeholder="Email" required class="border rounded p-2 w-full text-xs" />
-          </div>
-          <div>
-            <label for="seller-pass" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်ရှင် Password *</label>
-            <input type="password" id="seller-pass" name="password" autocomplete="new-password" placeholder="အနည်းဆုံး ၆ လုံး" required class="border rounded p-2 w-full text-xs" />
-          </div>
-          <div>
-            <label for="seller-commission" class="block text-xs font-bold text-slate-700 mb-1">Platform ကော်မရှင် (%) *</label>
-            <input type="number" id="seller-commission" name="commission" value="5" min="0" max="100" required class="border rounded p-2 w-full text-xs" />
-          </div>
-          <button type="submit" id="createSellerBtn" name="create_seller_submit" class="sm:col-span-3 bg-slate-900 text-white rounded p-2.5 font-bold hover:bg-slate-800 transition">ဆိုင်နှင့် အကောင့် အတည်ပြုဖွင့်လှစ်မည်</button>
+          <div><label for="seller-shop-name" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်အမည် *</label><input type="text" id="seller-shop-name" placeholder="ဆိုင်အမည်" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="seller-name" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်ရှင် အမည် *</label><input type="text" id="seller-name" placeholder="အမည်" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="seller-phone" class="block text-xs font-bold text-slate-700 mb-1">ဖုန်းနံပါတ် *</label><input type="text" id="seller-phone" placeholder="ဖုန်း" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="seller-email" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်ရှင် Login Email *</label><input type="email" id="seller-email" placeholder="Email" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="seller-pass" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်ရှင် Password *</label><input type="password" id="seller-pass" placeholder="အနည်းဆုံး ၆ လုံး" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="seller-commission" class="block text-xs font-bold text-slate-700 mb-1">Platform ကော်မရှင် (%) *</label><input type="number" id="seller-commission" value="5" min="0" max="100" required class="border rounded p-2 w-full text-xs" /></div>
+          <button type="submit" id="createSellerBtn" class="sm:col-span-3 bg-slate-900 text-white rounded p-2.5 font-bold hover:bg-slate-800 transition">ဆိုင်နှင့် အကောင့် အတည်ပြုဖွင့်လှစ်မည်</button>
         </form>
       </div>
       <div class="bg-white rounded-xl shadow-sm border overflow-x-auto">
@@ -197,9 +207,9 @@
       <div class="bg-white p-5 rounded-xl shadow-sm border">
         <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-image text-amber-500 mr-1"></i> Banner ပုံအသစ် တင်ရန်</h3>
         <form onsubmit="handleAddBanner(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-          <div><label for="banner-title" class="block text-xs font-bold text-slate-700 mb-1">ခေါင်းစဉ် *</label><input type="text" id="banner-title" name="banner_title" autocomplete="off" placeholder="ခေါင်းစဉ်" class="border rounded p-2 w-full text-xs" /></div>
-          <div><label for="banner-file" class="block text-xs font-bold text-slate-700 mb-1">ပုံဖိုင် *</label><input type="file" id="banner-file" name="banner_file" accept="image/*" required class="border rounded p-1.5 w-full bg-white text-xs cursor-pointer" /></div>
-          <div class="flex items-end"><button type="submit" id="bannerSubmitBtn" name="banner_submit" class="bg-slate-900 text-white rounded p-2 font-bold w-full hover:bg-slate-800">Banner တင်မည်</button></div>
+          <div><label for="banner-title" class="block text-xs font-bold text-slate-700 mb-1">ခေါင်းစဉ် *</label><input type="text" id="banner-title" placeholder="ခေါင်းစဉ်" class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="banner-file" class="block text-xs font-bold text-slate-700 mb-1">ပုံဖိုင် *</label><input type="file" id="banner-file" accept="image/*" required class="border rounded p-1.5 w-full bg-white text-xs cursor-pointer" /></div>
+          <div class="flex items-end"><button type="submit" id="bannerSubmitBtn" class="bg-slate-900 text-white rounded p-2 font-bold w-full hover:bg-slate-800">Banner တင်မည်</button></div>
         </form>
       </div>
       <div class="grid grid-cols-1 sm:grid-cols-3 gap-4" id="banners-container"></div>
@@ -210,10 +220,10 @@
       <div class="bg-white p-5 rounded-xl shadow-sm border">
         <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-credit-card text-amber-500 mr-1"></i> Payment အကောင့်အသစ် ထည့်ရန်</h3>
         <form onsubmit="handleAddPayment(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-sm">
-          <div><label for="pay-provider" class="block text-xs font-bold text-slate-700 mb-1">Provider *</label><input type="text" id="pay-provider" name="provider_name" autocomplete="off" placeholder="KBZPay / Wave" required class="border rounded p-2 w-full text-xs" /></div>
-          <div><label for="pay-name" class="block text-xs font-bold text-slate-700 mb-1">အမည် *</label><input type="text" id="pay-name" name="account_name" autocomplete="name" placeholder="အမည်" required class="border rounded p-2 w-full text-xs" /></div>
-          <div><label for="pay-number" class="block text-xs font-bold text-slate-700 mb-1">နံပါတ် *</label><input type="text" id="pay-number" name="account_number" autocomplete="off" placeholder="နံပါတ်" required class="border rounded p-2 w-full text-xs" /></div>
-          <div class="flex items-end"><button type="submit" id="paymentSubmitBtn" name="payment_submit" class="bg-slate-900 text-white rounded p-2 font-bold w-full hover:bg-slate-800">ထည့်သွင်းမည်</button></div>
+          <div><label for="pay-provider" class="block text-xs font-bold text-slate-700 mb-1">Provider *</label><input type="text" id="pay-provider" placeholder="KBZPay / Wave" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="pay-name" class="block text-xs font-bold text-slate-700 mb-1">အမည် *</label><input type="text" id="pay-name" placeholder="အမည်" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="pay-number" class="block text-xs font-bold text-slate-700 mb-1">နံပါတ် *</label><input type="text" id="pay-number" placeholder="နံပါတ်" required class="border rounded p-2 w-full text-xs" /></div>
+          <div class="flex items-end"><button type="submit" id="paymentSubmitBtn" class="bg-slate-900 text-white rounded p-2 font-bold w-full hover:bg-slate-800">ထည့်သွင်းမည်</button></div>
         </form>
       </div>
       <div class="bg-white rounded-xl shadow-sm border overflow-x-auto">
@@ -229,10 +239,10 @@
       <div class="bg-white p-5 rounded-xl shadow-sm border">
         <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-tags text-amber-500 mr-1"></i> Coupon အသစ်ဖန်တီးရန်</h3>
         <form onsubmit="handleAddCoupon(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-sm">
-          <div><label for="coupon-code" class="block text-xs font-bold text-slate-700 mb-1">ကုဒ် *</label><input type="text" id="coupon-code" name="coupon_code" autocomplete="off" placeholder="ကုဒ်" required class="border rounded p-2 uppercase w-full text-xs" /></div>
-          <div><label for="coupon-discount" class="block text-xs font-bold text-slate-700 mb-1">လျှော့ငွေ *</label><input type="number" id="coupon-discount" name="coupon_discount" autocomplete="off" placeholder="လျှော့ငွေ" required class="border rounded p-2 w-full text-xs" /></div>
-          <div><label for="coupon-min" class="block text-xs font-bold text-slate-700 mb-1">အနည်းဆုံးဝယ်ငွေ *</label><input type="number" id="coupon-min" name="coupon_min" autocomplete="off" value="0" class="border rounded p-2 w-full text-xs" /></div>
-          <div class="flex items-end"><button type="submit" id="couponSubmitBtn" name="coupon_submit" class="bg-slate-900 text-white rounded p-2 font-bold w-full hover:bg-slate-800">ကူပွန်ထုတ်မည်</button></div>
+          <div><label for="coupon-code" class="block text-xs font-bold text-slate-700 mb-1">ကုဒ် *</label><input type="text" id="coupon-code" placeholder="ကုဒ်" required class="border rounded p-2 uppercase w-full text-xs" /></div>
+          <div><label for="coupon-discount" class="block text-xs font-bold text-slate-700 mb-1">လျှော့ငွေ *</label><input type="number" id="coupon-discount" placeholder="လျှော့ငွေ" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="coupon-min" class="block text-xs font-bold text-slate-700 mb-1">အနည်းဆုံးဝယ်ငွေ *</label><input type="number" id="coupon-min" value="0" class="border rounded p-2 w-full text-xs" /></div>
+          <div class="flex items-end"><button type="submit" id="couponSubmitBtn" class="bg-slate-900 text-white rounded p-2 font-bold w-full hover:bg-slate-800">ကူပွန်ထုတ်မည်</button></div>
         </form>
       </div>
       <div class="bg-white rounded-xl shadow-sm border overflow-x-auto">
@@ -251,21 +261,6 @@
 
     function escapeHtml(value) {
       return String(value ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
-    }
-
-    function calculateDaysLeft(shippedAtString) {
-      if (!shippedAtString) return '';
-      const shippedDate = new Date(shippedAtString);
-      const now = new Date();
-      const AUTO_COMPLETE_DAYS = 5;
-      const targetDate = new Date(shippedDate.getTime() + (AUTO_COMPLETE_DAYS * 24 * 60 * 60 * 1000));
-      const diffTime = targetDate - now;
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      
-      if (diffDays > 1) return `<span class="text-blue-600 font-bold text-[10px] block">⏳ ကျန်ရက်: ${diffDays} ရက်</span>`;
-      if (diffDays === 1) return `<span class="text-amber-600 font-bold text-[10px] block">⚠️ ကျန်ရက်: ၁ ရက်</span>`;
-      if (diffDays === 0) return `<span class="text-rose-600 font-bold text-[10px] block">🔥 ယနေ့ ရက်ပြည့်မည်</span>`;
-      return `<span class="text-emerald-600 font-bold text-[10px] block">✅ ရက်ပြည့်ပြီး</span>`;
     }
 
     async function requireAdmin() {
@@ -293,6 +288,7 @@
       activeBtn.classList.add('text-amber-400', 'border-amber-400', 'font-bold');
 
       if (tabId === 'orders') loadOrders();
+      if (tabId === 'returns') loadReturnsList();
       if (tabId === 'payouts') loadPayoutsReport();
       if (tabId === 'shops') loadShops();
       if (tabId === 'products') loadProducts();
@@ -318,36 +314,16 @@
       } catch (error) { console.error(error); }
     }
 
-    async function checkAndProcessAutoCompletes() {
-      try {
-        const { data: shippingOrders } = await client.from('shop_orders').select('id, order_id, status, shipped_at').eq('status', 'shipping');
-        if (!shippingOrders) return;
-        const now = new Date();
-        for (const so of shippingOrders) {
-          if (!so.shipped_at) continue;
-          if ((now - new Date(so.shipped_at)) / (1000 * 60 * 60 * 24) >= 5) {
-            await client.from('shop_orders').update({ status: 'completed' }).eq('id', so.id);
-            await client.from('orders').update({ order_status: 'completed', status: 'completed' }).eq('id', so.order_id);
-          }
-        }
-      } catch (err) { console.error(err); }
-    }
-
     async function loadOrders() {
-      await checkAndProcessAutoCompletes();
       const tbody = document.getElementById('orders-tbody');
       tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr>';
-      const { data: orders, error } = await client.from('orders').select('*, shop_orders(status, shipped_at)').order('created_at', { ascending: false });
+      const { data: orders, error } = await client.from('orders').select('*, shop_orders(status)').order('created_at', { ascending: false });
       if (error || !orders || !orders.length) { tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-rose-600">အော်ဒါမရှိသေးပါ</td></tr>`; return; }
 
       tbody.innerHTML = orders.map(o => {
         const status = o.status || o.order_status || 'pending';
         const voucherLink = o.payment_voucher ? `<a href="${escapeHtml(o.payment_voucher)}" target="_blank" class="text-orange-600 font-bold underline"><i class="fa-solid fa-image"></i> ပုံကြည့်ရန်</a>` : '<span class="text-slate-400">ဘောက်ချာမရှိ</span>';
         
-        const subOrd = o.shop_orders?.[0];
-        const subOrderStatus = subOrd ? (subOrd.status || 'pending') : status;
-        const daysLeftHTML = subOrderStatus === 'shipping' ? calculateDaysLeft(subOrd?.shipped_at) : '';
-
         let actionButtons = '';
         if (status === 'pending') {
           actionButtons = `
@@ -356,19 +332,7 @@
               <button type="button" onclick="rejectOrder(${o.id})" class="bg-rose-600 text-white px-3 py-1.5 rounded text-xs font-bold shadow hover:bg-rose-700 transition"><i class="fa-solid fa-xmark mr-1"></i> ပယ်ဖျက်</button>
             </div>`;
         } else {
-          let statusText = subOrderStatus.toUpperCase();
-          if (subOrderStatus === 'packing') statusText = '📦 Packing';
-          else if (subOrderStatus === 'shipping') statusText = '🚚 Shipping';
-          else if (subOrderStatus === 'delivered') statusText = '🎉 Delivered';
-          else if (subOrderStatus === 'completed') statusText = '✅ Completed';
-
-          actionButtons = `
-            <div class="space-y-1">
-              <select disabled class="border rounded px-2 py-1 bg-slate-100 font-bold text-[11px] text-slate-700 cursor-not-allowed opacity-90 w-full">
-                <option selected>${statusText}</option>
-              </select>
-              ${daysLeftHTML}
-            </div>`;
+          actionButtons = `<span class="px-2.5 py-1 rounded bg-slate-100 font-bold text-xs uppercase">${status}</span>`;
         }
 
         return `
@@ -383,7 +347,78 @@
       }).join('');
     }
 
-    // ================= PAYOUTS REPORT FUNCTION =================
+    // 🌟 RETURN REQUESTS စစ်ဆေးသည့် FUNCTION
+    async function loadReturnsList() {
+      const tbody = document.getElementById('returns-tbody');
+      tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr>';
+
+      const { data: returns, error } = await client
+        .from('order_returns')
+        .select('*, shops(name)')
+        .order('id', { ascending: false });
+
+      if (error || !returns || !returns.length) {
+        tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center text-slate-400">Return တောင်းဆိုမှု မရှိသေးပါ</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = returns.map(r => `
+        <tr class="hover:bg-slate-50 border-b">
+          <td class="p-4 font-mono font-bold text-xs">#${r.order_id}</td>
+          <td class="p-4 font-bold text-slate-800">${escapeHtml(r.shops?.name || '-')}</td>
+          <td class="p-4 text-xs">
+            <span class="font-bold text-rose-600 block">[${r.reason_type}]</span>
+            ${escapeHtml(r.reason_detail)}
+          </td>
+          <td class="p-4">
+            <a href="${escapeHtml(r.proof_image)}" target="_blank" class="text-indigo-600 font-bold underline text-xs">
+              <i class="fa-solid fa-image mr-1"></i> ပုံကြည့်ရန်
+            </a>
+          </td>
+          <td class="p-4 font-bold text-emerald-600">${Number(r.refund_amount || 0).toLocaleString()} Ks</td>
+          <td class="p-4">
+            <span class="text-xs font-bold px-2 py-0.5 rounded ${r.status==='approved'?'bg-emerald-50 text-emerald-600':r.status==='rejected'?'bg-rose-50 text-rose-600':'bg-amber-50 text-amber-600'}">
+              ${r.status.toUpperCase()}
+            </span>
+          </td>
+          <td class="p-4">
+            ${r.status === 'pending' ? `
+              <div class="flex gap-1.5">
+                <button type="button" onclick="approveReturnRequest(${r.id})" class="bg-emerald-600 text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-emerald-700">Approve</button>
+                <button type="button" onclick="rejectReturnRequest(${r.id})" class="bg-rose-600 text-white px-2.5 py-1 rounded text-xs font-bold hover:bg-rose-700">Reject</button>
+              </div>
+            ` : `<span class="text-xs text-slate-400 font-bold">ပြီးစီးပါပြီ</span>`}
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    async function approveReturnRequest(returnId) {
+      if (!confirm('ပစ္စည်း ပြန်လည်ရောက်ရှိပြီး ငွေပြန်အမ်းရန် သေချာပါသလား? (Stock ပြန်တက်သွားမည်ဖြစ်ပြီး ဆိုင်ရှင် Payout မှ နုတ်ပါမည်)')) return;
+      try {
+        const { error } = await client.rpc('admin_approve_return', { p_return_id: returnId });
+        if (error) throw error;
+        alert('✅ Return အား လက်ခံအတည်ပြုပြီးပါပြီ!');
+        loadReturnsList();
+      } catch (err) {
+        alert('❌ မအောင်မြင်ပါ: ' + err.message);
+      }
+    }
+
+    async function rejectReturnRequest(returnId) {
+      const reason = prompt('အကြောင်းမဲ့ Return ဖြစ်၍ ပယ်ချရသည့် အကြောင်းပြချက် ရေးပါ:');
+      if (!reason) return;
+      try {
+        const { error } = await client.rpc('admin_reject_return', { p_return_id: returnId, p_reject_note: reason });
+        if (error) throw error;
+        alert('🚫 Return အား ပယ်ချလိုက်ပါပြီ (အော်ဒါအား Completed အဖြစ် ပြန်ထားပြီးပါပြီ)');
+        loadReturnsList();
+      } catch (err) {
+        alert('❌ မအောင်မြင်ပါ: ' + err.message);
+      }
+    }
+
+    // PAYOUTS REPORT
     async function loadPayoutsReport() {
       const tbody = document.getElementById('payouts-tbody');
       tbody.innerHTML = '<tr><td colspan="7" class="p-4 text-center">စာရင်းများ တွက်ချက်နေပါသည်...</td></tr>';
@@ -397,16 +432,13 @@
         const shops = shopsRes.data || [];
         const shopOrders = shopOrdersRes.data || [];
 
-        let grandSubtotal = 0;
-        let grandCommission = 0;
-        let grandPendingPayout = 0;
+        let grandSubtotal = 0, grandCommission = 0, grandPendingPayout = 0;
 
         const reportData = shops.map(shop => {
           const ordersForShop = shopOrders.filter(so => Number(so.shop_id) === Number(shop.id));
           const totalSubtotal = ordersForShop.reduce((sum, o) => sum + Number(o.subtotal || 0), 0);
           const totalCommission = ordersForShop.reduce((sum, o) => sum + Number(o.commission_amount || o.platform_commission || 0), 0);
           
-          // ရှင်းရန်ကျန်ငွေ (unpaid သို့မဟုတ် null ဖြစ်နေသော အော်ဒါများ)
           const pendingPayout = ordersForShop
             .filter(o => o.payout_status !== 'paid')
             .reduce((sum, o) => sum + Number(o.seller_payout || 0), 0);
@@ -457,13 +489,12 @@
 
       } catch (err) {
         console.error("Payout Report Error:", err);
-        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-rose-600">စာရင်းရယူရာတွင် အမှားဖြစ်ပေါ်ပါသည်: ${err.message}</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="p-4 text-center text-rose-600">Error: ${err.message}</td></tr>`;
       }
     }
 
-    // ဆိုင်ရှင်အား ငွေရှင်းပြီးကြောင်း အတည်ပြုခြင်းနှင့် လက်ကျန်ငွေ နှုတ်ယူခြင်း Function
     async function confirmSellerPayout(shopId, shopName, amount) {
-      if (!confirm(`${shopName} ဆိုင်ထံသို့ ကျသင့်ငွေ ${amount.toLocaleString()} Ks အား KPay/Wave ဖြင့် လွှဲပေးပြီးပါသလား?\n\nအတည်ပြုပါက စာရင်းမှ လက်ကျန်ငွေ နှုတ်ယူသွားပါမည်။`)) return;
+      if (!confirm(`${shopName} ဆိုင်ထံသို့ ကျသင့်ငွေ ${amount.toLocaleString()} Ks အား လွှဲပေးပြီးပါသလား?\n\nအတည်ပြုပါက စာရင်းမှ လက်ကျန်ငွေ နှုတ်ယူသွားပါမည်။`)) return;
 
       try {
         const { data: res, error } = await client.rpc('admin_mark_seller_payout_paid', { target_shop_id: shopId });
@@ -502,10 +533,10 @@
         await client.from('orders').update({ order_status: 'confirmed', status: 'confirmed' }).eq('id', orderId);
         await client.from('shop_orders').update({ status: 'confirmed' }).eq('order_id', orderId);
 
-        alert('✅ Aura Company မှ အတည်ပြုပြီးပါပြီ (Stock အလိုအလျောက် လျှော့ချပြီးပါပြီ)');
+        alert('✅ အတည်ပြုပြီးပါပြီ (Stock အလိုအလျောက် လျှော့ချပြီးပါပြီ)');
         await loadOrders();
       } catch (err) {
-        alert('❌ အတည်ပြုရာတွင် အမှားဖြစ်ပေါ်ပါသည်: ' + (err.message || err));
+        alert('❌ အမှားဖြစ်ပေါ်ပါသည်: ' + (err.message || err));
       }
     }
 
@@ -526,9 +557,9 @@
           <td class="p-4"><img src="${escapeHtml(s.logo_url || 'https://placehold.co/50')}" alt="Logo" class="w-10 h-10 object-cover rounded-xl border"></td>
           <td class="p-4 font-bold text-slate-800">${escapeHtml(s.name)}</td>
           <td class="p-4">${escapeHtml(s.phone || '-')}</td>
-          <td class="p-4"><input type="number" id="commission-${s.id}" name="commission_${s.id}" value="${Number(s.commission_rate || 0)}" class="w-16 border rounded px-2 py-1 text-xs" onchange="updateCommission(${s.id}, this.value)" /> %</td>
+          <td class="p-4"><input type="number" id="commission-${s.id}" value="${Number(s.commission_rate || 0)}" class="w-16 border rounded px-2 py-1 text-xs" onchange="updateCommission(${s.id}, this.value)" /> %</td>
           <td class="p-4"><span class="text-xs font-bold ${s.is_active ? 'text-emerald-600' : 'text-rose-600'}">${s.is_active ? 'Active' : 'Closed'}</span></td>
-          <td class="p-4"><div class="flex items-center gap-2"><input type="file" id="logoFile-${s.id}" name="logo_file_${s.id}" accept="image/*" class="text-[10px] w-36"/><button type="button" onclick="adminUploadShopLogo(${s.id})" class="bg-slate-900 text-white px-2 py-1 rounded text-xs">တင်</button></div></td>
+          <td class="p-4"><div class="flex items-center gap-2"><input type="file" id="logoFile-${s.id}" accept="image/*" class="text-[10px] w-36"/><button type="button" onclick="adminUploadShopLogo(${s.id})" class="bg-slate-900 text-white px-2 py-1 rounded text-xs">တင်</button></div></td>
           <td class="p-4"><button type="button" onclick="toggleShop(${s.id}, ${Boolean(s.is_active)})" class="text-xs px-2.5 py-1 rounded font-bold ${s.is_active ? 'bg-rose-50 text-rose-600' : 'bg-emerald-50 text-emerald-600'}">${s.is_active ? 'ပိတ်' : 'ဖွင့်'}</button></td>
         </tr>`).join('');
     }
@@ -614,7 +645,7 @@
           <td class="p-4 text-xs">${escapeHtml(u.phone || '-')}</td>
           <td class="p-4 font-bold text-xs"><span class="px-2 py-0.5 rounded bg-slate-100 font-mono uppercase">${escapeHtml(u.role || 'customer')}</span></td>
           <td class="p-4">
-            <select id="user-role-${u.id}" name="user_role_${u.id}" onchange="updateRole('${u.id}', this.value)" class="border rounded text-xs px-2 py-1 bg-white font-bold outline-none focus:border-amber-500">
+            <select id="user-role-${u.id}" onchange="updateRole('${u.id}', this.value)" class="border rounded text-xs px-2 py-1 bg-white font-bold outline-none focus:border-amber-500">
               <option value="customer" ${u.role==='customer'?'selected':''}>Customer</option>
               <option value="seller" ${u.role==='seller'?'selected':''}>Seller</option>
               <option value="admin" ${u.role==='admin'?'selected':''}>Admin</option>
@@ -627,10 +658,7 @@
 
     async function updateRole(userId, newRole) {
       try {
-        const { error } = await client.rpc('admin_update_user_role', {
-          target_user_id: userId,
-          new_role: newRole
-        });
+        const { error } = await client.rpc('admin_update_user_role', { target_user_id: userId, new_role: newRole });
         if (error) throw error;
         alert(`✅ Role အား ${newRole.toUpperCase()} သို့ အောင်မြင်စွာ ပြောင်းပြီးပါပြီ!`);
         await loadUsers();
@@ -640,17 +668,12 @@
     }
 
     async function deleteUserCompletely(userId) {
-      if (!confirm('ဤ အသင်းဝင်ကို အပြီးတိုင် ဖျက်ပစ်မှာ သေချာပါသလား? (ဆိုင်ဖွင့်ထားပါက ဆိုင်နှင့် ပစ္စည်းများပါ ပျက်သွားပါမည်)')) return;
-
+      if (!confirm('ဤ အသင်းဝင်ကို အပြီးတိုင် ဖျက်ပစ်မှာ သေချာပါသလား?')) return;
       try {
-        const { error } = await client.rpc('admin_delete_user_completely', {
-          target_user_id: userId
-        });
+        const { error } = await client.rpc('admin_delete_user_completely', { target_user_id: userId });
         if (error) throw error;
         alert('🗑️ အသင်းဝင်အား အပြီးတိုင် ဖျက်ပစ်ပြီးပါပြီ!');
-        await loadUsers();
-        await loadShops();
-        await loadDashboardStats();
+        await loadUsers(); await loadShops(); await loadDashboardStats();
       } catch (err) {
         alert('❌ ဖျက်မရပါ: ' + (err.message || err));
       }
@@ -679,8 +702,7 @@
         const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(name);
         await client.from('banners').insert([{ title: document.getElementById('banner-title').value, image_url: publicUrl, img: publicUrl }]);
         alert('Banner တင်ပြီးပါပြီ');
-        e.target.reset();
-        loadBanners();
+        e.target.reset(); loadBanners();
       } catch (err) {
         alert('Banner တင်မရပါ: ' + err.message);
       } finally {
@@ -699,8 +721,7 @@
     async function handleAddPayment(e) {
       e.preventDefault();
       await client.from('payment_methods').insert([{ provider_name: document.getElementById('pay-provider').value, account_name: document.getElementById('pay-name').value, account_number: document.getElementById('pay-number').value }]);
-      e.target.reset(); 
-      loadPayments();
+      e.target.reset(); loadPayments();
     }
 
     async function deletePay(id) { if (confirm('Payment ဖျက်မလား?')) { await client.from('payment_methods').delete().eq('id', id); loadPayments(); } }
@@ -714,12 +735,10 @@
     async function handleAddCoupon(e) {
       e.preventDefault();
       await client.from('coupons').insert([{ code: document.getElementById('coupon-code').value.toUpperCase(), discount_value: Number(document.getElementById('coupon-discount').value), min_order_amount: Number(document.getElementById('coupon-min').value) }]);
-      e.target.reset(); 
-      loadCoupons();
+      e.target.reset(); loadCoupons();
     }
 
     async function deleteCoupon(id) { if (confirm('ကူပွန် ဖျက်မလား?')) { await client.from('coupons').delete().eq('id', id); loadCoupons(); } }
-
     async function handleLogout() { await client.auth.signOut(); window.location.href = 'index.html'; }
 
     async function init() {
