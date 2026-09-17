@@ -3,64 +3,295 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aura Marketplace - Seller Center</title>
+  <title>Aura Platform - Seller Center</title>
+
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
-  <style> body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; } </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap');
+    body { font-family: 'Padauk', sans-serif; }
+  </style>
 </head>
-<body class="bg-slate-100 text-slate-900 min-h-screen pb-20">
 
-  <!-- ================= 1. LOGIN SECTION ================= -->
-  <div id="sellerLoginSection" class="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-slate-900 via-slate-950 to-orange-950">
-    <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-2xl space-y-6 text-xs">
-      <div class="text-center space-y-2">
-        <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-orange-500 to-rose-500 text-white text-3xl shadow-lg mb-1">
-          <i class="ph-bold ph-storefront"></i>
-        </div>
-        <h2 class="text-xl font-black text-slate-900">ဆိုင်ရှင်များ Seller Center</h2>
-        <p class="text-slate-400 text-xs">Aura Company မှ ပေးထားသော အကောင့်ဖြင့် ဝင်ရောက်ပါ</p>
+<body class="bg-slate-100 min-h-screen pb-12">
+
+  <!-- HEADER -->
+  <header class="bg-slate-900 text-white sticky top-0 z-50 shadow">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <span class="bg-violet-600 text-white text-xs px-2.5 py-1 rounded font-bold uppercase">Seller Center</span>
+        <h1 class="text-lg sm:text-xl font-bold tracking-tight" id="headerShopName">Aura Seller Center</h1>
       </div>
-
-      <form onsubmit="handleSellerLogin(event)" class="space-y-4">
-        <div>
-          <label for="sellerEmailInput" class="font-bold text-slate-700 block mb-1">Email *</label>
-          <input type="email" id="sellerEmailInput" name="seller_email" required placeholder="seller@aura.com" class="w-full px-3.5 py-3 border rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 text-xs font-medium" autocomplete="email" />
-        </div>
-        <div>
-          <label for="sellerPassInput" class="font-bold text-slate-700 block mb-1">Password *</label>
-          <input type="password" id="sellerPassInput" name="seller_password" required placeholder="••••••••" class="w-full px-3.5 py-3 border rounded-2xl outline-none focus:ring-2 focus:ring-orange-500 text-xs font-medium" autocomplete="current-password" />
-        </div>
-        <button type="submit" id="loginSubmitBtn" name="login_submit" class="w-full bg-gradient-to-r from-orange-500 to-rose-600 text-white font-bold py-3.5 rounded-2xl shadow-lg transition text-xs">
-          ဆိုင်ထဲသို့ ဝင်မည်
+      <div class="flex items-center space-x-4">
+        <span id="sellerOwnerName" class="text-xs text-slate-300">Seller</span>
+        <button type="button" onclick="handleSellerLogout()" class="text-xs bg-rose-600 hover:bg-rose-700 px-3 py-1.5 rounded transition font-bold">
+          <i class="fa-solid fa-right-from-bracket mr-1"></i> ထွက်မည်
         </button>
-      </form>
-      <div class="text-center pt-2 border-t">
-        <a href="index.html" class="text-slate-500 hover:text-orange-600 font-bold">← ပင်မဆိုင်သို့ ပြန်သွားမည်</a>
       </div>
     </div>
-  </div>
 
-  <!-- ================= 2. DASHBOARD SECTION ================= -->
-  <div id="sellerDashboardSection" class="hidden">
-    <header class="bg-slate-950 text-white border-b border-slate-800 sticky top-0 z-50">
-      <div class="max-w-7xl mx-auto px-4 h-16 flex justify-between items-center">
-        <div class="flex items-center gap-2">
-          <span class="bg-orange-500 text-white text-xs font-black px-2.5 py-1 rounded-md">SELLER</span>
-          <span id="sellerShopName" class="font-bold text-sm">ဆိုင် Dashboard</span>
+    <!-- TABS -->
+    <div class="max-w-7xl mx-auto px-4 flex space-x-2 border-t border-slate-800 text-sm overflow-x-auto">
+      <button type="button" onclick="switchSellerTab('orders')" id="tab-orders" class="seller-tab-btn py-3 px-4 text-amber-400 border-b-2 border-amber-400 font-bold whitespace-nowrap"><i class="fa-solid fa-receipt mr-1"></i> ဆိုင်၏ အော်ဒါများ</button>
+      <button type="button" onclick="switchSellerTab('products')" id="tab-products" class="seller-tab-btn py-3 px-4 text-gray-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-boxes-stacked mr-1"></i> ပစ္စည်းများ စီမံရန်</button>
+    </div>
+  </header>
+
+  <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
+    <!-- ORDERS TAB -->
+    <section id="seller-section-orders" class="seller-tab-content space-y-4">
+      <div class="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
+        <div>
+          <h2 class="font-bold text-slate-800 text-lg">ဆိုင်သို့ ရောက်ရှိသော အော်ဒါစာရင်း</h2>
+          <p class="text-xs text-slate-500">ပစ္စည်းပို့ဆောင်ပါက Shipping သို့ ပြောင်းပေးပါ။ ပစ္စည်းရောက်ရှိကြောင်း ဝယ်သူကသာ အတည်ပြုနိုင်ပါသည် (သို့မဟုတ် ၇ ရက်ပြည့်ပါက အလိုအလျောက် Completed ဖြစ်ပါမည်)။</p>
         </div>
-        <div class="flex items-center gap-4 text-xs">
-          <span id="sellerEmailBadge" class="text-slate-400 hidden sm:inline font-mono"></span>
-          <a href="index.html" target="_blank" class="text-slate-300 underline">ဆိုင်ကြည့်မည်</a>
-          <button type="button" onclick="sellerLogout()" class="text-rose-400 font-bold">Logout</button>
-        </div>
+        <button type="button" onclick="loadSellerOrders()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded text-slate-700 font-bold"><i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh</button>
       </div>
-    </header>
 
-    <main class="max-w-7xl mx-auto px-4 py-6 space-y-6">
-      <!-- Analytics Stats Cards -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div class="bg-white rounded-xl shadow-sm border overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-600">
+          <thead class="bg-slate-50 text-xs uppercase text-slate-400 border-b">
+            <tr>
+              <th class="p-4">Order ID</th>
+              <th class="p-4">မှာယူထားသော ပစ္စည်း</th>
+              <th class="p-4">ရောင်းရငွေ</th>
+              <th class="p-4">Company ကော်မရှင်</th>
+              <th class="p-4 font-bold text-emerald-600">ဆိုင်ရှင် ရရှိမည့်ငွေ</th>
+              <th class="p-4">အခြေအနေ ပြောင်းရန်</th>
+            </tr>
+          </thead>
+          <tbody id="seller-orders-tbody" class="divide-y"><tr><td colspan="6" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PRODUCTS TAB -->
+    <section id="seller-section-products" class="seller-tab-content hidden space-y-4">
+      <div class="bg-white p-5 rounded-xl shadow-sm border">
+        <h3 class="font-bold text-slate-800 mb-3">📦 ကုန်ပစ္စည်း အသစ်တင်ရန်</h3>
+        <form onsubmit="handleSellerAddProduct(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
+          <div><label class="font-bold block mb-1">ပစ္စည်းအမည် *</label><input type="text" id="prod-name" required class="border p-2.5 rounded-xl w-full" /></div>
+          <div><label class="font-bold block mb-1">ပုံမှန်ဈေးနှုန်း (Ks) *</label><input type="number" id="prod-price" required class="border p-2.5 rounded-xl w-full" /></div>
+          <div><label class="font-bold block mb-1">လက်ကျန် (Stock) *</label><input type="number" id="prod-stock" required class="border p-2.5 rounded-xl w-full" /></div>
+          <div><label class="font-bold block mb-1">ကားဂိတ်တင်ခ (ကျပ်)</label><input type="number" id="prod-gate-fee" value="0" class="border p-2.5 rounded-xl w-full" /></div>
+          <div><label class="font-bold block mb-1">ပုံဖိုင် *</label><input type="file" id="prod-file" accept="image/*" required class="border p-2 rounded-xl w-full bg-white cursor-pointer" /></div>
+          <div class="sm:col-span-3"><button type="submit" id="prodSubmitBtn" class="bg-slate-900 text-white py-2.5 px-6 rounded-xl font-bold hover:bg-slate-800 transition">ပစ္စည်း တင်မည်</button></div>
+        </form>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm border overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-600">
+          <thead class="bg-slate-50 text-xs uppercase text-slate-400 border-b">
+            <tr><th class="p-4">ပုံ</th><th class="p-4">အမည်</th><th class="p-4">ဈေးနှုန်း</th><th class="p-4">လက်ကျန်</th><th class="p-4">လုပ်ဆောင်ချက်</th></tr>
+          </thead>
+          <tbody id="seller-products-tbody" class="divide-y"></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const SUPABASE_URL = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8';
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+    let currentShop = null;
+
+    function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+
+    async function requireSeller() {
+      const { data: { session } } = await client.auth.getSession();
+      if (!session) { alert('ကျေးဇူးပြု၍ Login အရင်ဝင်ပါ'); location.href = 'index.html'; return false; }
+      
+      const { data: profile } = await client.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+      if (!profile || profile.role !== 'seller') {
+        alert('⛔ Seller အကောင့်ဖြင့်သာ ဝင်ရောက်နိုင်ပါသည်');
+        await client.auth.signOut();
+        location.href = 'index.html';
+        return false;
+      }
+
+      document.getElementById('sellerOwnerName').innerText = profile.full_name || 'Seller';
+
+      const { data: shop } = await client.from('shops').select('*').eq('owner_id', session.user.id).maybeSingle();
+      if (!shop) {
+        alert('ဆိုင်အချက်အလက် မတွေ့ရှိပါ');
+        return false;
+      }
+      currentShop = shop;
+      document.getElementById('headerShopName').innerText = shop.name;
+      return true;
+    }
+
+    function switchSellerTab(tab) {
+      document.querySelectorAll('.seller-tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.seller-tab-btn').forEach(btn => {
+        btn.classList.remove('text-amber-400', 'border-amber-400', 'font-bold');
+        btn.classList.add('text-gray-400', 'border-transparent');
+      });
+      document.getElementById(`seller-section-${tab}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-${tab}`);
+      activeBtn.classList.remove('text-gray-400', 'border-transparent');
+      activeBtn.classList.add('text-amber-400', 'border-amber-400', 'font-bold');
+
+      if (tab === 'orders') loadSellerOrders();
+      if (tab === 'products') loadSellerProducts();
+    }
+
+    // ၇ ရက် ကျော်ပါက AUTO COMPLETE လုပ်သည့် FUNCTION
+    async function checkSellerAutoCompletes() {
+      try {
+        const { data: shippingOrders } = await client.from('shop_orders').select('id, order_id, status, shipped_at').eq('shop_id', currentShop.id).eq('status', 'shipping');
+        if (!shippingOrders) return;
+        const now = new Date();
+        for (const so of shippingOrders) {
+          if (!so.shipped_at) continue;
+          const diffDays = (now - new Date(so.shipped_at)) / (1000 * 60 * 60 * 24);
+          if (diffDays >= 7) {
+            await client.from('shop_orders').update({ status: 'completed' }).eq('id', so.id);
+            await client.from('orders').update({ order_status: 'completed', status: 'completed' }).eq('id', so.order_id);
+          }
+        }
+      } catch (err) { console.error(err); }
+    }
+
+    // 🌟 SELLER ORDERS စာရင်း (COMPLETED ကို နှိပ်မရအောင် DISABLE လုပ်ထားပါသည်)
+    async function loadSellerOrders() {
+      await checkSellerAutoCompletes();
+      const tbody = document.getElementById('seller-orders-tbody');
+      tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr>';
+
+      const { data: orders, error } = await client
+        .from('shop_orders')
+        .select('*')
+        .eq('shop_id', currentShop.id)
+        .order('id', { ascending: false });
+
+      if (error || !orders || !orders.length) {
+        tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">အော်ဒါ မရှိသေးပါ</td></tr>';
+        return;
+      }
+
+      tbody.innerHTML = orders.map(o => {
+        const items = Array.isArray(o.items) ? o.items : [];
+        const status = o.status || 'pending';
+
+        return `
+          <tr class="hover:bg-slate-50 border-b">
+            <td class="p-4 font-mono font-bold text-xs">#${o.order_id}</td>
+            <td class="p-4 text-xs">
+              ${items.map(i => `<div>• <b>${esc(i.title)}</b> (Size: ${i.selectedSize||'-'}, Color: ${i.selectedColor||'-'}) x ${i.qty}</div>`).join('')}
+            </td>
+            <td class="p-4 font-bold text-slate-800">${Number(o.subtotal || 0).toLocaleString()} Ks</td>
+            <td class="p-4 font-bold text-amber-600">${Number(o.commission_amount || 0).toLocaleString()} Ks</td>
+            <td class="p-4 font-black text-emerald-600">${Number(o.seller_payout || 0).toLocaleString()} Ks</td>
+            <td class="p-4">
+              <!-- 👉 SELLER သည် COMPLETED ကို ရွေးချယ်ခွင့် မရှိပါ (DISABLED ဖြစ်နေပါမည်) -->
+              <select onchange="handleUpdateOrderStatus(${o.id}, ${o.order_id}, this.value)" class="border rounded-xl px-2.5 py-1.5 text-xs font-bold bg-white outline-none focus:border-violet-500">
+                <option value="confirmed" ${status === 'confirmed' ? 'selected' : ''}>✅ Confirmed</option>
+                <option value="packing" ${status === 'packing' ? 'selected' : ''}>📦 Packing</option>
+                <option value="shipping" ${status === 'shipping' ? 'selected' : ''}>🚚 Shipping</option>
+                <option value="completed" ${status === 'completed' ? 'selected' : ''} disabled class="bg-slate-100 text-slate-400">
+                  🎉 Completed (ဝယ်သူသာ အတည်ပြုနိုင်သည်)
+                </option>
+              </select>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    async function handleUpdateOrderStatus(shopOrderId, orderId, newStatus) {
+      try {
+        const updateData = { status: newStatus };
+        if (newStatus === 'shipping') updateData.shipped_at = new Date().toISOString();
+
+        await client.from('shop_orders').update(updateData).eq('id', shopOrderId);
+        await client.from('orders').update({ status: newStatus, order_status: newStatus }).eq('id', orderId);
+
+        alert(`✅ အခြေအနေအား ${newStatus.toUpperCase()} သို့ ပြောင်းလဲပြီးပါပြီ`);
+        loadSellerOrders();
+      } catch (err) {
+        alert('❌ ပြောင်းမရပါ: ' + err.message);
+      }
+    }
+
+    async function loadSellerProducts() {
+      const tbody = document.getElementById('seller-products-tbody');
+      tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr>';
+      const { data: products } = await client.from('products').select('*').eq('shop_id', currentShop.id).order('id', { ascending: false });
+      if (!products || !products.length) { tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400">ပစ္စည်း မရှိသေးပါ</td></tr>'; return; }
+
+      tbody.innerHTML = products.map(p => `
+        <tr class="hover:bg-slate-50 border-b">
+          <td class="p-4"><img src="${esc(p.image || p.image_url)}" class="w-10 h-10 object-cover rounded-xl border"></td>
+          <td class="p-4 font-bold text-slate-800">${esc(p.title || p.name)}</td>
+          <td class="p-4 font-bold text-rose-600">${Number(p.price || 0).toLocaleString()} Ks</td>
+          <td class="p-4 font-bold">${p.stock}</td>
+          <td class="p-4"><button type="button" onclick="deleteSellerProduct(${p.id})" class="text-rose-600 font-bold text-xs">ဖျက်မည်</button></td>
+        </tr>
+      `).join('');
+    }
+
+    async function handleSellerAddProduct(e) {
+      e.preventDefault();
+      const name = document.getElementById('prod-name').value.trim();
+      const price = Number(document.getElementById('prod-price').value);
+      const stock = Number(document.getElementById('prod-stock').value);
+      const gateFee = Number(document.getElementById('prod-gate-fee').value || 0);
+      const file = document.getElementById('prod-file').files[0];
+
+      const btn = document.getElementById('prodSubmitBtn');
+      btn.innerText = "တင်နေပါသည်..."; btn.disabled = true;
+
+      try {
+        const fileName = `products/${Date.now()}.${file.name.split('.').pop()}`;
+        await client.storage.from('product-images').upload(fileName, file);
+        const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(fileName);
+
+        await client.from('products').insert([{
+          title: name,
+          name: name,
+          price: price,
+          stock: stock,
+          gate_fee: gateFee,
+          shop_id: currentShop.id,
+          image: publicUrl,
+          image_url: publicUrl
+        }]);
+
+        alert('🎉 ကုန်ပစ္စည်း အသစ်တင်ပြီးပါပြီ!');
+        e.target.reset();
+        loadSellerProducts();
+      } catch (err) {
+        alert('❌ ပစ္စည်းတင်မရပါ: ' + err.message);
+      } finally {
+        btn.innerText = "ပစ္စည်း တင်မည်"; btn.disabled = false;
+      }
+    }
+
+    async function deleteSellerProduct(id) {
+      if (!confirm('ဖျက်မှာ သေချာပါသလား?')) return;
+      await client.from('products').delete().eq('id', id);
+      loadSellerProducts();
+    }
+
+    async function handleSellerLogout() {
+      await client.auth.signOut();
+      location.href = 'index.html';
+    }
+
+    async function init() {
+      const allowed = await requireSeller();
+      if (!allowed) return;
+      loadSellerOrders();
+    }
+    document.addEventListener('DOMContentLoaded', init);
+  </script>
+</body>
+</html>      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
         <div class="bg-white p-4 rounded-2xl border shadow-sm"><span class="text-slate-400 text-[11px] font-semibold">စုစုပေါင်း ရောင်းရငွေ</span><div id="statTotalSales" class="text-lg font-black text-orange-600 mt-1">0 MMK</div></div>
         <div class="bg-white p-4 rounded-2xl border shadow-sm"><span class="text-slate-400 text-[11px] font-semibold">သင့်ရငွေ (Net Payout)</span><div id="statNetPayout" class="text-lg font-black text-emerald-600 mt-1">0 MMK</div></div>
         <div class="bg-white p-4 rounded-2xl border shadow-sm"><span class="text-slate-400 text-[11px] font-semibold">လက်ခံရရှိသော အော်ဒါ</span><div id="statTotalOrders" class="text-lg font-black text-slate-800 mt-1">0 ခု</div></div>
