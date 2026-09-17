@@ -39,6 +39,7 @@
     <div class="max-w-7xl mx-auto px-4 flex space-x-2 border-t border-slate-800 text-sm overflow-x-auto">
       <button type="button" onclick="switchTab('dashboard')" id="tab-dashboard" class="tab-btn py-3 px-4 text-amber-400 border-b-2 border-amber-400 font-bold whitespace-nowrap"><i class="fa-solid fa-chart-pie mr-1"></i> Dashboard</button>
       <button type="button" onclick="switchTab('orders')" id="tab-orders" class="tab-btn py-3 px-4 text-gray-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-receipt mr-1"></i> အော်ဒါအားလုံး</button>
+      <button type="button" onclick="switchTab('payouts')" id="tab-payouts" class="tab-btn py-3 px-4 text-gray-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-hand-holding-dollar mr-1"></i> ငွေစာရင်းရှင်းတမ်း (Payouts)</button>
       <button type="button" onclick="switchTab('shops')" id="tab-shops" class="tab-btn py-3 px-4 text-gray-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-store mr-1"></i> ဆိုင်များနှင့် ကော်မရှင်</button>
       <button type="button" onclick="switchTab('products')" id="tab-products" class="tab-btn py-3 px-4 text-gray-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-boxes-stacked mr-1"></i> ပစ္စည်းများ</button>
       <button type="button" onclick="switchTab('users')" id="tab-users" class="tab-btn py-3 px-4 text-gray-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-users mr-1"></i> အသင်းဝင်များ</button>
@@ -78,6 +79,50 @@
             </tr>
           </thead>
           <tbody id="orders-tbody" class="divide-y"><tr><td colspan="6" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- PAYOUTS REPORT (NEW SECTION) -->
+    <section id="section-payouts" class="tab-content hidden space-y-6">
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="bg-white p-5 rounded-xl shadow-sm border">
+          <p class="text-xs text-slate-500 font-bold uppercase">စုစုပေါင်း ရောင်းချငွေ (Subtotal)</p>
+          <h3 id="payout-stat-subtotal" class="text-2xl font-bold text-slate-900 mt-1">0 Ks</h3>
+        </div>
+        <div class="bg-white p-5 rounded-xl shadow-sm border">
+          <p class="text-xs text-amber-600 font-bold uppercase">Company ကော်မရှင် (Commission)</p>
+          <h3 id="payout-stat-commission" class="text-2xl font-bold text-amber-600 mt-1">0 Ks</h3>
+        </div>
+        <div class="bg-white p-5 rounded-xl shadow-sm border border-emerald-200 bg-emerald-50/30">
+          <p class="text-xs text-emerald-700 font-bold uppercase">ဆိုင်ရှင်များသို့ လွှဲပေးရန် ကျန်ငွေ (Total Payout)</p>
+          <h3 id="payout-stat-payout" class="text-2xl font-bold text-emerald-600 mt-1">0 Ks</h3>
+        </div>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl shadow-sm border flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
+        <div>
+          <h2 class="font-bold text-slate-800 text-lg">ဆိုင်ရှင်များအလိုက် ငွေစာရင်းရှင်းတမ်း အစီရင်ခံစာ</h2>
+          <p class="text-xs text-slate-500">ဆိုင်ရှင်များထံသို့ ကော်မရှင်နုတ်ပြီး လွှဲပြောင်းပေးရမည့် အသေးစိတ်စာရင်း</p>
+        </div>
+        <button type="button" onclick="loadPayoutsReport()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded text-slate-700 font-bold">
+          <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh စာရင်းစစ်မည်
+        </button>
+      </div>
+
+      <div class="bg-white rounded-xl shadow-sm border overflow-x-auto">
+        <table class="w-full text-left text-sm text-slate-600">
+          <thead class="bg-slate-50 text-xs uppercase text-slate-400 border-b">
+            <tr>
+              <th class="p-4">ဆိုင်အမည်</th>
+              <th class="p-4">ဆိုင်ဖုန်း</th>
+              <th class="p-4">အော်ဒါ အရေအတွက်</th>
+              <th class="p-4">ရောင်းရငွေ (Subtotal)</th>
+              <th class="p-4 text-amber-600">Company ကော်မရှင်</th>
+              <th class="p-4 text-emerald-600 font-black">ဆိုင်ရှင်အား လွှဲပေးရမည့်ငွေ</th>
+            </tr>
+          </thead>
+          <tbody id="payouts-tbody" class="divide-y"><tr><td colspan="6" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr></tbody>
         </table>
       </div>
     </section>
@@ -247,6 +292,7 @@
       activeBtn.classList.add('text-amber-400', 'border-amber-400', 'font-bold');
 
       if (tabId === 'orders') loadOrders();
+      if (tabId === 'payouts') loadPayoutsReport();
       if (tabId === 'shops') loadShops();
       if (tabId === 'products') loadProducts();
       if (tabId === 'users') loadUsers();
@@ -336,6 +382,70 @@
       }).join('');
     }
 
+    // ================= PAYOUTS REPORT FUNCTION =================
+    async function loadPayoutsReport() {
+      const tbody = document.getElementById('payouts-tbody');
+      tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center">စာရင်းများ တွက်ချက်နေပါသည်...</td></tr>';
+
+      try {
+        const [shopsRes, shopOrdersRes] = await Promise.all([
+          client.from('shops').select('id, name, phone, commission_rate'),
+          client.from('shop_orders').select('shop_id, subtotal, commission_amount, platform_commission, seller_payout, status')
+        ]);
+
+        const shops = shopsRes.data || [];
+        const shopOrders = shopOrdersRes.data || [];
+
+        let grandSubtotal = 0;
+        let grandCommission = 0;
+        let grandPayout = 0;
+
+        const reportData = shops.map(shop => {
+          const ordersForShop = shopOrders.filter(so => Number(so.shop_id) === Number(shop.id));
+          const totalSubtotal = ordersForShop.reduce((sum, o) => sum + Number(o.subtotal || 0), 0);
+          const totalCommission = ordersForShop.reduce((sum, o) => sum + Number(o.commission_amount || o.platform_commission || 0), 0);
+          const totalPayout = ordersForShop.reduce((sum, o) => sum + Number(o.seller_payout || 0), 0);
+
+          grandSubtotal += totalSubtotal;
+          grandCommission += totalCommission;
+          grandPayout += totalPayout;
+
+          return {
+            shopName: shop.name,
+            shopPhone: shop.phone || '-',
+            orderCount: ordersForShop.length,
+            subtotal: totalSubtotal,
+            commission: totalCommission,
+            payout: totalPayout
+          };
+        });
+
+        document.getElementById('payout-stat-subtotal').innerText = grandSubtotal.toLocaleString() + ' Ks';
+        document.getElementById('payout-stat-commission').innerText = grandCommission.toLocaleString() + ' Ks';
+        document.getElementById('payout-stat-payout').innerText = grandPayout.toLocaleString() + ' Ks';
+
+        if (!reportData.length) {
+          tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400">ဆိုင်စာရင်း မရှိသေးပါ</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = reportData.map(r => `
+          <tr class="hover:bg-slate-50 border-b">
+            <td class="p-4 font-bold text-slate-800">${escapeHtml(r.shopName)}</td>
+            <td class="p-4 text-xs font-mono text-slate-500">${escapeHtml(r.shopPhone)}</td>
+            <td class="p-4 font-bold text-blue-600">${r.orderCount} စောင်</td>
+            <td class="p-4 font-bold text-slate-700">${r.subtotal.toLocaleString()} Ks</td>
+            <td class="p-4 font-bold text-amber-600">${r.commission.toLocaleString()} Ks</td>
+            <td class="p-4 font-black text-emerald-600 text-base">${r.payout.toLocaleString()} Ks</td>
+          </tr>
+        `).join('');
+
+      } catch (err) {
+        console.error("Payout Report Error:", err);
+        tbody.innerHTML = `<tr><td colspan="6" class="p-4 text-center text-rose-600">စာရင်းရယူရာတွင် အမှားဖြစ်ပေါ်ပါသည်: ${err.message}</td></tr>`;
+      }
+    }
+
     async function approveOrder(orderId) {
       if (!confirm(`အော်ဒါ #${orderId} ကို အတည်ပြုမှာ သေချာပါသလား?`)) return;
 
@@ -403,7 +513,6 @@
       loadShops();
     }
 
-    // ဆိုင်နှင့် ဆိုင်ရှင်အကောင့် တစ်ခါတည်း ဖွင့်ပေးခြင်း (Admin Session မပြုတ်စေရန် RPC အသုံးပြုထားပါသည်)
     async function handleCreateSellerAndShop(e) {
       e.preventDefault();
       const shopName = document.getElementById('seller-shop-name').value.trim();
@@ -485,7 +594,6 @@
         </tr>`).join('');
     }
 
-    // Role ပြောင်းလဲခြင်း Function (RPC ဖြင့် လုံခြုံစွာ လုပ်ဆောင်ခြင်း)
     async function updateRole(userId, newRole) {
       try {
         const { error } = await client.rpc('admin_update_user_role', {
@@ -500,7 +608,6 @@
       }
     }
 
-    // User အပြီးတိုင် ဖျက်ခြင်း Function (RPC ဖြင့် လုံခြုံစွာ လုပ်ဆောင်ခြင်း)
     async function deleteUserCompletely(userId) {
       if (!confirm('ဤ အသင်းဝင်ကို အပြီးတိုင် ဖျက်ပစ်မှာ သေချာပါသလား? (ဆိုင်ဖွင့်ထားပါက ဆိုင်နှင့် ပစ္စည်းများပါ ပျက်သွားပါမည်)')) return;
 
