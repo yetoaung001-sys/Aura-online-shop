@@ -1,3 +1,2 @@
-/admin   /admin.html   200
-/seller  /seller.html  200
-/shop    /shop.html    200
+/api/supabase/*  https://zyajlsrytjvwxqtpxrqd.supabase.co/:splat  200!
+/*  /index.html  200
