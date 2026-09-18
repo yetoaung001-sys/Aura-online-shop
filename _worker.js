@@ -2,10 +2,22 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // Supabase API & Storage Reverse Proxy
-    if (url.pathname.startsWith('/api/supabase')) {
+    // OPTIONS Preflight Handle ပြုလုပ်ခြင်း
+    if (request.method === 'OPTIONS' && url.pathname.startsWith('/api/supabase')) {
+      return new Response(null, {
+        headers: {
+          'Access-Control-Allow-Origin': '*',
+          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+          'Access-Control-Allow-Headers': '*',
+          'Access-Control-Max-Age': '86400',
+        },
+      });
+    }
+
+    // Supabase API & Storage Reverse Proxy ပြုလုပ်ခြင်း
+    if (url.pathname.startsWith('/api/supabase/')) {
       const SUPABASE_ORIGIN = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
-      const targetPath = url.pathname.replace(/^\/api\/supabase/, '') || '/';
+      const targetPath = url.pathname.replace('/api/supabase', '');
       const targetUrl = new URL(targetPath + url.search, SUPABASE_ORIGIN);
 
       const newHeaders = new Headers(request.headers);
@@ -32,9 +44,11 @@ export default {
       });
     }
 
-    if (env.ASSETS) {
+    // Static HTML/CSS Files မူလအတိုင်း ပို့ပေးခြင်း
+    if (env && env.ASSETS) {
       return env.ASSETS.fetch(request);
     }
-    return fetch(request);
+
+    return new Response('Not found', { status: 404 });
   },
 };
