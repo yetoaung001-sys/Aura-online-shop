@@ -2,44 +2,51 @@ export default {
   async fetch(request, env) {
     const url = new URL(request.url);
 
-    // ၁။ OPTIONS Preflight Handle ပြုလုပ်ခြင်း
+    // ၁။ CORS Headers သတ်မှတ်ချက်
+    const corsHeaders = {
+      'Access-Control-Allow-Origin': '*',
+      'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
+      'Access-Control-Allow-Headers': '*',
+      'Access-Control-Max-Age': '86400',
+    };
+
+    // ၂။ OPTIONS Preflight Handle ပြုလုပ်ခြင်း
     if (request.method === 'OPTIONS' && url.pathname.startsWith('/api/supabase')) {
-      return new Response(null, {
-        headers: {
-          'Access-Control-Allow-Origin': '*',
-          'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-          'Access-Control-Allow-Headers': '*',
-          'Access-Control-Max-Age': '86400',
-        },
-      });
+      return new Response(null, { headers: corsHeaders });
     }
 
-    // ၂။ Supabase API & Storage Reverse Proxy (အရေးကြီးဆုံးအပိုင်း)
+    // ၃။ Supabase Reverse Proxy
     if (url.pathname.startsWith('/api/supabase')) {
-      const SUPABASE_ORIGIN = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
-      
-      // /api/supabase စာသားကို ဖြုတ်ပြီး ကျန်လမ်းကြောင်းကို ရယူခြင်း
+      const SUPABASE_HOST = 'zyajlsrytjvwxqtpxrqd.supabase.co';
       const cleanPath = url.pathname.replace(/^\/api\/supabase/, '') || '/';
-      const targetUrl = SUPABASE_ORIGIN + cleanPath + url.search;
+      const targetUrl = `https://${SUPABASE_HOST}${cleanPath}${url.search}`;
 
-      // Header အသစ်တည်ဆောက်ပြီး HostHeader ကို Supabase သို့ ပြောင်းလဲခြင်း
+      // Headers ပြင်ဆင်ခြင်း
       const newHeaders = new Headers(request.headers);
-      newHeaders.set('Host', 'zyajlsrytjvwxqtpxrqd.supabase.co');
+      newHeaders.set('Host', SUPABASE_HOST);
+      
+      const clientIp = request.headers.get('CF-Connecting-IP');
+      if (clientIp) {
+        newHeaders.set('X-Forwarded-For', clientIp);
+      }
 
+      // Request Body ဆိုင်ရာ ပြင်ဆင်မှု
+      const hasBody = !['GET', 'HEAD'].includes(request.method);
       const proxyRequest = new Request(targetUrl, {
         method: request.method,
         headers: newHeaders,
-        body: ['GET', 'HEAD'].includes(request.method) ? null : request.body,
+        body: hasBody ? request.body : null,
         redirect: 'follow',
+        duplex: hasBody ? 'half' : undefined, // Stream body error မတက်စေရန်
       });
 
       const response = await fetch(proxyRequest);
 
-      // CORS Headers ထည့်သွင်းခြင်း
+      // Response Headers တွင် CORS ထည့်သွင်းခြင်း
       const resHeaders = new Headers(response.headers);
-      resHeaders.set('Access-Control-Allow-Origin', '*');
-      resHeaders.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS, PATCH');
-      resHeaders.set('Access-Control-Allow-Headers', '*');
+      for (const [key, value] of Object.entries(corsHeaders)) {
+        resHeaders.set(key, value);
+      }
 
       return new Response(response.body, {
         status: response.status,
@@ -48,8 +55,8 @@ export default {
       });
     }
 
-    // ၃။ Static Assets (HTML, CSS, JS ဖိုင်များ) ပို့ဆောင်ခြင်း
-    if (env && env.ASSETS) {
+    // ၄။ Static Assets (Cloudflare Pages / Workers Sites)
+    if (env?.ASSETS) {
       return env.ASSETS.fetch(request);
     }
 
