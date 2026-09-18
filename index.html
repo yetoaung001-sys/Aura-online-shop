@@ -28,10 +28,10 @@
         ✨ Aura Marketplace မှ နွေးထွေးစွာ ကြိုဆိုပါတယ်။ ဆိုင်ခွဲများမှ ပစ္စည်းများကို Package သီးခြားစီ အလိုအလျောက် ခွဲခြားပို့ဆောင်ပေးပါသည်။ ပစ္စည်းရောက်ရှိပြီး ၃ ရက်အတွင်း Unboxing Video ဖြင့် Return လျှောက်ထားနိုင်ပါသည်။
       </marquee>
       <div class="shrink-0 pl-4 flex items-center gap-2">
-        <button type="button" onclick="openSellerApplyModal()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition flex items-center gap-1">
+        <button type="button" onclick="openSellerApplyModal()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition flex items-center gap-1 cursor-pointer">
           <i class="ph-bold ph-storefront"></i> ဆိုင်ဖွင့်ရန် လျှောက်ထားမည်
         </button>
-        <button type="button" onclick="openPolicyModal()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition flex items-center gap-1">
+        <button type="button" onclick="openPolicyModal()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition flex items-center gap-1 cursor-pointer">
           <i class="ph-bold ph-shield-check"></i> Return Policy
         </button>
         <a href="seller.html" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition hidden sm:inline-block">Seller Center</a>
@@ -58,12 +58,12 @@
       </div>
 
       <div class="flex items-center gap-3">
-        <button type="button" onclick="openProfileModal()" class="flex items-center gap-2 bg-violet-50 text-violet-700 hover:bg-violet-100 px-3.5 py-2.5 rounded-2xl font-extrabold text-xs transition border border-violet-100 shadow-xs">
+        <button type="button" onclick="openProfileModal()" class="flex items-center gap-2 bg-violet-50 text-violet-700 hover:bg-violet-100 px-3.5 py-2.5 rounded-2xl font-extrabold text-xs transition border border-violet-100 shadow-xs cursor-pointer">
           <i class="ph-bold ph-user-circle text-base"></i>
           <span id="headerUserName" class="hidden sm:inline">အကောင့် / အော်ဒါများ</span>
         </button>
 
-        <button type="button" onclick="openCart()" class="relative p-3.5 bg-rose-50 text-rose-600 rounded-2xl hover:bg-rose-100 transition shadow-xs border border-rose-100">
+        <button type="button" onclick="openCart()" class="relative p-3.5 bg-rose-50 text-rose-600 rounded-2xl hover:bg-rose-100 transition shadow-xs border border-rose-100 cursor-pointer">
           <i class="ph-bold ph-shopping-bag-open text-xl"></i>
           <span id="cartBadge" class="absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black scale-0 transition-transform">0</span>
         </button>
@@ -88,7 +88,7 @@
     <div class="bg-white w-full max-w-md h-full flex flex-col p-6 shadow-2xl">
       <div class="flex justify-between items-center pb-4 border-b">
         <h3 class="font-black text-base text-slate-900">🛒 စျေးဝယ်တွန်းလှည်း</h3>
-        <button type="button" onclick="closeCart()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button>
+        <button type="button" onclick="closeCart()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
       <div class="py-3 border-b flex justify-between items-center text-xs bg-slate-50 px-3.5 rounded-2xl my-3">
         <div class="flex items-center gap-2.5">
@@ -100,12 +100,12 @@
       <div id="cartItems" class="flex-1 overflow-y-auto divide-y divide-slate-100 text-xs py-2 pr-1"></div>
       <div class="border-t pt-4 space-y-3 text-xs bg-white">
         <div class="flex justify-between text-sm font-black px-1"><span>စုစုပေါင်း (ပစ္စည်းတန်ဖိုး):</span><span id="cartTotal" class="text-rose-600 text-base">0 MMK</span></div>
-        <button type="button" onclick="openCheckout()" class="w-full bg-violet-600 hover:bg-violet-700 text-white py-3.5 rounded-2xl font-extrabold shadow-lg">ရွေးချယ်ထားသည်များ ဝယ်မည် (Checkout)</button>
+        <button type="button" onclick="openCheckout()" class="w-full bg-violet-600 hover:bg-violet-700 text-white py-3.5 rounded-2xl font-extrabold shadow-lg cursor-pointer">ရွေးချယ်ထားသည်များ ဝယ်မည် (Checkout)</button>
       </div>
     </div>
   </div>
 
-  <!-- CHECKOUT MODAL (LAZADA STYLE PACKAGE SPLIT PREVIEW) -->
+  <!-- CHECKOUT MODAL -->
   <div id="checkoutModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-xl rounded-3xl p-7 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -113,7 +113,7 @@
           <h3 class="font-black text-sm text-slate-900">📦 အော်ဒါအချက်အလက်နှင့် Package ခွဲထုတ်မှု</h3>
           <p class="text-[11px] text-slate-500 font-medium">ဆိုင်မတူသော ပစ္စည်းများကို သီးခြား Package များအဖြစ် ပို့ဆောင်ပါမည်</p>
         </div>
-        <button type="button" onclick="closeCheckout()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button>
+        <button type="button" onclick="closeCheckout()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
 
       <form onsubmit="handleSplitOrderSubmit(event)" class="space-y-4">
@@ -153,7 +153,7 @@
           <div class="flex justify-between text-sm font-black text-rose-600 border-t pt-1.5"><span>ကျသင့်ငွေ စုစုပေါင်း:</span><span id="summaryTotal">0 MMK</span></div>
         </div>
 
-        <button type="submit" id="submitOrderBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white py-3.5 rounded-2xl font-extrabold shadow-lg">အော်ဒါ အတည်ပြုမည်</button>
+        <button type="submit" id="submitOrderBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white py-3.5 rounded-2xl font-extrabold shadow-lg cursor-pointer">အော်ဒါ အတည်ပြုမည်</button>
       </form>
     </div>
   </div>
@@ -163,7 +163,7 @@
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-4">
         <h3 class="font-black text-sm text-slate-900">📦 ကုန်ပစ္စည်း အသေးစိတ်နှင့် ဝယ်ယူရန်</h3>
-        <button type="button" onclick="closeBuyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button>
+        <button type="button" onclick="closeBuyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
       <div class="space-y-3">
         <div class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-100"><img id="detailMainImg" src="" alt="Product Detail" class="w-full h-64 object-cover" /></div>
@@ -180,16 +180,16 @@
       <div id="sizeSelectionArea" class="space-y-2 hidden"><span class="font-bold text-slate-700 block">📏 Size ရွေးပါ:</span><div id="sizeOptionsList" class="flex flex-wrap gap-2"></div></div>
       <div id="colorSelectionArea" class="space-y-2 hidden"><span class="font-bold text-slate-700 block">🎨 Color ရွေးပါ:</span><div id="colorOptionsList" class="flex flex-wrap gap-2"></div></div>
       <div><label for="buyQty" class="font-bold block mb-1.5 text-slate-700">အရေအတွက်</label><input id="buyQty" type="number" min="1" value="1" class="w-full border border-slate-200 bg-slate-50 p-3 rounded-2xl outline-none font-bold text-slate-800" /></div>
-      <button type="button" onclick="confirmAddToCart()" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-bold py-3.5 rounded-2xl shadow-lg text-sm">ဈေးတောင်းထဲသို့ ထည့်မည်</button>
+      <button type="button" onclick="confirmAddToCart()" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-bold py-3.5 rounded-2xl shadow-lg text-sm cursor-pointer">ဈေးတောင်းထဲသို့ ထည့်မည်</button>
     </div>
   </div>
 
-  <!-- PROFILE & ORDERS MODAL (LAZADA PACKAGE CARDS VIEW) -->
+  <!-- PROFILE & ORDERS MODAL -->
   <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-xl rounded-3xl p-7 space-y-5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
         <h3 class="font-black text-sm text-slate-900">👤 ကျွန်ုပ်၏ အကောင့်နှင့် Package အော်ဒါများ</h3>
-        <button type="button" onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button>
+        <button type="button" onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
 
       <form onsubmit="handleProfileUpdate(event)" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
@@ -200,7 +200,7 @@
           <div><label for="profileTownship" class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label><input type="text" id="profileTownship" class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
         </div>
         <div><label for="profileAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="profileAddress" rows="2" class="w-full border p-2.5 rounded-xl bg-white outline-none"></textarea></div>
-        <button type="submit" id="updateProfileBtn" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl hover:bg-slate-800 transition">သိမ်းဆည်းမည်</button>
+        <button type="submit" id="updateProfileBtn" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl hover:bg-slate-800 transition cursor-pointer">သိမ်းဆည်းမည်</button>
       </form>
 
       <div class="space-y-3">
@@ -208,8 +208,8 @@
         <div id="customerOrdersContainer" class="space-y-3 max-h-80 overflow-y-auto pr-1"></div>
       </div>
       <div class="pt-3 border-t flex justify-between items-center">
-        <button type="button" onclick="handleCustomerLogout()" class="text-rose-600 font-bold hover:underline">🚪 အကောင့်ထွက်မည် (Logout)</button>
-        <button type="button" onclick="closeProfileModal()" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-xl font-bold">ပိတ်မည်</button>
+        <button type="button" onclick="handleCustomerLogout()" class="text-rose-600 font-bold hover:underline cursor-pointer">🚪 အကောင့်ထွက်မည် (Logout)</button>
+        <button type="button" onclick="closeProfileModal()" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-xl font-bold cursor-pointer">ပိတ်မည်</button>
       </div>
     </div>
   </div>
@@ -219,14 +219,14 @@
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
         <h3 class="font-black text-sm text-slate-900">📄 အော်ဒါအသေးစိတ်နှင့် အခြေအနေ စောင့်ကြည့်ရန်</h3>
-        <button type="button" onclick="closeOrderDetailModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button>
+        <button type="button" onclick="closeOrderDetailModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
       
       <div id="orderDetailContent" class="space-y-3"></div>
       <div id="returnRequestContainer"></div>
       <div id="shopRatingSection" class="hidden bg-amber-50/70 border border-amber-200 p-4 rounded-2xl space-y-2"></div>
 
-      <button type="button" onclick="closeOrderDetailModal()" class="w-full bg-slate-900 text-white py-3 rounded-2xl font-bold">ပိတ်မည်</button>
+      <button type="button" onclick="closeOrderDetailModal()" class="w-full bg-slate-900 text-white py-3 rounded-2xl font-bold cursor-pointer">ပိတ်မည်</button>
     </div>
   </div>
 
@@ -243,7 +243,7 @@
             <p class="text-[11px] text-slate-500 font-medium">Aura Marketplace တွင် သင့်ဆိုင်ခွဲဖွင့်လှစ်ပြီး ရောင်းချပါ</p>
           </div>
         </div>
-        <button type="button" onclick="closeSellerApplyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200">
+        <button type="button" onclick="closeSellerApplyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-500 hover:bg-slate-200 cursor-pointer">
           <i class="ph ph-x text-base"></i>
         </button>
       </div>
@@ -262,7 +262,7 @@
         </div>
         <div><label for="applyPaymentInfo" class="font-bold text-slate-700 block mb-1">KBZPay / WavePay *</label><input type="text" id="applyPaymentInfo" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
         <div><label for="applyAddress" class="font-bold text-slate-700 block mb-1">လိပ်စာ / မြို့နယ် *</label><textarea id="applyAddress" rows="2" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none"></textarea></div>
-        <button type="submit" id="applySubmitBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3 rounded-2xl shadow-lg transition">လျှောက်ထားလွှာ ပေးပို့မည်</button>
+        <button type="submit" id="applySubmitBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3 rounded-2xl shadow-lg transition cursor-pointer">လျှောက်ထားလွှာ ပေးပို့မည်</button>
       </form>
     </div>
   </div>
@@ -277,7 +277,7 @@
           </div>
           <h3 class="font-extrabold text-sm text-slate-900">Aura Return & Refund Policy</h3>
         </div>
-        <button type="button" onclick="closePolicyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button>
+        <button type="button" onclick="closePolicyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
       <div class="space-y-3 text-slate-600 leading-relaxed">
         <div class="p-3 bg-amber-50 border border-amber-200 rounded-2xl text-amber-800 font-bold">
@@ -291,7 +291,7 @@
           </ul>
         </div>
       </div>
-      <button type="button" onclick="closePolicyModal()" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl">နားလည်သဘောတူပါသည်</button>
+      <button type="button" onclick="closePolicyModal()" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl cursor-pointer">နားလည်သဘောတူပါသည်</button>
     </div>
   </div>
 
@@ -300,7 +300,7 @@
     <div class="bg-white w-full max-w-md rounded-3xl p-7 space-y-5 text-xs shadow-2xl">
       <div class="flex justify-between items-center border-b pb-3">
         <h3 id="authModalTitle" class="font-extrabold text-sm text-slate-900">🔐 အကောင့်ဝင်ရန် (Customer Login)</h3>
-        <button type="button" onclick="closeAuthModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center"><i class="ph ph-x text-base"></i></button>
+        <button type="button" onclick="closeAuthModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
       <form onsubmit="handleCustomerAuth(event)" class="space-y-3.5">
         <div id="authNameField" class="hidden">
@@ -315,10 +315,10 @@
           <label for="authPassword" class="font-bold block mb-1 text-slate-700">စကားဝှက် (Password) *</label>
           <input type="password" id="authPassword" required placeholder="အနည်းဆုံး ၆ လုံး" class="w-full border border-slate-200 p-3 rounded-2xl outline-none bg-slate-50 font-medium" />
         </div>
-        <button type="submit" id="authSubmitBtn" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3.5 rounded-2xl shadow-lg transition">အကောင့်ဝင်မည်</button>
+        <button type="submit" id="authSubmitBtn" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3.5 rounded-2xl shadow-lg transition cursor-pointer">အကောင့်ဝင်မည်</button>
       </form>
       <div class="text-center pt-2 border-t">
-        <button type="button" onclick="toggleAuthMode()" id="authToggleBtn" class="text-violet-600 font-bold hover:underline">အကောင့်မရှိသေးပါက အသစ်စာရင်းသွင်းရန် (Sign Up)</button>
+        <button type="button" onclick="toggleAuthMode()" id="authToggleBtn" class="text-violet-600 font-bold hover:underline cursor-pointer">အကောင့်မရှိသေးပါက အသစ်စာရင်းသွင်းရန် (Sign Up)</button>
       </div>
     </div>
   </div>
@@ -338,7 +338,7 @@
     let isSignupMode = false, searchQuery = '';
     let currentRatingOrderId = null, currentRatingShopId = null, currentSelectedStars = 5;
 
-    function esc(v){return String(v??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]));}
+    function esc(v){ return String(v ?? '').replace(/[&<>"']/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[m])); }
 
     function validateFileSize(file, maxMb, label) {
       if (file.size > maxMb * 1024 * 1024) {
@@ -463,18 +463,18 @@
         return `
           <div class="bg-white rounded-3xl border border-slate-100 p-3.5 flex flex-col justify-between hover:shadow-xl transition duration-300 group shadow-xs">
             <div>
-              <div class="relative cursor-pointer overflow-hidden rounded-2xl bg-slate-100 mb-3" onclick='openBuyModal(${JSON.stringify(p)})'>
+              <div class="relative cursor-pointer overflow-hidden rounded-2xl bg-slate-100 mb-3" onclick="openBuyModalById(${p.id})">
                 <img src="${image}" alt="${esc(p.title || p.name)}" class="w-full h-40 sm:h-48 object-cover group-hover:scale-105 transition duration-500" />
                 ${hasDiscount ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-black uppercase shadow-md">${discountPercent}% OFF</span>` : ''}
               </div>
-              <h4 class="font-bold text-xs text-slate-800 line-clamp-2 cursor-pointer" onclick='openBuyModal(${JSON.stringify(p)})'>${esc(p.title || p.name)}</h4>
+              <h4 class="font-bold text-xs text-slate-800 line-clamp-2 cursor-pointer" onclick="openBuyModalById(${p.id})">${esc(p.title || p.name)}</h4>
               <div class="mt-2 flex items-baseline gap-2 flex-wrap">
                 <span class="text-base font-black text-rose-600">${displayPrice.toLocaleString()} MMK</span>
                 ${hasDiscount ? `<span class="text-[11px] font-bold text-slate-400 line-through">${originalPrice.toLocaleString()} MMK</span>` : ''}
               </div>
             </div>
-            <button type="button" onclick='openBuyModal(${JSON.stringify(p)})' ${stock<=0?'disabled':''} class="mt-4 w-full ${stock<=0?'bg-slate-200 text-slate-400 cursor-not-allowed':'bg-slate-900 hover:bg-violet-600 text-white'} py-2.5 rounded-2xl text-xs font-bold transition shadow-xs">
-              ${stock<=0?'ကုန်နေပါသည်':'အသေးစိတ်ကြည့်မည်'}
+            <button type="button" onclick="openBuyModalById(${p.id})" ${stock <= 0 ? 'disabled' : ''} class="mt-4 w-full ${stock <= 0 ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-slate-900 hover:bg-violet-600 text-white cursor-pointer'} py-2.5 rounded-2xl text-xs font-bold transition shadow-xs">
+              ${stock <= 0 ? 'ကုန်နေပါသည်' : 'အသေးစိတ်ကြည့်မည်'}
             </button>
           </div>
         `;
@@ -483,12 +483,17 @@
 
     function handleSearch(val) { searchQuery = val.trim().toLowerCase(); renderProducts(); }
 
+    function openBuyModalById(productId) {
+      const product = products.find(p => Number(p.id) === Number(productId));
+      if (product) openBuyModal(product);
+    }
+
     function openBuyModal(product) {
       selectedProductForBuy = product; chosenSize = ''; chosenColor = '';
       const imgs = product.images || (product.image ? [product.image] : ['https://placehold.co/300']);
       document.getElementById('detailMainImg').src = imgs[0];
       document.getElementById('detailThumbnails').innerHTML = imgs.map((img, idx) => `
-        <img src="${img}" alt="Thumb" onclick="document.getElementById('detailMainImg').src='${img}'" class="w-14 h-14 object-cover rounded-xl border-2 ${idx===0?'border-violet-600':'border-slate-200'} cursor-pointer" />
+        <img src="${img}" alt="Thumb" onclick="document.getElementById('detailMainImg').src='${img}'" class="w-14 h-14 object-cover rounded-xl border-2 ${idx === 0 ? 'border-violet-600' : 'border-slate-200'} cursor-pointer" />
       `).join('');
 
       document.getElementById('detailTitle').innerText = product.title || product.name || '';
@@ -505,16 +510,16 @@
       stockBadge.innerText = stock > 0 ? `📦 လက်ကျန်: ${stock} ခု` : `❌ ကုန်နေပါသည်`;
 
       const sizeArea = document.getElementById('sizeSelectionArea');
-      if (product.sizes && product.sizes.length > 0) {
+      if (product.sizes?.length) {
         sizeArea.classList.remove('hidden');
-        document.getElementById('sizeOptionsList').innerHTML = product.sizes.map((s, idx) => `<button type="button" onclick="selectSize('${s}', this)" class="size-btn px-3.5 py-1.5 rounded-xl border font-bold text-xs ${idx===0?'border-violet-600 bg-violet-50 text-violet-700':'border-slate-200 bg-slate-50'}">${s}</button>`).join('');
+        document.getElementById('sizeOptionsList').innerHTML = product.sizes.map((s, idx) => `<button type="button" onclick="selectSize('${s}', this)" class="size-btn px-3.5 py-1.5 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-violet-600 bg-violet-50 text-violet-700' : 'border-slate-200 bg-slate-50'}">${s}</button>`).join('');
         chosenSize = product.sizes[0];
       } else sizeArea.classList.add('hidden');
 
       const colorArea = document.getElementById('colorSelectionArea');
-      if (product.colors && product.colors.length > 0) {
+      if (product.colors?.length) {
         colorArea.classList.remove('hidden');
-        document.getElementById('colorOptionsList').innerHTML = product.colors.map((c, idx) => `<button type="button" onclick="selectColor('${c}', this)" class="color-btn px-3.5 py-1.5 rounded-xl border font-bold text-xs ${idx===0?'border-violet-600 bg-violet-50 text-violet-700':'border-slate-200 bg-slate-50'}">${c}</button>`).join('');
+        document.getElementById('colorOptionsList').innerHTML = product.colors.map((c, idx) => `<button type="button" onclick="selectColor('${c}', this)" class="color-btn px-3.5 py-1.5 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-violet-600 bg-violet-50 text-violet-700' : 'border-slate-200 bg-slate-50'}">${c}</button>`).join('');
         chosenColor = product.colors[0];
       } else colorArea.classList.add('hidden');
 
@@ -582,7 +587,7 @@
             <div class="text-[10px] text-slate-500">${esc(i.shop_name)} · Size: ${esc(i.selectedSize || '-')} | Color: ${esc(i.selectedColor || '-')}</div>
             <div class="text-rose-600 font-extrabold mt-0.5">${i.price.toLocaleString()} Ks x ${i.qty}</div>
           </div>
-          <button type="button" onclick="cart.splice(${idx}, 1); saveCart(); updateCartUI();" class="text-rose-500 p-2"><i class="ph ph-trash text-base"></i></button>
+          <button type="button" onclick="cart.splice(${idx}, 1); saveCart(); updateCartUI();" class="text-rose-500 p-2 cursor-pointer"><i class="ph ph-trash text-base"></i></button>
         </div>
       `).join('');
     }
@@ -590,7 +595,6 @@
     function openCart(){ document.getElementById('cartModal').classList.remove('hidden'); document.getElementById('cartModal').classList.add('flex'); }
     function closeCart(){ document.getElementById('cartModal').classList.add('hidden'); document.getElementById('cartModal').classList.remove('flex'); }
 
-    // 🌟 CART AUTO-SPLIT LOGIC PER SHOP
     function splitCartByShop(selectedItems) {
       const groups = {};
       selectedItems.forEach(item => {
@@ -799,11 +803,16 @@
             <div class="font-bold text-slate-800">ဆိုင်: ${esc(o.shops?.name || 'Aura Store')}</div>
             <div class="flex justify-between items-center border-t pt-2 text-slate-600">
               <span>ကျသင့်ငွေ: <b class="text-slate-900">${Number(o.total_amount).toLocaleString()} MMK</b></span>
-              <button type="button" onclick='openOrderDetail(${JSON.stringify(o)})' class="bg-slate-900 hover:bg-violet-600 text-white px-3 py-1.5 rounded-xl font-bold text-[10px] transition">အသေးစိတ်ကြည့်ရန်</button>
+              <button type="button" onclick="openOrderDetailById(${o.id})" class="bg-slate-900 hover:bg-violet-600 text-white px-3 py-1.5 rounded-xl font-bold text-[10px] transition cursor-pointer">အသေးစိတ်ကြည့်ရန်</button>
             </div>
           </div>
         `;
       }).join('');
+    }
+
+    async function openOrderDetailById(orderId) {
+      const { data: order, error } = await client.from('orders').select('*, shops(name)').eq('id', orderId).single();
+      if (!error && order) openOrderDetail(order);
     }
 
     function openOrderDetail(order) {
@@ -820,7 +829,7 @@
             <div class="flex justify-between font-bold items-center"><span>အခြေအနေ:</span><div class="text-right"><span class="text-emerald-600 uppercase font-black">${status}</span><div>${daysLeftHTML}</div></div></div>
             <div class="flex justify-between font-bold"><span>မှာယူသည့်ရက်စွဲ:</span> <span>${new Date(order.created_at).toLocaleString()}</span></div>
           </div>
-          ${status === 'shipping' ? `<div class="p-3 bg-indigo-50 border border-indigo-200 rounded-2xl text-center space-y-2"><p class="text-[11px] text-indigo-700 font-bold">ပစ္စည်းလက်ခံရရှိပါက အတည်ပြုပေးပါရန်-</p><button type="button" onclick="confirmOrderReceived(${order.id})" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-extrabold text-xs shadow-md transition">✅ ပစ္စည်းလက်ခံရရှိပါပြီ</button></div>` : ''}
+          ${status === 'shipping' ? `<div class="p-3 bg-indigo-50 border border-indigo-200 rounded-2xl text-center space-y-2"><p class="text-[11px] text-indigo-700 font-bold">ပစ္စည်းလက်ခံရရှိပါက အတည်ပြုပေးပါရန်-</p><button type="button" onclick="confirmOrderReceived(${order.id})" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-extrabold text-xs shadow-md transition cursor-pointer">✅ ပစ္စည်းလက်ခံရရှိပါပြီ</button></div>` : ''}
           <div class="space-y-1"><span class="font-bold text-slate-700">ကုန်ပစ္စည်းများ:</span>
             <div class="max-h-40 overflow-y-auto divide-y border rounded-xl p-2 bg-slate-50">
               ${items.map(i => `<div class="py-2 flex justify-between items-center text-[11px]"><div><b>${esc(i.title)}</b> <span class="text-slate-500">(Size: ${esc(i.selectedSize \vert{}\vert{} '-')}, Color:${esc(i.selectedColor || '-')})</span> x ${i.qty}</div><div class="font-bold text-slate-900">${(Number(i.price)*i.qty).toLocaleString()} MMK</div></div>`).join('')}
@@ -843,14 +852,14 @@
           <div class="p-3.5 bg-rose-50 border border-rose-200 rounded-2xl space-y-2 text-xs">
             <div class="flex justify-between items-center">
               <span class="font-extrabold text-rose-800 block">⚠️ ပစ္စည်းချို့ယွင်းချက်ရှိပါက Return လျှောက်ထားရန်</span>
-              <button type="button" onclick="document.getElementById('returnForm').classList.toggle('hidden')" class="text-rose-600 font-bold underline">လျှောက်ထားမည်</button>
+              <button type="button" onclick="document.getElementById('returnForm').classList.toggle('hidden')" class="text-rose-600 font-bold underline cursor-pointer">လျှောက်ထားမည်</button>
             </div>
             <div id="returnForm" class="hidden space-y-3 pt-2 border-t border-rose-200">
               <div><label class="block font-bold text-slate-700 mb-1">အကြောင်းပြချက် အမျိုးအစား *</label><select id="returnReasonType" class="w-full border p-2 rounded-xl bg-white outline-none"><option value="damaged">ပစ္စည်း ကျိုးပဲ့/ပျက်စီးနေခြင်း</option><option value="wrong_item">ပစ္စည်း/Size/Color မှားနေခြင်း</option><option value="missing">ပစ္စည်း မပြည့်စုံခြင်း</option></select></div>
               <div><label class="block font-bold text-slate-700 mb-1">ချို့ယွင်းချက် အသေးစိတ် *</label><textarea id="returnReasonDetail" rows="2" class="w-full border p-2 rounded-xl bg-white outline-none"></textarea></div>
               <div><label class="block font-bold text-rose-700 mb-1">📹 Unboxing Video * (Max 30MB)</label><input type="file" id="returnVideoFile" accept="video/*" class="w-full border p-2 rounded-xl bg-white text-[11px]" /></div>
               <div><label class="block font-bold text-rose-700 mb-1">📸 ဓာတ်ပုံများ (အများဆုံး ၃ ပုံ၊ Max 5MB/each) *</label><input type="file" id="returnPhotoFiles" accept="image/*" multiple class="w-full border p-2 rounded-xl bg-white text-[11px]" /></div>
-              <button type="button" id="submitReturnBtn" onclick="submitReturnRequest()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl shadow-xs">Return လျှောက်ထားလွှာ တင်မည်</button>
+              <button type="button" id="submitReturnBtn" onclick="submitReturnRequest()" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-bold py-2.5 rounded-xl shadow-xs cursor-pointer">Return လျှောက်ထားလွှာ တင်မည်</button>
             </div>
           </div>`;
       } else if (status === 'completed' && !isWithin3Days) {
@@ -947,7 +956,7 @@
             <i class="ph-fill ph-star star-btn" data-val="1" onclick="setRating(1)"></i><i class="ph-fill ph-star star-btn" data-val="2" onclick="setRating(2)"></i><i class="ph-fill ph-star star-btn" data-val="3" onclick="setRating(3)"></i><i class="ph-fill ph-star star-btn" data-val="4" onclick="setRating(4)"></i><i class="ph-fill ph-star star-btn" data-val="5" onclick="setRating(5)"></i>
           </div>
           <div><textarea id="shopReviewText" rows="2" class="w-full border border-amber-200 rounded-xl p-2.5 bg-white outline-none font-medium text-xs"></textarea></div>
-          <button type="button" onclick="submitShopRating()" class="bg-amber-600 text-white font-bold px-4 py-2 rounded-xl text-xs">Rating ပေးပို့မည်</button>
+          <button type="button" onclick="submitShopRating()" class="bg-amber-600 text-white font-bold px-4 py-2 rounded-xl text-xs cursor-pointer">Rating ပေးပို့မည်</button>
         `; setRating(5);
       }
     }
