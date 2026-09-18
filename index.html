@@ -505,14 +505,14 @@
       stockBadge.innerText = stock > 0 ? `📦 လက်ကျန်: ${stock} ခု` : `❌ ကုန်နေပါသည်`;
 
       const sizeArea = document.getElementById('sizeSelectionArea');
-      if (product.sizes?.length) {
+      if (product.sizes && product.sizes.length > 0) {
         sizeArea.classList.remove('hidden');
         document.getElementById('sizeOptionsList').innerHTML = product.sizes.map((s, idx) => `<button type="button" onclick="selectSize('${s}', this)" class="size-btn px-3.5 py-1.5 rounded-xl border font-bold text-xs ${idx===0?'border-violet-600 bg-violet-50 text-violet-700':'border-slate-200 bg-slate-50'}">${s}</button>`).join('');
         chosenSize = product.sizes[0];
       } else sizeArea.classList.add('hidden');
 
       const colorArea = document.getElementById('colorSelectionArea');
-      if (product.colors?.length) {
+      if (product.colors && product.colors.length > 0) {
         colorArea.classList.remove('hidden');
         document.getElementById('colorOptionsList').innerHTML = product.colors.map((c, idx) => `<button type="button" onclick="selectColor('${c}', this)" class="color-btn px-3.5 py-1.5 rounded-xl border font-bold text-xs ${idx===0?'border-violet-600 bg-violet-50 text-violet-700':'border-slate-200 bg-slate-50'}">${c}</button>`).join('');
         chosenColor = product.colors[0];
@@ -579,7 +579,7 @@
           <img src="${i.image}" alt="Item" class="w-12 h-12 rounded-xl object-cover border" />
           <div class="flex-1">
             <h5 class="font-bold line-clamp-1">${esc(i.title)}</h5>
-            <div class="text-[10px] text-slate-500">${esc(i.shop_name)} · Size: ${i.selectedSize || '-'} | Color: ${i.selectedColor || '-'}</div>
+            <div class="text-[10px] text-slate-500">${esc(i.shop_name)} · Size: ${esc(i.selectedSize || '-')} | Color: ${esc(i.selectedColor || '-')}</div>
             <div class="text-rose-600 font-extrabold mt-0.5">${i.price.toLocaleString()} Ks x ${i.qty}</div>
           </div>
           <button type="button" onclick="cart.splice(${idx}, 1); saveCart(); updateCartUI();" class="text-rose-500 p-2"><i class="ph ph-trash text-base"></i></button>
@@ -823,13 +823,14 @@
           ${status === 'shipping' ? `<div class="p-3 bg-indigo-50 border border-indigo-200 rounded-2xl text-center space-y-2"><p class="text-[11px] text-indigo-700 font-bold">ပစ္စည်းလက်ခံရရှိပါက အတည်ပြုပေးပါရန်-</p><button type="button" onclick="confirmOrderReceived(${order.id})" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-extrabold text-xs shadow-md transition">✅ ပစ္စည်းလက်ခံရရှိပါပြီ</button></div>` : ''}
           <div class="space-y-1"><span class="font-bold text-slate-700">ကုန်ပစ္စည်းများ:</span>
             <div class="max-h-40 overflow-y-auto divide-y border rounded-xl p-2 bg-slate-50">
-              ${items.map(i => `<div class="py-2 flex justify-between items-center text-[11px]"><div><b>${esc(i.title)}</b> <span class="text-slate-500">(Size: ${i.selectedSize\vert{}\vert{}'-'}, Color:${i.selectedColor||'-'})</span> x ${i.qty}</div><div class="font-bold text-slate-900">${(Number(i.price)*i.qty).toLocaleString()} MMK</div></div>`).join('')}
+              ${items.map(i => `<div class="py-2 flex justify-between items-center text-[11px]"><div><b>${esc(i.title)}</b> <span class="text-slate-500">(Size: ${esc(i.selectedSize \vert{}\vert{} '-')}, Color:${esc(i.selectedColor || '-')})</span> x ${i.qty}</div><div class="font-bold text-slate-900">${(Number(i.price)*i.qty).toLocaleString()} MMK</div></div>`).join('')}
             </div>
           </div>
         </div>
       `;
 
-      currentRatingOrderId = order.id; currentRatingShopId = order.shop_id || null;
+      currentRatingOrderId = order.id; 
+      currentRatingShopId = order.shop_id || null;
       const completedTime = order.completed_at ? new Date(order.completed_at) : (order.updated_at ? new Date(order.updated_at) : new Date(order.created_at));
       const isWithin3Days = ((new Date() - completedTime) / (1000 * 60 * 60)) <= 72;
 
@@ -854,10 +855,13 @@
           </div>`;
       } else if (status === 'completed' && !isWithin3Days) {
         returnContainer.innerHTML = `<div class="p-2.5 bg-slate-100 rounded-xl text-slate-500 font-bold text-[11px] text-center">🔒 ၃ ရက်ပြည့်သွားပြီဖြစ်၍ Return သက်တမ်း ကုန်ဆုံးသွားပါပြီ။</div>`;
-      } else { returnContainer.innerHTML = ''; }
+      } else { 
+        returnContainer.innerHTML = ''; 
+      }
 
       checkExistingRating(order.id, currentRatingShopId, status);
-      document.getElementById('orderDetailModal').classList.remove('hidden'); document.getElementById('orderDetailModal').classList.add('flex');
+      document.getElementById('orderDetailModal').classList.remove('hidden'); 
+      document.getElementById('orderDetailModal').classList.add('flex');
     }
 
     async function submitReturnRequest() {
