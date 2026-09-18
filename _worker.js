@@ -18,8 +18,9 @@ export default {
     // ၃။ Supabase Reverse Proxy
     if (url.pathname.startsWith('/api/supabase')) {
       const SUPABASE_HOST = 'zyajlsrytjvwxqtpxrqd.supabase.co';
-      const cleanPath = url.pathname.replace(/^\/api\/supabase/, '') || '/';
-      const targetUrl = `https://${SUPABASE_HOST}${cleanPath}${url.search}`;
+      const cleanPath = url.pathname.replace(/^\/api\/supabase/, '') || '';
+      const finalPath = cleanPath.startsWith('/') ? cleanPath : '/' + cleanPath;
+      const targetUrl = `https://zyajlsrytjvwxqtpxrqd.supabase.co${finalPath}${url.search}`;
 
       // Headers ပြင်ဆင်ခြင်း
       const newHeaders = new Headers(request.headers);
