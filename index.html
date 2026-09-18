@@ -785,24 +785,28 @@
       const { data: orders } = await client.from('orders').select('*, shops(name)').eq('customer_id', userId).order('id', { ascending: false });
 
       if (!orders || !orders.length) {
-        container.innerHTML = '<div class="text-center py-4 text-slate-400">အော်ဒါ မရှိသေးပါ</div>'; return;
+        container.innerHTML = '<div class="text-center py-4 text-slate-400">အော်ဒါ မရှိသေးပါ</div>'; 
+        return;
       }
 
       container.innerHTML = orders.map((o) => {
         const status = o.status || 'pending';
         const daysLeftHTML = status === 'shipping' ? calculateDaysLeft(o.shipped_at) : '';
+        const shopName = o.shops && o.shops.name ? o.shops.name : 'Aura Store';
+        const totalAmount = Number(o.total_amount || o.total || 0).toLocaleString();
+
         return `
           <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2 text-xs">
             <div class="flex justify-between items-center">
               <span class="font-mono font-bold text-violet-700">Order #${o.id}</span>
               <div class="text-right">
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold ${status==='return_pending'?'bg-rose-50 text-rose-600':status==='refunded'?'bg-amber-50 text-amber-600':'bg-indigo-50 text-indigo-600'}">${status.toUpperCase()}</span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold ${status === 'return_pending' ? 'bg-rose-50 text-rose-600' : status === 'refunded' ? 'bg-amber-50 text-amber-600' : 'bg-indigo-50 text-indigo-600'}">${status.toUpperCase()}</span>
                 <div class="mt-0.5">${daysLeftHTML}</div>
               </div>
             </div>
-            <div class="font-bold text-slate-800">ဆိုင်: ${esc(o.shops?.name || 'Aura Store')}</div>
+            <div class="font-bold text-slate-800">ဆိုင်: ${esc(shopName)}</div>
             <div class="flex justify-between items-center border-t pt-2 text-slate-600">
-              <span>ကျသင့်ငွေ: <b class="text-slate-900">${Number(o.total_amount).toLocaleString()} MMK</b></span>
+              <span>ကျသင့်ငွေ: <b class="text-slate-900">${totalAmount} MMK</b></span>
               <button type="button" onclick="openOrderDetailById(${o.id})" class="bg-slate-900 hover:bg-violet-600 text-white px-3 py-1.5 rounded-xl font-bold text-[10px] transition cursor-pointer">အသေးစိတ်ကြည့်ရန်</button>
             </div>
           </div>
@@ -818,9 +822,29 @@
     function openOrderDetail(order) {
       const content = document.getElementById('orderDetailContent');
       const returnContainer = document.getElementById('returnRequestContainer');
-      const items = order.items || [];
+      const items = Array.isArray(order.items) ? order.items : [];
       const status = order.status || 'pending';
       const daysLeftHTML = status === 'shipping' ? calculateDaysLeft(order.shipped_at) : '';
+
+      let itemsListHtml = '';
+      items.forEach((i) => {
+        const itemTitle = esc(i.title || i.name || 'Product');
+        const itemSize = esc(i.selectedSize || '-');
+        const itemColor = esc(i.selectedColor || '-');
+        const itemPrice = Number(i.price || 0);
+        const itemQty = Number(i.qty || 1);
+        const sub = (itemPrice * itemQty).toLocaleString();
+
+        itemsListHtml += `
+          <div class="py-2 flex justify-between items-center text-[11px]">
+            <div>
+              <b>${itemTitle}</b> 
+              <span class="text-slate-500">(Size: ${itemSize}, Color: ${itemColor})</span> x ${itemQty}
+            </div>
+            <div class="font-bold text-slate-900">${sub} MMK</div>
+          </div>
+        `;
+      });
 
       content.innerHTML = `
         <div class="space-y-3">
@@ -832,7 +856,7 @@
           ${status === 'shipping' ? `<div class="p-3 bg-indigo-50 border border-indigo-200 rounded-2xl text-center space-y-2"><p class="text-[11px] text-indigo-700 font-bold">ပစ္စည်းလက်ခံရရှိပါက အတည်ပြုပေးပါရန်-</p><button type="button" onclick="confirmOrderReceived(${order.id})" class="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2.5 rounded-xl font-extrabold text-xs shadow-md transition cursor-pointer">✅ ပစ္စည်းလက်ခံရရှိပါပြီ</button></div>` : ''}
           <div class="space-y-1"><span class="font-bold text-slate-700">ကုန်ပစ္စည်းများ:</span>
             <div class="max-h-40 overflow-y-auto divide-y border rounded-xl p-2 bg-slate-50">
-              ${items.map(i => `<div class="py-2 flex justify-between items-center text-[11px]"><div><b>${esc(i.title)}</b> <span class="text-slate-500">(Size: ${esc(i.selectedSize \vert{}\vert{} '-')}, Color:${esc(i.selectedColor || '-')})</span> x ${i.qty}</div><div class="font-bold text-slate-900">${(Number(i.price)*i.qty).toLocaleString()} MMK</div></div>`).join('')}
+              ${itemsListHtml || '<div class="py-2 text-center text-slate-400">ပစ္စည်းစာရင်း မရှိပါ</div>'}
             </div>
           </div>
         </div>
