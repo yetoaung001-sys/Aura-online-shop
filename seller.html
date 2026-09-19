@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aura Platform - Seller Center Dashboard</title>
 
-  <!-- Global Reverse Proxy URL Rewriter -->
+  <!-- Global Reverse Proxy URL Rewriter (Storage Timeout ကာကွယ်ခြင်း) -->
   <script>
     (function() {
       const SUPABASE_ORIGIN = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
@@ -241,7 +241,7 @@
       </div>
     </section>
 
-    <!-- SETTINGS TAB (TOWNSHIP & NOTICE BOARD တိုက်ရိုက် UPDATE ပြုလုပ်ခြင်း) -->
+    <!-- SETTINGS TAB (TOWNSHIP, DELI, NOTICE BOARD) -->
     <section id="section-settings" class="tab-content hidden space-y-4 max-w-xl">
       <form onsubmit="handleSaveSellerSettings(event)" class="bg-white p-6 rounded-2xl shadow-sm border space-y-4 text-xs">
         <h3 class="font-bold text-slate-800 text-base border-b pb-2">ဆိုင်ခွဲ အချက်အလက်၊ ပို့ခ နှင့် Notice Board</h3>
@@ -264,8 +264,8 @@
 
         <div>
           <label class="font-bold block text-slate-700 mb-1">ဆိုင်တည်ရှိရာ မြို့နယ် (Township) *</label>
-          <input type="text" id="shopTownshipInput" required placeholder="ဥပမာ - မန္တလေး၊ လှိုင်သာယာ၊ စမ်းချောင်း" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-bold text-violet-700" />
-          <span class="text-[10px] text-slate-400 mt-0.5 block">ဝယ်သူသည် ဤမြို့နယ်ကို ရွေးချယ်ပါက မြို့တွင်းပို့ခဖြင့် Auto တွက်ပေးပါမည်</span>
+          <input type="text" id="shopTownshipInput" required placeholder="ဥပမာ - ရေး၊ မော်လမြိုင်၊ လှိုင်သာယာ" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-bold text-violet-700" />
+          <span class="text-[10px] text-slate-400 mt-0.5 block">ဝယ်သူသည် ဤမြို့နယ်ကို ရိုက်ထည့်ပါက မြို့တွင်းပို့ခဖြင့် Auto တွက်ပေးပါမည်</span>
         </div>
 
         <div>
@@ -474,7 +474,7 @@
       loadSellerOrders();
     }
 
-    // PRODUCTS CRUD (LOAD, ADD, EDIT, DELETE)
+    // PRODUCTS CRUD
     async function loadSellerProducts() {
       if (!currentShop) return;
       const tbody = document.getElementById('seller-products-tbody');
@@ -571,7 +571,7 @@
       loadSellerProducts();
     }
 
-    // BANNERS (LOAD, ADD, DELETE)
+    // BANNERS
     async function loadSellerBanners() {
       if (!currentShop) return;
       const container = document.getElementById('seller-banners-container');
@@ -668,7 +668,7 @@
       `).join('');
     }
 
-    // SAVE SETTINGS (TOWNSHIP & NOTICE BOARD အချက်အလက်များ သေချာစွာ UPDATE လုပ်ခြင်း)
+    // SAVE SETTINGS (CANNOT COERCE TO SINGLE JSON OBJECT ERROR ပြေလည်စေရန် ပြင်ဆင်ထားသည်)
     async function handleSaveSellerSettings(e) {
       e.preventDefault();
       if (!currentShop) return alert('ဆိုင်အချက်အလက် မတွေ့ပါ');
@@ -690,9 +690,13 @@
           .update(updatePayload)
           .eq('id', currentShop.id)
           .select()
-          .single();
+          .maybeSingle();
 
         if (error) throw error;
+
+        if (!data) {
+          throw new Error('Database တွင် ပြင်ဆင်ခွင့် မရှိပါ (Supabase RLS Policy စစ်ဆေးပေးပါ)');
+        }
 
         currentShop = data;
         alert('✅ ဆိုင် ဆက်တင်များ၊ မြို့နယ်နှင့် Notice Board အချက်အလက်များ အောင်မြင်စွာ သိမ်းဆည်းပြီးပါပြီ');
