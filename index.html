@@ -53,11 +53,6 @@
     body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    @media print {
-      body * { visibility: hidden; }
-      #printableInvoiceArea, #printableInvoiceArea * { visibility: visible; }
-      #printableInvoiceArea { position: absolute; left: 0; top: 0; width: 100%; }
-    }
   </style>
 </head>
 <body class="pb-24">
@@ -80,7 +75,7 @@
     </div>
   </div>
 
-  <!-- HEADER (Mobile Optimized) -->
+  <!-- HEADER -->
   <header class="bg-white/90 backdrop-blur-md border-b border-slate-100 sticky top-0 z-40 shadow-xs">
     <div class="max-w-7xl mx-auto px-3 sm:px-4 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
       <div class="flex items-center gap-2 cursor-pointer group shrink-0" onclick="location.reload()">
@@ -93,13 +88,11 @@
         </div>
       </div>
 
-      <!-- Search Input -->
       <div class="flex-1 max-w-xl relative">
         <input type="text" id="searchInput" oninput="handleSearch(this.value)" autocomplete="off" placeholder="ရှာဖွေရန်..." class="w-full pl-9 sm:pl-11 pr-3 py-2.5 sm:py-3 bg-slate-100 border border-slate-200 rounded-xl sm:rounded-2xl text-xs outline-none focus:bg-white focus:border-violet-600 transition font-medium" />
         <i class="ph ph-magnifying-glass absolute left-3 top-3 sm:top-3.5 text-slate-400 text-sm sm:text-base"></i>
       </div>
 
-      <!-- Action Buttons -->
       <div class="flex items-center gap-2 shrink-0">
         <button type="button" onclick="openProfileModal()" class="p-2.5 sm:px-3 sm:py-2.5 bg-violet-50 text-violet-700 rounded-xl sm:rounded-2xl font-bold text-xs flex items-center gap-1.5 transition border border-violet-100 cursor-pointer">
           <i class="ph-bold ph-user-circle text-base sm:text-lg"></i>
@@ -125,7 +118,6 @@
       <span id="productCountBadge" class="text-[11px] sm:text-xs font-extrabold bg-violet-50 text-violet-700 px-3 py-1.5 rounded-xl border border-violet-100">Loading...</span>
     </div>
 
-    <!-- Product Grid (Mobile မှာ 2 column အပြည့်အလှပဆုံးပေါ်စေရန်) -->
     <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-6"></div>
   </main>
 
@@ -312,20 +304,65 @@
     </div>
   </div>
 
-  <!-- SELLER APPLY MODAL -->
+  <!-- SELLER APPLY MODAL (စံချိန်မီ အပြည့်အစုံ ပြင်ဆင်ထားသည်) -->
   <div id="sellerApplyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
-    <div class="bg-white w-full max-w-lg rounded-2xl sm:rounded-3xl p-5 space-y-3.5 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div class="bg-white w-full max-w-lg rounded-2xl sm:rounded-3xl p-5 sm:p-7 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-extrabold text-sm text-slate-900">ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ</h3>
+        <div>
+          <h3 class="font-black text-sm sm:text-base text-slate-900">🏪 ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ (Seller Application)</h3>
+          <p class="text-[11px] text-slate-500">Aura Marketplace တွင် မိမိပစ္စည်းများကို တင်ყောင်းရန် လျှောက်ထားပါ</p>
+        </div>
         <button type="button" onclick="closeSellerApplyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
-      <form onsubmit="handleSellerApplicationSubmit(event)" class="space-y-3">
-        <div><label class="font-bold text-slate-700 block mb-1">ဆိုင်အမည် *</label><input type="text" id="applyShopName" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
-        <div><label class="font-bold text-slate-700 block mb-1">ဆိုင်ရှင်အမည် *</label><input type="text" id="applyOwnerName" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
-        <div><label class="font-bold text-slate-700 block mb-1">ဖုန်းနံပါတ် *</label><input type="tel" id="applyPhone" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
-        <div><label class="font-bold text-slate-700 block mb-1">KBZPay / WavePay *</label><input type="text" id="applyPaymentInfo" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
-        <div><label class="font-bold text-slate-700 block mb-1">လိပ်စာ / မြို့နယ် *</label><textarea id="applyAddress" rows="2" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none"></textarea></div>
-        <button type="submit" id="applySubmitBtn" class="w-full bg-violet-600 text-white font-extrabold py-3 rounded-xl shadow-lg cursor-pointer">လျှောက်လွှာ ပေးပို့မည်</button>
+
+      <form onsubmit="handleSellerApplicationSubmit(event)" class="space-y-3.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">ဆိုင်အမည် (Shop Name) *</label>
+            <input type="text" id="applyShopName" required placeholder="ဥပမာ - Aura Fashion Store" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-medium" />
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">ဆိုင်ရှင်အမည် (Owner Name) *</label>
+            <input type="text" id="applyOwnerName" required placeholder="သင်၏ အမည်အမှန်" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-medium" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">ဖုန်းနံပါတ် (Phone Number) *</label>
+            <input type="tel" id="applyPhone" required placeholder="09xxxxxxxxx" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-medium" />
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">လုပ်ငန်းအမျိုးအစား (Business Type) *</label>
+            <input type="text" id="applyBusinessType" required placeholder="ဥပမာ - အဝတ်အထည်၊ အလှကုန်..." class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-medium" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">ဆိုင် Logo ပုံ (Shop Logo)</label>
+            <input type="file" id="applyShopLogoFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-slate-50 text-[11px] cursor-pointer" />
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">မှတ်ပုံတင် / လိုင်စင် (NRC/License)</label>
+            <input type="file" id="applyNrcFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-slate-50 text-[11px] cursor-pointer" />
+          </div>
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">ငွေရှင်းရန် KBZPay / WavePay အကောင့်အချက်အလက် *</label>
+          <input type="text" id="applyPaymentInfo" required placeholder="ဥပမာ - KBZPay: 09123456789 (Mg Mg)" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-medium" />
+          <span class="text-[10px] text-slate-400 mt-0.5 block">ရောင်းရငွေများ (Payouts) လွှဲပေးမည့် အကောင့်ဖြစ်ပါသည်</span>
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">ဆိုင်လိပ်စာ အပြည့်အစုံ (Address / Township) *</label>
+          <textarea id="applyAddress" rows="2" required placeholder="အမှတ်၊ လမ်းအမည်၊ မြို့နယ်..." class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-medium"></textarea>
+        </div>
+
+        <button type="submit" id="applySubmitBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3 rounded-2xl shadow-lg transition cursor-pointer text-xs">
+          ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ ပေးပို့မည်
+        </button>
       </form>
     </div>
   </div>
@@ -1011,23 +1048,62 @@
     function openPolicyModal(){ document.getElementById('policyModal').classList.remove('hidden'); document.getElementById('policyModal').classList.add('flex'); }
     function closePolicyModal(){ document.getElementById('policyModal').classList.add('hidden'); document.getElementById('policyModal').classList.remove('flex'); }
 
+    // 🌟 စံချိန်မီ ဆိုင်ဖွင့်ရန် လျှောက်လွှာ တင်သွင်းခြင်း (Image Upload & Form Validation ပါဝင်သည်)
     async function handleSellerApplicationSubmit(e) {
       e.preventDefault();
       if (!currentAuthSessionUser) { closeSellerApplyModal(); openAuthModal('login'); return; }
+      
+      const btn = document.getElementById('applySubmitBtn');
+      btn.innerText = "တင်သွင်းနေပါသည်..."; btn.disabled = true;
+
       try {
+        let logoUrl = null, nrcUrl = null;
+        const logoInput = document.getElementById('applyShopLogoFile');
+        const nrcInput = document.getElementById('applyNrcFile');
+
+        if (logoInput.files.length) {
+          const file = logoInput.files[0];
+          const fileName = `applications/logo-${Date.now()}.${file.name.split('.').pop()}`;
+          await client.storage.from('product-images').upload(fileName, file);
+          logoUrl = getProxiedStorageUrl('product-images', fileName);
+        }
+        
+        if (nrcInput.files.length) {
+          const file = nrcInput.files[0];
+          const fileName = `applications/nrc-${Date.now()}.${file.name.split('.').pop()}`;
+          await client.storage.from('product-images').upload(fileName, file);
+          nrcUrl = getProxiedStorageUrl('product-images', fileName);
+        }
+
         const { error } = await client.from('seller_applications').insert([{
           user_id: currentAuthSessionUser.id,
           shop_name: document.getElementById('applyShopName').value.trim(),
           owner_name: document.getElementById('applyOwnerName').value.trim(),
           phone: document.getElementById('applyPhone').value.trim(),
+          business_type: document.getElementById('applyBusinessType').value.trim(),
+          shop_logo: logoUrl,
+          nrc_license_image: nrcUrl,
           payment_info: document.getElementById('applyPaymentInfo').value.trim(),
           address: document.getElementById('applyAddress').value.trim(),
           status: 'pending'
         }]);
+
         if (error) throw error;
-        Swal.fire({ icon: 'success', title: 'အောင်မြင်ပါသည်', text: 'လျှောက်လွှာ ပေးပို့ပြီးပါပြီ!' });
+
+        Swal.fire({
+          icon: 'success',
+          title: 'အောင်မြင်ပါသည်',
+          text: 'ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာကို Admin ထံ အောင်မြင်စွာ ပေးပို့ပြီးပါပြီ!',
+          confirmButtonColor: '#7c3aed'
+        });
+        
         closeSellerApplyModal();
-      } catch (err) { Swal.fire({ icon: 'error', title: 'Error', text: err.message }); }
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Error', text: err.message });
+      } finally {
+        btn.innerText = "ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ ပေးပို့မည်";
+        btn.disabled = false;
+      }
     }
 
     async function handleProfileUpdate(e) {
