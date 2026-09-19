@@ -50,7 +50,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; font-size: 14px; } /* ဖောင့်ဆိုဒ် ပိုမိုထင်ရှားစေရန် အနည်းငယ် တိုးထားသည် */
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
@@ -58,17 +58,17 @@
 <body class="pb-24">
 
   <!-- NOTIFICATION BAR -->
-  <div class="bg-gradient-to-r from-violet-600 via-indigo-600 to-rose-600 text-white text-[11px] sm:text-xs py-2 px-3 shadow-md overflow-hidden whitespace-nowrap">
+  <div class="bg-gradient-to-r from-violet-600 via-indigo-600 to-rose-600 text-white text-xs sm:text-sm py-2.5 px-3 shadow-md overflow-hidden whitespace-nowrap">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-1.5 font-bold shrink-0">
         <i class="ph-bold ph-megaphone animate-pulse"></i>
-        <span class="hidden xs:inline">အသိပေးချက်:</span>
+        <span>အသိပေးချက်:</span>
       </div>
-      <marquee behavior="scroll" direction="left" scrollamount="4" class="text-white font-medium text-[11px] sm:text-xs px-2">
-        ✨ Aura Marketplace မှ နွေးထွေးစွာ ကြိုဆိုပါတယ်။ ဆိုင်ခွဲများမှ ပစ္စည်းများကို Package သီးခြားစီ အလိုအလျောက် ခွဲခြားပို့ဆောင်ပေးပါသည်။
+      <marquee behavior="scroll" direction="left" scrollamount="4" class="text-white font-semibold text-xs sm:text-sm px-2">
+        ✨ Aura Marketplace မှ နွေးထွေးစွာ ကြိုဆိုပါသည်။ ဆိုင်ခွဲများမှ ပစ္စည်းများကို Package သီးခြားစီ အလိုအလျောက် ခွဲခြားပို့ဆောင်ပေးပါသည်။
       </marquee>
       <div class="shrink-0 pl-2 flex items-center gap-1.5">
-        <button type="button" onclick="openSellerApplyModal()" class="bg-white/20 hover:bg-white/30 text-white px-2.5 py-1 rounded-full font-bold text-[10px] transition cursor-pointer">
+        <button type="button" onclick="openSellerApplyModal()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-full font-extrabold text-xs transition cursor-pointer">
           ဆိုင်ဖွင့်ရန်
         </button>
       </div>
@@ -76,241 +76,241 @@
   </div>
 
   <!-- HEADER -->
-  <header class="bg-white/90 backdrop-blur-md border-b border-slate-100 sticky top-0 z-40 shadow-xs">
-    <div class="max-w-7xl mx-auto px-3 sm:px-4 h-16 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
-      <div class="flex items-center gap-2 cursor-pointer group shrink-0" onclick="location.reload()">
-        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-gradient-to-br from-violet-600 to-rose-500 text-white font-black flex items-center justify-center text-lg sm:text-xl shadow-md">
+  <header class="bg-white/95 backdrop-blur-md border-b border-slate-100 sticky top-0 z-40 shadow-xs">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 h-18 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
+      <div class="flex items-center gap-2.5 cursor-pointer group shrink-0" onclick="location.reload()">
+        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-rose-500 text-white font-black flex items-center justify-center text-xl sm:text-2xl shadow-md">
           <i class="ph-bold ph-storefront"></i>
         </div>
         <div>
-          <span class="font-black text-lg sm:text-xl leading-none block text-slate-900">AURA</span>
-          <span class="text-[9px] text-violet-600 font-extrabold uppercase tracking-widest block">Marketplace</span>
+          <span class="font-extrabold text-lg sm:text-xl leading-none block text-slate-900">AURA</span>
+          <span class="text-[10px] text-violet-700 font-extrabold uppercase tracking-widest block mt-0.5">Marketplace</span>
         </div>
       </div>
 
       <div class="flex-1 max-w-xl relative">
-        <input type="text" id="searchInput" oninput="handleSearch(this.value)" autocomplete="off" placeholder="ရှာဖွေရန်..." class="w-full pl-9 sm:pl-11 pr-3 py-2.5 sm:py-3 bg-slate-100 border border-slate-200 rounded-xl sm:rounded-2xl text-xs outline-none focus:bg-white focus:border-violet-600 transition font-medium" />
-        <i class="ph ph-magnifying-glass absolute left-3 top-3 sm:top-3.5 text-slate-400 text-sm sm:text-base"></i>
+        <input type="text" id="searchInput" oninput="handleSearch(this.value)" autocomplete="off" placeholder="ပစ္စည်း သို့မဟုတ် ဆိုင်နာမည်ဖြင့် ရှာဖွေရန်..." class="w-full pl-10 sm:pl-12 pr-3 py-3 bg-slate-100 border border-slate-200 rounded-2xl text-xs sm:text-sm outline-none focus:bg-white focus:border-violet-600 transition font-semibold" />
+        <i class="ph ph-magnifying-glass absolute left-3.5 top-3.5 sm:top-4 text-slate-400 text-base sm:text-lg"></i>
       </div>
 
-      <div class="flex items-center gap-2 shrink-0">
-        <button type="button" onclick="openProfileModal()" class="p-2.5 sm:px-3 sm:py-2.5 bg-violet-50 text-violet-700 rounded-xl sm:rounded-2xl font-bold text-xs flex items-center gap-1.5 transition border border-violet-100 cursor-pointer">
-          <i class="ph-bold ph-user-circle text-base sm:text-lg"></i>
+      <div class="flex items-center gap-2.5 shrink-0">
+        <button type="button" onclick="openProfileModal()" class="px-3.5 py-2.5 bg-violet-50 text-violet-700 rounded-2xl font-extrabold text-xs sm:text-sm flex items-center gap-1.5 transition border border-violet-100 cursor-pointer shadow-xs">
+          <i class="ph-bold ph-user-circle text-lg sm:text-xl"></i>
           <span id="headerUserName" class="hidden md:inline">အကောင့်</span>
         </button>
 
-        <button type="button" onclick="openCart()" class="relative p-2.5 sm:p-3 bg-rose-50 text-rose-600 rounded-xl sm:rounded-2xl transition border border-rose-100 cursor-pointer">
-          <i class="ph-bold ph-shopping-bag-open text-base sm:text-xl"></i>
-          <span id="cartBadge" class="absolute -top-1 -right-1 bg-rose-600 text-white text-[9px] w-4 h-4 sm:w-5 sm:h-5 rounded-full flex items-center justify-center font-black scale-0 transition-transform">0</span>
+        <button type="button" onclick="openCart()" class="relative p-3 bg-rose-50 text-rose-600 rounded-2xl transition border border-rose-100 cursor-pointer shadow-xs">
+          <i class="ph-bold ph-shopping-bag-open text-lg sm:text-xl"></i>
+          <span id="cartBadge" class="absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black scale-0 transition-transform">0</span>
         </button>
       </div>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-8 space-y-4 sm:space-y-6">
-    <section id="indexBannersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4 hidden"></section>
+  <main class="max-w-7xl mx-auto px-3 sm:px-4 py-6 space-y-6">
+    <section id="indexBannersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden"></section>
     
-    <div class="flex justify-between items-center bg-white p-3.5 sm:p-5 rounded-2xl sm:rounded-3xl border border-slate-100 shadow-xs">
+    <div class="flex justify-between items-center bg-white p-4 sm:p-6 rounded-3xl border border-slate-100 shadow-xs">
       <div>
-        <h2 class="font-black text-slate-900 text-sm sm:text-lg">လူကြိုက်များသော ကုန်ပစ္စည်းများ</h2>
-        <p class="text-[11px] sm:text-xs text-slate-500 font-medium">ဆိုင်ခွဲအလိုက် ပရိုမိုးရှင်းများဖြင့် ဝယ်ယူပါ</p>
+        <h2 class="font-extrabold text-slate-900 text-base sm:text-xl">လူကြိုက်များသော ကုန်ပစ္စည်းများ</h2>
+        <p class="text-xs sm:text-sm text-slate-500 font-semibold mt-0.5">ဆိုင်ခွဲအလိုက် ပရိုမိုးရှင်းများဖြင့် ဝယ်ယူပါ</p>
       </div>
-      <span id="productCountBadge" class="text-[11px] sm:text-xs font-extrabold bg-violet-50 text-violet-700 px-3 py-1.5 rounded-xl border border-violet-100">Loading...</span>
+      <span id="productCountBadge" class="text-xs sm:text-sm font-extrabold bg-violet-50 text-violet-700 px-3.5 py-2 rounded-2xl border border-violet-100">Loading...</span>
     </div>
 
-    <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-6"></div>
+    <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-6"></div>
   </main>
 
   <!-- CART DRAWER -->
   <div id="cartModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden justify-end">
-    <div class="bg-white w-full max-w-md h-full flex flex-col p-4 sm:p-6 shadow-2xl">
-      <div class="flex justify-between items-center pb-3 border-b">
-        <h3 class="font-black text-sm sm:text-base text-slate-900">🛒 စျေးဝယ်တွန်းလှည်း</h3>
+    <div class="bg-white w-full max-w-md h-full flex flex-col p-5 sm:p-6 shadow-2xl">
+      <div class="flex justify-between items-center pb-4 border-b">
+        <h3 class="font-extrabold text-base sm:text-lg text-slate-900">🛒 စျေးဝယ်တွန်းလှည်း</h3>
         <button type="button" onclick="closeCart()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
-      <div class="py-2.5 border-b flex justify-between items-center text-xs bg-slate-50 px-3 rounded-xl my-2.5">
-        <div class="flex items-center gap-2">
+      <div class="py-3 border-b flex justify-between items-center text-xs sm:text-sm bg-slate-50 px-3.5 rounded-2xl my-3">
+        <div class="flex items-center gap-2.5">
           <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" class="w-4 h-4 rounded text-violet-600 accent-violet-600 cursor-pointer" />
           <label for="selectAllCheckbox" class="font-bold cursor-pointer text-slate-700">အားလုံးကို ရွေးမည်</label>
         </div>
-        <span id="selectedCountBadge" class="text-violet-700 font-extrabold bg-violet-50 px-2.5 py-1 rounded-lg">0 ခု</span>
+        <span id="selectedCountBadge" class="text-violet-700 font-extrabold bg-violet-50 px-3 py-1 rounded-xl">0 ခု</span>
       </div>
-      <div id="cartItems" class="flex-1 overflow-y-auto divide-y divide-slate-100 text-xs py-2"></div>
-      <div class="border-t pt-3 space-y-2.5 text-xs bg-white">
-        <div class="flex justify-between text-xs sm:text-sm font-black px-1"><span>စုစုပေါင်း:</span><span id="cartTotal" class="text-rose-600 text-sm sm:text-base">0 MMK</span></div>
-        <button type="button" onclick="openCheckout()" class="w-full bg-violet-600 hover:bg-violet-700 text-white py-3 rounded-xl sm:rounded-2xl font-extrabold shadow-lg cursor-pointer">ရွေးချယ်ထားသည်များ ဝယ်မည် (Checkout)</button>
+      <div id="cartItems" class="flex-1 overflow-y-auto divide-y divide-slate-100 text-xs sm:text-sm py-2"></div>
+      <div class="border-t pt-4 space-y-3 text-xs sm:text-sm bg-white">
+        <div class="flex justify-between font-extrabold px-1"><span>စုစုပေါင်း:</span><span id="cartTotal" class="text-rose-600 text-base sm:text-lg">0 MMK</span></div>
+        <button type="button" onclick="openCheckout()" class="w-full bg-violet-600 hover:bg-violet-700 text-white py-3.5 rounded-2xl font-extrabold shadow-lg cursor-pointer text-sm">ရွေးချယ်ထားသည်များ ဝယ်မည် (Checkout)</button>
       </div>
     </div>
   </div>
 
   <!-- CHECKOUT MODAL -->
   <div id="checkoutModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
-    <div class="bg-white w-full max-w-xl rounded-2xl sm:rounded-3xl p-4 sm:p-7 space-y-3.5 text-xs shadow-2xl max-h-[92vh] overflow-y-auto">
+    <div class="bg-white w-full max-w-xl rounded-3xl p-5 sm:p-7 space-y-4 text-xs sm:text-sm shadow-2xl max-h-[92vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
         <div>
-          <h3 class="font-black text-sm text-slate-900">📦 အော်ဒါအချက်အလက်နှင့် Package ခွဲထုတ်မှု</h3>
-          <p class="text-[10px] sm:text-[11px] text-slate-500">ဆိုင်ခွဲအလိုက် ပို့ခ အလိုအလျောက် တွက်ချက်ပေးပါမည်</p>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-900">📦 အော်ဒါအချက်အလက်နှင့် Package ခွဲထုတ်မှု</h3>
+          <p class="text-xs text-slate-500 font-medium">ဆိုင်ခွဲအလိုက် ပို့ခ အလိုအလျောက် တွက်ချက်ပေးပါမည်</p>
         </div>
         <button type="button" onclick="closeCheckout()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
 
-      <form onsubmit="handleSplitOrderSubmit(event)" class="space-y-3.5">
+      <form onsubmit="handleSplitOrderSubmit(event)" class="space-y-4">
         <div>
-          <label for="custTownship" class="font-bold block mb-1 text-slate-700">📍 ဝယ်သူ မြို့နယ် (Township) ရိုက်ထည့်ပါ *</label>
-          <input type="text" id="custTownship" required oninput="handleCustomerTownshipInput(this.value)" placeholder="ဥပမာ - ရေး၊ မော်လမြိုင်..." class="w-full border p-2.5 sm:p-3 rounded-xl sm:rounded-2xl outline-none bg-slate-50 font-bold text-violet-700" />
+          <label for="custTownship" class="font-bold block mb-1.5 text-slate-700">📍 ဝယ်သူ မြို့နယ် (Township) ရိုက်ထည့်ပါ *</label>
+          <input type="text" id="custTownship" required oninput="handleCustomerTownshipInput(this.value)" placeholder="ဥပမာ - ရေး၊ မော်လမြိုင်..." class="w-full border p-3 rounded-2xl outline-none bg-slate-50 font-extrabold text-violet-700 text-sm" />
         </div>
 
-        <div id="checkoutPackagesContainer" class="space-y-2.5 max-h-52 overflow-y-auto pr-1"></div>
+        <div id="checkoutPackagesContainer" class="space-y-3 max-h-56 overflow-y-auto pr-1"></div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-          <div><label for="custName" class="font-bold block mb-1 text-slate-700">ဝယ်သူအမည် *</label><input type="text" id="custName" required class="w-full border p-2.5 rounded-xl outline-none bg-slate-50 font-medium" /></div>
-          <div><label for="custPhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="custPhone" required class="w-full border p-2.5 rounded-xl outline-none bg-slate-50 font-medium" /></div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div><label for="custName" class="font-bold block mb-1 text-slate-700">ဝယ်သူအမည် *</label><input type="text" id="custName" required class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" /></div>
+          <div><label for="custPhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="custPhone" required class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" /></div>
         </div>
 
-        <div><label for="custAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="custAddress" required rows="2" class="w-full border p-2.5 rounded-xl outline-none bg-slate-50 font-medium"></textarea></div>
+        <div><label for="custAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="custAddress" required rows="2" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold"></textarea></div>
 
         <div>
           <label for="custPayment" class="font-bold block mb-1 text-slate-700">ငွေပေးချေမှုစနစ် ရွေးချယ်ရန် *</label>
-          <select id="custPayment" class="w-full border p-2.5 rounded-xl bg-slate-50 font-bold outline-none"></select>
+          <select id="custPayment" class="w-full border p-3 rounded-xl bg-slate-50 font-extrabold outline-none"></select>
         </div>
 
-        <div class="bg-violet-50/50 p-3 rounded-2xl border border-violet-100 space-y-1">
+        <div class="bg-violet-50/50 p-3.5 rounded-2xl border border-violet-100 space-y-1">
           <label class="font-extrabold block text-slate-800">💳 ငွေလွှဲဘောက်ချာပုံ (Screenshot) *</label>
-          <input type="file" id="checkoutVoucherFile" accept="image/*" required class="w-full border p-2 rounded-xl bg-white text-xs cursor-pointer" />
+          <input type="file" id="checkoutVoucherFile" accept="image/*" required class="w-full border p-2.5 rounded-xl bg-white text-xs cursor-pointer" />
         </div>
 
-        <div class="pt-2 border-t space-y-1 text-xs font-bold bg-slate-50 p-3 rounded-xl border">
+        <div class="pt-3 border-t space-y-1.5 text-xs sm:text-sm font-bold bg-slate-50 p-3.5 rounded-2xl border">
           <div class="flex justify-between text-slate-600"><span>ပစ္စည်းတန်ဖိုး:</span><span id="summarySubtotal">0 MMK</span></div>
           <div class="flex justify-between text-slate-600"><span>ပို့ခ စုစုပေါင်း:</span><span id="summaryShipping">0 MMK</span></div>
-          <div class="flex justify-between text-sm font-black text-rose-600 border-t pt-1"><span>ကျသင့်ငွေ စုစုပေါင်း:</span><span id="summaryTotal">0 MMK</span></div>
+          <div class="flex justify-between text-sm sm:text-base font-black text-rose-600 border-t pt-1.5"><span>ကျသင့်ငွေ စုစုပေါင်း:</span><span id="summaryTotal">0 MMK</span></div>
         </div>
 
-        <button type="submit" id="submitOrderBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white py-3 sm:py-3.5 rounded-xl sm:rounded-2xl font-extrabold shadow-lg cursor-pointer">အော်ဒါ အတည်ပြုမည်</button>
+        <button type="submit" id="submitOrderBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white py-4 rounded-2xl font-extrabold shadow-lg cursor-pointer text-sm">အော်ဒါ အတည်ပြုမည်</button>
       </form>
     </div>
   </div>
 
   <!-- PRODUCT BUY MODAL -->
   <div id="buyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
-    <div class="bg-white w-full max-w-lg rounded-2xl sm:rounded-3xl p-4 sm:p-6 space-y-3.5 text-xs shadow-2xl max-h-[92vh] overflow-y-auto">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs sm:text-sm shadow-2xl max-h-[92vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-black text-sm text-slate-900">📦 ကုန်ပစ္စည်း အသေးစိတ်နှင့် ဝယ်ယူရန်</h3>
+        <h3 class="font-extrabold text-sm sm:text-base text-slate-900">📦 ကုန်ပစ္စည်း အသေးစိတ်နှင့် ဝယ်ယူရန်</h3>
         <button type="button" onclick="closeBuyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
-      <div class="space-y-2.5">
-        <div class="overflow-hidden rounded-2xl border bg-slate-100"><img id="detailMainImg" src="" alt="Product Detail" class="w-full h-52 sm:h-64 object-cover" /></div>
+      <div class="space-y-3">
+        <div class="overflow-hidden rounded-2xl border bg-slate-100"><img id="detailMainImg" src="" alt="Product Detail" class="w-full h-60 sm:h-72 object-cover" /></div>
         <div id="detailThumbnails" class="flex gap-2 overflow-x-auto pb-1"></div>
       </div>
-      <div class="space-y-1.5">
-        <h4 id="detailTitle" class="font-extrabold text-xs sm:text-sm text-slate-900 leading-snug"></h4>
+      <div class="space-y-2">
+        <h4 id="detailTitle" class="font-extrabold text-sm sm:text-base text-slate-900 leading-snug"></h4>
         <div class="flex items-center gap-2">
-          <div id="detailShop" class="text-violet-700 font-bold bg-violet-50 px-2.5 py-1 rounded-xl border border-violet-100"></div>
-          <span id="detailStockBadge" class="px-2.5 py-1 rounded-xl font-bold text-[10px]"></span>
+          <div id="detailShop" class="text-violet-700 font-extrabold bg-violet-50 px-3 py-1 rounded-xl border border-violet-100 text-xs"></div>
+          <span id="detailStockBadge" class="px-3 py-1 rounded-xl font-extrabold text-xs"></span>
         </div>
-        <div id="detailPriceContainer" class="pt-1 flex items-baseline gap-2"></div>
+        <div id="detailPriceContainer" class="pt-1.5 flex items-baseline gap-2"></div>
       </div>
 
-      <div id="shopNoticeDisplayArea" class="hidden bg-amber-50 border border-amber-200 p-3 rounded-2xl space-y-1">
-        <span class="font-bold text-amber-800 flex items-center gap-1"><i class="ph-bold ph-info"></i> ဆိုင်၏ အသိပေးချက်:</span>
-        <p id="shopNoticeDisplayText" class="text-slate-700 font-medium leading-relaxed"></p>
+      <div id="shopNoticeDisplayArea" class="hidden bg-amber-50 border border-amber-200 p-3.5 rounded-2xl space-y-1">
+        <span class="font-bold text-amber-800 flex items-center gap-1.5 text-xs"><i class="ph-bold ph-info"></i> ဆိုင်၏ အသိပေးချက်:</span>
+        <p id="shopNoticeDisplayText" class="text-slate-700 font-medium leading-relaxed text-xs"></p>
       </div>
 
-      <div id="sizeSelectionArea" class="space-y-1.5 hidden"><span class="font-bold text-slate-700 block">📏 Size ရွေးပါ:</span><div id="sizeOptionsList" class="flex flex-wrap gap-2"></div></div>
-      <div id="colorSelectionArea" class="space-y-1.5 hidden"><span class="font-bold text-slate-700 block">🎨 Color ရွေးပါ:</span><div id="colorOptionsList" class="flex flex-wrap gap-2"></div></div>
-      <div><label class="font-bold block mb-1 text-slate-700">အရေအတွက်</label><input id="buyQty" type="number" min="1" value="1" class="w-full border bg-slate-50 p-2.5 rounded-xl outline-none font-bold text-slate-800" /></div>
-      <button type="button" onclick="confirmAddToCart()" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-bold py-3 rounded-2xl shadow-lg text-xs sm:text-sm cursor-pointer">ဈေးတောင်းထဲသို့ ထည့်မည်</button>
+      <div id="sizeSelectionArea" class="space-y-2 hidden"><span class="font-bold text-slate-700 block">📏 Size ရွေးပါ:</span><div id="sizeOptionsList" class="flex flex-wrap gap-2"></div></div>
+      <div id="colorSelectionArea" class="space-y-2 hidden"><span class="font-bold text-slate-700 block">🎨 Color ရွေးပါ:</span><div id="colorOptionsList" class="flex flex-wrap gap-2"></div></div>
+      <div><label class="font-bold block mb-1 text-slate-700">အရေအတွက်</label><input id="buyQty" type="number" min="1" value="1" class="w-full border bg-slate-50 p-3 rounded-xl outline-none font-extrabold text-slate-800 text-sm" /></div>
+      <button type="button" onclick="confirmAddToCart()" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3.5 rounded-2xl shadow-lg text-sm cursor-pointer">ဈေးတောင်းထဲသို့ ထည့်မည်</button>
     </div>
   </div>
 
   <!-- PROFILE & ORDERS MODAL -->
   <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
-    <div class="bg-white w-full max-w-xl rounded-2xl sm:rounded-3xl p-4 sm:p-7 space-y-4 text-xs shadow-2xl max-h-[92vh] overflow-y-auto">
+    <div class="bg-white w-full max-w-xl rounded-3xl p-5 sm:p-7 space-y-4 text-xs sm:text-sm shadow-2xl max-h-[92vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-black text-sm text-slate-900">👤 ကျွန်ုပ်၏ အကောင့်နှင့် Package အော်ဒါများ</h3>
+        <h3 class="font-extrabold text-sm sm:text-base text-slate-900">👤 ကျွန်ုပ်၏ အကောင့်နှင့် Package အော်ဒါများ</h3>
         <button type="button" onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
 
-      <form onsubmit="handleProfileUpdate(event)" class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-2.5">
-        <h4 class="font-black text-slate-800">📝 ကိုယ်ရေးအချက်အလက် ပြင်ဆင်ရန်</h4>
-        <div><label for="profileName" class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label><input type="text" id="profileName" required class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
-        <div class="grid grid-cols-2 gap-2">
-          <div><label for="profilePhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="profilePhone" required class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
-          <div><label for="profileTownship" class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label><input type="text" id="profileTownship" class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
+      <form onsubmit="handleProfileUpdate(event)" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+        <h4 class="font-extrabold text-slate-800">📝 ကိုယ်ရေးအချက်အလက် ပြင်ဆင်ရန်</h4>
+        <div><label for="profileName" class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label><input type="text" id="profileName" required class="w-full border p-3 rounded-xl bg-white outline-none font-semibold" /></div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div><label for="profilePhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="profilePhone" required class="w-full border p-3 rounded-xl bg-white outline-none font-semibold" /></div>
+          <div><label for="profileTownship" class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label><input type="text" id="profileTownship" class="w-full border p-3 rounded-xl bg-white outline-none font-semibold" /></div>
         </div>
-        <div><label for="profileAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="profileAddress" rows="2" class="w-full border p-2.5 rounded-xl bg-white outline-none"></textarea></div>
-        <button type="submit" id="updateProfileBtn" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl hover:bg-slate-800 transition cursor-pointer">သိမ်းဆည်းမည်</button>
+        <div><label for="profileAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="profileAddress" rows="2" class="w-full border p-3 rounded-xl bg-white outline-none font-semibold"></textarea></div>
+        <button type="submit" id="updateProfileBtn" class="w-full bg-slate-900 text-white font-extrabold py-3 rounded-xl hover:bg-slate-800 transition cursor-pointer">သိမ်းဆည်းမည်</button>
       </form>
 
-      <div class="space-y-2.5">
-        <h4 class="font-black text-slate-800">📦 မှာယူထားသော Package များ (Delivery အခြေအနေ)</h4>
-        <div id="customerOrdersContainer" class="space-y-2.5 max-h-60 overflow-y-auto pr-1"></div>
+      <div class="space-y-3">
+        <h4 class="font-extrabold text-slate-800">📦 မှာယူထားသော Package များ (Delivery အခြေအနေ)</h4>
+        <div id="customerOrdersContainer" class="space-y-3 max-h-64 overflow-y-auto pr-1"></div>
       </div>
       <div class="pt-3 border-t flex justify-between items-center">
-        <button type="button" onclick="handleCustomerLogout()" class="text-rose-600 font-bold hover:underline cursor-pointer">🚪 အကောင့်ထွက်မည်</button>
-        <button type="button" onclick="closeProfileModal()" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-xl font-bold cursor-pointer">ပိတ်မည်</button>
+        <button type="button" onclick="handleCustomerLogout()" class="text-rose-600 font-bold hover:underline cursor-pointer text-xs">🚪 အကောင့်ထွက်မည်</button>
+        <button type="button" onclick="closeProfileModal()" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-xl font-bold cursor-pointer text-xs">ပိတ်မည်</button>
       </div>
     </div>
   </div>
 
   <!-- ORDER DETAIL & TRACKING MODAL -->
   <div id="orderDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
-    <div class="bg-white w-full max-w-2xl rounded-2xl sm:rounded-3xl p-4 sm:p-7 space-y-4 text-xs shadow-2xl max-h-[92vh] overflow-y-auto">
+    <div class="bg-white w-full max-w-2xl rounded-3xl p-5 sm:p-7 space-y-4 text-xs sm:text-sm shadow-2xl max-h-[92vh] overflow-y-auto">
       
       <div class="flex justify-between items-center border-b pb-3">
         <div>
-          <h3 class="font-black text-sm text-slate-900">📄 အော်ဒါအသေးစိတ်နှင့် အခြေအနေ</h3>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-900">📄 အော်ဒါအသေးစိတ်နှင့် အခြေအနေ</h3>
           <span id="detailOrderBadge"></span>
         </div>
         <div class="flex items-center gap-2">
-          <button type="button" onclick="printOrderInvoice()" class="bg-violet-50 text-violet-700 px-2.5 py-1.5 rounded-xl font-bold flex items-center gap-1 border border-violet-200 cursor-pointer">
+          <button type="button" onclick="printOrderInvoice()" class="bg-violet-50 text-violet-700 px-3 py-1.5 rounded-xl font-extrabold flex items-center gap-1 border border-violet-200 cursor-pointer text-xs">
             <i class="ph-bold ph-printer"></i> ပြေစာ
           </button>
           <button type="button" onclick="closeOrderDetailModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
         </div>
       </div>
 
-      <div id="printableInvoiceArea" class="space-y-3">
-        <div class="bg-slate-50 p-3.5 rounded-2xl border border-slate-200 space-y-1.5">
+      <div id="printableInvoiceArea" class="space-y-3.5">
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
           <div class="flex justify-between items-center">
-            <span class="text-slate-500">အော်ဒါ ID: <b id="invOrderId" class="text-slate-900 font-mono"></b></span>
-            <span class="text-slate-500">ရက်စွဲ: <b id="invOrderDate" class="text-slate-900"></b></span>
+            <span class="text-slate-500 font-semibold">အော်ဒါ ID: <b id="invOrderId" class="text-slate-900 font-mono"></b></span>
+            <span class="text-slate-500 font-semibold">ရက်စွဲ: <b id="invOrderDate" class="text-slate-900"></b></span>
           </div>
           <div class="flex justify-between items-center">
-            <span class="text-slate-500">ဝယ်သူ: <b id="invCustomerName" class="text-slate-900"></b></span>
-            <span class="text-slate-500">ဖုန်း: <b id="invCustomerPhone" class="text-slate-900"></b></span>
+            <span class="text-slate-500 font-semibold">ဝယ်သူ: <b id="invCustomerName" class="text-slate-900"></b></span>
+            <span class="text-slate-500 font-semibold">ဖုန်း: <b id="invCustomerPhone" class="text-slate-900"></b></span>
           </div>
-          <div class="flex justify-between items-center border-t border-slate-200 pt-1.5">
+          <div class="flex justify-between items-center border-t border-slate-200 pt-2">
             <span class="font-extrabold text-slate-700">ကျသင့်ငွေ စုစုပေါင်း:</span>
-            <span id="invTotalAmount" class="font-black text-rose-600 text-sm"></span>
+            <span id="invTotalAmount" class="font-black text-rose-600 text-sm sm:text-base"></span>
           </div>
         </div>
 
-        <div id="orderCancelNoticeArea" class="hidden bg-amber-50 border border-amber-200 p-3 rounded-2xl justify-between items-center">
+        <div id="orderCancelNoticeArea" class="hidden bg-amber-50 border border-amber-200 p-3.5 rounded-2xl justify-between items-center">
           <div>
-            <span class="font-extrabold text-amber-800 block">⚠️ အော်ဒါ စစ်ဆေးဆဲ အဆင့်တွင် ရှိနေပါသည်</span>
+            <span class="font-extrabold text-amber-800 block text-xs">⚠️ အော်ဒါ စစ်ဆေးဆဲ အဆင့်တွင် ရှိနေပါသည်</span>
           </div>
-          <button type="button" id="btnCancelOrder" onclick="handleCancelCustomerOrder()" class="bg-rose-600 text-white font-bold px-3 py-1.5 rounded-xl cursor-pointer">ဖျက်မည်</button>
+          <button type="button" id="btnCancelOrder" onclick="handleCancelCustomerOrder()" class="bg-rose-600 text-white font-bold px-3 py-1.5 rounded-xl cursor-pointer text-xs">ဖျက်မည်</button>
         </div>
 
-        <div class="space-y-2.5">
-          <h4 class="font-black text-slate-800 flex items-center gap-1"><i class="ph-bold ph-package"></i> Package ပို့ဆောင်မှု အခြေအနေ (Split Tracking)</h4>
-          <div id="packagesTrackingContainer" class="space-y-2.5"></div>
+        <div class="space-y-3">
+          <h4 class="font-extrabold text-slate-800 flex items-center gap-1.5 text-xs sm:text-sm"><i class="ph-bold ph-package"></i> Package ပို့ဆောင်မှု အခြေအနေ (Split Tracking)</h4>
+          <div id="packagesTrackingContainer" class="space-y-3"></div>
         </div>
       </div>
 
       <div id="returnRequestContainer"></div>
 
-      <button type="button" onclick="closeOrderDetailModal()" class="w-full bg-slate-900 text-white py-3 rounded-xl font-bold cursor-pointer">ပိတ်မည်</button>
+      <button type="button" onclick="closeOrderDetailModal()" class="w-full bg-slate-900 text-white py-3.5 rounded-2xl font-extrabold cursor-pointer text-xs">ပိတ်မည်</button>
     </div>
   </div>
 
-  <!-- SELLER APPLY MODAL (စံချိန်မီ အပြည့်အစုံ ပြင်ဆင်ထားသည်) -->
+  <!-- SELLER APPLY MODAL -->
   <div id="sellerApplyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
-    <div class="bg-white w-full max-w-lg rounded-2xl sm:rounded-3xl p-5 sm:p-7 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-5 sm:p-7 space-y-4 text-xs sm:text-sm shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
         <div>
-          <h3 class="font-black text-sm sm:text-base text-slate-900">🏪 ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ (Seller Application)</h3>
-          <p class="text-[11px] text-slate-500">Aura Marketplace တွင် မိမိပစ္စည်းများကို တင်ყောင်းရန် လျှောက်ထားပါ</p>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-900">🏪 ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ (Seller Application)</h3>
+          <p class="text-xs text-slate-500 font-semibold">Aura Marketplace တွင် မိမိပစ္စည်းများကို တင်ყောင်းရန် လျှောက်ထားပါ</p>
         </div>
         <button type="button" onclick="closeSellerApplyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
@@ -319,48 +319,48 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="font-bold text-slate-700 block mb-1">ဆိုင်အမည် (Shop Name) *</label>
-            <input type="text" id="applyShopName" required placeholder="ဥပမာ - Aura Fashion Store" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-medium" />
+            <input type="text" id="applyShopName" required placeholder="ဥပမာ - Aura Fashion Store" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" />
           </div>
           <div>
             <label class="font-bold text-slate-700 block mb-1">ဆိုင်ရှင်အမည် (Owner Name) *</label>
-            <input type="text" id="applyOwnerName" required placeholder="သင်၏ အမည်အမှန်" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-medium" />
+            <input type="text" id="applyOwnerName" required placeholder="သင်၏ အမည်အမှန်" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" />
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="font-bold text-slate-700 block mb-1">ဖုန်းနံပါတ် (Phone Number) *</label>
-            <input type="tel" id="applyPhone" required placeholder="09xxxxxxxxx" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-medium" />
+            <input type="tel" id="applyPhone" required placeholder="09xxxxxxxxx" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" />
           </div>
           <div>
             <label class="font-bold text-slate-700 block mb-1">လုပ်ငန်းအမျိုးအစား (Business Type) *</label>
-            <input type="text" id="applyBusinessType" required placeholder="ဥပမာ - အဝတ်အထည်၊ အလှကုန်..." class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-medium" />
+            <input type="text" id="applyBusinessType" required placeholder="ဥပမာ - အဝတ်အထည်၊ အလှကုန်..." class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" />
           </div>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div>
             <label class="font-bold text-slate-700 block mb-1">ဆိုင် Logo ပုံ (Shop Logo)</label>
-            <input type="file" id="applyShopLogoFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-slate-50 text-[11px] cursor-pointer" />
+            <input type="file" id="applyShopLogoFile" accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 text-xs cursor-pointer" />
           </div>
           <div>
             <label class="font-bold text-slate-700 block mb-1">မှတ်ပုံတင် / လိုင်စင် (NRC/License)</label>
-            <input type="file" id="applyNrcFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-slate-50 text-[11px] cursor-pointer" />
+            <input type="file" id="applyNrcFile" accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 text-xs cursor-pointer" />
           </div>
         </div>
 
         <div>
           <label class="font-bold text-slate-700 block mb-1">ငွေရှင်းရန် KBZPay / WavePay အကောင့်အချက်အလက် *</label>
-          <input type="text" id="applyPaymentInfo" required placeholder="ဥပမာ - KBZPay: 09123456789 (Mg Mg)" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-medium" />
-          <span class="text-[10px] text-slate-400 mt-0.5 block">ရောင်းရငွေများ (Payouts) လွှဲပေးမည့် အကောင့်ဖြစ်ပါသည်</span>
+          <input type="text" id="applyPaymentInfo" required placeholder="ဥပမာ - KBZPay: 09123456789 (Mg Mg)" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" />
+          <span class="text-[11px] text-slate-400 mt-0.5 block">ရောင်းရငွေများ (Payouts) လွှဲပြောင်းပေးမည့် အကောင့်ဖြစ်ပါသည်</span>
         </div>
 
         <div>
           <label class="font-bold text-slate-700 block mb-1">ဆိုင်လိပ်စာ အပြည့်အစုံ (Address / Township) *</label>
-          <textarea id="applyAddress" rows="2" required placeholder="အမှတ်၊ လမ်းအမည်၊ မြို့နယ်..." class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-medium"></textarea>
+          <textarea id="applyAddress" rows="2" required placeholder="အမှတ်၊ လမ်းအမည်၊ မြို့နယ်..." class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold"></textarea>
         </div>
 
-        <button type="submit" id="applySubmitBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3 rounded-2xl shadow-lg transition cursor-pointer text-xs">
+        <button type="submit" id="applySubmitBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition cursor-pointer text-xs sm:text-sm">
           ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ ပေးပို့မည်
         </button>
       </form>
@@ -369,43 +369,43 @@
 
   <!-- POLICY MODAL -->
   <div id="policyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
-    <div class="bg-white w-full max-w-lg rounded-2xl sm:rounded-3xl p-5 space-y-3 text-xs shadow-2xl">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-3 text-xs sm:text-sm shadow-2xl">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-extrabold text-sm text-slate-900">Return & Refund Policy</h3>
+        <h3 class="font-extrabold text-sm sm:text-base text-slate-900">Return & Refund Policy</h3>
         <button type="button" onclick="closePolicyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
-      <div class="space-y-2 text-slate-600 leading-relaxed text-xs">
+      <div class="space-y-2.5 text-slate-600 leading-relaxed text-xs sm:text-sm">
         <p><b>၁။ Return သက်တမ်း:</b> ပစ္စည်းလက်ခံရရှိပြီး ၃ ရက် (၇၂ နာရီ) အတွင်းသာ Return လျှောက်ထားနိုင်ပါသည်။</p>
         <p><b>၂။ Unboxing Video:</b> ပါဆယ်စတင်ဖောက်ချိန်မှ ချို့ယွင်းချက်ပြသသည့် ဗီဒီယိုဖိုင် မဖြစ်မနေ လိုအပ်ပါသည်။</p>
       </div>
-      <button type="button" onclick="closePolicyModal()" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl cursor-pointer">နားလည်ပါသည်</button>
+      <button type="button" onclick="closePolicyModal()" class="w-full bg-slate-900 text-white font-bold py-3 rounded-2xl cursor-pointer text-xs">နားလည်ပါသည်</button>
     </div>
   </div>
 
   <!-- CUSTOMER AUTH MODAL -->
   <div id="authModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
-    <div class="bg-white text-slate-900 w-full max-w-md rounded-2xl sm:rounded-3xl p-6 space-y-3.5 shadow-2xl text-xs">
+    <div class="bg-white text-slate-900 w-full max-w-md rounded-3xl p-6 sm:p-7 space-y-4 shadow-2xl text-xs sm:text-sm">
       <div class="flex justify-between items-center border-b pb-3">
-        <h3 id="authModalTitle" class="font-extrabold text-sm text-slate-900">အကောင့်ဝင်ရန်</h3>
+        <h3 id="authModalTitle" class="font-extrabold text-base text-slate-900">အကောင့်ဝင်ရန်</h3>
         <button type="button" onclick="closeAuthModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
-      <form onsubmit="handleCustomerAuth(event)" class="space-y-3">
+      <form onsubmit="handleCustomerAuth(event)" class="space-y-3.5">
         <div id="authNameField" class="hidden">
           <label class="font-bold block mb-1">အမည်အပြည့်အစုံ *</label>
-          <input type="text" id="authName" class="w-full border p-2.5 rounded-xl outline-none bg-slate-50" />
+          <input type="text" id="authName" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" />
         </div>
         <div>
           <label class="font-bold block mb-1">Email (သို့) ဖုန်းနံပါတ် *</label>
-          <input type="text" id="authEmailOrPhone" required class="w-full border p-2.5 rounded-xl outline-none bg-slate-50" />
+          <input type="text" id="authEmailOrPhone" required class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" />
         </div>
         <div>
           <label class="font-bold block mb-1">စကားဝှက် *</label>
-          <input type="password" id="authPassword" required class="w-full border p-2.5 rounded-xl outline-none bg-slate-50" />
+          <input type="password" id="authPassword" required class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" />
         </div>
-        <button type="submit" id="authSubmitBtn" class="w-full bg-violet-600 text-white font-bold py-3 rounded-xl shadow-lg cursor-pointer">အကောင့်ဝင်မည်</button>
+        <button type="submit" id="authSubmitBtn" class="w-full bg-violet-600 text-white font-bold py-3.5 rounded-2xl shadow-lg cursor-pointer text-sm">အကောင့်ဝင်မည်</button>
       </form>
-      <div class="text-center pt-2 border-t">
-        <button type="button" onclick="toggleAuthMode()" id="authToggleBtn" class="text-violet-600 font-bold hover:underline cursor-pointer text-[11px]">အကောင့်အသစ်ဖွင့်ရန် (Sign Up)</button>
+      <div class="text-center pt-3 border-t">
+        <button type="button" onclick="toggleAuthMode()" id="authToggleBtn" class="text-violet-700 font-extrabold hover:underline cursor-pointer text-xs">အကောင့်အသစ်ဖွင့်ရန် (Sign Up)</button>
       </div>
     </div>
   </div>
@@ -454,7 +454,14 @@
       const { data: { session } } = await client.auth.getSession();
       if (session) {
         currentAuthSessionUser = session.user;
+        
+        // 🌟 Seller အကောင့်ဖြစ်ပါက Customer မျက်နှာပြင်သို့ မပေးဝင်ဘဲ seller.html သို့ အလိုအလျောက် ပို့ဆောင်ပေးခြင်း
         const { data: profile } = await client.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+        if (profile && (profile.role === 'seller' || profile.role === 'admin' || profile.role === 'super_admin')) {
+          location.href = profile.role === 'seller' ? 'seller.html' : 'admin.html';
+          return;
+        }
+
         if (profile) {
           document.getElementById('headerUserName').innerText = profile.full_name || 'Profile';
           document.getElementById('custName').value = profile.full_name || '';
@@ -495,16 +502,16 @@
       if (!uniqueShopBanners.length) { container.classList.add('hidden'); return; }
       container.classList.remove('hidden');
       container.innerHTML = uniqueShopBanners.map(b => `
-        <div class="relative overflow-hidden rounded-2xl sm:rounded-3xl shadow-md border border-slate-200 group bg-slate-900 cursor-pointer" onclick="location.href='shop.html?id=${b.shop_id || b.shops?.id}'">
-          <img src="${toProxyUrl(b.image_url)}" alt="${esc(b.title)}" class="w-full h-36 sm:h-48 object-cover group-hover:scale-105 transition duration-500 opacity-90" />
-          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-between p-4">
-            <span class="inline-flex items-center gap-1.5 bg-white/95 backdrop-blur-md text-slate-900 font-extrabold text-[11px] px-3 py-1 rounded-full shadow-md self-start">
-              <img src="${toProxyUrl(b.shops?.logo_url || 'https://placehold.co/40')}" alt="Shop" class="w-5 h-5 rounded-full object-cover border" />
+        <div class="relative overflow-hidden rounded-3xl shadow-md border border-slate-200 group bg-slate-900 cursor-pointer" onclick="location.href='shop.html?id=${b.shop_id || b.shops?.id}'">
+          <img src="${toProxyUrl(b.image_url)}" alt="${esc(b.title)}" class="w-full h-40 sm:h-52 object-cover group-hover:scale-105 transition duration-500 opacity-90" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-between p-4 sm:p-5">
+            <span class="inline-flex items-center gap-2 bg-white/95 backdrop-blur-md text-slate-900 font-extrabold text-xs px-3.5 py-1.5 rounded-full shadow-md self-start">
+              <img src="${toProxyUrl(b.shops?.logo_url || 'https://placehold.co/40')}" alt="Shop" class="w-6 h-6 rounded-full object-cover border" />
               ${esc(b.shops?.name || 'Aura Store')}
             </span>
-            <div class="flex justify-between items-end gap-2">
-              <h3 class="text-white font-black text-xs sm:text-base leading-snug drop-shadow-md">${esc(b.title)}</h3>
-              <span class="bg-violet-600 text-white font-bold text-[10px] px-3 py-1 rounded-xl shadow shrink-0">Shop Now</span>
+            <div class="flex justify-between items-end gap-3">
+              <h3 class="text-white font-black text-sm sm:text-base leading-snug drop-shadow-md">${esc(b.title)}</h3>
+              <span class="bg-violet-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl shadow transition shrink-0">Shop Now</span>
             </div>
           </div>
         </div>
@@ -521,7 +528,7 @@
       let list = products;
       if (searchQuery) list = list.filter(p => (p.title || p.name || '').toLowerCase().includes(searchQuery));
       document.getElementById('productCountBadge').innerText = `${list.length} မျိုး`;
-      if (!list.length) { grid.innerHTML = '<div class="col-span-full py-12 text-center text-slate-400 text-xs">ကုန်ပစ္စည်း မရှိသေးပါ</div>'; return; }
+      if (!list.length) { grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-400 text-xs sm:text-sm font-semibold">ကုန်ပစ္စည်း မရှိသေးပါ</div>'; return; }
 
       grid.innerHTML = list.map(p => {
         const originalPrice = Number(p.price || 0);
@@ -534,25 +541,25 @@
         const shopInfo = p.shops || {};
 
         return `
-          <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-2.5 sm:p-3.5 flex flex-col justify-between hover:shadow-xl transition duration-300 group shadow-xs">
+          <div class="bg-white rounded-3xl border border-slate-100 p-3 sm:p-4 flex flex-col justify-between hover:shadow-xl transition duration-300 group shadow-xs">
             <div>
-              <div class="relative cursor-pointer overflow-hidden rounded-xl sm:rounded-2xl bg-slate-100 mb-2.5" onclick="openBuyModalById(${p.id})">
-                <img src="${image}" alt="${esc(p.title || p.name)}" class="w-full h-36 sm:h-48 object-cover group-hover:scale-105 transition duration-500" />
-                ${hasDiscount ? `<span class="absolute top-2 left-2 bg-rose-600 text-white text-[9px] px-1.5 py-0.5 rounded-md font-black uppercase shadow">${discountPercent}% OFF</span>` : ''}
-                <span class="absolute top-2 right-2 bg-emerald-600 text-white text-[9px] px-1.5 py-0.5 rounded-md font-bold shadow">📦 ${stock}</span>
-                <div class="absolute bottom-2 left-2 bg-white/90 backdrop-blur-md px-2 py-0.5 rounded-lg flex items-center gap-1 shadow">
-                  <img src="${toProxyUrl(shopInfo.logo_url || 'https://placehold.co/30')}" class="w-4 h-4 rounded-full object-cover border" />
-                  <span class="text-[9px] font-bold text-slate-800 line-clamp-1">${esc(shopInfo.name || 'Store')}</span>
+              <div class="relative cursor-pointer overflow-hidden rounded-2xl bg-slate-100 mb-3" onclick="openBuyModalById(${p.id})">
+                <img src="${image}" alt="${esc(p.title || p.name)}" class="w-full h-40 sm:h-52 object-cover group-hover:scale-105 transition duration-500" />
+                ${hasDiscount ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-black uppercase shadow">${discountPercent}% OFF</span>` : ''}
+                <span class="absolute top-2.5 right-2.5 bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-bold shadow">📦 ${stock}</span>
+                <div class="absolute bottom-2.5 left-2.5 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-xl flex items-center gap-1.5 shadow">
+                  <img src="${toProxyUrl(shopInfo.logo_url || 'https://placehold.co/30')}" class="w-5 h-5 rounded-full object-cover border" />
+                  <span class="text-[10px] sm:text-xs font-bold text-slate-900 line-clamp-1">${esc(shopInfo.name || 'Store')}</span>
                 </div>
               </div>
-              <h4 class="font-bold text-xs text-slate-800 line-clamp-2 cursor-pointer" onclick="openBuyModalById(${p.id})">${esc(p.title || p.name)}</h4>
-              <div class="mt-1.5 flex items-baseline gap-1.5 flex-wrap">
-                <span class="text-xs sm:text-sm font-black text-rose-600">${displayPrice.toLocaleString()} Ks</span>
-                ${hasDiscount ? `<span class="text-[10px] font-bold text-slate-400 line-through">${originalPrice.toLocaleString()} Ks</span>` : ''}
+              <h4 class="font-extrabold text-xs sm:text-sm text-slate-900 line-clamp-2 cursor-pointer" onclick="openBuyModalById(${p.id})">${esc(p.title || p.name)}</h4>
+              <div class="mt-2 flex items-baseline gap-2 flex-wrap">
+                <span class="text-sm sm:text-base font-black text-rose-600">${displayPrice.toLocaleString()} Ks</span>
+                ${hasDiscount ? `<span class="text-xs font-bold text-slate-400 line-through">${originalPrice.toLocaleString()} Ks</span>` : ''}
               </div>
             </div>
-            <button type="button" onclick="openBuyModalById(${p.id})" ${stock <= 0 ? 'disabled' : ''} class="mt-3 w-full ${stock <= 0 ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-slate-900 hover:bg-violet-600 text-white cursor-pointer'} py-2 rounded-xl text-[11px] font-bold transition shadow-xs">
-              ${stock <= 0 ? 'ကုန်နေပါသည်' : 'အသေးစိတ်'}
+            <button type="button" onclick="openBuyModalById(${p.id})" ${stock <= 0 ? 'disabled' : ''} class="mt-4 w-full ${stock <= 0 ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-slate-900 hover:bg-violet-600 text-white cursor-pointer'} py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold transition shadow-xs">
+              ${stock <= 0 ? 'ကုန်နေပါသည်' : 'အသေးစိတ်ကြည့်မည်'}
             </button>
           </div>
         `;
@@ -573,7 +580,7 @@
 
       document.getElementById('detailMainImg').src = imgs[0];
       document.getElementById('detailThumbnails').innerHTML = imgs.map((img, idx) => `
-        <img src="${img}" alt="Thumb" onclick="document.getElementById('detailMainImg').src='${img}'" class="w-12 h-12 object-cover rounded-xl border-2 ${idx === 0 ? 'border-violet-600' : 'border-slate-200'} cursor-pointer" />
+        <img src="${img}" alt="Thumb" onclick="document.getElementById('detailMainImg').src='${img}'" class="w-14 h-14 object-cover rounded-2xl border-2 ${idx === 0 ? 'border-violet-600' : 'border-slate-200'} cursor-pointer" />
       `).join('');
 
       document.getElementById('detailTitle').innerText = product.title || product.name || '';
@@ -582,11 +589,11 @@
       const originalPrice = Number(product.price || 0);
       const flashPrice = Number(product.flash_price || 0);
       const displayPrice = (flashPrice > 0 && flashPrice < originalPrice) ? flashPrice : originalPrice;
-      document.getElementById('detailPriceContainer').innerHTML = `<span class="text-xl font-black text-rose-600">${displayPrice.toLocaleString()} MMK</span>`;
+      document.getElementById('detailPriceContainer').innerHTML = `<span class="text-2xl font-black text-rose-600">${displayPrice.toLocaleString()} MMK</span>`;
 
       const stock = Number(product.stock || 0);
       const stockBadge = document.getElementById('detailStockBadge');
-      stockBadge.className = stock > 0 ? "px-2.5 py-1 rounded-xl font-bold text-[10px] bg-emerald-50 text-emerald-700 border border-emerald-200" : "px-2.5 py-1 rounded-xl font-black text-[10px] bg-rose-50 text-rose-700 border border-rose-200";
+      stockBadge.className = stock > 0 ? "px-3 py-1 rounded-xl font-extrabold text-xs bg-emerald-50 text-emerald-700 border border-emerald-200" : "px-3 py-1 rounded-xl font-black text-xs bg-rose-50 text-rose-700 border border-rose-200";
       stockBadge.innerText = stock > 0 ? `📦 လက်ကျန်: ${stock}` : `❌ ကုန်နေပါသည်`;
 
       const noticeArea = document.getElementById('shopNoticeDisplayArea');
@@ -601,22 +608,22 @@
       const sizeArea = document.getElementById('sizeSelectionArea');
       if (product.sizes?.length) {
         sizeArea.classList.remove('hidden');
-        document.getElementById('sizeOptionsList').innerHTML = product.sizes.map((s, idx) => `<button type="button" onclick="selectSize('${s}', this)" class="size-btn px-3 py-1.5 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-violet-600 bg-violet-50 text-violet-700' : 'border-slate-200 bg-slate-50'}">${s}</button>`).join('');
+        document.getElementById('sizeOptionsList').innerHTML = product.sizes.map((s, idx) => `<button type="button" onclick="selectSize('${s}', this)" class="size-btn px-4 py-2 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-violet-600 bg-violet-50 text-violet-700' : 'border-slate-200 bg-slate-50'}">${s}</button>`).join('');
         chosenSize = product.sizes[0];
       } else sizeArea.classList.add('hidden');
 
       const colorArea = document.getElementById('colorSelectionArea');
       if (product.colors?.length) {
         colorArea.classList.remove('hidden');
-        document.getElementById('colorOptionsList').innerHTML = product.colors.map((c, idx) => `<button type="button" onclick="selectColor('${c}', this)" class="color-btn px-3 py-1.5 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-violet-600 bg-violet-50 text-violet-700' : 'border-slate-200 bg-slate-50'}">${c}</button>`).join('');
+        document.getElementById('colorOptionsList').innerHTML = product.colors.map((c, idx) => `<button type="button" onclick="selectColor('${c}', this)" class="color-btn px-4 py-2 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-violet-600 bg-violet-50 text-violet-700' : 'border-slate-200 bg-slate-50'}">${c}</button>`).join('');
         chosenColor = product.colors[0];
       } else colorArea.classList.add('hidden');
 
       document.getElementById('buyModal').classList.remove('hidden'); document.getElementById('buyModal').classList.add('flex');
     }
 
-    function selectSize(s, el){ chosenSize = s; document.querySelectorAll('.size-btn').forEach(b => b.className = "size-btn px-3 py-1.5 rounded-xl border font-bold text-xs border-slate-200 bg-slate-50"); el.className = "size-btn px-3 py-1.5 rounded-xl border font-bold text-xs border-violet-600 bg-violet-50 text-violet-700"; }
-    function selectColor(c, el){ chosenColor = c; document.querySelectorAll('.color-btn').forEach(b => b.className = "size-btn px-3 py-1.5 rounded-xl border font-bold text-xs border-slate-200 bg-slate-50"); el.className = "color-btn px-3 py-1.5 rounded-xl border font-bold text-xs border-violet-600 bg-violet-50 text-violet-700"; }
+    function selectSize(s, el){ chosenSize = s; document.querySelectorAll('.size-btn').forEach(b => b.className = "size-btn px-4 py-2 rounded-xl border font-bold text-xs border-slate-200 bg-slate-50"); el.className = "size-btn px-4 py-2 rounded-xl border font-bold text-xs border-violet-600 bg-violet-50 text-violet-700"; }
+    function selectColor(c, el){ chosenColor = c; document.querySelectorAll('.color-btn').forEach(b => b.className = "size-btn px-4 py-2 rounded-xl border font-bold text-xs border-slate-200 bg-slate-50"); el.className = "color-btn px-4 py-2 rounded-xl border font-bold text-xs border-violet-600 bg-violet-50 text-violet-700"; }
     function closeBuyModal(){ document.getElementById('buyModal').classList.add('hidden'); document.getElementById('buyModal').classList.remove('flex'); }
 
     function confirmAddToCart() {
@@ -670,17 +677,17 @@
       document.getElementById('selectAllCheckbox').checked = cart.length > 0 && cart.every(i => i.checked);
 
       const box = document.getElementById('cartItems');
-      if (!cart.length) { box.innerHTML = '<div class="py-12 text-center text-slate-400">စျေးဝယ်တွန်းလှည်းထဲ ဘာမှမရှိသေးပါ</div>'; return; }
+      if (!cart.length) { box.innerHTML = '<div class="py-12 text-center text-slate-400 font-semibold">စျေးဝယ်တွန်းလှည်းထဲ ဘာမှမရှိသေးပါ</div>'; return; }
       box.innerHTML = cart.map((i, idx) => `
-        <div class="py-2.5 flex items-center gap-2.5">
+        <div class="py-3 flex items-center gap-3">
           <input type="checkbox" ${i.checked ? 'checked' : ''} onchange="toggleItemCheck(${idx})" class="w-4 h-4 rounded text-violet-600 accent-violet-600 cursor-pointer" />
-          <img src="${i.image}" alt="Item" class="w-10 h-10 rounded-xl object-cover border" />
+          <img src="${i.image}" alt="Item" class="w-12 h-12 rounded-2xl object-cover border" />
           <div class="flex-1">
-            <h5 class="font-bold line-clamp-1">${esc(i.title)}</h5>
-            <div class="text-[9px] text-slate-500">${esc(i.shop_name)} · Size: ${esc(i.selectedSize || '-')}</div>
-            <div class="text-rose-600 font-extrabold text-[11px]">${i.price.toLocaleString()} Ks x ${i.qty}</div>
+            <h5 class="font-extrabold line-clamp-1 text-slate-900">${esc(i.title)}</h5>
+            <div class="text-xs text-slate-500 font-medium">${esc(i.shop_name)} · Size: ${esc(i.selectedSize || '-')}</div>
+            <div class="text-rose-600 font-black text-xs mt-0.5">${i.price.toLocaleString()} Ks x ${i.qty}</div>
           </div>
-          <button type="button" onclick="cart.splice(${idx}, 1); saveCart(); updateCartUI();" class="text-rose-500 p-2 cursor-pointer"><i class="ph ph-trash text-sm"></i></button>
+          <button type="button" onclick="cart.splice(${idx}, 1); saveCart(); updateCartUI();" class="text-rose-500 p-2 cursor-pointer"><i class="ph ph-trash text-base"></i></button>
         </div>
       `).join('');
     }
@@ -780,8 +787,8 @@
 
         const appliedFee = isLocal ? Number(pkg.local_shipping_fee || 0) : Number(pkg.gate_fee || 0);
         const feeBadge = isLocal 
-          ? `<span class="bg-emerald-100 text-emerald-700 text-[9px] px-2 py-0.5 rounded font-bold">📍 မြို့တွင်း: ${appliedFee.toLocaleString()} Ks</span>`
-          : `<span class="bg-orange-100 text-orange-700 text-[9px] px-2 py-0.5 rounded font-bold">🚛 နယ်ဝေး: ${appliedFee.toLocaleString()} Ks</span>`;
+          ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] px-2.5 py-1 rounded-md font-bold">📍 မြို့တွင်း: ${appliedFee.toLocaleString()} Ks</span>`
+          : `<span class="bg-orange-100 text-orange-800 text-[10px] px-2.5 py-1 rounded-md font-bold">🚛 နယ်ဝေး: ${appliedFee.toLocaleString()} Ks</span>`;
 
         pkg.applied_shipping_fee = appliedFee;
         pkg.delivery_type = isLocal ? 'local' : 'regional';
@@ -790,19 +797,19 @@
         grandShipping += appliedFee;
 
         return `
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-2">
-            <div class="flex justify-between items-start border-b pb-1.5 text-[11px]">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2">
+            <div class="flex justify-between items-start border-b pb-2 text-xs">
               <div>
-                <span class="bg-violet-100 text-violet-700 font-bold px-1.5 py-0.5 rounded text-[9px]">Package ${idx + 1}</span>
-                <span class="font-extrabold text-slate-800 ml-1">${esc(pkg.shop_name)}</span>
+                <span class="bg-violet-100 text-violet-700 font-extrabold px-2 py-0.5 rounded text-[10px]">Package ${idx + 1}</span>
+                <span class="font-extrabold text-slate-900 ml-1.5">${esc(pkg.shop_name)}</span>
               </div>
-              <div>${customerTownship ? feeBadge : '<span class="text-[9px] text-slate-400">မြို့နယ် ထည့်ပါ</span>'}</div>
+              <div>${customerTownship ? feeBadge : '<span class="text-[10px] text-slate-400 font-bold">မြို့နယ် ထည့်ပါ</span>'}</div>
             </div>
             <div class="space-y-1">
               ${pkg.items.map(i => `
-                <div class="flex justify-between items-center text-[10px]">
-                  <span class="text-slate-700">${esc(i.title)} x${i.qty}</span>
-                  <span class="font-bold">${(i.price * i.qty).toLocaleString()} Ks</span>
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-slate-700 font-medium">${esc(i.title)} x${i.qty}</span>
+                  <span class="font-extrabold text-slate-900">${(i.price * i.qty).toLocaleString()} Ks</span>
                 </div>
               `).join('')}
             </div>
@@ -923,21 +930,21 @@
 
     async function loadCustomerPackages(userId) {
       const container = document.getElementById('customerOrdersContainer');
-      container.innerHTML = '<div class="text-center py-4 text-slate-400">ရှာဖွေနေပါသည်...</div>';
+      container.innerHTML = '<div class="text-center py-4 text-slate-400 font-semibold">ရှာဖွေနေပါသည်...</div>';
       const { data: orders } = await client.from('orders').select('*, shop_orders(*)').eq('customer_id', userId).order('id', { ascending: false });
-      if (!orders || !orders.length) { container.innerHTML = '<div class="text-center py-4 text-slate-400">အော်ဒါ မရှိသေးပါ</div>'; return; }
+      if (!orders || !orders.length) { container.innerHTML = '<div class="text-center py-4 text-slate-400 font-semibold">အော်ဒါ မရှိသေးပါ</div>'; return; }
 
       container.innerHTML = orders.map((o) => {
         const status = o.status || 'pending';
         return `
-          <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 space-y-1.5 text-xs">
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2 text-xs sm:text-sm">
             <div class="flex justify-between items-center">
               <span class="font-mono font-bold text-violet-700">Order #${o.id}</span>
-              <span class="px-2 py-0.5 rounded-full text-[9px] font-extrabold uppercase ${status === 'completed' ? 'bg-emerald-50 text-emerald-600' : status === 'cancelled' ? 'bg-rose-50 text-rose-600' : 'bg-indigo-50 text-indigo-600'}">${status}</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${status === 'completed' ? 'bg-emerald-50 text-emerald-600' : status === 'cancelled' ? 'bg-rose-50 text-rose-600' : 'bg-indigo-50 text-indigo-600'}">${status}</span>
             </div>
-            <div class="flex justify-between items-center border-t pt-1.5 text-slate-600">
+            <div class="flex justify-between items-center border-t pt-2 text-slate-700 font-semibold">
               <span>ကျသင့်ငွေ: <b class="text-slate-900">${Number(o.total_amount || 0).toLocaleString()} MMK</b></span>
-              <button type="button" onclick="openOrderDetail(${o.id})" class="bg-slate-900 text-white px-2.5 py-1 rounded-lg font-bold text-[10px] cursor-pointer">အသေးစိတ်</button>
+              <button type="button" onclick="openOrderDetail(${o.id})" class="bg-slate-900 text-white px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer">အသေးစိတ်</button>
             </div>
           </div>
         `;
@@ -979,38 +986,38 @@
         const pStatus = so.status || 'pending';
         const items = Array.isArray(so.items) ? so.items : [];
 
-        const callShopBtn = shop.phone ? '<a href="tel:' + esc(shop.phone) + '" class="bg-emerald-50 text-emerald-700 px-2 py-1 rounded-lg font-bold text-[10px] flex items-center gap-1"><i class="ph-bold ph-phone-call"></i> ခေါ်မည်</a>' : '';
+        const callShopBtn = shop.phone ? '<a href="tel:' + esc(shop.phone) + '" class="bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-xl font-bold text-xs flex items-center gap-1"><i class="ph-bold ph-phone-call"></i> ခေါ်မည်</a>' : '';
 
         const itemsHtml = items.map(it => `
-          <div class="flex justify-between items-center text-[10px]">
-            <span class="text-slate-700">• ${esc(it.title)} x${it.qty}</span>
-            <span class="font-bold">${(Number(it.price || 0) * it.qty).toLocaleString()} Ks</span>
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-700 font-medium">• ${esc(it.title)} x${it.qty}</span>
+            <span class="font-bold text-slate-900">${(Number(it.price || 0) * it.qty).toLocaleString()} Ks</span>
           </div>
         `).join('');
 
         const courierHtml = so.courier_name ? `
-          <div class="bg-indigo-50 p-2 rounded-lg border border-indigo-100 text-[10px] space-y-0.5">
+          <div class="bg-indigo-50 p-2.5 rounded-xl border border-indigo-100 text-xs space-y-1">
             <div><b>စနစ်:</b> ${esc(so.courier_name)} | <b>Waybill:</b> ${esc(so.tracking_code || '-')}</div>
-            ${so.courier_phone ? `<div><b>ဂိတ်ဖုန်း:</b> <a href="tel:${esc(so.courier_phone)}" class="text-indigo-600 underline">${esc(so.courier_phone)}</a></div>` : ''}
+            ${so.courier_phone ? `<div><b>ဂိတ်ဖုန်း:</b> <a href="tel:${esc(so.courier_phone)}" class="text-indigo-600 underline font-bold">${esc(so.courier_phone)}</a></div>` : ''}
           </div>
         ` : '';
 
         const confirmBtnHtml = (pStatus === 'shipping') ? `
-          <button type="button" onclick="handleConfirmPackageReceived(${so.id})" class="w-full bg-emerald-600 text-white font-bold py-2 rounded-xl text-xs cursor-pointer">
+          <button type="button" onclick="handleConfirmPackageReceived(${so.id})" class="w-full bg-emerald-600 text-white font-extrabold py-2.5 rounded-xl text-xs cursor-pointer shadow-xs">
             ✅ ပစ္စည်းလက်ခံရရှိပါပြီ
           </button>
         ` : '';
 
         return `
-          <div class="bg-white rounded-xl border border-slate-200 p-3 space-y-2">
-            <div class="flex justify-between items-center border-b pb-1.5 text-xs">
+          <div class="bg-white rounded-2xl border border-slate-200 p-3.5 space-y-2.5">
+            <div class="flex justify-between items-center border-b pb-2 text-xs sm:text-sm">
               <div>
-                <span class="bg-violet-100 text-violet-700 font-bold px-1.5 py-0.5 rounded text-[9px]">Pkg ${idx + 1}</span>
-                <span class="font-extrabold text-slate-900 ml-1">${esc(shop.name || 'Store')}</span>
+                <span class="bg-violet-100 text-violet-700 font-extrabold px-2 py-0.5 rounded text-[10px]">Pkg ${idx + 1}</span>
+                <span class="font-extrabold text-slate-900 ml-1.5">${esc(shop.name || 'Store')}</span>
               </div>
-              <div class="flex items-center gap-1">
+              <div class="flex items-center gap-1.5">
                 ${callShopBtn}
-                <span class="px-2 py-0.5 rounded-full text-[9px] font-black uppercase ${pStatus === 'completed' ? 'bg-emerald-50 text-emerald-700' : 'bg-indigo-50 text-indigo-700'}">${pStatus}</span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${pStatus === 'completed' ? 'bg-emerald-50 text-emerald-700' : 'bg-indigo-50 text-indigo-700'}">${pStatus}</span>
               </div>
             </div>
             <div class="space-y-1">${itemsHtml}</div>
@@ -1048,7 +1055,6 @@
     function openPolicyModal(){ document.getElementById('policyModal').classList.remove('hidden'); document.getElementById('policyModal').classList.add('flex'); }
     function closePolicyModal(){ document.getElementById('policyModal').classList.add('hidden'); document.getElementById('policyModal').classList.remove('flex'); }
 
-    // 🌟 စံချိန်မီ ဆိုင်ဖွင့်ရန် လျှောက်လွှာ တင်သွင်းခြင်း (Image Upload & Form Validation ပါဝင်သည်)
     async function handleSellerApplicationSubmit(e) {
       e.preventDefault();
       if (!currentAuthSessionUser) { closeSellerApplyModal(); openAuthModal('login'); return; }
