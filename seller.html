@@ -42,6 +42,8 @@
     })();
   </script>
 
+  <!-- Tailwind CSS Production CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
@@ -137,7 +139,7 @@
       <div class="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
         <div>
           <h2 class="font-bold text-slate-800 text-lg">ဤဆိုင်ခွဲအတွက် အော်ဒါစာရင်းနှင့် Delivery အခြေအနေ</h2>
-          <p class="text-xs text-slate-500">Waybill/ဂိတ်တင်ကုဒ်များဖြင့် ပါဆယ်ပို့ဆောင်နိုင်ပါသည်</p>
+          <p class="text-xs text-slate-500">Admin အတည်ပြုပြီးမှ (Confirmed) ပါဆယ်ပို့ဆောင်နိုင်ပါသည်</p>
         </div>
         <button type="button" onclick="loadSellerOrders()" class="text-xs bg-slate-100 hover:bg-slate-200 px-3 py-1.5 rounded text-slate-700 font-bold"><i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh</button>
       </div>
@@ -290,7 +292,7 @@
 
   </main>
 
-  <!-- SHIPPING DISPATCH MODAL (COURIER & WAYBILL INPUT) -->
+  <!-- SHIPPING DISPATCH MODAL -->
   <div id="shippingDispatchModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-4 text-xs shadow-2xl">
       <div class="flex justify-between items-center border-b pb-3">
@@ -470,8 +472,10 @@
               ${so.courier_name ? `<div class="text-[10px] text-slate-500 mt-1">🚚 ${escapeHtml(so.courier_name)} (${escapeHtml(so.tracking_code || '')})</div>` : ''}
             </td>
             <td class="p-4">
-              ${status === 'confirmed' || status === 'pending' ? `
-                <button type="button" onclick="openShippingDispatchModal(${so.id})" class="bg-violet-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-violet-700 shadow">ပါဆယ်ပို့မည် (Ship)</button>
+              ${status === 'confirmed' ? `
+                <button type="button" onclick="openShippingDispatchModal(${so.id})" class="bg-violet-600 text-white px-3 py-1.5 rounded text-xs font-bold hover:bg-violet-700 shadow cursor-pointer">ပါဆယ်ပို့မည် (Ship)</button>
+              ` : status === 'pending' ? `
+                <span class="text-xs font-bold text-amber-600 bg-amber-50 px-2 py-1 rounded">⏳ Admin အတည်ပြုရန် စောင့်ဆိုင်းနေသည်</span>
               ` : status === 'shipping' ? `
                 <span class="text-xs font-bold text-blue-600">လမ်းခရီးတွင် ပို့ဆောင်ဆဲ</span>
               ` : `<span class="text-xs text-slate-400 font-bold">ပြီးစီး</span>`}
