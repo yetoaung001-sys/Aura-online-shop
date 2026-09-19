@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aura Marketplace - Modern E-Commerce</title>
 
-  <!-- Global Reverse Proxy URL Rewriter -->
+  <!-- Global Reverse Proxy URL Rewriter (Connection Timeout ကာကွယ်ခြင်း) -->
   <script>
     (function() {
       const SUPABASE_HOST = 'zyajlsrytjvwxqtpxrqd.supabase.co';
@@ -146,7 +146,7 @@
     </div>
   </div>
 
-  <!-- CHECKOUT MODAL -->
+  <!-- CHECKOUT MODAL (PER-PACKAGE TOWNSHIP AUTO ROUTING) -->
   <div id="checkoutModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-xl rounded-3xl p-7 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -160,7 +160,7 @@
       <form onsubmit="handleSplitOrderSubmit(event)" class="space-y-4">
         <div>
           <label for="custTownship" class="font-bold block mb-1 text-slate-700">📍 ဝယ်သူ မြို့နယ် (Township) ရိုက်ထည့်ပါ *</label>
-          <input type="text" id="custTownship" required oninput="handleCustomerTownshipInput(this.value)" placeholder="ဥပမာ - ရေး၊ မော်လမြိုင်၊ ရန်ကုန်..." class="w-full border p-3 rounded-2xl outline-none bg-slate-50 font-bold text-violet-700 focus:bg-white focus:ring-2 focus:ring-violet-600 transition" />
+          <input type="text" id="custTownship" required oninput="handleCustomerTownshipInput(this.value)" placeholder="ဥပမာ - ရေး၊ မော်လမြိုင်၊ လှိုင်သာယာ..." class="w-full border p-3 rounded-2xl outline-none bg-slate-50 font-bold text-violet-700 focus:bg-white focus:ring-2 focus:ring-violet-600 transition" />
           <span class="text-[10px] text-slate-400 mt-0.5 block">မြို့နယ် ရိုက်ထည့်လိုက်သည်နှင့် Package တစ်ခုချင်းစီအလိုက် ပို့ခ အလိုအလျောက် ပြောင်းလဲပါမည်</span>
         </div>
 
@@ -624,11 +624,11 @@
       selectedItems.forEach(item => {
         const sId = item.shop_id;
 
-        // ဆိုင်၏ လက်ရှိဒေတာကို products list မှ နောက်ဆုံးရအချက်အလက်ဖြင့် ထပ်မံ verify လုပ်ခြင်း
+        // live shop data သို့မဟုတ် item data မှ တန်ဖိုးများကို တိုက်ရိုက်ရယူခြင်း
         const parentProd = products.find(p => Number(p.id) === Number(item.id));
         const liveShop = parentProd?.shops || {};
 
-        const township = item.shop_township || liveShop.township || '';
+        const township = (item.shop_township || liveShop.township || '').trim();
         const localFee = Number(item.shipping_fee ?? liveShop.shipping_fee ?? 0);
         const gateFee = Number(item.gate_fee ?? liveShop.delivery_fee ?? 0);
 
@@ -660,6 +660,7 @@
       return Object.values(groups);
     }
 
+    // 🌟 CHECKOUT ဖွင့်ချိန်တွင် DATABASE မှ ဆိုင်ခွဲ POST ပို့ခများကို တိုက်ရိုက် REFRESH လုပ်ခြင်း (0 Ks Bug ဖြေရှင်းချက်)
     async function openCheckout() {
       const selected = cart.filter(i => i.checked);
       if (!selected.length) return Toast.fire({ icon: 'warning', title: 'ဝယ်ယူမည့် ပစ္စည်း အနည်းဆုံး ၁ ခု ရွေးပါ' });
@@ -668,6 +669,28 @@
       if (!session) { closeCart(); openAuthModal('login'); return; }
 
       closeCart();
+
+      try {
+        const shopIds = [...new Set(selected.map(i => i.shop_id).filter(Boolean))];
+        const { data: latestShops } = await client
+          .from('shops')
+          .select('id, name, shipping_fee, delivery_fee, township')
+          .in('id', shopIds);
+
+        if (latestShops && latestShops.length) {
+          selected.forEach(item => {
+            const s = latestShops.find(ls => Number(ls.id) === Number(item.shop_id));
+            if (s) {
+              item.shop_township = s.township || '';
+              item.shipping_fee = Number(s.shipping_fee || 0);
+              item.gate_fee = Number(s.delivery_fee || 0);
+            }
+          });
+        }
+      } catch (err) {
+        console.error("Shop refresh error:", err);
+      }
+
       currentPackagesToCheckout = splitCartByShop(selected);
       renderCheckoutPackages();
       document.getElementById('checkoutModal').classList.remove('hidden');
