@@ -4,6 +4,42 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aura Marketplace - Modern E-Commerce</title>
+  
+  <!-- GLOBAL URL INTERCEPTOR (Supabase Domain မှ ပုံ/ဗီဒီယို အားလုံးကို Proxy သို့ အလိုအလျောက် လွှဲပြောင်းပေးခြင်း) -->
+  <script>
+    (function() {
+      const SUPABASE_ORIGIN = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
+      const PROXY_ORIGIN = window.location.origin + '/api/supabase';
+
+      function rewriteUrl(url) {
+        if (typeof url === 'string' && url.startsWith(SUPABASE_ORIGIN)) {
+          return url.replace(SUPABASE_ORIGIN, PROXY_ORIGIN);
+        }
+        return url;
+      }
+
+      // 1. Image src interceptor
+      const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+      if (originalSrcDescriptor) {
+        Object.defineProperty(HTMLImageElement.prototype, 'src', {
+          set: function(val) {
+            originalSrcDescriptor.set.call(this, rewriteUrl(val));
+          },
+          get: originalSrcDescriptor.get
+        });
+      }
+
+      // 2. setAttribute ('src', 'href') interceptor
+      const originalSetAttribute = Element.prototype.setAttribute;
+      Element.prototype.setAttribute = function(name, val) {
+        if ((name === 'src' || name === 'href') && typeof val === 'string') {
+          val = rewriteUrl(val);
+        }
+        return originalSetAttribute.call(this, name, val);
+      };
+    })();
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -328,14 +364,9 @@
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
     const client = supabase.createClient(SUPABASE_URL, SB_KEY);
 
-    // Image Proxy Helper (မြန်မာနိုင်ငံမှ Connection Timeout မဖြစ်စေရန်)
-    function getProxiedImageUrl(url) {
-      if (!url) return 'https://placehold.co/300';
-      const SUPABASE_ORIGIN = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
-      if (url.startsWith(SUPABASE_ORIGIN)) {
-        return url.replace(SUPABASE_ORIGIN, window.location.origin + '/api/supabase');
-      }
-      return url;
+    // Proxy Storage URL Helper Function
+    function getProxiedStorageUrl(bucket, filePath) {
+      return `${window.location.origin}/api/supabase/storage/v1/object/public/${bucket}/${filePath}`;
     }
 
     const Toast = Swal.mixin({
@@ -432,10 +463,10 @@
       container.classList.remove('hidden');
       container.innerHTML = uniqueShopBanners.map(b => `
         <div class="relative overflow-hidden rounded-3xl shadow-md border border-slate-200 group bg-slate-900 cursor-pointer" onclick="location.href='shop.html?id=${b.shop_id || b.shops?.id}'">
-          <img src="${getProxiedImageUrl(b.image_url)}" alt="${esc(b.title)}" class="w-full h-48 sm:h-56 object-cover group-hover:scale-105 transition duration-500 opacity-90" />
+          <img src="${esc(b.image_url)}" alt="${esc(b.title)}" class="w-full h-48 sm:h-56 object-cover group-hover:scale-105 transition duration-500 opacity-90" />
           <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-between p-5">
             <span class="inline-flex items-center gap-2 bg-white/95 backdrop-blur-md text-slate-900 font-extrabold text-xs px-3.5 py-1.5 rounded-full shadow-md self-start">
-              <img src="${getProxiedImageUrl(b.shops?.logo_url || 'https://placehold.co/50')}" alt="Shop" class="w-6 h-6 rounded-full object-cover border" />
+              <img src="${esc(b.shops?.logo_url || 'https://placehold.co/50')}" alt="Shop" class="w-6 h-6 rounded-full object-cover border" />
               ${esc(b.shops?.name || 'Aura Store')}
             </span>
             <div class="flex justify-between items-end gap-3">
@@ -467,15 +498,14 @@
         const hasDiscount = flashPrice > 0 && flashPrice < originalPrice;
         const displayPrice = hasDiscount ? flashPrice : originalPrice;
         const discountPercent = hasDiscount ? Math.round(((originalPrice - flashPrice) / originalPrice) * 100) : 0;
-        const rawImage = (p.images && p.images[0]) || p.image || p.image_url;
-        const image = getProxiedImageUrl(rawImage);
+        const image = (p.images && p.images[0]) || p.image || p.image_url || 'https://placehold.co/300';
         const stock = Number(p.stock || 0);
 
         return `
           <div class="bg-white rounded-3xl border border-slate-100 p-3.5 flex flex-col justify-between hover:shadow-xl transition duration-300 group shadow-xs">
             <div>
               <div class="relative cursor-pointer overflow-hidden rounded-2xl bg-slate-100 mb-3" onclick="openBuyModalById(${p.id})">
-                <img src="${image}" alt="${esc(p.title || p.name)}" class="w-full h-40 sm:h-48 object-cover group-hover:scale-105 transition duration-500" />
+                <img src="${esc(image)}" alt="${esc(p.title || p.name)}" class="w-full h-40 sm:h-48 object-cover group-hover:scale-105 transition duration-500" />
                 ${hasDiscount ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-black uppercase shadow-md">${discountPercent}% OFF</span>` : ''}
               </div>
               <h4 class="font-bold text-xs text-slate-800 line-clamp-2 cursor-pointer" onclick="openBuyModalById(${p.id})">${esc(p.title || p.name)}</h4>
@@ -501,12 +531,10 @@
 
     function openBuyModal(product) {
       selectedProductForBuy = product; chosenSize = ''; chosenColor = '';
-      const rawImgs = product.images || (product.image ? [product.image] : ['https://placehold.co/300']);
-      const imgs = rawImgs.map(getProxiedImageUrl);
-      
+      const imgs = product.images || (product.image ? [product.image] : ['https://placehold.co/300']);
       document.getElementById('detailMainImg').src = imgs[0];
       document.getElementById('detailThumbnails').innerHTML = imgs.map((img, idx) => `
-        <img src="${img}" alt="Thumb" onclick="document.getElementById('detailMainImg').src='${img}'" class="w-14 h-14 object-cover rounded-xl border-2 ${idx === 0 ? 'border-violet-600' : 'border-slate-200'} cursor-pointer" />
+        <img src="${esc(img)}" alt="Thumb" onclick="document.getElementById('detailMainImg').src='${img}'" class="w-14 h-14 object-cover rounded-xl border-2 ${idx === 0 ? 'border-violet-600' : 'border-slate-200'} cursor-pointer" />
       `).join('');
 
       document.getElementById('detailTitle').innerText = product.title || product.name || '';
@@ -555,8 +583,6 @@
       const key = `${selectedProductForBuy.id}|${chosenSize}|${chosenColor}`;
       const existing = cart.find(i => i.key === key);
 
-      const itemImg = getProxiedImageUrl((selectedProductForBuy.images && selectedProductForBuy.images[0]) || selectedProductForBuy.image);
-
       if (existing) existing.qty = Math.min(existing.qty + qty, stock);
       else {
         cart.push({
@@ -564,7 +590,7 @@
           id: selectedProductForBuy.id,
           title: selectedProductForBuy.title || selectedProductForBuy.name,
           price: activePrice,
-          image: itemImg,
+          image: (selectedProductForBuy.images && selectedProductForBuy.images[0]) || selectedProductForBuy.image,
           shop_id: selectedProductForBuy.shop_id || selectedProductForBuy.shops?.id,
           shop_name: selectedProductForBuy.shops?.name || 'Aura Store',
           shipping_fee: Number(selectedProductForBuy.shipping_fee ?? selectedProductForBuy.shops?.shipping_fee ?? 0),
@@ -723,9 +749,11 @@
 
       try {
         const fileName = `vouchers/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
-        await client.storage.from('product-images').upload(fileName, file);
-        const { data: { publicUrl: voucherUrl } } = client.storage.from('product-images').getPublicUrl(fileName);
+        const { error: upErr } = await client.storage.from('product-images').upload(fileName, file);
+        if (upErr) throw upErr;
 
+        // Direct Proxied Voucher URL
+        const voucherUrl = getProxiedStorageUrl('product-images', fileName);
         const checkoutGroupId = crypto.randomUUID();
 
         const { data: res, error } = await client.rpc('customer_checkout_split', {
@@ -936,15 +964,14 @@
         const videoName = `returns/video-${Date.now()}-${videoFile.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
         const { error: vErr } = await client.storage.from('product-images').upload(videoName, videoFile);
         if (vErr) throw vErr;
-        const { data: { publicUrl: videoUrl } } = client.storage.from('product-images').getPublicUrl(videoName);
+        const videoUrl = getProxiedStorageUrl('product-images', videoName);
 
         const photoUrls = [];
         for (const pFile of photoFiles) {
           const pName = `returns/photo-${Date.now()}-${pFile.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
           const { error: pErr } = await client.storage.from('product-images').upload(pName, pFile);
           if (!pErr) {
-            const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(pName);
-            photoUrls.push(publicUrl);
+            photoUrls.push(getProxiedStorageUrl('product-images', pName));
           }
         }
 
@@ -1062,14 +1089,18 @@
           if (!validateFileSize(file, 5, 'ဆိုင် Logo')) return;
           const fileName = `applications/logo-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
           const { error: upErr } = await client.storage.from('product-images').upload(fileName, file);
-          if (!upErr) { const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(fileName); logoUrl = publicUrl; }
+          if (!upErr) {
+            logoUrl = getProxiedStorageUrl('product-images', fileName);
+          }
         }
         if (nrcInput.files.length) {
           const file = nrcInput.files[0];
           if (!validateFileSize(file, 5, 'မှတ်ပုံတင်')) return;
           const fileName = `applications/nrc-${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
           const { error: upErr } = await client.storage.from('product-images').upload(fileName, file);
-          if (!upErr) { const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(fileName); nrcUrl = publicUrl; }
+          if (!upErr) {
+            nrcUrl = getProxiedStorageUrl('product-images', fileName);
+          }
         }
 
         const { error } = await client.from('seller_applications').insert([{
