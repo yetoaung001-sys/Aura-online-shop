@@ -8,16 +8,17 @@
   <!-- GLOBAL URL INTERCEPTOR (Supabase Storage Timeout မဖြစ်စေရန် Proxy သို့ လွှဲပြောင်းပေးခြင်း) -->
   <script>
     (function() {
-      const SUPABASE_ORIGIN = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
-      const PROXY_ORIGIN = window.location.origin + '/api/supabase';
+      const SUPABASE_HOST = 'zyajlsrytjvwxqtpxrqd.supabase.co';
+      const PROXY_PATH = window.location.origin + '/api/supabase';
 
       function rewriteUrl(url) {
-        if (typeof url === 'string' && url.startsWith(SUPABASE_ORIGIN)) {
-          return url.replace(SUPABASE_ORIGIN, PROXY_ORIGIN);
+        if (typeof url === 'string' && url.includes(SUPABASE_HOST)) {
+          return url.replace('https://' + SUPABASE_HOST, PROXY_PATH);
         }
         return url;
       }
 
+      // <img> tag ၏ src အားလုံးကို rewrite လုပ်ခြင်း
       const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
       if (originalSrcDescriptor) {
         Object.defineProperty(HTMLImageElement.prototype, 'src', {
@@ -26,12 +27,24 @@
         });
       }
 
+      // setAttribute ဖြင့် ပုံနှင့် link ထည့်သွင်းမှုများကို rewrite လုပ်ခြင်း
       const originalSetAttribute = Element.prototype.setAttribute;
       Element.prototype.setAttribute = function(name, val) {
         if ((name === 'src' || name === 'href') && typeof val === 'string') {
           val = rewriteUrl(val);
         }
         return originalSetAttribute.call(this, name, val);
+      };
+
+      // fetch API ဖြင့် ဆွဲယူမှုများကိုပါ proxy လမ်းကြောင်းသို့ rewrite လုပ်ခြင်း
+      const origFetch = window.fetch;
+      window.fetch = function(resource, init) {
+        if (typeof resource === 'string') {
+          resource = rewriteUrl(resource);
+        } else if (resource instanceof Request) {
+          resource = new Request(rewriteUrl(resource.url), resource);
+        }
+        return origFetch.call(this, resource, init);
       };
     })();
   </script>
@@ -136,7 +149,7 @@
     </div>
   </div>
 
-  <!-- CHECKOUT MODAL (ဆိုင်အလိုက် မြို့နယ်မတူသည့် Package များအား သီးခြား Auto တွက်ချက်သည့် စနစ်) -->
+  <!-- CHECKOUT MODAL (PER-PACKAGE TOWNSHIP AUTO ROUTING စနစ်) -->
   <div id="checkoutModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-xl rounded-3xl p-7 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -269,19 +282,19 @@
       </div>
       <form onsubmit="handleSellerApplicationSubmit(event)" class="space-y-3.5">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label class="font-bold text-slate-700 block mb-1">ဆိုင်အမည် *</label><input type="text" id="applyShopName" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
-          <div><label class="font-bold text-slate-700 block mb-1">ဆိုင်ရှင်အမည် *</label><input type="text" id="applyOwnerName" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
+          <div><label for="applyShopName" class="font-bold text-slate-700 block mb-1">ဆိုင်အမည် *</label><input type="text" id="applyShopName" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
+          <div><label for="applyOwnerName" class="font-bold text-slate-700 block mb-1">ဆိုင်ရှင်အမည် *</label><input type="text" id="applyOwnerName" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label class="font-bold text-slate-700 block mb-1">ဖုန်းနံပါတ် *</label><input type="tel" id="applyPhone" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
-          <div><label class="font-bold text-slate-700 block mb-1">အမျိုးအစား *</label><input type="text" id="applyBusinessType" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
+          <div><label for="applyPhone" class="font-bold text-slate-700 block mb-1">ဖုန်းနံပါတ် *</label><input type="tel" id="applyPhone" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
+          <div><label for="applyBusinessType" class="font-bold text-slate-700 block mb-1">အမျိုးအစား *</label><input type="text" id="applyBusinessType" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label class="font-bold text-slate-700 block mb-1">ဆိုင် Logo</label><input type="file" id="applyShopLogoFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-slate-50 text-[11px]" /></div>
-          <div><label class="font-bold text-slate-700 block mb-1">မှတ်ပုံတင်/လိုင်စင်</label><input type="file" id="applyNrcFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-slate-50 text-[11px]" /></div>
+          <div><label for="applyShopLogoFile" class="font-bold text-slate-700 block mb-1">ဆိုင် Logo</label><input type="file" id="applyShopLogoFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-slate-50 text-[11px]" /></div>
+          <div><label for="applyNrcFile" class="font-bold text-slate-700 block mb-1">မှတ်ပုံတင်/လိုင်စင်</label><input type="file" id="applyNrcFile" accept="image/*" class="w-full border p-1.5 rounded-xl bg-slate-50 text-[11px]" /></div>
         </div>
-        <div><label class="font-bold text-slate-700 block mb-1">KBZPay / WavePay *</label><input type="text" id="applyPaymentInfo" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
-        <div><label class="font-bold text-slate-700 block mb-1">လိပ်စာ / မြို့နယ် *</label><textarea id="applyAddress" rows="2" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none"></textarea></div>
+        <div><label for="applyPaymentInfo" class="font-bold text-slate-700 block mb-1">KBZPay / WavePay *</label><input type="text" id="applyPaymentInfo" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none" /></div>
+        <div><label for="applyAddress" class="font-bold text-slate-700 block mb-1">လိပ်စာ / မြို့နယ် *</label><textarea id="applyAddress" rows="2" required class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none"></textarea></div>
         <button type="submit" id="applySubmitBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3 rounded-2xl shadow-lg transition cursor-pointer">လျှောက်ထားလွှာ ပေးပို့မည်</button>
       </form>
     </div>
@@ -601,7 +614,6 @@
     function openCart(){ document.getElementById('cartModal').classList.remove('hidden'); document.getElementById('cartModal').classList.add('flex'); }
     function closeCart(){ document.getElementById('cartModal').classList.add('hidden'); document.getElementById('cartModal').classList.remove('flex'); }
 
-    // Multi-vendor splitCartByShop (ဆိုင်ခွဲတစ်ခုစီ၏ Township ပါ ထည့်သွင်းသိမ်းဆည်းပေးသည်)
     function splitCartByShop(selectedItems) {
       const groups = {};
       selectedItems.forEach(item => {
