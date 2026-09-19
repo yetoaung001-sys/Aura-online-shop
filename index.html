@@ -5,17 +5,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aura Marketplace - Modern E-Commerce</title>
 
-  <!-- Global Reverse Proxy URL Rewriter -->
+  <!-- GLOBAL URL INTERCEPTOR (Supabase Storage Timeout မဖြစ်စေရန် Proxy သို့ လွှဲပြောင်းပေးခြင်း) -->
   <script>
     (function() {
       const SUPABASE_ORIGIN = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
       const PROXY_ORIGIN = window.location.origin + '/api/supabase';
+
       function rewriteUrl(url) {
         if (typeof url === 'string' && url.startsWith(SUPABASE_ORIGIN)) {
           return url.replace(SUPABASE_ORIGIN, PROXY_ORIGIN);
         }
         return url;
       }
+
       const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
       if (originalSrcDescriptor) {
         Object.defineProperty(HTMLImageElement.prototype, 'src', {
@@ -23,6 +25,7 @@
           get: originalSrcDescriptor.get
         });
       }
+
       const originalSetAttribute = Element.prototype.setAttribute;
       Element.prototype.setAttribute = function(name, val) {
         if ((name === 'src' || name === 'href') && typeof val === 'string') {
@@ -133,43 +136,35 @@
     </div>
   </div>
 
-  <!-- CHECKOUT MODAL (TOWNSHIP AUTO-DETECT LOGIC ပါဝင်သည်) -->
+  <!-- CHECKOUT MODAL (ဆိုင်အလိုက် မြို့နယ်မတူသည့် Package များအား သီးခြား Auto တွက်ချက်သည့် စနစ်) -->
   <div id="checkoutModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-xl rounded-3xl p-7 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
         <div>
           <h3 class="font-black text-sm text-slate-900">📦 အော်ဒါအချက်အလက်နှင့် Package ခွဲထုတ်မှု</h3>
-          <p class="text-[11px] text-slate-500 font-medium">ဆိုင်တည်ရှိရာ မြို့နယ်နှင့် ကိုက်ညီပါက Local Deli၊ အခြားမြို့နယ်ဖြစ်ပါက နယ်ဝေးဂိတ်တင်ခ အလိုအလျောက် တွက်ချက်ပေးပါမည်</p>
+          <p class="text-[11px] text-slate-500 font-medium">ဆိုင်ခွဲတည်နေရာမတူပါက သက်ဆိုင်ရာ ဆိုင်အလိုက် မြို့တွင်းပို့ခ သို့မဟုတ် နယ်ဝေးဂိတ်တင်ခ အလိုအလျောက် ခွဲထုတ်တွက်ချက်ပေးပါမည်</p>
         </div>
         <button type="button" onclick="closeCheckout()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
 
       <form onsubmit="handleSplitOrderSubmit(event)" class="space-y-4">
+        <div>
+          <label for="custTownship" class="font-bold block mb-1 text-slate-700">📍 ဝယ်သူ မြို့နယ် (Township) ရိုက်ထည့်ပါ *</label>
+          <input type="text" id="custTownship" required oninput="handleCustomerTownshipInput(this.value)" placeholder="ဥပမာ - မန္တလေး၊ လှိုင်သာယာ၊ စမ်းချောင်း..." class="w-full border p-3 rounded-2xl outline-none bg-slate-50 font-bold text-violet-700 focus:bg-white focus:ring-2 focus:ring-violet-600 transition" />
+          <span class="text-[10px] text-slate-400 mt-0.5 block">မြို့နယ် ရိုက်ထည့်လိုက်သည်နှင့် Package တစ်ခုချင်းစီအလိုက် ပို့ခ အလိုအလျောက် ပြောင်းလဲပါမည်</span>
+        </div>
+
         <div id="checkoutPackagesContainer" class="space-y-3 max-h-60 overflow-y-auto pr-1"></div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label class="font-bold block mb-1 text-slate-700">ဝယ်သူအမည် *</label><input type="text" id="custName" required class="w-full border p-2.5 rounded-xl outline-none bg-slate-50 font-medium" /></div>
-          <div><label class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="custPhone" required class="w-full border p-2.5 rounded-xl outline-none bg-slate-50 font-medium" /></div>
+          <div><label for="custName" class="font-bold block mb-1 text-slate-700">ဝယ်သူအမည် *</label><input type="text" id="custName" required class="w-full border p-2.5 rounded-xl outline-none bg-slate-50 font-medium" /></div>
+          <div><label for="custPhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="custPhone" required class="w-full border p-2.5 rounded-xl outline-none bg-slate-50 font-medium" /></div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div>
-            <label class="font-bold block mb-1 text-slate-700">ဝယ်သူ မြို့နယ် (Township) *</label>
-            <input type="text" id="custTownship" required oninput="handleCustomerTownshipInput(this.value)" placeholder="မြို့နယ် ရိုက်ထည့်ပါ..." class="w-full border p-2.5 rounded-xl outline-none bg-slate-50 font-bold text-violet-700 focus:bg-white focus:ring-2 focus:ring-violet-600" />
-          </div>
-          <div>
-            <label class="font-bold block mb-1 text-slate-700">🚚 ပို့ဆောင်မည့် အမျိုးအစား</label>
-            <select id="deliveryAreaType" onchange="renderCheckoutPackages()" class="w-full border p-2.5 rounded-xl bg-slate-100 font-bold outline-none text-slate-800">
-              <option value="local">📍 မြို့တွင်းပို့ဆောင်ခ (Local Deli)</option>
-              <option value="regional">🚛 နယ်ဝေး / ကားဂိတ်ပို့ (Gate Fee)</option>
-            </select>
-          </div>
-        </div>
-
-        <div><label class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="custAddress" required rows="2" class="w-full border p-2.5 rounded-xl outline-none bg-slate-50 font-medium"></textarea></div>
+        <div><label for="custAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="custAddress" required rows="2" class="w-full border p-2.5 rounded-xl outline-none bg-slate-50 font-medium"></textarea></div>
 
         <div>
-          <label class="font-bold block mb-1 text-slate-700">ငွေပေးချေမှုစနစ် ရွေးချယ်ရန် *</label>
+          <label for="custPayment" class="font-bold block mb-1 text-slate-700">ငွေပေးချေမှုစနစ် ရွေးချယ်ရန် *</label>
           <select id="custPayment" class="w-full border p-2.5 rounded-xl bg-slate-50 font-bold outline-none"></select>
         </div>
 
@@ -180,7 +175,7 @@
 
         <div class="pt-3 border-t space-y-1 text-xs font-bold bg-slate-50 p-3.5 rounded-2xl border">
           <div class="flex justify-between text-slate-600"><span>ပစ္စည်းတန်ဖိုး စုစုပေါင်း:</span><span id="summarySubtotal">0 MMK</span></div>
-          <div class="flex justify-between text-slate-600"><span>ပို့ဆောင်ခ / ဂိတ်တင်ခ စုစုပေါင်း:</span><span id="summaryShipping">0 MMK</span></div>
+          <div class="flex justify-between text-slate-600"><span>ပို့ဆောင်ခ + ဂိတ်တင်ခ စုစုပေါင်း:</span><span id="summaryShipping">0 MMK</span></div>
           <div class="flex justify-between text-sm font-black text-rose-600 border-t pt-1.5"><span>ကျသင့်ငွေ စုစုပေါင်း:</span><span id="summaryTotal">0 MMK</span></div>
         </div>
 
@@ -189,7 +184,7 @@
     </div>
   </div>
 
-  <!-- PRODUCT BUY MODAL (NOTICE BOARD ပြသမှု ပါဝင်သည်) -->
+  <!-- PRODUCT BUY MODAL -->
   <div id="buyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-4 text-xs shadow-2xl max-h-[90vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -209,7 +204,7 @@
         <div id="detailPriceContainer" class="pt-1.5 flex items-baseline gap-3"></div>
       </div>
 
-      <!-- ဆိုင်ရှင်၏ NOTICE BOARD ဖော်ပြပေးသည့် နေရာ -->
+      <!-- ဆိုင်ရှင်၏ NOTICE BOARD ပြသခြင်း -->
       <div id="shopNoticeDisplayArea" class="hidden bg-amber-50 border border-amber-200 p-3 rounded-2xl space-y-1">
         <span class="font-bold text-amber-800 flex items-center gap-1.5"><i class="ph-bold ph-info"></i> ဆိုင်၏ အသိပေးချက် (Notice Board):</span>
         <p id="shopNoticeDisplayText" class="text-slate-700 font-medium leading-relaxed"></p>
@@ -232,12 +227,12 @@
 
       <form onsubmit="handleProfileUpdate(event)" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
         <h4 class="font-black text-slate-800">📝 ကိုယ်ရေးအချက်အလက် ပြင်ဆင်ရန်</h4>
-        <div><label class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label><input type="text" id="profileName" required class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
+        <div><label for="profileName" class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label><input type="text" id="profileName" required class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
         <div class="grid grid-cols-2 gap-2">
-          <div><label class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="profilePhone" required class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
-          <div><label class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label><input type="text" id="profileTownship" class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
+          <div><label for="profilePhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="profilePhone" required class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
+          <div><label for="profileTownship" class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label><input type="text" id="profileTownship" class="w-full border p-2.5 rounded-xl bg-white outline-none" /></div>
         </div>
-        <div><label class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="profileAddress" rows="2" class="w-full border p-2.5 rounded-xl bg-white outline-none"></textarea></div>
+        <div><label for="profileAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="profileAddress" rows="2" class="w-full border p-2.5 rounded-xl bg-white outline-none"></textarea></div>
         <button type="submit" id="updateProfileBtn" class="w-full bg-slate-900 text-white font-bold py-2.5 rounded-xl hover:bg-slate-800 transition cursor-pointer">သိမ်းဆည်းမည်</button>
       </form>
 
@@ -606,7 +601,7 @@
     function openCart(){ document.getElementById('cartModal').classList.remove('hidden'); document.getElementById('cartModal').classList.add('flex'); }
     function closeCart(){ document.getElementById('cartModal').classList.add('hidden'); document.getElementById('cartModal').classList.remove('flex'); }
 
-    // Multi-vendor splitCartByShop (ဆိုင်၏ Township ပါ ထည့်သွင်းသိမ်းဆည်းသည်)
+    // Multi-vendor splitCartByShop (ဆိုင်ခွဲတစ်ခုစီ၏ Township ပါ ထည့်သွင်းသိမ်းဆည်းပေးသည်)
     function splitCartByShop(selectedItems) {
       const groups = {};
       selectedItems.forEach(item => {
@@ -620,6 +615,8 @@
             subtotal: 0,
             local_shipping_fee: Number(item.shipping_fee || 0),
             gate_fee: Number(item.gate_fee || 0),
+            applied_shipping_fee: 0,
+            delivery_type: 'local',
             is_free_delivery: item.is_free_delivery
           };
         }
@@ -646,62 +643,60 @@
 
       closeCart();
       currentPackagesToCheckout = splitCartByShop(selected);
-      handleCustomerTownshipInput(document.getElementById('custTownship').value);
       renderCheckoutPackages();
       document.getElementById('checkoutModal').classList.remove('hidden');
       document.getElementById('checkoutModal').classList.add('flex');
     }
     function closeCheckout(){ document.getElementById('checkoutModal').classList.add('hidden'); document.getElementById('checkoutModal').classList.remove('flex'); }
 
-    // ဝယ်သူရိုက်ထည့်သော မြို့နယ်အပေါ်မူတည်၍ Local Deli နှင့် နယ်ဝေးဂိတ်တင်ခ Auto-Detect ပြုလုပ်ခြင်း
+    // ဝယ်သူက မြို့နယ်ရိုက်ထည့်ချိန်တွင် Package တစ်ခုချင်းစီ၏ ဆိုင်တည်နေရာနှင့် နှိုင်းယှဉ်တွက်ချက်သည့် Function[cite: 7]
     function handleCustomerTownshipInput(inputVal) {
-      const customerTownship = (inputVal || '').trim().toLowerCase();
-      const deliverySelect = document.getElementById('deliveryAreaType');
-
-      if (!customerTownship || !currentPackagesToCheckout.length) return;
-
-      const isMatchLocal = currentPackagesToCheckout.some(pkg => {
-        const shopTownship = (pkg.shop_township || '').trim().toLowerCase();
-        return shopTownship && (customerTownship.includes(shopTownship) || shopTownship.includes(customerTownship));
-      });
-
-      if (isMatchLocal) {
-        deliverySelect.value = 'local';
-      } else {
-        deliverySelect.value = 'regional';
-      }
       renderCheckoutPackages();
     }
 
     function renderCheckoutPackages() {
-      const deliveryType = document.getElementById('deliveryAreaType').value;
-      let grandSubtotal = 0, grandShipping = 0;
+      const customerTownship = (document.getElementById('custTownship').value || '').trim().toLowerCase();
+      let grandSubtotal = 0;
+      let grandShipping = 0;
 
-      document.getElementById('checkoutPackagesContainer').innerHTML = currentPackagesToCheckout.map((pkg, idx) => {
-        let currentPkgFee = 0;
-        let feeLabel = '';
+      const container = document.getElementById('checkoutPackagesContainer');
 
-        if (deliveryType === 'local') {
-          currentPkgFee = pkg.local_shipping_fee;
-          feeLabel = `မြို့တွင်းပို့ခ: ${currentPkgFee.toLocaleString()} Ks`;
-        } else {
-          currentPkgFee = pkg.gate_fee;
-          feeLabel = `နယ်ဝေး ဂိတ်တင်ခ: ${currentPkgFee.toLocaleString()} Ks`;
-        }
+      container.innerHTML = currentPackagesToCheckout.map((pkg, idx) => {
+        const shopTownship = (pkg.shop_township || '').trim().toLowerCase();
+
+        // ဝယ်သူမြို့နယ်နှင့် ဆိုင်တည်နေရာ ကိုက်ညီမှု ရှိ/မရှိ စစ်ဆေးခြင်း[cite: 7]
+        const isLocal = customerTownship && shopTownship && 
+          (customerTownship.includes(shopTownship) || shopTownship.includes(customerTownship));
+
+        // မြို့တူပါက Local Deli၊ မတူပါက နယ်ဝေးဂိတ်တင်ခ Package တစ်ခုချင်းစီ အလိုအလျောက် သတ်မှတ်ခြင်း[cite: 7]
+        const appliedFee = isLocal ? Number(pkg.local_shipping_fee || 0) : Number(pkg.gate_fee || 0);
+        const feeBadge = isLocal 
+          ? `<span class="bg-emerald-100 text-emerald-700 text-[10px] px-2 py-0.5 rounded font-extrabold">📍 မြို့တွင်းပို့ခ: ${appliedFee.toLocaleString()} Ks</span>`
+          : `<span class="bg-orange-100 text-orange-700 text-[10px] px-2 py-0.5 rounded font-extrabold">🚛 နယ်ဝေးဂိတ်တင်ခ: ${appliedFee.toLocaleString()} Ks</span>`;
+
+        pkg.applied_shipping_fee = appliedFee;
+        pkg.delivery_type = isLocal ? 'local' : 'regional';
 
         grandSubtotal += pkg.subtotal;
-        grandShipping += currentPkgFee;
+        grandShipping += appliedFee;
 
         return `
           <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2.5">
-            <div class="flex justify-between items-center border-b pb-2 text-xs">
+            <div class="flex justify-between items-start border-b pb-2 text-xs">
               <div>
-                <span class="bg-violet-100 text-violet-700 font-bold px-2 py-0.5 rounded text-[10px]">Package ${idx + 1}</span>
-                <span class="font-extrabold text-slate-800 ml-1">${esc(pkg.shop_name)}</span>
-                ${pkg.shop_township ? `<span class="text-[10px] text-violet-600 block mt-0.5 font-bold">📍 ဆိုင်တည်နေရာ: ${esc(pkg.shop_township)}</span>` : ''}
+                <div class="flex items-center gap-1.5">
+                  <span class="bg-violet-100 text-violet-700 font-bold px-2 py-0.5 rounded text-[10px]">Package ${idx + 1}</span>
+                  <span class="font-extrabold text-slate-800">${esc(pkg.shop_name)}</span>
+                </div>
+                <span class="text-[10px] text-slate-500 block mt-0.5 font-medium">
+                  📍 ဆိုင်တည်နေရာ: <b class="text-violet-700">${esc(pkg.shop_township || 'မဖော်ပြထားပါ')}</b>
+                </span>
               </div>
-              <span class="text-[11px] text-rose-600 font-black">${feeLabel}</span>
+              <div class="text-right">
+                ${customerTownship ? feeBadge : '<span class="text-[10px] text-slate-400 font-bold">မြို့နယ် ရိုက်ထည့်ပါ</span>'}
+              </div>
             </div>
+
             <div class="space-y-1">
               ${pkg.items.map(i => `
                 <div class="flex justify-between items-center text-[11px]">
@@ -738,6 +733,7 @@
         const voucherUrl = getProxiedStorageUrl('product-images', fileName);
         const checkoutGroupId = crypto.randomUUID();
 
+        // Customer Order Split RPC ခေါ်ယူခြင်း[cite: 7]
         const { data: res, error } = await client.rpc('customer_checkout_split', {
           p_checkout_group_id: checkoutGroupId,
           p_customer_name: document.getElementById('custName').value.trim(),
@@ -754,7 +750,13 @@
         cart = cart.filter(i => !i.checked);
         saveCart(); updateCartUI(); closeCheckout();
 
-        Swal.fire({ icon: 'success', title: 'အော်ဒါ အောင်မြင်ပါသည်', text: `Package (${currentPackagesToCheckout.length}) ခု ခွဲခြား၍ အော်ဒါတင်ပြီးပါပြီ!`, confirmButtonColor: '#7c3aed' }).then(() => location.reload());
+        Swal.fire({
+          icon: 'success',
+          title: 'အော်ဒါ အောင်မြင်ပါသည်',
+          text: `Package (${currentPackagesToCheckout.length}) ခု ခွဲခြား၍ အော်ဒါတင်ပြီးပါပြီ!`,
+          confirmButtonColor: '#7c3aed'
+        }).then(() => location.reload());
+
       } catch (err) {
         Swal.fire({ icon: 'error', title: 'Error', text: err.message });
       } finally {
