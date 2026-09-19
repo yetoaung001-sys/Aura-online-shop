@@ -42,6 +42,8 @@
     })();
   </script>
 
+  <!-- Tailwind CSS Production CDN (Console Warning ကင်းစင်စေရန်) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -927,30 +929,32 @@
       }).join('');
     }
 
+    // 🌟 ORDER DETAIL, SPLIT TRACKING, CALL SHOP, COUNTDOWN & INVOICE
     async function openOrderDetail(orderId) {
-      const { data: order } = await client
+      const { data: order, error: oErr } = await client
         .from('orders')
         .select('*, shop_orders(*, shops(id, name, phone, township))')
         .eq('id', orderId)
         .single();
 
-      if (!order) return;
+      if (oErr || !order) return;
       activeOrderForReturn = order;
 
       if (countdownIntervalId) clearInterval(countdownIntervalId);
 
-      document.getElementById('invOrderId').innerText = `#${order.id}`;
+      // Summary
+      document.getElementById('invOrderId').innerText = '#' + order.id;
       document.getElementById('invOrderDate').innerText = new Date(order.created_at).toLocaleString();
       document.getElementById('invCustomerName').innerText = order.customer_name || '-';
       document.getElementById('invCustomerPhone').innerText = order.customer_phone || '-';
-      document.getElementById('invDeliveryAddress').innerText = `${order.township || ''} ${order.delivery_address || ''}`;
-      document.getElementById('invTotalAmount').innerText = `${Number(order.total_amount || 0).toLocaleString()} MMK`;
+      document.getElementById('invDeliveryAddress').innerText = (order.township || '') + ' ' + (order.delivery_address || '');
+      document.getElementById('invTotalAmount').innerText = Number(order.total_amount || 0).toLocaleString() + ' MMK';
 
       const status = order.status || 'pending';
-      document.getElementById('detailOrderBadge').innerHTML = `
-        <span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase ml-2 ${status === 'completed' ? 'bg-emerald-100 text-emerald-700' : status === 'cancelled' ? 'bg-rose-100 text-rose-700' : 'bg-blue-100 text-blue-700'}">${status}</span>
-      `;
+      const badgeClass = status === 'completed' ? 'bg-emerald-100 text-emerald-700' : status === 'cancelled' ? 'bg-rose-100 text-rose-700' : 'bg-blue-100 text-blue-700';
+      document.getElementById('detailOrderBadge').innerHTML = '<span class="px-2 py-0.5 rounded-full text-[10px] font-extrabold uppercase ml-2 ' + badgeClass + '">' + status + '</span>';
 
+      // Cancellation Window Toggle
       const cancelArea = document.getElementById('orderCancelNoticeArea');
       if (status === 'pending') {
         cancelArea.classList.remove('hidden');
@@ -960,6 +964,7 @@
         cancelArea.classList.remove('flex');
       }
 
+      // Multi-Vendor Packages Tracking Cards
       const container = document.getElementById('packagesTrackingContainer');
       const shopOrders = order.shop_orders || [];
 
@@ -973,6 +978,32 @@
         const step3 = (pStatus === 'shipping' || pStatus === 'completed');
         const step4 = (pStatus === 'completed');
 
+        const callShopBtn = shop.phone ? '<a href="tel:' + esc(shop.phone) + '" class="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded-xl font-bold text-[11px] flex items-center gap-1"><i class="ph-bold ph-phone-call"></i> ဆိုင်ခေါ်မည်</a>' : '';
+        const statusBadge = '<span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ' + (pStatus === 'completed' ? 'bg-emerald-50 text-emerald-700' : 'bg-indigo-50 text-indigo-700') + '">' + pStatus + '</span>';
+
+        const itemsHtml = items.map(it => {
+          return '<div class="flex justify-between items-center text-[11px]"><span class="text-slate-700">• ' + esc(it.title) + ' x' + it.qty + '</span><span class="font-bold text-slate-900">' + (Number(it.price || 0) * it.qty).toLocaleString() + ' Ks</span></div>';
+        }).join('');
+
+        const courierHtml = so.courier_name ? `
+          <div class="bg-indigo-50/60 p-2.5 rounded-xl border border-indigo-100 flex justify-between items-center text-[11px]">
+            <div>
+              <span class="text-indigo-900 font-bold block">ပို့ဆောင်သည့်စနစ်: ${esc(so.courier_name)}</span>
+              <span class="text-slate-500 font-mono text-[10px]">Waybill / ကုဒ်: <b>${esc(so.tracking_code || '-')}</b></span>
+              ${so.courier_phone ? `<span class="text-[10px] text-slate-500 block">ဂိတ်ဖုန်း: <a href="tel:${esc(so.courier_phone)}" class="text-indigo-600 underline">${esc(so.courier_phone)}</a></span>` : ''}
+            </div>
+            ${so.waybill_image ? `<a href="${esc(so.waybill_image)}" target="_blank" class="bg-white border text-violet-700 px-2.5 py-1 rounded-lg font-bold text-[10px] shadow-xs">ဘောက်ချာပုံ</a>` : ''}
+          </div>
+        ` : '';
+
+        const confirmBtnHtml = (pStatus === 'shipping') ? `
+          <div class="pt-1">
+            <button type="button" onclick="handleConfirmPackageReceived(${so.id})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-2 rounded-xl text-xs transition cursor-pointer shadow-xs">
+              ✅ ပစ္စည်းလက်ခံရရှိပါပြီ (အတည်ပြုမည်)
+            </button>
+          </div>
+        ` : '';
+
         return `
           <div class="bg-white rounded-2xl border border-slate-200 p-4 space-y-3 shadow-xs">
             <div class="flex justify-between items-center border-b pb-2.5">
@@ -982,23 +1013,12 @@
                 <span class="text-[10px] text-slate-400 block mt-0.5">📍 တည်နေရာ: ${esc(shop.township || 'မဖော်ပြထားပါ')}</span>
               </div>
               <div class="flex items-center gap-1.5">
-                ${shop.phone ? `
-                  <a href="tel:${esc(shop.phone)}" class="bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 px-2.5 py-1 rounded-xl font-bold text-[11px] flex items-center gap-1">
-                    <i class="ph-bold ph-phone-call"></i> ဆိုင်ခေါ်မည်
-                  </a>
-                ` : ''}
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${pStatus === 'completed' ? 'bg-emerald-50 text-emerald-700' : 'bg-indigo-50 text-indigo-700'}">${pStatus}</span>
+                ${callShopBtn}
+                ${statusBadge}
               </div>
             </div>
 
-            <div class="space-y-1">
-              ${items.map(it => `
-                <div class="flex justify-between items-center text-[11px]">
-                  <span class="text-slate-700">• ${esc(it.title)} x${it.qty}</span>
-                  <span class="font-bold text-slate-900">${(Number(it.price || 0) * it.qty).toLocaleString()} Ks</span>
-                </div>
-              `).join('')}
-            </div>
+            <div class="space-y-1">${itemsHtml}</div>
 
             <div class="pt-2">
               <div class="flex items-center justify-between text-[10px] font-bold text-center">
@@ -1012,29 +1032,15 @@
               </div>
             </div>
 
-            ${so.courier_name ? `
-              <div class="bg-indigo-50/60 p-2.5 rounded-xl border border-indigo-100 flex justify-between items-center text-[11px]">
-                <div>
-                  <span class="text-indigo-900 font-bold block">ပို့ဆောင်သည့်စနစ်: ${esc(so.courier_name)}</span>
-                  <span class="text-slate-500 font-mono text-[10px]">Waybill / ကုဒ်: <b>${esc(so.tracking_code \vert{}\vert{} '-')}</b></span>${so.courier_phone ? `<span class="text-[10px] text-slate-500 block">ဂိတ်ဖုန်း: <a href="tel:${esc(so.courier_phone)}" class="text-indigo-600 underline">${esc(so.courier_phone)}</a></span>` : ''}
-                </div>
-                ${so.waybill_image ? `<a href="${esc(so.waybill_image)}" target="_blank" class="bg-white border text-violet-700 px-2.5 py-1 rounded-lg font-bold text-[10px] shadow-xs">ဘောက်ချာပုံ</a>` : ''}
-              </div>
-            ` : ''}
-
-            ${pStatus === 'shipping' ? `
-              <div class="pt-1">
-                <button type="button" onclick="handleConfirmPackageReceived(${so.id})" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold py-2 rounded-xl text-xs transition cursor-pointer shadow-xs">
-                  ✅ ပစ္စည်းလက်ခံရရှိပါပြီ (အတည်ပြုမည်)
-                </button>
-              </div>
-            ` : ''}
+            ${courierHtml}
+            ${confirmBtnHtml}
           </div>
         `;
       }).join('');
 
+      // Return Countdown Timer (၇၂ နာရီ)
       const returnContainer = document.getElementById('returnRequestContainer');
-      const latestCompletedTime = order.completed_at || order.shop_orders?.find(s => s.status === 'completed')?.received_at;
+      const latestCompletedTime = order.completed_at || (order.shop_orders && order.shop_orders.find(s => s.status === 'completed')?.received_at);
 
       if (latestCompletedTime) {
         const deadline = new Date(new Date(latestCompletedTime).getTime() + (72 * 60 * 60 * 1000));
@@ -1059,7 +1065,7 @@
           </div>
         `;
 
-        const updateCountdown = function() {
+        function updateCountdown() {
           const diff = deadline - new Date();
           const displayEl = document.getElementById('returnCountdownDisplay');
           const toggleBtn = document.getElementById('btnToggleReturn');
@@ -1074,8 +1080,8 @@
           const hours = Math.floor(diff / (1000 * 60 * 60));
           const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
           const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-          displayEl.innerText = `⏳ ကျန်ရှိချိန်: ${hours} နာရီ ${minutes} မိနစ် ${seconds} စက္ကန့်`;
-        };
+          displayEl.innerText = '⏳ ကျန်ရှိချိန်: ' + hours + ' နာရီ ' + minutes + ' မိနစ် ' + seconds + ' စက္ကန့်';
+        }
 
         updateCountdown();
         countdownIntervalId = setInterval(updateCountdown, 1000);
