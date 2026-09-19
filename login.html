@@ -3,78 +3,67 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Aura Platform - Admin Login</title>
+  <title>Aura Marketplace - Login</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
-  <style> body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; } </style>
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
+  <style>body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; background-color: #f8fafc; }</style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-4">
-
-  <div class="bg-white text-slate-900 w-full max-w-md rounded-3xl p-8 shadow-2xl space-y-6">
-    <div class="text-center space-y-2">
-      <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-amber-500 text-slate-950 text-2xl font-black shadow-lg mb-1">
-        👑
-      </div>
-      <h2 class="text-xl font-black">Admin Management Login</h2>
-      <p class="text-slate-500 text-xs">စီမံခန့်ခွဲသူ (Admin) အကောင့်ဖြင့်သာ ဝင်ရောက်နိုင်သည်</p>
+<body class="min-h-screen flex items-center justify-center p-4">
+  <div class="bg-white w-full max-w-md rounded-3xl p-8 shadow-xl border space-y-6">
+    <div class="text-center space-y-1">
+      <h1 class="text-2xl font-black text-slate-900">AURA MARKET</h1>
+      <p class="text-xs text-slate-500 font-medium">ဆိုင်ရှင် သို့မဟုတ် Admin အကောင့်ဝင်ရောက်ပါ</p>
     </div>
 
-    <form onsubmit="handleAdminLogin(event)" class="space-y-4 text-xs">
+    <form onsubmit="handleLogin(event)" class="space-y-4 text-xs">
       <div>
-        <label for="adminEmail" class="font-bold text-slate-700 block mb-1">Admin Email</label>
-        <input type="email" id="adminEmail" required placeholder="admin@aura.com" class="w-full px-3.5 py-3 border rounded-2xl outline-none focus:ring-2 focus:ring-amber-500" />
+        <label for="email" class="font-bold block mb-1.5 text-slate-700">Email လိပ်စာ</label>
+        <input type="email" id="email" required placeholder="admin@aura.com" class="w-full border p-3 rounded-2xl bg-slate-50 outline-none" />
       </div>
       <div>
-        <label for="adminPassword" class="font-bold text-slate-700 block mb-1">Password</label>
-        <input type="password" id="adminPassword" required placeholder="••••••••" class="w-full px-3.5 py-3 border rounded-2xl outline-none focus:ring-2 focus:ring-amber-500" />
+        <label for="password" class="font-bold block mb-1.5 text-slate-700">စကားဝှက်</label>
+        <input type="password" id="password" required placeholder="••••••••" class="w-full border p-3 rounded-2xl bg-slate-50 outline-none" />
       </div>
-      <button type="submit" id="loginBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-amber-400 font-bold py-3.5 rounded-2xl shadow-lg transition text-xs">
-        လော့ဂ်အင် ဝင်မည်
+      <button type="submit" id="loginBtn" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3.5 rounded-2xl shadow-lg transition cursor-pointer">
+        အကောင့်ဝင်မည်
       </button>
     </form>
-
-    <div class="text-center pt-2 border-t text-xs">
-      <a href="index.html" class="text-slate-500 hover:text-orange-600 font-bold">← ပင်မဆိုင်သို့ ပြန်သွားမည်</a>
+    <div class="text-center">
+      <a href="index.html" class="text-xs font-bold text-violet-600 hover:underline">← ပင်မ စျေးဝယ်စာမျက်နှာသို့ ပြန်သွားမည်</a>
     </div>
   </div>
 
   <script>
-    const SUPABASE_URL = "https://zyajlsrytjvwxqtpxrqd.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
-    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+    const SUPABASE_URL = window.location.origin + '/api/supabase';
+    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
+    const client = supabase.createClient(SUPABASE_URL, SB_KEY);
 
-    async function handleAdminLogin(e) {
+    async function handleLogin(e) {
       e.preventDefault();
-      const email = document.getElementById('adminEmail').value.trim();
-      const password = document.getElementById('adminPassword').value;
       const btn = document.getElementById('loginBtn');
-      
-      btn.innerText = "စစ်ဆေးနေပါသည်...";
-      btn.disabled = true;
+      btn.innerText = "စစ်ဆေးနေပါသည်..."; btn.disabled = true;
+
+      const email = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value.trim();
 
       try {
-        const { data: authData, error: authError } = await client.auth.signInWithPassword({ email, password });
-        if (authError) throw authError;
+        const { data, error } = await client.auth.signInWithPassword({ email, password });
+        if (error) throw error;
 
-        // Check if user is admin/super_admin in profiles table
-        const { data: profile, error: profError } = await client
-          .from('profiles')
-          .select('role')
-          .eq('id', authData.user.id)
-          .maybeSingle();
-
-        if (profError || !profile || (profile.role !== 'admin' && profile.role !== 'super_admin')) {
-          await client.auth.signOut();
-          throw new Error('ဤအကောင့်သည် Admin ခွင့်ပြုချက် မရှိပါ။');
+        const { data: profile } = await client.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
+        if (profile?.role === 'admin' || profile?.role === 'super_admin') {
+          location.href = 'admin.html';
+        } else if (profile?.role === 'seller') {
+          location.href = 'seller.html';
+        } else {
+          location.href = 'index.html';
         }
-
-        alert('🎉 Admin အဖြစ် အောင်မြင်စွာ ဝင်ရောက်နိုင်ပါပြီ!');
-        window.location.href = 'admin.html';
       } catch (err) {
-        alert('❌ ဝင်ရောက်၍မရပါ: ' + err.message);
-        btn.innerText = "လော့ဂ်အင် ဝင်မည်";
-        btn.disabled = false;
+        Swal.fire({ icon: 'error', title: 'အကောင့်ဝင်မရပါ', text: err.message });
+      } finally {
+        btn.innerText = "အကောင့်ဝင်မည်"; btn.disabled = false;
       }
     }
   </script>
