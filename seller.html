@@ -4,6 +4,42 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aura Seller Center - Dashboard</title>
+
+  <!-- GLOBAL URL INTERCEPTOR (Supabase Storage Timeout မဖြစ်စေရန် Proxy သို့ အလိုအလျောက် လွှဲပေးခြင်း) -->
+  <script>
+    (function() {
+      const SUPABASE_ORIGIN = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
+      const PROXY_ORIGIN = window.location.origin + '/api/supabase';
+
+      function rewriteUrl(url) {
+        if (typeof url === 'string' && url.startsWith(SUPABASE_ORIGIN)) {
+          return url.replace(SUPABASE_ORIGIN, PROXY_ORIGIN);
+        }
+        return url;
+      }
+
+      // 1. Image src interceptor
+      const originalSrcDescriptor = Object.getOwnPropertyDescriptor(HTMLImageElement.prototype, 'src');
+      if (originalSrcDescriptor) {
+        Object.defineProperty(HTMLImageElement.prototype, 'src', {
+          set: function(val) {
+            originalSrcDescriptor.set.call(this, rewriteUrl(val));
+          },
+          get: originalSrcDescriptor.get
+        });
+      }
+
+      // 2. setAttribute ('src', 'href') interceptor (Image, Video, Link များအတွက်)
+      const originalSetAttribute = Element.prototype.setAttribute;
+      Element.prototype.setAttribute = function(name, val) {
+        if ((name === 'src' || name === 'href') && typeof val === 'string') {
+          val = rewriteUrl(val);
+        }
+        return originalSetAttribute.call(this, name, val);
+      };
+    })();
+  </script>
+
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -69,6 +105,7 @@
     <div class="flex border-b border-slate-200 gap-6 text-xs font-bold">
       <button type="button" onclick="switchTab('orders')" id="tabBtnOrders" class="pb-3 border-b-2 border-violet-600 text-violet-600 cursor-pointer">📦 အော်ဒါများနှင့် ပါဆယ်များ</button>
       <button type="button" onclick="switchTab('products')" id="tabBtnProducts" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-600 cursor-pointer">🏷️ ကုန်ပစ္စည်း စီမံခန့်ခွဲမှု</button>
+      <button type="button" onclick="switchTab('returns')" id="tabBtnReturns" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-600 cursor-pointer">🔄 Return လျှောက်ထားမှုများ</button>
       <button type="button" onclick="switchTab('settings')" id="tabBtnSettings" class="pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-600 cursor-pointer">⚙️ ဆိုင် ဆက်တင်များ</button>
     </div>
 
@@ -92,7 +129,15 @@
       <div id="sellerProductsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
     </section>
 
-    <!-- TAB 3: SETTINGS -->
+    <!-- TAB 3: RETURNS -->
+    <section id="tabReturns" class="space-y-4 hidden">
+      <div class="flex justify-between items-center">
+        <h3 class="font-extrabold text-xs text-slate-800">Return & Refund တောင်းဆိုထားမှုများ</h3>
+      </div>
+      <div id="sellerReturnsList" class="space-y-3"></div>
+    </section>
+
+    <!-- TAB 4: SETTINGS -->
     <section id="tabSettings" class="space-y-4 hidden max-w-xl">
       <form onsubmit="handleSaveShopSettings(event)" class="bg-white p-6 rounded-3xl border border-slate-200 space-y-4 text-xs">
         <h3 class="font-black text-sm text-slate-800">ဆိုင် အချက်အလက် ပြင်ဆင်ရန်</h3>
@@ -109,6 +154,10 @@
             <label class="font-bold text-slate-700 block mb-1">နယ်ဝေး ဂိတ်တင်ခ (MMK)</label>
             <input type="number" id="settingDeliveryFee" class="w-full border p-2.5 rounded-xl bg-slate-50 outline-none font-medium" />
           </div>
+        </div>
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">ဆိုင် Logo ပြောင်းရန်</label>
+          <input type="file" id="settingShopLogoFile" accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 text-[11px]" />
         </div>
         <div>
           <label class="font-bold text-slate-700 block mb-1">ဆိုင်လိပ်စာ</label>
@@ -177,14 +226,8 @@
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
     const client = supabase.createClient(SUPABASE_URL, SB_KEY);
 
-    // Image Proxy Helper (မြန်မာနိုင်ငံမှ Connection Timeout မဖြစ်စေရန်)
-    function getProxiedImageUrl(url) {
-      if (!url) return 'https://placehold.co/300';
-      const SUPABASE_ORIGIN = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
-      if (url.startsWith(SUPABASE_ORIGIN)) {
-        return url.replace(SUPABASE_ORIGIN, window.location.origin + '/api/supabase');
-      }
-      return url;
+    function getProxiedStorageUrl(bucket, filePath) {
+      return `${window.location.origin}/api/supabase/storage/v1/object/public/${bucket}/${filePath}`;
     }
 
     const Toast = Swal.mixin({
@@ -194,16 +237,12 @@
     const esc = (v) => String(v ?? '').replace(/[&<>"']/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[m]));
 
     let currentSellerShop = null;
-    let sellerOrders = [], sellerProducts = [];
+    let sellerOrders = [], sellerProducts = [], sellerReturns = [];
 
     async function initSeller() {
       const { data: { session } } = await client.auth.getSession();
-      if (!session) {
-        location.href = 'login.html';
-        return;
-      }
+      if (!session) { location.href = 'login.html'; return; }
 
-      // Profile စစ်ဆေးခြင်း
       const { data: profile } = await client.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
       if (!profile || (profile.role !== 'seller' && profile.role !== 'admin' && profile.role !== 'super_admin')) {
         Swal.fire({ icon: 'error', title: 'ခွင့်မပြုပါ', text: 'Seller Center သို့ ဝင်ရောက်ခွင့် မရှိပါ။' }).then(() => {
@@ -212,7 +251,6 @@
         return;
       }
 
-      // Shop ရယူခြင်း
       const { data: shop } = await client.from('shops').select('*').eq('owner_id', session.user.id).maybeSingle();
       if (!shop) {
         document.getElementById('sellerShopName').innerText = 'ဆိုင်ခွဲ အချက်အလက် မရှိသေးပါ';
@@ -226,7 +264,7 @@
       document.getElementById('settingDeliveryFee').value = shop.delivery_fee || 0;
       document.getElementById('settingAddress').value = shop.address || '';
 
-      await Promise.all([loadOrders(), loadProducts()]);
+      await Promise.all([loadOrders(), loadProducts(), loadReturns()]);
     }
 
     async function loadOrders() {
@@ -248,8 +286,6 @@
       list.innerHTML = sellerOrders.map(o => {
         const items = Array.isArray(o.items) ? o.items : [];
         const status = o.status || 'pending';
-        const voucherUrl = getProxiedImageUrl(o.payment_voucher);
-
         return `
           <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3 text-xs">
             <div class="flex justify-between items-center border-b pb-2">
@@ -274,7 +310,7 @@
             <div class="flex justify-between items-center border-t pt-2">
               <div class="font-black text-rose-600">ကျသင့်ငွေ: ${Number(o.total_amount || o.total || 0).toLocaleString()} MMK</div>
               <div class="flex gap-2">
-                ${voucherUrl && voucherUrl !== 'https://placehold.co/300' ? `<a href="${voucherUrl}" target="_blank" class="bg-slate-100 text-slate-700 px-3 py-1.5 rounded-xl font-bold text-[10px]">ငွေလွှဲဘောက်ချာ</a>` : ''}
+                ${o.payment_voucher ? `<a href="${o.payment_voucher}" target="_blank" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-xl font-bold text-[10px]">ငွေလွှဲဘောက်ချာ</a>` : ''}
                 ${status === 'pending' ? `<button type="button" onclick="updateOrderStatus(${o.id}, 'shipping')" class="bg-violet-600 text-white px-3 py-1.5 rounded-xl font-bold text-[10px]">ပို့ဆောင်မည် (Ship)</button>` : ''}
               </div>
             </div>
@@ -305,12 +341,11 @@
       }
 
       grid.innerHTML = sellerProducts.map(p => {
-        const rawImg = (p.images && p.images[0]) || p.image || p.image_url;
-        const img = getProxiedImageUrl(rawImg);
+        const image = (p.images && p.images[0]) || p.image || p.image_url || 'https://placehold.co/300';
         return `
           <div class="bg-white p-3 rounded-2xl border border-slate-200 shadow-xs flex flex-col justify-between">
             <div>
-              <img src="${img}" alt="Product" class="w-full h-32 object-cover rounded-xl mb-2" />
+              <img src="${image}" alt="Product" class="w-full h-32 object-cover rounded-xl mb-2" />
               <h4 class="font-bold text-xs text-slate-800 line-clamp-1">${esc(p.title || p.name)}</h4>
               <div class="text-rose-600 font-extrabold text-xs mt-0.5">${Number(p.price || 0).toLocaleString()} MMK</div>
               <div class="text-[10px] text-slate-500 font-medium mt-1">Stock: ${p.stock || 0} ခု</div>
@@ -324,13 +359,47 @@
       }).join('');
     }
 
+    async function loadReturns() {
+      if (!currentSellerShop) return;
+      const { data: returns } = await client.from('return_requests').select('*, orders(id, total_amount, customer_name, customer_phone)').eq('shop_id', currentSellerShop.id).order('id', { ascending: false });
+      sellerReturns = returns || [];
+      const list = document.getElementById('sellerReturnsList');
+
+      if (!sellerReturns.length) {
+        list.innerHTML = '<div class="text-center py-10 text-xs text-slate-400">Return လျှောက်ထားမှု မရှိသေးပါ</div>';
+        return;
+      }
+
+      list.innerHTML = sellerReturns.map(r => {
+        const photos = r.proof_images || [];
+        return `
+          <div class="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs space-y-3 text-xs">
+            <div class="flex justify-between items-center border-b pb-2">
+              <span class="font-bold font-mono text-rose-600">Return #${r.id} (Order #${r.order_id})</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${r.status === 'approved' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}">${r.status}</span>
+            </div>
+            <div>
+              <div class="font-bold text-slate-800">အကြောင်းပြချက်: ${esc(r.reason_type)}</div>
+              <p class="text-slate-600 text-[11px] mt-0.5">${esc(r.reason_detail)}</p>
+            </div>
+            <div class="flex flex-wrap gap-2 pt-1">
+              ${r.proof_video ? `<a href="${r.proof_video}" target="_blank" class="bg-violet-50 text-violet-700 px-3 py-1.5 rounded-xl font-bold text-[10px] flex items-center gap-1"><i class="ph ph-video text-sm"></i> Unboxing Video ဖွင့်ကြည့်ရန်</a>` : ''}
+              ${photos.map(img => `<a href="${img}" target="_blank"><img src="${img}" class="w-12 h-12 object-cover rounded-xl border" /></a>`).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
     function switchTab(tab) {
       document.getElementById('tabOrders').classList.toggle('hidden', tab !== 'orders');
       document.getElementById('tabProducts').classList.toggle('hidden', tab !== 'products');
+      document.getElementById('tabReturns').classList.toggle('hidden', tab !== 'returns');
       document.getElementById('tabSettings').classList.toggle('hidden', tab !== 'settings');
 
       document.getElementById('tabBtnOrders').className = tab === 'orders' ? 'pb-3 border-b-2 border-violet-600 text-violet-600 cursor-pointer' : 'pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-600 cursor-pointer';
       document.getElementById('tabBtnProducts').className = tab === 'products' ? 'pb-3 border-b-2 border-violet-600 text-violet-600 cursor-pointer' : 'pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-600 cursor-pointer';
+      document.getElementById('tabBtnReturns').className = tab === 'returns' ? 'pb-3 border-b-2 border-violet-600 text-violet-600 cursor-pointer' : 'pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-600 cursor-pointer';
       document.getElementById('tabBtnSettings').className = tab === 'settings' ? 'pb-3 border-b-2 border-violet-600 text-violet-600 cursor-pointer' : 'pb-3 border-b-2 border-transparent text-slate-400 hover:text-slate-600 cursor-pointer';
     }
 
@@ -377,8 +446,7 @@
             const fileName = `products/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
             const { error: upErr } = await client.storage.from('product-images').upload(fileName, file);
             if (!upErr) {
-              const { data: { publicUrl } } = client.storage.from('product-images').getPublicUrl(fileName);
-              uploadedUrls.push(publicUrl);
+              uploadedUrls.push(getProxiedStorageUrl('product-images', fileName));
             }
           }
         }
@@ -430,7 +498,7 @@
       document.getElementById('prodSizes').value = (prod.sizes || []).join(', ');
       document.getElementById('prodColors').value = (prod.colors || []).join(', ');
       
-      const imgs = (prod.images || [prod.image || 'https://placehold.co/100']).map(getProxiedImageUrl);
+      const imgs = prod.images || [prod.image || 'https://placehold.co/100'];
       document.getElementById('existingProductImgs').innerHTML = imgs.map(img => `<img src="${img}" class="w-10 h-10 object-cover rounded border" />`).join('');
 
       document.getElementById('productModalTitle').innerText = 'ပစ္စည်း ပြင်ဆင်ရန်';
@@ -461,7 +529,18 @@
         const delivery_fee = Number(document.getElementById('settingDeliveryFee').value) || 0;
         const address = document.getElementById('settingAddress').value.trim();
 
-        const { error } = await client.from('shops').update({ name, shipping_fee, delivery_fee, address }).eq('id', currentSellerShop.id);
+        const updateData = { name, shipping_fee, delivery_fee, address };
+        const logoInput = document.getElementById('settingShopLogoFile');
+        if (logoInput.files.length) {
+          const file = logoInput.files[0];
+          const fileName = `shop-logos/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
+          const { error: upErr } = await client.storage.from('product-images').upload(fileName, file);
+          if (!upErr) {
+            updateData.logo_url = getProxiedStorageUrl('product-images', fileName);
+          }
+        }
+
+        const { error } = await client.from('shops').update(updateData).eq('id', currentSellerShop.id);
         if (error) throw error;
         Toast.fire({ icon: 'success', title: 'ဆိုင် ဆက်တင်များ ပြင်ဆင်ပြီးပါပြီ' });
       } catch (err) {
