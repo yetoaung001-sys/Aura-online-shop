@@ -49,7 +49,7 @@
 </head>
 <body class="pb-28">
 
-  <!-- NOTIFICATION BAR -->
+  <!-- NOTIFICATION BAR (Seller Center ခလုတ်အား ဖြုတ်ထားပါသည်) -->
   <div class="bg-gradient-to-r from-violet-600 via-indigo-600 to-rose-600 text-white text-xs py-2.5 px-4 shadow-md overflow-hidden whitespace-nowrap">
     <div class="max-w-7xl mx-auto flex items-center justify-between">
       <div class="flex items-center gap-2 font-bold shrink-0">
@@ -66,7 +66,6 @@
         <button type="button" onclick="openPolicyModal()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition flex items-center gap-1 cursor-pointer">
           <i class="ph-bold ph-shield-check"></i> Return Policy
         </button>
-        <a href="seller.html" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1 rounded-full font-bold text-[11px] transition hidden sm:inline-block">Seller Center</a>
       </div>
     </div>
   </div>
@@ -304,6 +303,54 @@
     </div>
   </div>
 
+  <!-- ================= CUSTOMER AUTH MODAL (LOGIN / SIGNUP) ================= -->
+  <div id="authModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white text-slate-900 w-full max-w-md rounded-3xl p-7 space-y-4 shadow-2xl border border-slate-100 text-xs">
+      
+      <div class="flex justify-between items-center border-b border-slate-100 pb-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-9 h-9 rounded-xl bg-violet-50 text-violet-600 flex items-center justify-center text-lg font-bold">
+            <i class="ph-bold ph-user"></i>
+          </div>
+          <div>
+            <h3 id="authModalTitle" class="font-extrabold text-sm text-slate-900">အကောင့်ဝင်ရန် (Customer Login)</h3>
+            <p class="text-[11px] text-slate-400 font-medium">Aura Marketplace တွင် စျေးဝယ်ယူရန်</p>
+          </div>
+        </div>
+        <button type="button" onclick="closeAuthModal()" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 transition cursor-pointer">
+          <i class="ph ph-x text-base"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleCustomerAuth(event)" class="space-y-3.5 pt-1">
+        <div id="authNameField" class="hidden">
+          <label for="authName" class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label>
+          <input type="text" id="authName" autocomplete="name" placeholder="သင်၏ အမည်" class="w-full border border-slate-200 p-3 rounded-2xl outline-none bg-slate-50 focus:bg-white focus:ring-2 focus:ring-violet-600 font-medium transition" />
+        </div>
+
+        <div>
+          <label for="authEmailOrPhone" class="font-bold block mb-1 text-slate-700">Email (သို့မဟုတ်) ဖုန်းနံပါတ် *</label>
+          <input type="text" id="authEmailOrPhone" required autocomplete="username" placeholder="example@gmail.com (သို့) 09..." class="w-full border border-slate-200 p-3 rounded-2xl outline-none bg-slate-50 focus:bg-white focus:ring-2 focus:ring-violet-600 font-medium transition" />
+        </div>
+
+        <div>
+          <label for="authPassword" class="font-bold block mb-1 text-slate-700">စကားဝှက် (Password) *</label>
+          <input type="password" id="authPassword" required autocomplete="current-password" placeholder="အနည်းဆုံး ၆ လုံး" class="w-full border border-slate-200 p-3 rounded-2xl outline-none bg-slate-50 focus:bg-white focus:ring-2 focus:ring-violet-600 font-medium transition" />
+        </div>
+
+        <button type="submit" id="authSubmitBtn" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-bold py-3.5 rounded-2xl shadow-lg transition cursor-pointer text-xs">
+          အကောင့်ဝင်မည်
+        </button>
+      </form>
+
+      <div class="text-center pt-2 border-t border-slate-100">
+        <button type="button" onclick="toggleAuthMode()" id="authToggleBtn" class="text-violet-600 font-bold hover:underline cursor-pointer text-[11px]">
+          အကောင့်မရှိသေးပါက အသစ်ဖွင့်လှစ်ရန် (Sign Up)
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const SUPABASE_URL = window.location.origin + '/api/supabase';
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
@@ -332,7 +379,7 @@
     let products = [], paymentMethods = [], cart = [];
     let currentAuthSessionUser = null, currentPackagesToCheckout = [];
     let selectedProductForBuy = null, chosenSize = '', chosenColor = '';
-    let searchQuery = '', activeOrderForReturn = null;
+    let searchQuery = '', activeOrderForReturn = null, isSignupMode = false;
 
     function esc(v){ return String(v ?? '').replace(/[&<>"']/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[m])); }
 
@@ -607,7 +654,8 @@
 
       const { data: { session } } = await client.auth.getSession();
       if (!session) {
-        Swal.fire({ title: 'အကောင့်ဝင်ရန်', text: 'အော်ဒါတင်ရန် Customer အကောင့်ဝင်ပေးပါ', icon: 'info' });
+        closeCart();
+        openAuthModal('login');
         return;
       }
 
@@ -676,7 +724,7 @@
         const voucherUrl = getProxiedStorageUrl('product-images', fileName);
         const checkoutGroupId = crypto.randomUUID();
 
-        // Customer Order Split RPC ခေါ်ယူခြင်း (Order အပြင် ဆိုင်ခွဲအလိုက် shop_orders ထဲသို့ အလိုအလျောက် သွင်းပေးသည်)
+        // Customer Order Split RPC ခေါ်ယူခြင်း
         const { data: res, error } = await client.rpc('customer_checkout_split', {
           p_checkout_group_id: checkoutGroupId,
           p_customer_name: document.getElementById('custName').value.trim(),
@@ -707,10 +755,80 @@
       }
     }
 
+    // AUTH FUNCTIONS (LOGIN / SIGNUP)
+    function openAuthModal(mode = 'login') {
+      isSignupMode = (mode === 'signup');
+      document.getElementById('authNameField').classList.toggle('hidden', !isSignupMode);
+      document.getElementById('authModalTitle').innerText = isSignupMode ? 'အကောင့်အသစ်ဖွင့်ရန် (Sign Up)' : 'အကောင့်ဝင်ရန် (Customer Login)';
+      document.getElementById('authSubmitBtn').innerText = isSignupMode ? 'အကောင့်အသစ် ဖွင့်လှစ်မည်' : 'အကောင့်ဝင်မည်';
+      document.getElementById('authToggleBtn').innerText = isSignupMode ? 'အကောင့်ရှိပြီးသားဖြစ်ပါက အကောင့်ဝင်ရန် (Login)' : 'အကောင့်မရှိသေးပါက အသစ်ဖွင့်လှစ်ရန် (Sign Up)';
+      
+      const modal = document.getElementById('authModal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeAuthModal() {
+      const modal = document.getElementById('authModal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+    }
+
+    function toggleAuthMode() {
+      openAuthModal(!isSignupMode ? 'signup' : 'login');
+    }
+
+    async function handleCustomerAuth(e) {
+      e.preventDefault();
+      const emailOrPhone = document.getElementById('authEmailOrPhone').value.trim();
+      const password = document.getElementById('authPassword').value.trim();
+      const btn = document.getElementById('authSubmitBtn');
+      const email = emailOrPhone.includes('@') ? emailOrPhone : `${emailOrPhone.replace(/[^0-9]/g, '')}@aura.com`;
+
+      btn.innerText = "ဆောင်ရွက်နေပါသည်...";
+      btn.disabled = true;
+
+      try {
+        if (isSignupMode) {
+          const fullName = document.getElementById('authName').value.trim();
+          if (!fullName) throw new Error('အမည် ထည့်သွင်းပေးပါရန်');
+
+          const { data, error } = await client.auth.signUp({
+            email, password, options: { data: { full_name: fullName, phone: emailOrPhone } }
+          });
+          if (error) throw error;
+
+          if (data.user) {
+            await client.from('profiles').upsert({ id: data.user.id, full_name: fullName, phone: emailOrPhone, role: 'customer' });
+            Swal.fire({ icon: 'success', title: 'အောင်မြင်ပါသည်', text: 'အကောင့်ဖွင့်လှစ်ပြီးပါပြီ!' }).then(() => location.reload());
+          }
+        } else {
+          const { data, error } = await client.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+
+          const { data: profile } = await client.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
+          if (profile && (profile.role === 'admin' || profile.role === 'super_admin')) {
+            location.href = 'admin.html';
+            return;
+          }
+          if (profile && profile.role === 'seller') {
+            location.href = 'seller.html';
+            return;
+          }
+          location.reload();
+        }
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Error', text: err.message || err });
+      } finally {
+        btn.innerText = isSignupMode ? 'အကောင့်အသစ် ဖွင့်လှစ်မည်' : 'အကောင့်ဝင်မည်';
+        btn.disabled = false;
+      }
+    }
+
     async function openProfileModal() {
       const { data: { session } } = await client.auth.getSession();
       if (!session) {
-        Swal.fire({ title: 'အကောင့်ဝင်ပါ', text: 'အကောင့်ဖွင့်ရန် သို့မဟုတ် ဝင်ရောက်ရန် လိုအပ်ပါသည်', icon: 'info' });
+        openAuthModal('login');
         return;
       }
       currentAuthSessionUser = session.user;
@@ -754,7 +872,6 @@
 
       const content = document.getElementById('orderDetailContent');
       const returnContainer = document.getElementById('returnRequestContainer');
-      const items = Array.isArray(order.items) ? order.items : [];
       const status = order.status || 'pending';
 
       content.innerHTML = `
@@ -765,7 +882,6 @@
         </div>
       `;
 
-      // ၃ ရက်အတွင်း Return စစ်ဆေးမှု (Admin ၏ order_returns ဇယားသို့ တင်သွင်းရန်)
       const completedTime = order.completed_at ? new Date(order.completed_at) : (order.updated_at ? new Date(order.updated_at) : new Date(order.created_at));
       const isWithin3Days = ((new Date() - completedTime) / (1000 * 60 * 60)) <= 72;
 
@@ -820,7 +936,6 @@
           photoUrls.push(getProxiedStorageUrl('product-images', photoName));
         }
 
-        // Admin စစ်ဆေးသည့် order_returns ဇယားထဲသို့ တိုက်ရိုက် သွင်းခြင်း
         const { error } = await client.from('order_returns').insert([{
           order_id: activeOrderForReturn.id,
           shop_id: activeOrderForReturn.shop_orders?.[0]?.shop_id || null,
@@ -872,7 +987,6 @@
           nrcUrl = getProxiedStorageUrl('product-images', fileName);
         }
 
-        // Admin ၏ seller_applications ဇယားသို့ တိုက်ရိုက် သွင်းခြင်း
         const { error } = await client.from('seller_applications').insert([{
           user_id: currentAuthSessionUser.id,
           shop_name: document.getElementById('applyShopName').value.trim(),
