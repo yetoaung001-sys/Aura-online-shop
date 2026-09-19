@@ -48,11 +48,9 @@
 
 <body class="bg-slate-100 min-h-screen pb-12">
 
-  <!-- ================= SELLER DIRECT LOGIN OVERLAY ================= -->
+  <!-- SELLER DIRECT LOGIN OVERLAY -->
   <div id="sellerLoginOverlay" class="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-[100] hidden items-center justify-center p-4">
     <div class="bg-white text-slate-900 w-full max-w-md rounded-3xl p-8 shadow-2xl space-y-5 border border-slate-200 text-xs">
-      
-      <!-- Title Section -->
       <div class="text-center space-y-1.5">
         <div class="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-tr from-violet-600 to-indigo-600 text-white text-2xl font-black shadow-lg shadow-violet-500/30 mb-1">
           <i class="fa-solid fa-store"></i>
@@ -61,49 +59,26 @@
         <p class="text-slate-500 text-[11px]">ဆိုင်ခွဲ စီမံခန့်ခွဲသူ (Seller) အကောင့်ဖြင့်သာ ဝင်ရောက်နိုင်သည်</p>
       </div>
 
-      <!-- Login Form -->
       <form onsubmit="handleSellerDirectLogin(event)" class="space-y-4 pt-1">
         <div>
           <label for="sellerEmail" class="font-bold text-slate-700 block mb-1.5">Seller Email *</label>
-          <input 
-            type="email" 
-            id="sellerEmail" 
-            required 
-            autocomplete="username"
-            placeholder="seller@aura.com" 
-            class="w-full px-3.5 py-3 border border-slate-200 rounded-2xl outline-none bg-slate-50 focus:bg-white focus:ring-2 focus:ring-violet-600 focus:border-violet-600 font-medium transition" 
-          />
+          <input type="email" id="sellerEmail" required autocomplete="username" placeholder="seller@aura.com" class="w-full px-3.5 py-3 border border-slate-200 rounded-2xl outline-none bg-slate-50 focus:bg-white focus:ring-2 focus:ring-violet-600 font-medium transition" />
         </div>
-
         <div>
           <label for="sellerPassword" class="font-bold text-slate-700 block mb-1.5">စကားဝှက် (Password) *</label>
-          <input 
-            type="password" 
-            id="sellerPassword" 
-            required 
-            autocomplete="current-password"
-            placeholder="••••••••" 
-            class="w-full px-3.5 py-3 border border-slate-200 rounded-2xl outline-none bg-slate-50 focus:bg-white focus:ring-2 focus:ring-violet-600 focus:border-violet-600 font-medium transition" 
-          />
+          <input type="password" id="sellerPassword" required autocomplete="current-password" placeholder="••••••••" class="w-full px-3.5 py-3 border border-slate-200 rounded-2xl outline-none bg-slate-50 focus:bg-white focus:ring-2 focus:ring-violet-600 font-medium transition" />
         </div>
-
-        <button 
-          type="submit" 
-          id="sellerLoginBtn" 
-          class="w-full bg-slate-900 hover:bg-violet-700 text-white font-bold py-3.5 rounded-2xl shadow-lg transition text-xs cursor-pointer flex items-center justify-center gap-2">
-          <span>လော့ဂ်အင် ဝင်မည်</span>
+        <button type="submit" id="sellerLoginBtn" class="w-full bg-slate-900 hover:bg-violet-700 text-white font-bold py-3.5 rounded-2xl shadow-lg transition text-xs cursor-pointer">
+          လော့ဂ်အင် ဝင်မည်
         </button>
       </form>
-
-      <!-- Footer Links -->
-      <div class="text-center pt-2 border-t border-slate-100 flex justify-between items-center text-[11px]">
-        <a href="index.html" class="text-slate-500 hover:text-violet-600 font-bold">← ပင်မဆိုင်သို့</a>
-        <button type="button" onclick="alert('ဆိုင်ခွင့်ပြုချက် မရရှိသေးပါက Admin ထံ အရင်ဆက်သွယ်ပါ')" class="text-violet-600 hover:underline font-bold">အကောင့်မရှိသေးပါက</button>
+      <div class="text-center pt-2 border-t border-slate-100">
+        <a href="index.html" class="text-slate-500 hover:text-violet-600 font-bold">← ပင်မဆိုင်သို့ ပြန်သွားမည်</a>
       </div>
     </div>
   </div>
 
-  <!-- ================= HEADER ================= -->
+  <!-- HEADER -->
   <header class="bg-slate-900 text-white sticky top-0 z-50 shadow">
     <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
       <div class="flex items-center space-x-3">
@@ -111,7 +86,7 @@
         <h1 id="headerShopTitle" class="text-xl font-bold tracking-tight">ဆိုင်ခွဲ စီမံခန့်ခွဲမှု</h1>
       </div>
       <div class="flex items-center space-x-4">
-        <span id="sellerOwnerName" class="text-xs text-slate-300">Seller</span>
+        <span id="sellerOwnerName" class="text-xs text-slate-300 font-bold">Seller</span>
         <a href="index.html" target="_blank" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded transition">
           <i class="fa-solid fa-arrow-up-right-from-square mr-1"></i> ဆိုင်ကြည့်မည်
         </a>
@@ -121,7 +96,7 @@
       </div>
     </div>
 
-    <!-- NAVIGATION TABS -->
+    <!-- TABS -->
     <div class="max-w-7xl mx-auto px-4 flex space-x-2 border-t border-slate-800 text-sm overflow-x-auto">
       <button type="button" onclick="switchTab('orders')" id="tab-orders" class="tab-btn py-3 px-4 text-violet-400 border-b-2 border-violet-400 font-bold whitespace-nowrap"><i class="fa-solid fa-receipt mr-1"></i> မှာယူထားသော အော်ဒါများ</button>
       <button type="button" onclick="switchTab('products')" id="tab-products" class="tab-btn py-3 px-4 text-gray-400 hover:text-white border-b-2 border-transparent whitespace-nowrap"><i class="fa-solid fa-boxes-stacked mr-1"></i> ကုန်ပစ္စည်းများ စီမံရန်</button>
@@ -135,25 +110,13 @@
     
     <!-- STATS CARDS -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-      <div class="bg-white p-5 rounded-xl shadow-sm border">
-        <p class="text-xs text-slate-500 font-bold uppercase">ဆိုင်ရောင်းအား စုစုပေါင်း</p>
-        <h3 id="stat-shop-sales" class="text-2xl font-bold text-slate-900 mt-1">0 Ks</h3>
-      </div>
-      <div class="bg-white p-5 rounded-xl shadow-sm border">
-        <p class="text-xs text-amber-600 font-bold uppercase">Platform ကော်မရှင်</p>
-        <h3 id="stat-shop-commission" class="text-2xl font-bold text-amber-600 mt-1">0 Ks</h3>
-      </div>
-      <div class="bg-white p-5 rounded-xl shadow-sm border border-emerald-200 bg-emerald-50/20">
-        <p class="text-xs text-emerald-700 font-bold uppercase">လွှဲပေးရန် ကျန်ငွေ (Unpaid Payout)</p>
-        <h3 id="stat-shop-payout" class="text-2xl font-bold text-emerald-600 mt-1">0 Ks</h3>
-      </div>
-      <div class="bg-white p-5 rounded-xl shadow-sm border">
-        <p class="text-xs text-slate-500 font-bold uppercase">လက်ကျန် အော်ဒါ</p>
-        <h3 id="stat-shop-orders" class="text-2xl font-bold text-blue-600 mt-1">0</h3>
-      </div>
+      <div class="bg-white p-5 rounded-xl shadow-sm border"><p class="text-xs text-slate-500 font-bold uppercase">ဆိုင်ရောင်းအား စုစုပေါင်း</p><h3 id="stat-shop-sales" class="text-2xl font-bold text-slate-900 mt-1">0 Ks</h3></div>
+      <div class="bg-white p-5 rounded-xl shadow-sm border"><p class="text-xs text-amber-600 font-bold uppercase">Platform ကော်မရှင်</p><h3 id="stat-shop-commission" class="text-2xl font-bold text-amber-600 mt-1">0 Ks</h3></div>
+      <div class="bg-white p-5 rounded-xl shadow-sm border border-emerald-200 bg-emerald-50/20"><p class="text-xs text-emerald-700 font-bold uppercase">လွှဲပေးရန် ကျန်ငွေ (Unpaid Payout)</p><h3 id="stat-shop-payout" class="text-2xl font-bold text-emerald-600 mt-1">0 Ks</h3></div>
+      <div class="bg-white p-5 rounded-xl shadow-sm border"><p class="text-xs text-slate-500 font-bold uppercase">လက်ကျန် အော်ဒါ</p><h3 id="stat-shop-orders" class="text-2xl font-bold text-blue-600 mt-1">0</h3></div>
     </div>
 
-    <!-- ================= ORDERS TAB ================= -->
+    <!-- ORDERS TAB -->
     <section id="section-orders" class="tab-content space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
         <div>
@@ -180,7 +143,7 @@
       </div>
     </section>
 
-    <!-- ================= PRODUCTS TAB ================= -->
+    <!-- PRODUCTS TAB -->
     <section id="section-products" class="tab-content hidden space-y-4">
       <div class="bg-white p-5 rounded-xl shadow-sm border">
         <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-plus-circle text-violet-600 mr-1"></i> ကုန်ပစ္စည်း အသစ်တင်ရန်</h3>
@@ -205,7 +168,7 @@
       </div>
     </section>
 
-    <!-- ================= RETURNS TAB ================= -->
+    <!-- RETURNS TAB -->
     <section id="section-returns" class="tab-content hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border flex justify-between items-center">
         <div>
@@ -231,7 +194,7 @@
       </div>
     </section>
 
-    <!-- ================= PAYOUTS REPORT TAB ================= -->
+    <!-- PAYOUTS TAB -->
     <section id="section-payouts" class="tab-content hidden space-y-4">
       <div class="bg-white p-4 rounded-xl shadow-sm border">
         <h2 class="font-bold text-slate-800 text-lg">ငွေစာရင်းရှင်းတမ်း အသေးစိတ် (Payouts Report)</h2>
@@ -253,7 +216,7 @@
       </div>
     </section>
 
-    <!-- ================= SETTINGS TAB ================= -->
+    <!-- SETTINGS TAB -->
     <section id="section-settings" class="tab-content hidden space-y-4 max-w-xl">
       <form onsubmit="handleSaveSellerSettings(event)" class="bg-white p-6 rounded-2xl shadow-sm border space-y-4 text-xs">
         <h3 class="font-bold text-slate-800 text-base border-b pb-2">ဆိုင်ခွဲ အချက်အလက်နှင့် ပို့ခ သတ်မှတ်ချက်</h3>
@@ -312,7 +275,6 @@
 
       document.getElementById('sellerOwnerName').innerText = profile.full_name || 'Seller';
 
-      // Admin Panel ထဲမှ ဖွင့်ပေးထားသော ဆိုင်နှင့် ချိတ်ဆက်ခြင်း
       const { data: shop } = await client.from('shops').select('*').eq('owner_id', session.user.id).maybeSingle();
       if (!shop) {
         alert('သင့်အကောင့်အတွက် ဖွင့်လှစ်ထားသော ဆိုင်ခွဲ မရှိသေးပါ (Admin ထံ ဆက်သွယ်ပါ)');
@@ -373,7 +335,6 @@
       if (tabId === 'payouts') loadSellerPayouts();
     }
 
-    // ================= LOAD ORDERS (ADMIN ၏ SHOP_ORDERS နှင့် ကိုက်ညီအောင် ရေးထားသည်) =================
     async function loadSellerOrders() {
       if (!currentShop) return;
       const tbody = document.getElementById('seller-orders-tbody');
@@ -445,7 +406,6 @@
       loadSellerOrders();
     }
 
-    // ================= LOAD PRODUCTS =================
     async function loadSellerProducts() {
       if (!currentShop) return;
       const tbody = document.getElementById('seller-products-tbody');
@@ -509,7 +469,6 @@
       loadSellerProducts();
     }
 
-    // ================= LOAD RETURNS (ADMIN ၏ ORDER_RETURNS ဇယားအတိုင်း စစ်ဆေးသည်) =================
     async function loadSellerReturns() {
       if (!currentShop) return;
       const tbody = document.getElementById('seller-returns-tbody');
@@ -558,7 +517,6 @@
       }).join('');
     }
 
-    // ================= LOAD PAYOUTS REPORT =================
     async function loadSellerPayouts() {
       if (!currentShop) return;
       const tbody = document.getElementById('seller-payouts-tbody');
@@ -583,7 +541,6 @@
       `).join('');
     }
 
-    // ================= SAVE SETTINGS =================
     async function handleSaveSellerSettings(e) {
       e.preventDefault();
       if (!currentShop) return;
