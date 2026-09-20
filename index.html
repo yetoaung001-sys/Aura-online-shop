@@ -50,7 +50,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; font-size: 14px; } /* ဖောင့်ဆိုဒ် ပိုမိုထင်ရှားစေရန် အနည်းငယ် တိုးထားသည် */
+    body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; font-size: 22px; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
@@ -65,11 +65,11 @@
         <span>အသိပေးချက်:</span>
       </div>
       <marquee behavior="scroll" direction="left" scrollamount="4" class="text-white font-semibold text-xs sm:text-sm px-2">
-        ✨ Aura Marketplace မှ နွေးထွေးစွာ ကြိုဆိုပါသည်။ ဆိုင်ခွဲများမှ ပစ္စည်းများကို Package သီးခြားစီ အလိုအလျောက် ခွဲခြားပို့ဆောင်ပေးပါသည်။
+        ✨ Aura Marketplace မှ နွေးထွေးစွာ ကြိုဆိုပါတယ်။ ဆိုင်ခွဲများမှ ပစ္စည်းများကို Package သီးခြားစီ အလိုအလျောက် ခွဲခြားပို့ဆောင်ပေးပါသည်။
       </marquee>
       <div class="shrink-0 pl-2 flex items-center gap-1.5">
         <button type="button" onclick="openSellerApplyModal()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-full font-extrabold text-xs transition cursor-pointer">
-          ဆိုင်ဖွင့်ရန်
+          ဆိုင်ဖွင့်ရန်လျှောက်ထားမည်
         </button>
       </div>
     </div>
@@ -304,13 +304,13 @@
     </div>
   </div>
 
-  <!-- SELLER APPLY MODAL -->
+  <!-- SELLER APPLY MODAL (NRC ရှေ့/နောက် နှင့် အကောင့် ၅ ခု ပါဝင်သည်) -->
   <div id="sellerApplyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
-    <div class="bg-white w-full max-w-lg rounded-3xl p-5 sm:p-7 space-y-4 text-xs sm:text-sm shadow-2xl max-h-[90vh] overflow-y-auto">
+    <div class="bg-white w-full max-w-xl rounded-3xl p-5 sm:p-7 space-y-4 text-xs sm:text-sm shadow-2xl max-h-[92vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
         <div>
           <h3 class="font-extrabold text-sm sm:text-base text-slate-900">🏪 ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ (Seller Application)</h3>
-          <p class="text-xs text-slate-500 font-semibold">Aura Marketplace တွင် မိမိပစ္စည်းများကို တင်ყောင်းရန် လျှောက်ထားပါ</p>
+          <p class="text-xs text-slate-500 font-semibold">Aura Marketplace တွင် ဆိုင်သစ်ဖွင့်လှစ်ရန် လျှောက်ထားပါ</p>
         </div>
         <button type="button" onclick="closeSellerApplyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
@@ -338,21 +338,49 @@
           </div>
         </div>
 
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div>
-            <label class="font-bold text-slate-700 block mb-1">ဆိုင် Logo ပုံ (Shop Logo)</label>
+            <label class="font-bold text-slate-700 block mb-1">ဆိုင် Logo ပုံ</label>
             <input type="file" id="applyShopLogoFile" accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 text-xs cursor-pointer" />
           </div>
           <div>
-            <label class="font-bold text-slate-700 block mb-1">မှတ်ပုံတင် / လိုင်စင် (NRC/License)</label>
-            <input type="file" id="applyNrcFile" accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 text-xs cursor-pointer" />
+            <label class="font-bold text-slate-700 block mb-1">NRC (အရှေ့ပုံ) *</label>
+            <input type="file" id="applyNrcFrontFile" accept="image/*" required class="w-full border p-2 rounded-xl bg-slate-50 text-xs cursor-pointer" />
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">NRC (အနောက်ပုံ) *</label>
+            <input type="file" id="applyNrcBackFile" accept="image/*" required class="w-full border p-2 rounded-xl bg-slate-50 text-xs cursor-pointer" />
           </div>
         </div>
 
-        <div>
-          <label class="font-bold text-slate-700 block mb-1">ငွေရှင်းရန် KBZPay / WavePay အကောင့်အချက်အလက် *</label>
-          <input type="text" id="applyPaymentInfo" required placeholder="ဥပမာ - KBZPay: 09123456789 (Mg Mg)" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" />
-          <span class="text-[11px] text-slate-400 mt-0.5 block">ရောင်းရငွေများ (Payouts) လွှဲပြောင်းပေးမည့် အကောင့်ဖြစ်ပါသည်</span>
+        <div class="bg-violet-50/50 p-4 rounded-2xl border border-violet-100 space-y-3">
+          <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm">💳 ရောင်းရငွေထုတ်ယူမည့် ငွေပေးချေမှု အကောင့်များ (Payout Accounts)</h4>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="font-bold block text-slate-700 mb-0.5 text-xs">1. KBZPay အကောင့် *</label>
+              <input type="text" id="applyKbzPay" required placeholder="ဖုန်းနံပါတ် / အမည်" class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" />
+            </div>
+            <div>
+              <label class="font-bold block text-slate-700 mb-0.5 text-xs">2. WavePay အကောင့် *</label>
+              <input type="text" id="applyWavePay" required placeholder="ဖုန်းနံပါတ် / အမည်" class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div>
+              <label class="font-bold block text-slate-700 mb-0.5 text-xs">3. AYA Pay အကောင့် *</label>
+              <input type="text" id="applyAyaPay" required placeholder="ဖုန်းနံပါတ် / အမည်" class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" />
+            </div>
+            <div>
+              <label class="font-bold block text-slate-700 mb-0.5 text-xs">4. CB Pay / KPay (အခြား)</label>
+              <input type="text" id="applyOtherPay1" placeholder="အကောင့်အချက်အလက်" class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" />
+            </div>
+            <div>
+              <label class="font-bold block text-slate-700 mb-0.5 text-xs">5. Bank Account (ဘဏ်)</label>
+              <input type="text" id="applyOtherPay2" placeholder="ဘဏ်အမည်နှင့် အကောင့်နံပါတ်" class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" />
+            </div>
+          </div>
         </div>
 
         <div>
@@ -360,7 +388,7 @@
           <textarea id="applyAddress" rows="2" required placeholder="အမှတ်၊ လမ်းအမည်၊ မြို့နယ်..." class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold"></textarea>
         </div>
 
-        <button type="submit" id="applySubmitBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition cursor-pointer text-xs sm:text-sm">
+        <button type="submit" id="applySubmitBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition cursor-pointer text-sm">
           ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ ပေးပို့မည်
         </button>
       </form>
@@ -454,8 +482,6 @@
       const { data: { session } } = await client.auth.getSession();
       if (session) {
         currentAuthSessionUser = session.user;
-        
-        // 🌟 Seller အကောင့်ဖြစ်ပါက Customer မျက်နှာပြင်သို့ မပေးဝင်ဘဲ seller.html သို့ အလိုအလျောက် ပို့ဆောင်ပေးခြင်း
         const { data: profile } = await client.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
         if (profile && (profile.role === 'seller' || profile.role === 'admin' || profile.role === 'super_admin')) {
           location.href = profile.role === 'seller' ? 'seller.html' : 'admin.html';
@@ -1055,6 +1081,7 @@
     function openPolicyModal(){ document.getElementById('policyModal').classList.remove('hidden'); document.getElementById('policyModal').classList.add('flex'); }
     function closePolicyModal(){ document.getElementById('policyModal').classList.add('hidden'); document.getElementById('policyModal').classList.remove('flex'); }
 
+    // 🌟 ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ (NRC ရှေ့/နောက် နှင့် အကောင့် ၅ ခု ပါဝင်သည်)
     async function handleSellerApplicationSubmit(e) {
       e.preventDefault();
       if (!currentAuthSessionUser) { closeSellerApplyModal(); openAuthModal('login'); return; }
@@ -1063,9 +1090,10 @@
       btn.innerText = "တင်သွင်းနေပါသည်..."; btn.disabled = true;
 
       try {
-        let logoUrl = null, nrcUrl = null;
+        let logoUrl = null, nrcFrontUrl = null, nrcBackUrl = null;
         const logoInput = document.getElementById('applyShopLogoFile');
-        const nrcInput = document.getElementById('applyNrcFile');
+        const nrcFrontInput = document.getElementById('applyNrcFrontFile');
+        const nrcBackInput = document.getElementById('applyNrcBackFile');
 
         if (logoInput.files.length) {
           const file = logoInput.files[0];
@@ -1074,12 +1102,27 @@
           logoUrl = getProxiedStorageUrl('product-images', fileName);
         }
         
-        if (nrcInput.files.length) {
-          const file = nrcInput.files[0];
-          const fileName = `applications/nrc-${Date.now()}.${file.name.split('.').pop()}`;
+        if (nrcFrontInput.files.length) {
+          const file = nrcFrontInput.files[0];
+          const fileName = `applications/nrc-front-${Date.now()}.${file.name.split('.').pop()}`;
           await client.storage.from('product-images').upload(fileName, file);
-          nrcUrl = getProxiedStorageUrl('product-images', fileName);
+          nrcFrontUrl = getProxiedStorageUrl('product-images', fileName);
         }
+
+        if (nrcBackInput.files.length) {
+          const file = nrcBackInput.files[0];
+          const fileName = `applications/nrc-back-${Date.now()}.${file.name.split('.').pop()}`;
+          await client.storage.from('product-images').upload(fileName, file);
+          nrcBackUrl = getProxiedStorageUrl('product-images', fileName);
+        }
+
+        const paymentInfoObj = {
+          kbzpay: document.getElementById('applyKbzPay').value.trim(),
+          wavepay: document.getElementById('applyWavePay').value.trim(),
+          ayapay: document.getElementById('applyAyaPay').value.trim(),
+          other1: document.getElementById('applyOtherPay1').value.trim(),
+          other2: document.getElementById('applyOtherPay2').value.trim()
+        };
 
         const { error } = await client.from('seller_applications').insert([{
           user_id: currentAuthSessionUser.id,
@@ -1088,8 +1131,9 @@
           phone: document.getElementById('applyPhone').value.trim(),
           business_type: document.getElementById('applyBusinessType').value.trim(),
           shop_logo: logoUrl,
-          nrc_license_image: nrcUrl,
-          payment_info: document.getElementById('applyPaymentInfo').value.trim(),
+          nrc_license_image: nrcFrontUrl,
+          nrc_back_image: nrcBackUrl,
+          payment_info: JSON.stringify(paymentInfoObj),
           address: document.getElementById('applyAddress').value.trim(),
           status: 'pending'
         }]);
