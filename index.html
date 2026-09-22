@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Aura Platform - Admin Dashboard</title>
+  <title>Aura Marketplace - Modern E-Commerce</title>
 
   <!-- Global Reverse Proxy URL Rewriter -->
   <script>
@@ -50,126 +50,391 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; font-size: 20px; }
+    body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; font-size: 22px; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
 <body class="pb-24">
 
+  <!-- NOTIFICATION BAR -->
+  <div class="bg-gradient-to-r from-violet-600 via-indigo-600 to-rose-600 text-white text-xs sm:text-sm py-2.5 px-3 shadow-md overflow-hidden whitespace-nowrap">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center gap-1.5 font-bold shrink-0">
+        <i class="ph-bold ph-megaphone animate-pulse"></i>
+        <span>အသိပေးချက်:</span>
+      </div>
+      <marquee behavior="scroll" direction="left" scrollamount="4" class="text-white font-semibold text-xs sm:text-sm px-2">
+        ✨ Aura Marketplace မှ နွေးထွေးစွာ ကြိုဆိုပါတယ်။ ဆိုင်ခွဲများမှ ပစ္စည်းများကို Package သီးခြားစီ အလိုအလျောက် ခွဲခြားပို့ဆောင်ပေးပါသည်။
+      </marquee>
+      <div class="shrink-0 pl-2 flex items-center gap-1.5">
+        <button type="button" onclick="openSellerApplyModal()" class="bg-white/20 hover:bg-white/30 text-white px-3 py-1.5 rounded-full font-extrabold text-xs transition cursor-pointer">
+          ဆိုင်ဖွင့်ရန်လျှောက်ထားမည်
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- HEADER -->
-  <header class="bg-slate-900 text-white sticky top-0 z-40 shadow-md">
-    <div class="max-w-7xl mx-auto px-3 sm:px-4 h-18 sm:h-20 flex items-center justify-between">
-      <div class="flex items-center gap-2.5">
-        <div class="w-12 h-12 rounded-2xl bg-gradient-to-br from-violet-600 to-rose-500 text-white font-black flex items-center justify-center text-xl shadow">
-          <i class="ph-bold ph-shield-check"></i>
+  <header class="bg-white/95 backdrop-blur-md border-b border-slate-100 sticky top-0 z-40 shadow-xs">
+    <div class="max-w-7xl mx-auto px-3 sm:px-4 h-18 sm:h-20 flex items-center justify-between gap-2 sm:gap-4">
+      <div class="flex items-center gap-2.5 cursor-pointer group shrink-0" onclick="location.reload()">
+        <div class="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-gradient-to-br from-violet-600 to-rose-500 text-white font-black flex items-center justify-center text-xl sm:text-2xl shadow-md">
+          <i class="ph-bold ph-storefront"></i>
         </div>
         <div>
-          <span class="font-extrabold text-lg sm:text-xl leading-none block">ADMIN PANEL</span>
-          <span class="text-[10px] text-violet-400 font-extrabold uppercase tracking-widest block mt-0.5">Aura Marketplace</span>
+          <span class="font-extrabold text-lg sm:text-xl leading-none block text-slate-900">AURA</span>
+          <span class="text-[10px] text-violet-700 font-extrabold uppercase tracking-widest block mt-0.5">Marketplace</span>
         </div>
       </div>
-      <button type="button" onclick="handleAdminLogout()" class="px-3.5 py-2 bg-rose-600 hover:bg-rose-700 text-white rounded-xl font-extrabold text-xs flex items-center gap-1.5 transition cursor-pointer">
-        <i class="ph-bold ph-sign-out text-base"></i> ထွက်မည်
-      </button>
-    </div>
 
-    <!-- TABS -->
-    <div class="max-w-7xl mx-auto px-3 sm:px-4 flex space-x-2 border-t border-slate-800 text-xs sm:text-sm overflow-x-auto no-scrollbar py-1">
-      <button type="button" onclick="switchAdminTab('applications')" id="tab-applications" class="admin-tab-btn py-2.5 px-3.5 text-violet-400 border-b-2 border-violet-400 font-extrabold whitespace-nowrap cursor-pointer">🏪 Seller လျှောက်လွှာများ</button>
-      <button type="button" onclick="switchAdminTab('shops')" id="tab-shops" class="admin-tab-btn py-2.5 px-3.5 text-slate-400 hover:text-white border-b-2 border-transparent whitespace-nowrap font-bold cursor-pointer">🏬 ဆိုင်ခွဲများ</button>
-      <button type="button" onclick="switchAdminTab('payouts')" id="tab-payouts" class="admin-tab-btn py-2.5 px-3.5 text-slate-400 hover:text-white border-b-2 border-transparent whitespace-nowrap font-bold cursor-pointer">💰 Payouts ရှင်းတမ်း</button>
+      <div class="flex-1 max-w-xl relative">
+        <input type="text" id="searchInput" oninput="handleSearch(this.value)" autocomplete="off" placeholder="ပစ္စည်း သို့မဟုတ် ဆိုင်နာမည်ဖြင့် ရှာဖွေရန်..." class="w-full pl-10 sm:pl-12 pr-3 py-3 bg-slate-100 border border-slate-200 rounded-2xl text-xs sm:text-sm outline-none focus:bg-white focus:border-violet-600 transition font-semibold" />
+        <i class="ph ph-magnifying-glass absolute left-3.5 top-3.5 sm:top-4 text-slate-400 text-base sm:text-lg"></i>
+      </div>
+
+      <div class="flex items-center gap-2.5 shrink-0">
+        <button type="button" onclick="openProfileModal()" class="px-3.5 py-2.5 bg-violet-50 text-violet-700 rounded-2xl font-extrabold text-xs sm:text-sm flex items-center gap-1.5 transition border border-violet-100 cursor-pointer shadow-xs">
+          <i class="ph-bold ph-user-circle text-lg sm:text-xl"></i>
+          <span id="headerUserName" class="hidden md:inline">အကောင့်</span>
+        </button>
+
+        <button type="button" onclick="openCart()" class="relative p-3 bg-rose-50 text-rose-600 rounded-2xl transition border border-rose-100 cursor-pointer shadow-xs">
+          <i class="ph-bold ph-shopping-bag-open text-lg sm:text-xl"></i>
+          <span id="cartBadge" class="absolute -top-1 -right-1 bg-rose-600 text-white text-[10px] w-5 h-5 rounded-full flex items-center justify-center font-black scale-0 transition-transform">0</span>
+        </button>
+      </div>
     </div>
   </header>
 
   <main class="max-w-7xl mx-auto px-3 sm:px-4 py-6 space-y-6">
+    <section id="indexBannersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden"></section>
+    
+    <div class="flex justify-between items-center bg-white p-4 sm:p-6 rounded-3xl border border-slate-100 shadow-xs">
+      <div>
+        <h2 class="font-extrabold text-slate-900 text-base sm:text-xl">လူကြိုက်များသော ကုန်ပစ္စည်းများ</h2>
+        <p class="text-xs sm:text-sm text-slate-500 font-semibold mt-0.5">ဆိုင်ခွဲအလိုက် ပရိုမိုးရှင်းများဖြင့် ဝယ်ယူပါ</p>
+      </div>
+      <span id="productCountBadge" class="text-xs sm:text-sm font-extrabold bg-violet-50 text-violet-700 px-3.5 py-2 rounded-2xl border border-violet-100">Loading...</span>
+    </div>
 
-    <!-- APPLICATIONS TAB -->
-    <section id="section-applications" class="admin-section space-y-4">
-      <div class="bg-white p-4 sm:p-6 rounded-3xl border border-slate-200 shadow-xs flex justify-between items-center">
-        <div>
-          <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">ဆိုင်ဖွင့်ခွင့် လျှောက်ထားလွှာများ စစ်ဆေးရန်</h2>
-          <p class="text-xs text-slate-500 font-semibold mt-0.5">Logo၊ NRC ပုံ ၂ ပုံ နှင့် ငွေပေးချေမှု အကောင့်များကို စစ်ဆေးပြီး အတည်ပြု (Approve) နိုင်ပါသည်။</p>
-        </div>
-        <button type="button" onclick="loadAdminApplications()" class="bg-slate-100 hover:bg-slate-200 text-slate-700 px-3.5 py-2 rounded-xl text-xs font-extrabold cursor-pointer">Refresh</button>
-      </div>
-
-      <div class="bg-white rounded-3xl border border-slate-200 overflow-x-auto shadow-xs">
-        <table class="w-full text-left text-xs sm:text-sm text-slate-600">
-          <thead class="bg-slate-50 text-[11px] uppercase text-slate-400 border-b">
-            <tr>
-              <th class="p-3.5">Logo / ဆိုင်အမည်</th>
-              <th class="p-3.5">ဆိုင်ရှင် / ဖုန်း / Email</th>
-              <th class="p-3.5">လုပ်ငန်းအမျိုးအစား / လိပ်စာ</th>
-              <th class="p-3.5">ငွေပေးချေမှု အကောင့်များ (Payouts)</th>
-              <th class="p-3.5">NRC ပုံများ (ရှေ့ / နောက်)</th>
-              <th class="p-3.5">အခြေအနေ</th>
-              <th class="p-3.5 text-center">လုပ်ဆောင်ချက်</th>
-            </tr>
-          </thead>
-          <tbody id="adminApplicationsTbody" class="divide-y">
-            <tr><td colspan="7" class="p-8 text-center text-slate-400">ဒေတာ ရယူနေပါသည်...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- SHOPS TAB -->
-    <section id="section-shops" class="admin-section hidden space-y-4">
-      <div class="bg-white p-4 sm:p-6 rounded-3xl border border-slate-200 shadow-xs">
-        <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">ဆိုင်ခွဲများ စီမံခန့်ခွဲမှု</h2>
-        <p class="text-xs text-slate-500 font-semibold mt-0.5">marketplace ပေါ်ရှိ အတည်ပြုပြီး ဆိုင်ခွဲများစာရင်း</p>
-      </div>
-      <div class="bg-white rounded-3xl border border-slate-200 overflow-x-auto shadow-xs">
-        <table class="w-full text-left text-xs sm:text-sm text-slate-600">
-          <thead class="bg-slate-50 text-[11px] uppercase text-slate-400 border-b">
-            <tr>
-              <th class="p-3.5">ဆိုင်အမည်</th>
-              <th class="p-3.5">ဖုန်းနံပါတ်</th>
-              <th class="p-3.5">မြို့နယ်</th>
-              <th class="p-3.5">ပို့ခ (မြို့တွင်း / နယ်ဝေး)</th>
-              <th class="p-3.5">အခြေအနေ</th>
-            </tr>
-          </thead>
-          <tbody id="adminShopsTbody" class="divide-y">
-            <tr><td colspan="5" class="p-8 text-center text-slate-400">ဒေတာ ရယူနေပါသည်...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
-    <!-- PAYOUTS TAB -->
-    <section id="section-payouts" class="admin-section hidden space-y-4">
-      <div class="bg-white p-4 sm:p-6 rounded-3xl border border-slate-200 shadow-xs">
-        <h2 class="font-extrabold text-slate-900 text-base sm:text-lg">Payouts ရှင်းတမ်းများ</h2>
-        <p class="text-xs text-slate-500 font-semibold mt-0.5">ဆိုင်ရှင်များသို့ လွှဲပေးရန် ကျန်ငွေစာရင်းများ</p>
-      </div>
-      <div class="bg-white rounded-3xl border border-slate-200 overflow-x-auto shadow-xs">
-        <table class="w-full text-left text-xs sm:text-sm text-slate-600">
-          <thead class="bg-slate-50 text-[11px] uppercase text-slate-400 border-b">
-            <tr>
-              <th class="p-3.5">Order ID</th>
-              <th class="p-3.5">ဆိုင်အမည်</th>
-              <th class="p-3.5">ရောင်းရငွေ</th>
-              <th class="p-3.5 text-amber-600">ကော်မရှင်</th>
-              <th class="p-3.5 text-emerald-600">ဆိုင်ရှင်သို့ လွှဲရန်</th>
-              <th class="p-3.5">အခြေအနေ</th>
-            </tr>
-          </thead>
-          <tbody id="adminPayoutsTbody" class="divide-y">
-            <tr><td colspan="6" class="p-8 text-center text-slate-400">ဒေတာ ရယူနေပါသည်...</td></tr>
-          </tbody>
-        </table>
-      </div>
-    </section>
-
+    <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-6"></div>
   </main>
 
-  <!-- IMAGE PREVIEW MODAL -->
-  <div id="imagePreviewModal" class="fixed inset-0 bg-slate-900/80 backdrop-blur-xs z-50 hidden items-center justify-center p-4" onclick="closeImagePreview()">
-    <div class="relative max-w-3xl w-full max-h-[90vh] flex items-center justify-center">
-      <button type="button" onclick="closeImagePreview()" class="absolute -top-10 right-0 text-white text-2xl font-bold p-2 cursor-pointer"><i class="ph ph-x"></i></button>
-      <img id="previewModalImg" src="" alt="Preview" class="max-w-full max-h-[85vh] object-contain rounded-2xl border-4 border-white shadow-2xl" />
+  <!-- CART DRAWER -->
+  <div id="cartModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden justify-end">
+    <div class="bg-white w-full max-w-md h-full flex flex-col p-5 sm:p-6 shadow-2xl">
+      <div class="flex justify-between items-center pb-4 border-b">
+        <h3 class="font-extrabold text-base sm:text-lg text-slate-900">🛒 စျေးဝယ်တွန်းလှည်း</h3>
+        <button type="button" onclick="closeCart()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
+      </div>
+      <div class="py-3 border-b flex justify-between items-center text-xs sm:text-sm bg-slate-50 px-3.5 rounded-2xl my-3">
+        <div class="flex items-center gap-2.5">
+          <input type="checkbox" id="selectAllCheckbox" onchange="toggleSelectAll(this)" class="w-4 h-4 rounded text-violet-600 accent-violet-600 cursor-pointer" />
+          <label for="selectAllCheckbox" class="font-bold cursor-pointer text-slate-700">အားလုံးကို ရွေးမည်</label>
+        </div>
+        <span id="selectedCountBadge" class="text-violet-700 font-extrabold bg-violet-50 px-3 py-1 rounded-xl">0 ခု</span>
+      </div>
+      <div id="cartItems" class="flex-1 overflow-y-auto divide-y divide-slate-100 text-xs sm:text-sm py-2"></div>
+      <div class="border-t pt-4 space-y-3 text-xs sm:text-sm bg-white">
+        <div class="flex justify-between font-extrabold px-1"><span>စုစုပေါင်း:</span><span id="cartTotal" class="text-rose-600 text-base sm:text-lg">0 MMK</span></div>
+        <button type="button" onclick="openCheckout()" class="w-full bg-violet-600 hover:bg-violet-700 text-white py-3.5 rounded-2xl font-extrabold shadow-lg cursor-pointer text-sm">ရွေးချယ်ထားသည်များ ဝယ်မည် (Checkout)</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- CHECKOUT MODAL -->
+  <div id="checkoutModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-white w-full max-w-xl rounded-3xl p-5 sm:p-7 space-y-4 text-xs sm:text-sm shadow-2xl max-h-[92vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3">
+        <div>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-900">📦 အော်ဒါအချက်အလက်နှင့် Package ခွဲထုတ်မှု</h3>
+          <p class="text-xs text-slate-500 font-medium">ဆိုင်ခွဲအလိုက် ပို့ခ အလိုအလျောက် တွက်ချက်ပေးပါမည်</p>
+        </div>
+        <button type="button" onclick="closeCheckout()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
+      </div>
+
+      <form onsubmit="handleSplitOrderSubmit(event)" class="space-y-4">
+        <div>
+          <label for="custTownship" class="font-bold block mb-1.5 text-slate-700">📍 ဝယ်သူ မြို့နယ် (Township) ရိုက်ထည့်ပါ *</label>
+          <input type="text" id="custTownship" required oninput="handleCustomerTownshipInput(this.value)" placeholder="ဥပမာ - ရေး၊ မော်လမြိုင်..." class="w-full border p-3 rounded-2xl outline-none bg-slate-50 font-extrabold text-violet-700 text-sm" />
+        </div>
+
+        <div id="checkoutPackagesContainer" class="space-y-3 max-h-56 overflow-y-auto pr-1"></div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div><label for="custName" class="font-bold block mb-1 text-slate-700">ဝယ်သူအမည် *</label><input type="text" id="custName" required class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" /></div>
+          <div><label for="custPhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="custPhone" required class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" /></div>
+        </div>
+
+        <div><label for="custAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="custAddress" required rows="2" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold"></textarea></div>
+
+        <div>
+          <label for="custPayment" class="font-bold block mb-1 text-slate-700">ငွေပေးချေမှုစနစ် ရွေးချယ်ရန် *</label>
+          <select id="custPayment" class="w-full border p-3 rounded-xl bg-slate-50 font-extrabold outline-none"></select>
+        </div>
+
+        <div class="bg-violet-50/50 p-3.5 rounded-2xl border border-violet-100 space-y-1">
+          <label class="font-extrabold block text-slate-800">💳 ငွေလွှဲဘောက်ချာပုံ (Screenshot) *</label>
+          <input type="file" id="checkoutVoucherFile" accept="image/*" required class="w-full border p-2.5 rounded-xl bg-white text-xs cursor-pointer" />
+        </div>
+
+        <div class="pt-3 border-t space-y-1.5 text-xs sm:text-sm font-bold bg-slate-50 p-3.5 rounded-2xl border">
+          <div class="flex justify-between text-slate-600"><span>ပစ္စည်းတန်ဖိုး:</span><span id="summarySubtotal">0 MMK</span></div>
+          <div class="flex justify-between text-slate-600"><span>ပို့ခ စုစုပေါင်း:</span><span id="summaryShipping">0 MMK</span></div>
+          <div class="flex justify-between text-sm sm:text-base font-black text-rose-600 border-t pt-1.5"><span>ကျသင့်ငွေ စုစုပေါင်း:</span><span id="summaryTotal">0 MMK</span></div>
+        </div>
+
+        <button type="submit" id="submitOrderBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white py-4 rounded-2xl font-extrabold shadow-lg cursor-pointer text-sm">အော်ဒါ အတည်ပြုမည်</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- PRODUCT BUY MODAL -->
+  <div id="buyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-4 text-xs sm:text-sm shadow-2xl max-h-[92vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-extrabold text-sm sm:text-base text-slate-900">📦 ကုန်ပစ္စည်း အသေးစိတ်နှင့် ဝယ်ယူရန်</h3>
+        <button type="button" onclick="closeBuyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
+      </div>
+      <div class="space-y-3">
+        <div class="overflow-hidden rounded-2xl border bg-slate-100"><img id="detailMainImg" src="" alt="Product Detail" class="w-full h-60 sm:h-72 object-cover" /></div>
+        <div id="detailThumbnails" class="flex gap-2 overflow-x-auto pb-1"></div>
+      </div>
+      <div class="space-y-2">
+        <h4 id="detailTitle" class="font-extrabold text-sm sm:text-base text-slate-900 leading-snug"></h4>
+        <div class="flex items-center gap-2">
+          <div id="detailShop" class="text-violet-700 font-extrabold bg-violet-50 px-3 py-1 rounded-xl border border-violet-100 text-xs"></div>
+          <span id="detailStockBadge" class="px-3 py-1 rounded-xl font-extrabold text-xs"></span>
+        </div>
+        <div id="detailPriceContainer" class="pt-1.5 flex items-baseline gap-2"></div>
+      </div>
+
+      <div id="shopNoticeDisplayArea" class="hidden bg-amber-50 border border-amber-200 p-3.5 rounded-2xl space-y-1">
+        <span class="font-bold text-amber-800 flex items-center gap-1.5 text-xs"><i class="ph-bold ph-info"></i> ဆိုင်၏ အသိပေးချက်:</span>
+        <p id="shopNoticeDisplayText" class="text-slate-700 font-medium leading-relaxed text-xs"></p>
+      </div>
+
+      <div id="sizeSelectionArea" class="space-y-2 hidden"><span class="font-bold text-slate-700 block">📏 Size ရွေးပါ:</span><div id="sizeOptionsList" class="flex flex-wrap gap-2"></div></div>
+      <div id="colorSelectionArea" class="space-y-2 hidden"><span class="font-bold text-slate-700 block">🎨 Color ရွေးပါ:</span><div id="colorOptionsList" class="flex flex-wrap gap-2"></div></div>
+      <div><label class="font-bold block mb-1 text-slate-700">အရေအတွက်</label><input id="buyQty" type="number" min="1" value="1" class="w-full border bg-slate-50 p-3 rounded-xl outline-none font-extrabold text-slate-800 text-sm" /></div>
+      <button type="button" onclick="confirmAddToCart()" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3.5 rounded-2xl shadow-lg text-sm cursor-pointer">ဈေးတောင်းထဲသို့ ထည့်မည်</button>
+    </div>
+  </div>
+
+  <!-- PROFILE & ORDERS MODAL -->
+  <div id="profileModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-white w-full max-w-xl rounded-3xl p-5 sm:p-7 space-y-4 text-xs sm:text-sm shadow-2xl max-h-[92vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-extrabold text-sm sm:text-base text-slate-900">👤 ကျွန်ုပ်၏ အကောင့်နှင့် Package အော်ဒါများ</h3>
+        <button type="button" onclick="closeProfileModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
+      </div>
+
+      <form onsubmit="handleProfileUpdate(event)" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
+        <h4 class="font-extrabold text-slate-800">📝 ကိုယ်ရေးအချက်အလက် ပြင်ဆင်ရန်</h4>
+        <div><label for="profileName" class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label><input type="text" id="profileName" required class="w-full border p-3 rounded-xl bg-white outline-none font-semibold" /></div>
+        <div class="grid grid-cols-2 gap-2.5">
+          <div><label for="profilePhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="profilePhone" required class="w-full border p-3 rounded-xl bg-white outline-none font-semibold" /></div>
+          <div><label for="profileTownship" class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label><input type="text" id="profileTownship" class="w-full border p-3 rounded-xl bg-white outline-none font-semibold" /></div>
+        </div>
+        <div><label for="profileAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="profileAddress" rows="2" class="w-full border p-3 rounded-xl bg-white outline-none font-semibold"></textarea></div>
+        <button type="submit" id="updateProfileBtn" class="w-full bg-slate-900 text-white font-extrabold py-3 rounded-xl hover:bg-slate-800 transition cursor-pointer">သိမ်းဆည်းမည်</button>
+      </form>
+
+      <div class="space-y-3">
+        <h4 class="font-extrabold text-slate-800">📦 မှာယူထားသော Package များ (Delivery အခြေအနေ)</h4>
+        <div id="customerOrdersContainer" class="space-y-3 max-h-64 overflow-y-auto pr-1"></div>
+      </div>
+      <div class="pt-3 border-t flex justify-between items-center">
+        <button type="button" onclick="handleCustomerLogout()" class="text-rose-600 font-bold hover:underline cursor-pointer text-xs">🚪 အကောင့်ထွက်မည်</button>
+        <button type="button" onclick="closeProfileModal()" class="bg-slate-200 text-slate-700 px-4 py-2 rounded-xl font-bold cursor-pointer text-xs">ပိတ်မည်</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ORDER DETAIL & TRACKING MODAL -->
+  <div id="orderDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-white w-full max-w-2xl rounded-3xl p-5 sm:p-7 space-y-4 text-xs sm:text-sm shadow-2xl max-h-[92vh] overflow-y-auto">
+      
+      <div class="flex justify-between items-center border-b pb-3">
+        <div>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-900">📄 အော်ဒါအသေးစိတ်နှင့် အခြေအနေ</h3>
+          <span id="detailOrderBadge"></span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="printOrderInvoice()" class="bg-violet-50 text-violet-700 px-3 py-1.5 rounded-xl font-extrabold flex items-center gap-1 border border-violet-200 cursor-pointer text-xs">
+            <i class="ph-bold ph-printer"></i> ပြေစာ
+          </button>
+          <button type="button" onclick="closeOrderDetailModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
+        </div>
+      </div>
+
+      <div id="printableInvoiceArea" class="space-y-3.5">
+        <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2">
+          <div class="flex justify-between items-center">
+            <span class="text-slate-500 font-semibold">အော်ဒါ ID: <b id="invOrderId" class="text-slate-900 font-mono"></b></span>
+            <span class="text-slate-500 font-semibold">ရက်စွဲ: <b id="invOrderDate" class="text-slate-900"></b></span>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-slate-500 font-semibold">ဝယ်သူ: <b id="invCustomerName" class="text-slate-900"></b></span>
+            <span class="text-slate-500 font-semibold">ဖုန်း: <b id="invCustomerPhone" class="text-slate-900"></b></span>
+          </div>
+          <div class="flex justify-between items-center border-t border-slate-200 pt-2">
+            <span class="font-extrabold text-slate-700">ကျသင့်ငွေ စုစုပေါင်း:</span>
+            <span id="invTotalAmount" class="font-black text-rose-600 text-sm sm:text-base"></span>
+          </div>
+        </div>
+
+        <div id="orderCancelNoticeArea" class="hidden bg-amber-50 border border-amber-200 p-3.5 rounded-2xl justify-between items-center">
+          <div>
+            <span class="font-extrabold text-amber-800 block text-xs">⚠️ အော်ဒါ စစ်ဆေးဆဲ အဆင့်တွင် ရှိနေပါသည်</span>
+          </div>
+          <button type="button" id="btnCancelOrder" onclick="handleCancelCustomerOrder()" class="bg-rose-600 text-white font-bold px-3 py-1.5 rounded-xl cursor-pointer text-xs">ဖျက်မည်</button>
+        </div>
+
+        <div class="space-y-3">
+          <h4 class="font-extrabold text-slate-800 flex items-center gap-1.5 text-xs sm:text-sm"><i class="ph-bold ph-package"></i> Package ပို့ဆောင်မှု အခြေအနေ (Split Tracking)</h4>
+          <div id="packagesTrackingContainer" class="space-y-3"></div>
+        </div>
+      </div>
+
+      <div id="returnRequestContainer"></div>
+
+      <button type="button" onclick="closeOrderDetailModal()" class="w-full bg-slate-900 text-white py-3.5 rounded-2xl font-extrabold cursor-pointer text-xs">ပိတ်မည်</button>
+    </div>
+  </div>
+
+  <!-- SELLER APPLY MODAL (NRC ရှေ့/နောက် နှင့် အကောင့် ၅ ခု ပါဝင်သည်) -->
+  <div id="sellerApplyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-white w-full max-w-xl rounded-3xl p-5 sm:p-7 space-y-4 text-xs sm:text-sm shadow-2xl max-h-[92vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3">
+        <div>
+          <h3 class="font-extrabold text-sm sm:text-base text-slate-900">🏪 ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ (Seller Application)</h3>
+          <p class="text-xs text-slate-500 font-semibold">Aura Marketplace တွင် ဆိုင်သစ်ဖွင့်လှစ်ရန် လျှောက်ထားပါ</p>
+        </div>
+        <button type="button" onclick="closeSellerApplyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
+      </div>
+
+      <form onsubmit="handleSellerApplicationSubmit(event)" class="space-y-3.5">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">ဆိုင်အမည် (Shop Name) *</label>
+            <input type="text" id="applyShopName" required placeholder="ဥပမာ - Aura Fashion Store" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" />
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">ဆိုင်ရှင်အမည် (Owner Name) *</label>
+            <input type="text" id="applyOwnerName" required placeholder="သင်၏ အမည်အမှန်" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">ဖုန်းနံပါတ် (Phone Number) *</label>
+            <input type="tel" id="applyPhone" required placeholder="09xxxxxxxxx" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" />
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">လုပ်ငန်းအမျိုးအစား (Business Type) *</label>
+            <input type="text" id="applyBusinessType" required placeholder="ဥပမာ - အဝတ်အထည်၊ အလှကုန်..." class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">ဆိုင် Logo ပုံ</label>
+            <input type="file" id="applyShopLogoFile" accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 text-xs cursor-pointer" />
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">NRC (အရှေ့ပုံ) *</label>
+            <input type="file" id="applyNrcFrontFile" accept="image/*" required class="w-full border p-2 rounded-xl bg-slate-50 text-xs cursor-pointer" />
+          </div>
+          <div>
+            <label class="font-bold text-slate-700 block mb-1">NRC (အနောက်ပုံ) *</label>
+            <input type="file" id="applyNrcBackFile" accept="image/*" required class="w-full border p-2 rounded-xl bg-slate-50 text-xs cursor-pointer" />
+          </div>
+        </div>
+
+        <div class="bg-violet-50/50 p-4 rounded-2xl border border-violet-100 space-y-3">
+          <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm">💳 ရောင်းရငွေထုတ်ယူမည့် ငွေပေးချေမှု အကောင့်များ (Payout Accounts)</h4>
+          
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div>
+              <label class="font-bold block text-slate-700 mb-0.5 text-xs">1. KBZPay အကောင့် *</label>
+              <input type="text" id="applyKbzPay" required placeholder="ဖုန်းနံပါတ် / အမည်" class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" />
+            </div>
+            <div>
+              <label class="font-bold block text-slate-700 mb-0.5 text-xs">2. WavePay အကောင့် *</label>
+              <input type="text" id="applyWavePay" required placeholder="ဖုန်းနံပါတ် / အမည်" class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" />
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+            <div>
+              <label class="font-bold block text-slate-700 mb-0.5 text-xs">3. AYA Pay အကောင့် *</label>
+              <input type="text" id="applyAyaPay" required placeholder="ဖုန်းနံပါတ် / အမည်" class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" />
+            </div>
+            <div>
+              <label class="font-bold block text-slate-700 mb-0.5 text-xs">4. CB Pay / KPay (အခြား)</label>
+              <input type="text" id="applyOtherPay1" placeholder="အကောင့်အချက်အလက်" class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" />
+            </div>
+            <div>
+              <label class="font-bold block text-slate-700 mb-0.5 text-xs">5. Bank Account (ဘဏ်)</label>
+              <input type="text" id="applyOtherPay2" placeholder="ဘဏ်အမည်နှင့် အကောင့်နံပါတ်" class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" />
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <label class="font-bold text-slate-700 block mb-1">ဆိုင်လိပ်စာ အပြည့်အစုံ (Address / Township) *</label>
+          <textarea id="applyAddress" rows="2" required placeholder="အမှတ်၊ လမ်းအမည်၊ မြို့နယ်..." class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold"></textarea>
+        </div>
+
+        <button type="submit" id="applySubmitBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition cursor-pointer text-sm">
+          ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ ပေးပို့မည်
+        </button>
+      </form>
+    </div>
+  </div>
+
+  <!-- POLICY MODAL -->
+  <div id="policyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-3 text-xs sm:text-sm shadow-2xl">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-extrabold text-sm sm:text-base text-slate-900">Return & Refund Policy</h3>
+        <button type="button" onclick="closePolicyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
+      </div>
+      <div class="space-y-2.5 text-slate-600 leading-relaxed text-xs sm:text-sm">
+        <p><b>၁။ Return သက်တမ်း:</b> ပစ္စည်းလက်ခံရရှိပြီး ၃ ရက် (၇၂ နာရီ) အတွင်းသာ Return လျှောက်ထားနိုင်ပါသည်။</p>
+        <p><b>၂။ Unboxing Video:</b> ပါဆယ်စတင်ဖောက်ချိန်မှ ချို့ယွင်းချက်ပြသသည့် ဗီဒီယိုဖိုင် မဖြစ်မနေ လိုအပ်ပါသည်။</p>
+      </div>
+      <button type="button" onclick="closePolicyModal()" class="w-full bg-slate-900 text-white font-bold py-3 rounded-2xl cursor-pointer text-xs">နားလည်ပါသည်</button>
+    </div>
+  </div>
+
+  <!-- CUSTOMER AUTH MODAL -->
+  <div id="authModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-white text-slate-900 w-full max-w-md rounded-3xl p-6 sm:p-7 space-y-4 shadow-2xl text-xs sm:text-sm">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 id="authModalTitle" class="font-extrabold text-base text-slate-900">အကောင့်ဝင်ရန်</h3>
+        <button type="button" onclick="closeAuthModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
+      </div>
+      <form onsubmit="handleCustomerAuth(event)" class="space-y-3.5">
+        <div id="authNameField" class="hidden">
+          <label class="font-bold block mb-1">အမည်အပြည့်အစုံ *</label>
+          <input type="text" id="authName" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" />
+        </div>
+        <div>
+          <label class="font-bold block mb-1">Email (သို့) ဖုန်းနံပါတ် *</label>
+          <input type="text" id="authEmailOrPhone" required class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" />
+        </div>
+        <div>
+          <label class="font-bold block mb-1">စကားဝှက် *</label>
+          <input type="password" id="authPassword" required class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" />
+        </div>
+        <button type="submit" id="authSubmitBtn" class="w-full bg-violet-600 text-white font-bold py-3.5 rounded-2xl shadow-lg cursor-pointer text-sm">အကောင့်ဝင်မည်</button>
+      </form>
+      <div class="text-center pt-3 border-t">
+        <button type="button" onclick="toggleAuthMode()" id="authToggleBtn" class="text-violet-700 font-extrabold hover:underline cursor-pointer text-xs">အကောင့်အသစ်ဖွင့်ရန် (Sign Up)</button>
+      </div>
     </div>
   </div>
 
@@ -187,182 +452,726 @@
       return url;
     }
 
+    function getProxiedStorageUrl(bucket, filePath) {
+      return `${window.location.origin}/api/supabase/storage/v1/object/public/${bucket}/${filePath}`;
+    }
+
     const Toast = Swal.mixin({ toast: true, position: 'top-end', showConfirmButton: false, timer: 3000, timerProgressBar: true });
+
+    let products = [], paymentMethods = [], cart = [];
+    let currentAuthSessionUser = null, currentPackagesToCheckout = [];
+    let selectedProductForBuy = null, chosenSize = '', chosenColor = '';
+    let searchQuery = '', activeOrderForReturn = null, isSignupMode = false;
+    let countdownIntervalId = null;
+
     function esc(v){ return String(v ?? '').replace(/[&<>"']/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[m])); }
 
-    async function initAdmin() {
+    function validateFileSize(file, maxMb, label) {
+      if (file.size > maxMb * 1024 * 1024) {
+        Swal.fire({ icon: 'warning', title: 'ဖိုင်အရွယ်အစား ကြီးလွန်းပါသည်', text: `${label} ဖိုင်အရွယ်အစားသည် ${maxMb}MB ထက် မကျော်ရပါ။` });
+        return false;
+      }
+      return true;
+    }
+
+    function getCartKey() { return currentAuthSessionUser ? `aura_cart_${currentAuthSessionUser.id}` : 'aura_cart_guest'; }
+    function loadUserCart() { cart = JSON.parse(localStorage.getItem(getCartKey()) || '[]'); cart.forEach(i => { if (i.checked === undefined) i.checked = true; }); }
+    function saveCart() { localStorage.setItem(getCartKey(), JSON.stringify(cart)); }
+
+    async function init() {
       const { data: { session } } = await client.auth.getSession();
-      if (!session) { location.href = 'index.html'; return; }
-      const { data: profile } = await client.from('profiles').select('role').eq('id', session.user.id).maybeSingle();
-      if (!profile || (profile.role !== 'admin' && profile.role !== 'super_admin')) {
-        alert('Admin အကောင့်ဖြင့်သာ ဝင်ရောက်နိုင်ပါသည်');
-        location.href = 'index.html';
-        return;
-      }
-      loadAdminApplications();
-      loadAdminShops();
-      loadAdminPayouts();
-    }
-
-    function switchAdminTab(tabId) {
-      document.querySelectorAll('.admin-section').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.admin-tab-btn').forEach(btn => {
-        btn.classList.remove('text-violet-400', 'border-violet-400', 'font-extrabold');
-        btn.classList.add('text-slate-400', 'border-transparent', 'font-bold');
-      });
-      document.getElementById(`section-${tabId}`).classList.remove('hidden');
-      const activeBtn = document.getElementById(`tab-${tabId}`);
-      activeBtn.classList.remove('text-slate-400', 'border-transparent', 'font-bold');
-      activeBtn.classList.add('text-violet-400', 'border-violet-400', 'font-extrabold');
-    }
-
-    async function loadAdminApplications() {
-      const tbody = document.getElementById('adminApplicationsTbody');
-      tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-400">ဒေတာ ရယူနေပါသည်...</td></tr>';
-      
-      const { data: apps, error } = await client.from('seller_applications').select('*').order('id', { ascending: false });
-      if (error || !apps || !apps.length) {
-        tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-400 font-semibold">ဆိုင်ဖွင့်ရန် လျှောက်လွှာ မရှိသေးပါ</td></tr>';
-        return;
-      }
-
-      tbody.innerHTML = apps.map(app => {
-        const logo = toProxyUrl(app.shop_logo || 'https://placehold.co/60');
-        const nrcFront = toProxyUrl(app.nrc_license_image || '');
-        const nrcBack = toProxyUrl(app.nrc_back_image || '');
-        const status = app.status || 'pending';
-
-        let payHtml = '-';
-        try {
-          const pData = typeof app.payment_info === 'string' ? JSON.parse(app.payment_info) : app.payment_info;
-          if (pData) {
-            payHtml = `
-              <div class="space-y-0.5 text-xs">
-                ${pData.kbzpay ? `<div><b class="text-blue-600">KBZ:</b> ${esc(pData.kbzpay)}</div>` : ''}
-                ${pData.wavepay ? `<div><b class="text-teal-600">Wave:</b> ${esc(pData.wavepay)}</div>` : ''}
-                ${pData.ayapay ? `<div><b class="text-purple-600">AYA:</b> ${esc(pData.ayapay)}</div>` : ''}
-                ${pData.other1 ? `<div><b class="text-slate-600">Other 1:</b> ${esc(pData.other1)}</div>` : ''}
-                ${pData.other2 ? `<div><b class="text-slate-600">Other 2:</b> ${esc(pData.other2)}</div>` : ''}
-              </div>
-            `;
-          }
-        } catch(e) {
-          payHtml = esc(app.payment_info || '-');
+      if (session) {
+        currentAuthSessionUser = session.user;
+        const { data: profile } = await client.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+        if (profile && (profile.role === 'seller' || profile.role === 'admin' || profile.role === 'super_admin')) {
+          location.href = profile.role === 'seller' ? 'seller.html' : 'admin.html';
+          return;
         }
 
-        const actions = status === 'pending' ? `
-          <div class="flex items-center justify-center gap-1.5">
-            <button type="button" onclick="handleApproveApplication(${app.id})" class="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-xl text-xs font-extrabold cursor-pointer">Approve</button>
-            <button type="button" onclick="handleRejectApplication(${app.id})" class="bg-rose-600 hover:bg-rose-700 text-white px-3 py-1.5 rounded-xl text-xs font-extrabold cursor-pointer">Reject</button>
+        if (profile) {
+          document.getElementById('headerUserName').innerText = profile.full_name || 'Profile';
+          document.getElementById('custName').value = profile.full_name || '';
+          document.getElementById('custPhone').value = profile.phone || '';
+          document.getElementById('custTownship').value = profile.township || '';
+          document.getElementById('custAddress').value = profile.delivery_address || profile.address || '';
+        }
+      } else {
+        currentAuthSessionUser = null;
+        document.getElementById('headerUserName').innerText = 'အကောင့်ဝင်ရန်';
+      }
+
+      loadUserCart();
+
+      const [prodRes, payRes, bannerRes] = await Promise.all([
+        client.from('products').select('*, shops(id, name, is_active, phone, shipping_fee, delivery_fee, township, notice_board, logo_url)').order('id', { ascending: false }),
+        client.from('payment_methods').select('*'),
+        client.from('shop_banners').select('*, shops(id, name, logo_url, is_active)').order('id', { ascending: false })
+      ]);
+
+      products = prodRes.data || [];
+      paymentMethods = payRes.data || [];
+
+      filterAndRenderOneBannerPerShop(bannerRes.data || []);
+      renderProducts();
+      populatePaymentMethods();
+      updateCartUI();
+    }
+
+    function filterAndRenderOneBannerPerShop(allBanners) {
+      const container = document.getElementById('indexBannersContainer');
+      if (!allBanners || !allBanners.length) { container.classList.add('hidden'); return; }
+      const seenShops = new Set(), uniqueShopBanners = [];
+      for (const b of allBanners) {
+        const shopId = b.shop_id || b.shops?.id;
+        if (shopId && !seenShops.has(shopId)) { seenShops.add(shopId); uniqueShopBanners.push(b); }
+      }
+      if (!uniqueShopBanners.length) { container.classList.add('hidden'); return; }
+      container.classList.remove('hidden');
+      container.innerHTML = uniqueShopBanners.map(b => `
+        <div class="relative overflow-hidden rounded-3xl shadow-md border border-slate-200 group bg-slate-900 cursor-pointer" onclick="location.href='shop.html?id=${b.shop_id || b.shops?.id}'">
+          <img src="${toProxyUrl(b.image_url)}" alt="${esc(b.title)}" class="w-full h-40 sm:h-52 object-cover group-hover:scale-105 transition duration-500 opacity-90" />
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-between p-4 sm:p-5">
+            <span class="inline-flex items-center gap-2 bg-white/95 backdrop-blur-md text-slate-900 font-extrabold text-xs px-3.5 py-1.5 rounded-full shadow-md self-start">
+              <img src="${toProxyUrl(b.shops?.logo_url || 'https://placehold.co/40')}" alt="Shop" class="w-6 h-6 rounded-full object-cover border" />
+              ${esc(b.shops?.name || 'Aura Store')}
+            </span>
+            <div class="flex justify-between items-end gap-3">
+              <h3 class="text-white font-black text-sm sm:text-base leading-snug drop-shadow-md">${esc(b.title)}</h3>
+              <span class="bg-violet-600 text-white font-bold text-xs px-3.5 py-1.5 rounded-xl shadow transition shrink-0">Shop Now</span>
+            </div>
           </div>
-        ` : `<span class="font-extrabold text-xs uppercase">${status}</span>`;
+        </div>
+      `).join('');
+    }
+
+    function populatePaymentMethods() {
+      const select = document.getElementById('custPayment');
+      select.innerHTML = paymentMethods.map(pm => `<option value="${pm.id}">${pm.provider_name} - ${pm.account_name} (${pm.account_number})</option>`).join('');
+    }
+
+    function renderProducts() {
+      const grid = document.getElementById('productGrid');
+      let list = products;
+      if (searchQuery) list = list.filter(p => (p.title || p.name || '').toLowerCase().includes(searchQuery));
+      document.getElementById('productCountBadge').innerText = `${list.length} မျိုး`;
+      if (!list.length) { grid.innerHTML = '<div class="col-span-full py-16 text-center text-slate-400 text-xs sm:text-sm font-semibold">ကုန်ပစ္စည်း မရှိသေးပါ</div>'; return; }
+
+      grid.innerHTML = list.map(p => {
+        const originalPrice = Number(p.price || 0);
+        const flashPrice = Number(p.flash_price || 0);
+        const hasDiscount = flashPrice > 0 && flashPrice < originalPrice;
+        const displayPrice = hasDiscount ? flashPrice : originalPrice;
+        const discountPercent = hasDiscount ? Math.round(((originalPrice - flashPrice) / originalPrice) * 100) : 0;
+        const image = toProxyUrl((p.images && p.images[0]) || p.image || p.image_url);
+        const stock = Number(p.stock || 0);
+        const shopInfo = p.shops || {};
 
         return `
-          <tr class="hover:bg-slate-50 border-b">
-            <td class="p-3.5">
-              <div class="flex items-center gap-2.5">
-                <img src="${logo}" alt="Logo" class="w-10 h-10 rounded-xl object-cover border cursor-pointer" onclick="openImagePreview('${logo}')" />
-                <span class="font-extrabold text-slate-900">${esc(app.shop_name)}</span>
+          <div class="bg-white rounded-3xl border border-slate-100 p-3 sm:p-4 flex flex-col justify-between hover:shadow-xl transition duration-300 group shadow-xs">
+            <div>
+              <div class="relative cursor-pointer overflow-hidden rounded-2xl bg-slate-100 mb-3" onclick="openBuyModalById(${p.id})">
+                <img src="${image}" alt="${esc(p.title || p.name)}" class="w-full h-40 sm:h-52 object-cover group-hover:scale-105 transition duration-500" />
+                ${hasDiscount ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-black uppercase shadow">${discountPercent}% OFF</span>` : ''}
+                <span class="absolute top-2.5 right-2.5 bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-bold shadow">📦 ${stock}</span>
+                <div class="absolute bottom-2.5 left-2.5 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-xl flex items-center gap-1.5 shadow">
+                  <img src="${toProxyUrl(shopInfo.logo_url || 'https://placehold.co/30')}" class="w-5 h-5 rounded-full object-cover border" />
+                  <span class="text-[10px] sm:text-xs font-bold text-slate-900 line-clamp-1">${esc(shopInfo.name || 'Store')}</span>
+                </div>
               </div>
-            </td>
-            <td class="p-3.5">
-              <div class="font-bold text-slate-900">${esc(app.owner_name)}</div>
-              <div class="text-[11px] text-slate-500">${esc(app.phone)}</div>
-              ${app.email ? `<div class="text-[10px] text-violet-600 font-semibold">${esc(app.email)}</div>` : ''}
-            </td>
-            <td class="p-3.5">
-              <div class="font-bold text-violet-700">${esc(app.business_type)}</div>
-              <div class="text-slate-500 text-[11px]">${esc(app.address)}</div>
-            </td>
-            <td class="p-3.5">${payHtml}</td>
-            <td class="p-3.5">
-              <div class="flex items-center gap-2">
-                ${nrcFront ? `<button type="button" onclick="openImagePreview('${nrcFront}')" class="bg-violet-50 text-violet-700 px-2 py-1 rounded-lg text-[10px] font-bold border border-violet-200 cursor-pointer">ရှေ့ပုံ</button>` : ''}
-                ${nrcBack ? `<button type="button" onclick="openImagePreview('${nrcBack}')" class="bg-violet-50 text-violet-700 px-2 py-1 rounded-lg text-[10px] font-bold border border-violet-200 cursor-pointer">နောက်ပုံ</button>` : ''}
+              <h4 class="font-extrabold text-xs sm:text-sm text-slate-900 line-clamp-2 cursor-pointer" onclick="openBuyModalById(${p.id})">${esc(p.title || p.name)}</h4>
+              <div class="mt-2 flex items-baseline gap-2 flex-wrap">
+                <span class="text-sm sm:text-base font-black text-rose-600">${displayPrice.toLocaleString()} Ks</span>
+                ${hasDiscount ? `<span class="text-xs font-bold text-slate-400 line-through">${originalPrice.toLocaleString()} Ks</span>` : ''}
               </div>
-            </td>
-            <td class="p-3.5">
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${status === 'approved' ? 'bg-emerald-50 text-emerald-700' : status === 'rejected' ? 'bg-rose-50 text-rose-700' : 'bg-amber-50 text-amber-700'}">${status}</span>
-            </td>
-            <td class="p-3.5 text-center">${actions}</td>
-          </tr>
+            </div>
+            <button type="button" onclick="openBuyModalById(${p.id})" ${stock <= 0 ? 'disabled' : ''} class="mt-4 w-full ${stock <= 0 ? 'bg-slate-200 text-slate-400 cursor-not-allowed' : 'bg-slate-900 hover:bg-violet-600 text-white cursor-pointer'} py-2.5 rounded-2xl text-xs sm:text-sm font-extrabold transition shadow-xs">
+              ${stock <= 0 ? 'ကုန်နေပါသည်' : 'အသေးစိတ်ကြည့်မည်'}
+            </button>
+          </div>
         `;
       }).join('');
     }
 
-    function openImagePreview(url) {
-      document.getElementById('previewModalImg').src = url;
-      document.getElementById('imagePreviewModal').classList.remove('hidden');
-      document.getElementById('imagePreviewModal').classList.add('flex');
-    }
-    function closeImagePreview() {
-      document.getElementById('imagePreviewModal').classList.add('hidden');
-      document.getElementById('imagePreviewModal').classList.remove('flex');
+    function handleSearch(val) { searchQuery = val.trim().toLowerCase(); renderProducts(); }
+
+    function openBuyModalById(productId) {
+      const product = products.find(p => Number(p.id) === Number(productId));
+      if (product) openBuyModal(product);
     }
 
-    async function handleApproveApplication(appId) {
-      if (!confirm('ဤဆိုင်လျှောက်လွှာကို အတည်ပြု (Approve) ပါမည်လား?')) return;
-      const { data, error } = await client.rpc('admin_approve_seller_application', { p_application_id: appId });
-      if (error || (data && !data.success)) {
-        return Swal.fire({ icon: 'error', title: 'Error', text: error ? error.message : data.message });
+    function openBuyModal(product) {
+      selectedProductForBuy = product; chosenSize = ''; chosenColor = '';
+      const rawImgs = product.images || (product.image ? [product.image] : ['https://placehold.co/300']);
+      const imgs = rawImgs.map(toProxyUrl);
+
+      document.getElementById('detailMainImg').src = imgs[0];
+      document.getElementById('detailThumbnails').innerHTML = imgs.map((img, idx) => `
+        <img src="${img}" alt="Thumb" onclick="document.getElementById('detailMainImg').src='${img}'" class="w-14 h-14 object-cover rounded-2xl border-2 ${idx === 0 ? 'border-violet-600' : 'border-slate-200'} cursor-pointer" />
+      `).join('');
+
+      document.getElementById('detailTitle').innerText = product.title || product.name || '';
+      document.getElementById('detailShop').innerText = `ဆိုင်: ${product.shops?.name || 'Aura Store'}`;
+      
+      const originalPrice = Number(product.price || 0);
+      const flashPrice = Number(product.flash_price || 0);
+      const displayPrice = (flashPrice > 0 && flashPrice < originalPrice) ? flashPrice : originalPrice;
+      document.getElementById('detailPriceContainer').innerHTML = `<span class="text-2xl font-black text-rose-600">${displayPrice.toLocaleString()} MMK</span>`;
+
+      const stock = Number(product.stock || 0);
+      const stockBadge = document.getElementById('detailStockBadge');
+      stockBadge.className = stock > 0 ? "px-3 py-1 rounded-xl font-extrabold text-xs bg-emerald-50 text-emerald-700 border border-emerald-200" : "px-3 py-1 rounded-xl font-black text-xs bg-rose-50 text-rose-700 border border-rose-200";
+      stockBadge.innerText = stock > 0 ? `📦 လက်ကျန်: ${stock}` : `❌ ကုန်နေပါသည်`;
+
+      const noticeArea = document.getElementById('shopNoticeDisplayArea');
+      const noticeText = document.getElementById('shopNoticeDisplayText');
+      if (product.shops?.notice_board) {
+        noticeArea.classList.remove('hidden');
+        noticeText.innerText = product.shops.notice_board;
+      } else {
+        noticeArea.classList.add('hidden');
       }
-      Swal.fire({ icon: 'success', title: 'အောင်မြင်ပါသည်', text: 'ဆိုင်အသစ် ဖွင့်လှစ်ပြီးပါပြီ!' });
-      loadAdminApplications();
-      loadAdminShops();
+
+      const sizeArea = document.getElementById('sizeSelectionArea');
+      if (product.sizes?.length) {
+        sizeArea.classList.remove('hidden');
+        document.getElementById('sizeOptionsList').innerHTML = product.sizes.map((s, idx) => `<button type="button" onclick="selectSize('${s}', this)" class="size-btn px-4 py-2 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-violet-600 bg-violet-50 text-violet-700' : 'border-slate-200 bg-slate-50'}">${s}</button>`).join('');
+        chosenSize = product.sizes[0];
+      } else sizeArea.classList.add('hidden');
+
+      const colorArea = document.getElementById('colorSelectionArea');
+      if (product.colors?.length) {
+        colorArea.classList.remove('hidden');
+        document.getElementById('colorOptionsList').innerHTML = product.colors.map((c, idx) => `<button type="button" onclick="selectColor('${c}', this)" class="color-btn px-4 py-2 rounded-xl border font-bold text-xs ${idx === 0 ? 'border-violet-600 bg-violet-50 text-violet-700' : 'border-slate-200 bg-slate-50'}">${c}</button>`).join('');
+        chosenColor = product.colors[0];
+      } else colorArea.classList.add('hidden');
+
+      document.getElementById('buyModal').classList.remove('hidden'); document.getElementById('buyModal').classList.add('flex');
     }
 
-    async function handleRejectApplication(appId) {
-      const { value: reason } = await Swal.fire({
-        title: 'ငြင်းပယ်ရန် အကြောင်းပြချက်',
-        input: 'text',
-        inputPlaceholder: 'အကြောင်းပြချက် ရေးပါ...',
-        showCancelButton: true
+    function selectSize(s, el){ chosenSize = s; document.querySelectorAll('.size-btn').forEach(b => b.className = "size-btn px-4 py-2 rounded-xl border font-bold text-xs border-slate-200 bg-slate-50"); el.className = "size-btn px-4 py-2 rounded-xl border font-bold text-xs border-violet-600 bg-violet-50 text-violet-700"; }
+    function selectColor(c, el){ chosenColor = c; document.querySelectorAll('.color-btn').forEach(b => b.className = "size-btn px-4 py-2 rounded-xl border font-bold text-xs border-slate-200 bg-slate-50"); el.className = "color-btn px-4 py-2 rounded-xl border font-bold text-xs border-violet-600 bg-violet-50 text-violet-700"; }
+    function closeBuyModal(){ document.getElementById('buyModal').classList.add('hidden'); document.getElementById('buyModal').classList.remove('flex'); }
+
+    function confirmAddToCart() {
+      if (!selectedProductForBuy) return;
+      const qty = Math.max(1, Number(document.getElementById('buyQty').value) || 1);
+      const stock = Number(selectedProductForBuy.stock || 0);
+      if (qty > stock) return Swal.fire({ icon: 'warning', title: 'Stock မလုံလောက်ပါ', text: `လက်ကျန် ${stock} ခုသာ ရှိပါသည်` });
+
+      const originalPrice = Number(selectedProductForBuy.price || 0);
+      const flashPrice = Number(selectedProductForBuy.flash_price || 0);
+      const activePrice = (flashPrice > 0 && flashPrice < originalPrice) ? flashPrice : originalPrice;
+      const key = `${selectedProductForBuy.id}|${chosenSize}|${chosenColor}`;
+      const existing = cart.find(i => i.key === key);
+
+      const itemImg = toProxyUrl((selectedProductForBuy.images && selectedProductForBuy.images[0]) || selectedProductForBuy.image);
+      const shopData = selectedProductForBuy.shops || {};
+
+      if (existing) existing.qty = Math.min(existing.qty + qty, stock);
+      else {
+        cart.push({
+          key,
+          id: selectedProductForBuy.id,
+          title: selectedProductForBuy.title || selectedProductForBuy.name,
+          price: activePrice,
+          image: itemImg,
+          shop_id: selectedProductForBuy.shop_id || shopData.id,
+          shop_name: shopData.name || 'Aura Store',
+          shop_township: shopData.township || '',
+          shipping_fee: Number(selectedProductForBuy.shipping_fee ?? shopData.shipping_fee ?? 0),
+          gate_fee: Number(selectedProductForBuy.gate_fee ?? shopData.delivery_fee ?? 0),
+          is_free_delivery: selectedProductForBuy.is_free_delivery,
+          selectedSize: chosenSize,
+          selectedColor: chosenColor,
+          qty,
+          checked: true
+        });
+      }
+      saveCart(); updateCartUI(); closeBuyModal();
+      Toast.fire({ icon: 'success', title: 'စျေးဝယ်တွန်းလှည်းထဲ ထည့်ပြီးပါပြီ' });
+    }
+
+    function toggleItemCheck(index) { cart[index].checked = !cart[index].checked; saveCart(); updateCartUI(); }
+    function toggleSelectAll(master) { cart.forEach(i => i.checked = master.checked); saveCart(); updateCartUI(); }
+
+    function updateCartUI() {
+      const selected = cart.filter(i => i.checked);
+      document.getElementById('cartBadge').innerText = cart.reduce((s, i) => s + i.qty, 0);
+      document.getElementById('cartBadge').style.transform = cart.length ? 'scale(1)' : 'scale(0)';
+      document.getElementById('cartTotal').innerText = (selected.reduce((s, i) => s + (i.price * i.qty), 0)).toLocaleString() + ' MMK';
+      document.getElementById('selectedCountBadge').innerText = `${selected.length} ခု`;
+      document.getElementById('selectAllCheckbox').checked = cart.length > 0 && cart.every(i => i.checked);
+
+      const box = document.getElementById('cartItems');
+      if (!cart.length) { box.innerHTML = '<div class="py-12 text-center text-slate-400 font-semibold">စျေးဝယ်တွန်းလှည်းထဲ ဘာမှမရှိသေးပါ</div>'; return; }
+      box.innerHTML = cart.map((i, idx) => `
+        <div class="py-3 flex items-center gap-3">
+          <input type="checkbox" ${i.checked ? 'checked' : ''} onchange="toggleItemCheck(${idx})" class="w-4 h-4 rounded text-violet-600 accent-violet-600 cursor-pointer" />
+          <img src="${i.image}" alt="Item" class="w-12 h-12 rounded-2xl object-cover border" />
+          <div class="flex-1">
+            <h5 class="font-extrabold line-clamp-1 text-slate-900">${esc(i.title)}</h5>
+            <div class="text-xs text-slate-500 font-medium">${esc(i.shop_name)} · Size: ${esc(i.selectedSize || '-')}</div>
+            <div class="text-rose-600 font-black text-xs mt-0.5">${i.price.toLocaleString()} Ks x ${i.qty}</div>
+          </div>
+          <button type="button" onclick="cart.splice(${idx}, 1); saveCart(); updateCartUI();" class="text-rose-500 p-2 cursor-pointer"><i class="ph ph-trash text-base"></i></button>
+        </div>
+      `).join('');
+    }
+
+    function openCart(){ document.getElementById('cartModal').classList.remove('hidden'); document.getElementById('cartModal').classList.add('flex'); }
+    function closeCart(){ document.getElementById('cartModal').classList.add('hidden'); document.getElementById('cartModal').classList.remove('flex'); }
+
+    function splitCartByShop(selectedItems) {
+      const groups = {};
+      selectedItems.forEach(item => {
+        const sId = item.shop_id;
+        const parentProd = products.find(p => Number(p.id) === Number(item.id));
+        const liveShop = parentProd?.shops || {};
+
+        const township = (item.shop_township || liveShop.township || '').trim();
+        const localFee = Number(item.shipping_fee ?? liveShop.shipping_fee ?? 0);
+        const gateFee = Number(item.gate_fee ?? liveShop.delivery_fee ?? 0);
+
+        if (!groups[sId]) {
+          groups[sId] = {
+            shop_id: sId,
+            shop_name: item.shop_name || liveShop.name || 'Aura Store',
+            shop_township: township,
+            items: [],
+            subtotal: 0,
+            local_shipping_fee: localFee,
+            gate_fee: gateFee,
+            applied_shipping_fee: 0,
+            delivery_type: 'local',
+            is_free_delivery: item.is_free_delivery
+          };
+        }
+        groups[sId].subtotal += (item.price * item.qty);
+        groups[sId].items.push({
+          product_id: item.id,
+          title: item.title,
+          image: item.image,
+          price: item.price,
+          qty: item.qty,
+          selectedSize: item.selectedSize || '',
+          selectedColor: item.selectedColor || ''
+        });
       });
-      if (!reason) return;
+      return Object.values(groups);
+    }
 
-      const { error } = await client.from('seller_applications').update({ status: 'rejected', admin_note: reason }).eq('id', appId);
+    async function openCheckout() {
+      const selected = cart.filter(i => i.checked);
+      if (!selected.length) return Toast.fire({ icon: 'warning', title: 'ဝယ်ယူမည့် ပစ္စည်း အနည်းဆုံး ၁ ခု ရွေးပါ' });
+
+      const { data: { session } } = await client.auth.getSession();
+      if (!session) { closeCart(); openAuthModal('login'); return; }
+
+      closeCart();
+
+      try {
+        const shopIds = [...new Set(selected.map(i => i.shop_id).filter(Boolean))];
+        const { data: latestShops } = await client
+          .from('shops')
+          .select('id, name, shipping_fee, delivery_fee, township')
+          .in('id', shopIds);
+
+        if (latestShops && latestShops.length) {
+          selected.forEach(item => {
+            const s = latestShops.find(ls => Number(ls.id) === Number(item.shop_id));
+            if (s) {
+              item.shop_township = s.township || '';
+              item.shipping_fee = Number(s.shipping_fee || 0);
+              item.gate_fee = Number(s.delivery_fee || 0);
+            }
+          });
+        }
+      } catch (err) {
+        console.error("Shop refresh error:", err);
+      }
+
+      currentPackagesToCheckout = splitCartByShop(selected);
+      renderCheckoutPackages();
+      document.getElementById('checkoutModal').classList.remove('hidden');
+      document.getElementById('checkoutModal').classList.add('flex');
+    }
+    function closeCheckout(){ document.getElementById('checkoutModal').classList.add('hidden'); document.getElementById('checkoutModal').classList.remove('flex'); }
+
+    function handleCustomerTownshipInput(inputVal) {
+      renderCheckoutPackages();
+    }
+
+    function renderCheckoutPackages() {
+      const customerTownship = (document.getElementById('custTownship').value || '').trim().toLowerCase();
+      let grandSubtotal = 0, grandShipping = 0;
+      const container = document.getElementById('checkoutPackagesContainer');
+
+      container.innerHTML = currentPackagesToCheckout.map((pkg, idx) => {
+        const shopTownship = (pkg.shop_township || '').trim().toLowerCase();
+        const isLocal = customerTownship && shopTownship && 
+          (customerTownship.includes(shopTownship) || shopTownship.includes(customerTownship));
+
+        const appliedFee = isLocal ? Number(pkg.local_shipping_fee || 0) : Number(pkg.gate_fee || 0);
+        const feeBadge = isLocal 
+          ? `<span class="bg-emerald-100 text-emerald-800 text-[10px] px-2.5 py-1 rounded-md font-bold">📍 မြို့တွင်း: ${appliedFee.toLocaleString()} Ks</span>`
+          : `<span class="bg-orange-100 text-orange-800 text-[10px] px-2.5 py-1 rounded-md font-bold">🚛 နယ်ဝေး: ${appliedFee.toLocaleString()} Ks</span>`;
+
+        pkg.applied_shipping_fee = appliedFee;
+        pkg.delivery_type = isLocal ? 'local' : 'regional';
+
+        grandSubtotal += pkg.subtotal;
+        grandShipping += appliedFee;
+
+        return `
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2">
+            <div class="flex justify-between items-start border-b pb-2 text-xs">
+              <div>
+                <span class="bg-violet-100 text-violet-700 font-extrabold px-2 py-0.5 rounded text-[10px]">Package ${idx + 1}</span>
+                <span class="font-extrabold text-slate-900 ml-1.5">${esc(pkg.shop_name)}</span>
+              </div>
+              <div>${customerTownship ? feeBadge : '<span class="text-[10px] text-slate-400 font-bold">မြို့နယ် ထည့်ပါ</span>'}</div>
+            </div>
+            <div class="space-y-1">
+              ${pkg.items.map(i => `
+                <div class="flex justify-between items-center text-xs">
+                  <span class="text-slate-700 font-medium">${esc(i.title)} x${i.qty}</span>
+                  <span class="font-extrabold text-slate-900">${(i.price * i.qty).toLocaleString()} Ks</span>
+                </div>
+              `).join('')}
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('summarySubtotal').innerText = grandSubtotal.toLocaleString() + ' MMK';
+      document.getElementById('summaryShipping').innerText = grandShipping.toLocaleString() + ' MMK';
+      document.getElementById('summaryTotal').innerText = (grandSubtotal + grandShipping).toLocaleString() + ' MMK';
+    }
+
+    async function handleSplitOrderSubmit(e) {
+      e.preventDefault();
+      const voucherInput = document.getElementById('checkoutVoucherFile');
+      if (!voucherInput.files.length) return Toast.fire({ icon: 'error', title: 'ဘောက်ချာ ထည့်ပေးပါ' });
+
+      const file = voucherInput.files[0];
+      if (!validateFileSize(file, 5, 'ငွေလွှဲဘောက်ချာ')) return;
+
+      const btn = document.getElementById('submitOrderBtn');
+      btn.innerText = "တင်သွင်းနေပါသည်..."; btn.disabled = true;
+
+      try {
+        const fileName = `vouchers/${Date.now()}-${file.name.replace(/[^a-zA-Z0-9.]/g, '')}`;
+        const { error: upErr } = await client.storage.from('product-images').upload(fileName, file);
+        if (upErr) throw upErr;
+
+        const voucherUrl = getProxiedStorageUrl('product-images', fileName);
+        const checkoutGroupId = crypto.randomUUID();
+
+        const { data: res, error } = await client.rpc('customer_checkout_split', {
+          p_checkout_group_id: checkoutGroupId,
+          p_customer_name: document.getElementById('custName').value.trim(),
+          p_customer_phone: document.getElementById('custPhone').value.trim(),
+          p_township: document.getElementById('custTownship').value.trim(),
+          p_delivery_address: document.getElementById('custAddress').value.trim(),
+          p_payment_method_id: Number(document.getElementById('custPayment').value),
+          p_payment_voucher: voucherUrl,
+          p_packages: currentPackagesToCheckout
+        });
+
+        if (error || (res && !res.success)) throw new Error(error ? error.message : res.message);
+
+        cart = cart.filter(i => !i.checked);
+        saveCart(); updateCartUI(); closeCheckout();
+
+        Swal.fire({
+          icon: 'success',
+          title: 'အော်ဒါ အောင်မြင်ပါသည်',
+          text: `Package (${currentPackagesToCheckout.length}) ခု အော်ဒါတင်ပြီးပါပြီ!`,
+          confirmButtonColor: '#7c3aed'
+        }).then(() => location.reload());
+
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Error', text: err.message });
+      } finally {
+        btn.innerText = "အော်ဒါ အတည်ပြုမည်"; btn.disabled = false;
+      }
+    }
+
+    function openAuthModal(mode = 'login') {
+      isSignupMode = (mode === 'signup');
+      document.getElementById('authNameField').classList.toggle('hidden', !isSignupMode);
+      document.getElementById('authModalTitle').innerText = isSignupMode ? 'အကောင့်အသစ်ဖွင့်ရန်' : 'အကောင့်ဝင်ရန်';
+      document.getElementById('authSubmitBtn').innerText = isSignupMode ? 'အကောင့်ဖွင့်မည်' : 'အကောင့်ဝင်မည်';
+      document.getElementById('authToggleBtn').innerText = isSignupMode ? 'အကောင့်ရှိပြီးသားလား (Login)' : 'အကောင့်အသစ်ဖွင့်ရန် (Sign Up)';
+      document.getElementById('authModal').classList.remove('hidden');
+      document.getElementById('authModal').classList.add('flex');
+    }
+    function closeAuthModal() { document.getElementById('authModal').classList.add('hidden'); document.getElementById('authModal').classList.remove('flex'); }
+    function toggleAuthMode() { openAuthModal(!isSignupMode ? 'signup' : 'login'); }
+
+    async function handleCustomerAuth(e) {
+      e.preventDefault();
+      const emailOrPhone = document.getElementById('authEmailOrPhone').value.trim();
+      const password = document.getElementById('authPassword').value.trim();
+      const btn = document.getElementById('authSubmitBtn');
+      const email = emailOrPhone.includes('@') ? emailOrPhone : `${emailOrPhone.replace(/[^0-9]/g, '')}@aura.com`;
+
+      btn.innerText = "ဆောင်ရွက်နေပါသည်..."; btn.disabled = true;
+
+      try {
+        if (isSignupMode) {
+          const fullName = document.getElementById('authName').value.trim();
+          if (!fullName) throw new Error('အမည် ထည့်သွင်းပေးပါရန်');
+          const { data, error } = await client.auth.signUp({ email, password, options: { data: { full_name: fullName, phone: emailOrPhone } } });
+          if (error) throw error;
+          if (data.user) {
+            await client.from('profiles').upsert({ id: data.user.id, full_name: fullName, phone: emailOrPhone, role: 'customer' });
+            Swal.fire({ icon: 'success', title: 'အောင်မြင်ပါသည်', text: 'အကောင့်ဖွင့်ပြီးပါပြီ!' }).then(() => location.reload());
+          }
+        } else {
+          const { data, error } = await client.auth.signInWithPassword({ email, password });
+          if (error) throw error;
+          const { data: profile } = await client.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
+          if (profile && (profile.role === 'admin' || profile.role === 'super_admin')) { location.href = 'admin.html'; return; }
+          if (profile && profile.role === 'seller') { location.href = 'seller.html'; return; }
+          location.reload();
+        }
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Error', text: err.message || err });
+      } finally {
+        btn.innerText = isSignupMode ? 'အကောင့်ဖွင့်မည်' : 'အကောင့်ဝင်မည်';
+        btn.disabled = false;
+      }
+    }
+
+    async function openProfileModal() {
+      const { data: { session } } = await client.auth.getSession();
+      if (!session) { openAuthModal('login'); return; }
+      currentAuthSessionUser = session.user;
+      await loadCustomerPackages(session.user.id);
+      document.getElementById('profileModal').classList.remove('hidden');
+      document.getElementById('profileModal').classList.add('flex');
+    }
+    function closeProfileModal(){ document.getElementById('profileModal').classList.add('hidden'); document.getElementById('profileModal').classList.remove('flex'); }
+
+    async function loadCustomerPackages(userId) {
+      const container = document.getElementById('customerOrdersContainer');
+      container.innerHTML = '<div class="text-center py-4 text-slate-400 font-semibold">ရှာဖွေနေပါသည်...</div>';
+      const { data: orders } = await client.from('orders').select('*, shop_orders(*)').eq('customer_id', userId).order('id', { ascending: false });
+      if (!orders || !orders.length) { container.innerHTML = '<div class="text-center py-4 text-slate-400 font-semibold">အော်ဒါ မရှိသေးပါ</div>'; return; }
+
+      container.innerHTML = orders.map((o) => {
+        const status = o.status || 'pending';
+        return `
+          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2 text-xs sm:text-sm">
+            <div class="flex justify-between items-center">
+              <span class="font-mono font-bold text-violet-700">Order #${o.id}</span>
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${status === 'completed' ? 'bg-emerald-50 text-emerald-600' : status === 'cancelled' ? 'bg-rose-50 text-rose-600' : 'bg-indigo-50 text-indigo-600'}">${status}</span>
+            </div>
+            <div class="flex justify-between items-center border-t pt-2 text-slate-700 font-semibold">
+              <span>ကျသင့်ငွေ: <b class="text-slate-900">${Number(o.total_amount || 0).toLocaleString()} MMK</b></span>
+              <button type="button" onclick="openOrderDetail(${o.id})" class="bg-slate-900 text-white px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer">အသေးစိတ်</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function openOrderDetail(orderId) {
+      const { data: order, error: oErr } = await client
+        .from('orders')
+        .select('*, shop_orders(*, shops(id, name, phone, township))')
+        .eq('id', orderId)
+        .single();
+
+      if (oErr || !order) return;
+      activeOrderForReturn = order;
+      if (countdownIntervalId) clearInterval(countdownIntervalId);
+
+      document.getElementById('invOrderId').innerText = '#' + order.id;
+      document.getElementById('invOrderDate').innerText = new Date(order.created_at).toLocaleDateString();
+      document.getElementById('invCustomerName').innerText = order.customer_name || '-';
+      document.getElementById('invCustomerPhone').innerText = order.customer_phone || '-';
+      document.getElementById('invTotalAmount').innerText = Number(order.total_amount || 0).toLocaleString() + ' MMK';
+
+      const status = order.status || 'pending';
+      const cancelArea = document.getElementById('orderCancelNoticeArea');
+      if (status === 'pending') {
+        cancelArea.classList.remove('hidden');
+        cancelArea.classList.add('flex');
+      } else {
+        cancelArea.classList.add('hidden');
+        cancelArea.classList.remove('flex');
+      }
+
+      const container = document.getElementById('packagesTrackingContainer');
+      const shopOrders = order.shop_orders || [];
+
+      container.innerHTML = shopOrders.map((so, idx) => {
+        const shop = so.shops || {};
+        const pStatus = so.status || 'pending';
+        const items = Array.isArray(so.items) ? so.items : [];
+
+        const callShopBtn = shop.phone ? '<a href="tel:' + esc(shop.phone) + '" class="bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-xl font-bold text-xs flex items-center gap-1"><i class="ph-bold ph-phone-call"></i> ခေါ်မည်</a>' : '';
+
+        const itemsHtml = items.map(it => `
+          <div class="flex justify-between items-center text-xs">
+            <span class="text-slate-700 font-medium">• ${esc(it.title)} x${it.qty}</span>
+            <span class="font-bold text-slate-900">${(Number(it.price || 0) * it.qty).toLocaleString()} Ks</span>
+          </div>
+        `).join('');
+
+        const courierHtml = so.courier_name ? `
+          <div class="bg-indigo-50 p-2.5 rounded-xl border border-indigo-100 text-xs space-y-1">
+            <div><b>စနစ်:</b> ${esc(so.courier_name)} | <b>Waybill:</b> ${esc(so.tracking_code || '-')}</div>
+            ${so.courier_phone ? `<div><b>ဂိတ်ဖုန်း:</b> <a href="tel:${esc(so.courier_phone)}" class="text-indigo-600 underline font-bold">${esc(so.courier_phone)}</a></div>` : ''}
+          </div>
+        ` : '';
+
+        const confirmBtnHtml = (pStatus === 'shipping') ? `
+          <button type="button" onclick="handleConfirmPackageReceived(${so.id})" class="w-full bg-emerald-600 text-white font-extrabold py-2.5 rounded-xl text-xs cursor-pointer shadow-xs">
+            ✅ ပစ္စည်းလက်ခံရရှိပါပြီ
+          </button>
+        ` : '';
+
+        return `
+          <div class="bg-white rounded-2xl border border-slate-200 p-3.5 space-y-2.5">
+            <div class="flex justify-between items-center border-b pb-2 text-xs sm:text-sm">
+              <div>
+                <span class="bg-violet-100 text-violet-700 font-extrabold px-2 py-0.5 rounded text-[10px]">Pkg ${idx + 1}</span>
+                <span class="font-extrabold text-slate-900 ml-1.5">${esc(shop.name || 'Store')}</span>
+              </div>
+              <div class="flex items-center gap-1.5">
+                ${callShopBtn}
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${pStatus === 'completed' ? 'bg-emerald-50 text-emerald-700' : 'bg-indigo-50 text-indigo-700'}">${pStatus}</span>
+              </div>
+            </div>
+            <div class="space-y-1">${itemsHtml}</div>
+            ${courierHtml}
+            ${confirmBtnHtml}
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('orderDetailModal').classList.remove('hidden');
+      document.getElementById('orderDetailModal').classList.add('flex');
+    }
+
+    async function handleConfirmPackageReceived(shopOrderId) {
+      if (!confirm('ပါဆယ် လက်ခံရရှိပြီဖြစ်ကြောင်း အတည်ပြုပါသလား?')) return;
+      const { data, error } = await client.rpc('confirm_package_received', { p_shop_order_id: shopOrderId });
       if (error) return Swal.fire({ icon: 'error', title: 'Error', text: error.message });
-      Swal.fire({ icon: 'success', title: 'ငြင်းပယ်ပြီးပါပြီ' });
-      loadAdminApplications();
+      Swal.fire({ icon: 'success', title: 'အတည်ပြုပြီးပါပြီ' });
+      openOrderDetail(activeOrderForReturn.id);
     }
 
-    async function loadAdminShops() {
-      const tbody = document.getElementById('adminShopsTbody');
-      const { data: shops } = await client.from('shops').select('*').order('id', { ascending: false });
-      if (!shops || !shops.length) { tbody.innerHTML = '<tr><td colspan="5" class="p-8 text-center text-slate-400">ဆိုင်ခွဲ မရှိသေးပါ</td></tr>'; return; }
-      tbody.innerHTML = shops.map(s => `
-        <tr class="hover:bg-slate-50 border-b">
-          <td class="p-3.5 font-extrabold text-slate-900">${esc(s.name)}</td>
-          <td class="p-3.5">${esc(s.phone || '-')}</td>
-          <td class="p-3.5">${esc(s.township || '-')}</td>
-          <td class="p-3.5">${Number(s.shipping_fee || 0).toLocaleString()} / ${Number(s.delivery_fee || 0).toLocaleString()} Ks</td>
-          <td class="p-3.5"><span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-emerald-50 text-emerald-700">Active</span></td>
-        </tr>
-      `).join('');
+    async function handleCancelCustomerOrder() {
+      if (!confirm('အော်ဒါကို ဖျက်သိမ်းမှာ သေချာပါသလား?')) return;
+      const { data, error } = await client.rpc('cancel_customer_order', { p_order_id: activeOrderForReturn.id });
+      if (error || (data && !data.success)) return Swal.fire({ icon: 'error', title: 'မအောင်မြင်ပါ', text: error ? error.message : data.message });
+      Swal.fire({ icon: 'success', title: 'အော်ဒါ ဖျက်ပြီးပါပြီ' });
+      closeOrderDetailModal();
+      if (currentAuthSessionUser) loadCustomerPackages(currentAuthSessionUser.id);
     }
 
-    async function loadAdminPayouts() {
-      const tbody = document.getElementById('adminPayoutsTbody');
-      const { data: shopOrders } = await client.from('shop_orders').select('*, shops(name)').order('id', { ascending: false });
-      if (!shopOrders || !shopOrders.length) { tbody.innerHTML = '<tr><td colspan="6" class="p-8 text-center text-slate-400">Payout ရှင်းတမ်း မရှိသေးပါ</td></tr>'; return; }
-      tbody.innerHTML = shopOrders.map(so => `
-        <tr class="hover:bg-slate-50 border-b">
-          <td class="p-3.5 font-mono font-bold text-xs">#${so.order_id}</td>
-          <td class="p-3.5 font-bold">${esc(so.shops?.name || '-')}</td>
-          <td class="p-3.5 font-bold">${Number(so.subtotal || 0).toLocaleString()} Ks</td>
-          <td class="p-3.5 font-bold text-amber-600">${Number(so.commission_amount || 0).toLocaleString()} Ks</td>
-          <td class="p-3.5 font-black text-emerald-600">${Number(so.seller_payout || 0).toLocaleString()} Ks</td>
-          <td class="p-3.5"><span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase ${so.payout_status === 'paid' ? 'bg-emerald-50 text-emerald-700' : 'bg-slate-100 text-slate-700'}">${so.payout_status === 'paid' ? 'ရှင်းပြီး' : 'မရှင်းရသေး'}</span></td>
-        </tr>
-      `).join('');
+    function printOrderInvoice() { window.print(); }
+    function closeOrderDetailModal(){ document.getElementById('orderDetailModal').classList.add('hidden'); document.getElementById('orderDetailModal').classList.remove('flex'); }
+    function openSellerApplyModal(){ document.getElementById('sellerApplyModal').classList.remove('hidden'); document.getElementById('sellerApplyModal').classList.add('flex'); }
+    function closeSellerApplyModal(){ document.getElementById('sellerApplyModal').classList.add('hidden'); document.getElementById('sellerApplyModal').classList.remove('flex'); }
+    function openPolicyModal(){ document.getElementById('policyModal').classList.remove('hidden'); document.getElementById('policyModal').classList.add('flex'); }
+    function closePolicyModal(){ document.getElementById('policyModal').classList.add('hidden'); document.getElementById('policyModal').classList.remove('flex'); }
+
+    // 🌟 ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ (NRC ရှေ့/နောက် နှင့် အကောင့် ၅ ခု ပါဝင်သည်)
+    async function handleSellerApplicationSubmit(e) {
+      e.preventDefault();
+      if (!currentAuthSessionUser) { closeSellerApplyModal(); openAuthModal('login'); return; }
+      
+      const btn = document.getElementById('applySubmitBtn');
+      btn.innerText = "တင်သွင်းနေပါသည်..."; btn.disabled = true;
+
+      try {
+        let logoUrl = null, nrcFrontUrl = null, nrcBackUrl = null;
+        const logoInput = document.getElementById('applyShopLogoFile');
+        const nrcFrontInput = document.getElementById('applyNrcFrontFile');
+        const nrcBackInput = document.getElementById('applyNrcBackFile');
+
+        if (logoInput.files.length) {
+          const file = logoInput.files[0];
+          const fileName = `applications/logo-${Date.now()}.${file.name.split('.').pop()}`;
+          await client.storage.from('product-images').upload(fileName, file);
+          logoUrl = getProxiedStorageUrl('product-images', fileName);
+        }
+        
+        if (nrcFrontInput.files.length) {
+          const file = nrcFrontInput.files[0];
+          const fileName = `applications/nrc-front-${Date.now()}.${file.name.split('.').pop()}`;
+          await client.storage.from('product-images').upload(fileName, file);
+          nrcFrontUrl = getProxiedStorageUrl('product-images', fileName);
+        }
+
+        if (nrcBackInput.files.length) {
+          const file = nrcBackInput.files[0];
+          const fileName = `applications/nrc-back-${Date.now()}.${file.name.split('.').pop()}`;
+          await client.storage.from('product-images').upload(fileName, file);
+          nrcBackUrl = getProxiedStorageUrl('product-images', fileName);
+        }
+
+        const paymentInfoObj = {
+          kbzpay: document.getElementById('applyKbzPay').value.trim(),
+          wavepay: document.getElementById('applyWavePay').value.trim(),
+          ayapay: document.getElementById('applyAyaPay').value.trim(),
+          other1: document.getElementById('applyOtherPay1').value.trim(),
+          other2: document.getElementById('applyOtherPay2').value.trim()
+        };
+
+        const { error } = await client.from('seller_applications').insert([{
+          user_id: currentAuthSessionUser.id,
+          shop_name: document.getElementById('applyShopName').value.trim(),
+          owner_name: document.getElementById('applyOwnerName').value.trim(),
+          phone: document.getElementById('applyPhone').value.trim(),
+          business_type: document.getElementById('applyBusinessType').value.trim(),
+          shop_logo: logoUrl,
+          nrc_license_image: nrcFrontUrl,
+          nrc_back_image: nrcBackUrl,
+          payment_info: JSON.stringify(paymentInfoObj),
+          address: document.getElementById('applyAddress').value.trim(),
+          status: 'pending'
+        }]);
+
+        if (error) throw error;
+
+        Swal.fire({
+          icon: 'success',
+          title: 'အောင်မြင်ပါသည်',
+          text: 'ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာကို Admin ထံ အောင်မြင်စွာ ပေးပို့ပြီးပါပြီ!',
+          confirmButtonColor: '#7c3aed'
+        });
+        
+        closeSellerApplyModal();
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Error', text: err.message });
+      } finally {
+        btn.innerText = "ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ ပေးပို့မည်";
+        btn.disabled = false;
+      }
     }
 
-    async function handleAdminLogout() {
-      await client.auth.signOut();
-      location.href = 'index.html';
+    async function handleProfileUpdate(e) {
+      e.preventDefault();
+      if (!currentAuthSessionUser) return;
+      await client.from('profiles').update({
+        full_name: document.getElementById('profileName').value.trim(),
+        phone: document.getElementById('profilePhone').value.trim(),
+        township: document.getElementById('profileTownship').value.trim(),
+        delivery_address: document.getElementById('profileAddress').value.trim()
+      }).eq('id', currentAuthSessionUser.id);
+      Toast.fire({ icon: 'success', title: 'သိမ်းဆည်းပြီးပါပြီ' });
+      closeProfileModal();
     }
 
-    initAdmin();
+    async function handleCustomerLogout() { await client.auth.signOut(); location.reload(); }
+
+    init();
   </script>
 </body>
 </html>
