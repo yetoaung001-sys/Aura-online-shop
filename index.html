@@ -971,24 +971,40 @@
     async function loadCustomerPackages(userId) {
       const container = document.getElementById('customerOrdersContainer');
       container.innerHTML = '<div class="text-center py-4 text-slate-400 font-semibold">ရှာဖွေနေပါသည်...</div>';
-      const { data: orders } = await client.from('orders').select('*, shop_orders(*)').eq('customer_id', userId).order('id', { ascending: false });
-      if (!orders || !orders.length) { container.innerHTML = '<div class="text-center py-4 text-slate-400 font-semibold">အော်ဒါ မရှိသေးပါ</div>'; return; }
+      
+      try {
+        const { data: orders, error } = await client
+          .from('orders')
+          .select('*, shop_orders(*)')
+          .eq('customer_id', userId)
+          .order('id', { ascending: false });
 
-      container.innerHTML = orders.map((o) => {
-        const status = o.status || 'pending';
-        return `
-          <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2 text-xs sm:text-sm">
-            <div class="flex justify-between items-center">
-              <span class="font-mono font-bold text-violet-700">Order #${o.id}</span>
-              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${status === 'completed' ? 'bg-emerald-50 text-emerald-600' : status === 'cancelled' ? 'bg-rose-50 text-rose-600' : 'bg-indigo-50 text-indigo-600'}">${status}</span>
+        if (error) throw error;
+
+        if (!orders || !orders.length) {
+          container.innerHTML = '<div class="text-center py-4 text-slate-400 font-semibold">အော်ဒါ မရှိသေးပါ</div>';
+          return;
+        }
+
+        container.innerHTML = orders.map((o) => {
+          const status = o.status || 'pending';
+          return `
+            <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2 text-xs sm:text-sm">
+              <div class="flex justify-between items-center">
+                <span class="font-mono font-bold text-violet-700">Order #${o.id}</span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${status === 'completed' ? 'bg-emerald-50 text-emerald-600' : status === 'cancelled' ? 'bg-rose-50 text-rose-600' : 'bg-indigo-50 text-indigo-600'}">${status}</span>
+              </div>
+              <div class="flex justify-between items-center border-t pt-2 text-slate-700 font-semibold">
+                <span>ကျသင့်ငွေ: <b class="text-slate-900">${Number(o.total_amount || 0).toLocaleString()} MMK</b></span>
+                <button type="button" onclick="openOrderDetail(${o.id})" class="bg-slate-900 text-white px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer">အသေးစိတ်</button>
+              </div>
             </div>
-            <div class="flex justify-between items-center border-t pt-2 text-slate-700 font-semibold">
-              <span>ကျသင့်ငွေ: <b class="text-slate-900">${Number(o.total_amount || 0).toLocaleString()} MMK</b></span>
-              <button type="button" onclick="openOrderDetail(${o.id})" class="bg-slate-900 text-white px-3 py-1.5 rounded-xl font-bold text-xs cursor-pointer">အသေးစိတ်</button>
-            </div>
-          </div>
-        `;
-      }).join('');
+          `;
+        }).join('');
+      } catch (err) {
+        console.error("Load orders error:", err);
+        container.innerHTML = '<div class="text-center py-4 text-rose-500 font-semibold">အော်ဒါစာရင်း ရယူရာတွင် အမှားရှိနေပါသည်</div>';
+      }
     }
 
     async function openOrderDetail(orderId) {
