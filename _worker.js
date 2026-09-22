@@ -18,6 +18,7 @@ export default {
 
       const headers = new Headers();
 
+      // Supabase API Key များကို ထည့်သွင်းပေးခြင်း
       headers.set('apikey', SUPABASE_ANON_KEY);
       headers.set('Authorization', `Bearer ${SUPABASE_ANON_KEY}`);
 
