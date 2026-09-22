@@ -385,7 +385,7 @@
 
   <script>
     const SUPABASE_URL = window.location.origin + '/api/supabase';
-    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
+    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6Inp5YWlRzIiwiaWF0IjoxNzg4ODc4NTIxLCJleHAiOjIxMDQ0NTQ1MjF9.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
     const client = supabase.createClient(SUPABASE_URL, SB_KEY, { realtime: { params: { eventsPerSecond: 0 } } });
 
     function toProxyUrl(url) {
@@ -886,7 +886,7 @@
       isSignupMode = (mode === 'signup');
       document.getElementById('authNameField').classList.toggle('hidden', !isSignupMode);
       document.getElementById('authModalTitle').innerText = isSignupMode ? 'အကောင့်အသစ်ဖွင့်ရန်' : 'အကောင့်ဝင်ရန်';
-      document.getElementById('authSubmitBtn').innerText = isSignupMode ? 'အကောင့်ဖွင့်မည်' : 'အကောင့်ဝင်မည်';
+      document.getElementById('authSubmitBtn').innerText = isSignupMode ? 'အကောင့်ဖွင့်မည်' : 'အကောင့်ဝင်ရန်';
       document.getElementById('authToggleBtn').innerText = isSignupMode ? 'အကောင့်ရှိပြီးသားလား (Login)' : 'အကောင့်အသစ်ဖွင့်ရန် (Sign Up)';
       document.getElementById('authModal').classList.remove('hidden');
       document.getElementById('authModal').classList.add('flex');
@@ -899,7 +899,9 @@
       const emailOrPhone = document.getElementById('authEmailOrPhone').value.trim();
       const password = document.getElementById('authPassword').value.trim();
       const btn = document.getElementById('authSubmitBtn');
-      const email = emailOrPhone.includes('@') ? emailOrPhone : `${emailOrPhone.replace(/[^0-9]/g, '')}@aura.com`;
+      
+      const cleanInput = emailOrPhone.replace(/\s+/g, '');
+      const email = cleanInput.includes('@') ? cleanInput : `${cleanInput.replace(/[^0-9]/g, '')}@aura.com`;
 
       btn.innerText = "ဆောင်ရွက်နေပါသည်..."; btn.disabled = true;
 
@@ -907,24 +909,41 @@
         if (isSignupMode) {
           const fullName = document.getElementById('authName').value.trim();
           if (!fullName) throw new Error('အမည် ထည့်သွင်းပေးပါရန်');
-          const { data, error } = await client.auth.signUp({ email, password, options: { data: { full_name: fullName, phone: emailOrPhone } } });
+          
+          const { data, error } = await client.auth.signUp({ 
+            email, 
+            password, 
+            options: { data: { full_name: fullName, phone: emailOrPhone } } 
+          });
           if (error) throw error;
+          
           if (data.user) {
-            await client.from('profiles').upsert({ id: data.user.id, full_name: fullName, phone: emailOrPhone, role: 'customer' });
+            const { error: profileErr } = await client.from('profiles').upsert({ 
+              id: data.user.id, 
+              full_name: fullName, 
+              phone: emailOrPhone, 
+              role: 'customer' 
+            });
+            
+            if (profileErr) console.warn("Profile upsert warning:", profileErr.message);
+
             Swal.fire({ icon: 'success', title: 'အောင်မြင်ပါသည်', text: 'အကောင့်ဖွင့်ပြီးပါပြီ!' }).then(() => location.reload());
           }
         } else {
           const { data, error } = await client.auth.signInWithPassword({ email, password });
           if (error) throw error;
-          const { data: profile } = await client.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
-          if (profile && (profile.role === 'admin' || profile.role === 'super_admin')) { location.href = 'admin.html'; return; }
-          if (profile && profile.role === 'seller') { location.href = 'seller.html'; return; }
-          location.reload();
+          
+          if (data.user) {
+            const { data: profile } = await client.from('profiles').select('role').eq('id', data.user.id).maybeSingle();
+            if (profile && (profile.role === 'admin' || profile.role === 'super_admin')) { location.href = 'admin.html'; return; }
+            if (profile && profile.role === 'seller') { location.href = 'seller.html'; return; }
+            location.reload();
+          }
         }
       } catch (err) {
-        Swal.fire({ icon: 'error', title: 'Error', text: err.message || err });
+        Swal.fire({ icon: 'error', title: 'အမှားအယွင်းရှိပါသည်', text: err.message || err });
       } finally {
-        btn.innerText = isSignupMode ? 'အကောင့်ဖွင့်မည်' : 'အကောင့်ဝင်မည်';
+        btn.innerText = isSignupMode ? 'အကောင့်ဖွင့်မည်' : 'အကောင့်ဝင်ရန်';
         btn.disabled = false;
       }
     }
