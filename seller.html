@@ -159,10 +159,10 @@
       </div>
     </section>
 
-    <!-- PRODUCTS TAB (Multiple Images 5ပုံအထိ နှင့် Size/Colour/Stock Variants စီမံခြင်း) -->
+    <!-- PRODUCTS TAB (Matrix Table Variant Stock Management ပါဝင်သည်) -->
     <section id="section-products" class="tab-content hidden space-y-4">
       <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-xs border border-slate-200 space-y-3.5">
-        <h3 class="text-sm sm:text-base font-extrabold text-slate-900 border-b pb-2"><i class="fa-solid fa-plus-circle text-violet-600 mr-1.5"></i> ကုန်ပစ္စည်း အသစ်တင်ရန် (ဓာတ်ပုံ ၅ ပုံအထိ နှင့် Size/Colour Variants စီမံရန်)</h3>
+        <h3 class="text-sm sm:text-base font-extrabold text-slate-900 border-b pb-2"><i class="fa-solid fa-plus-circle text-violet-600 mr-1.5"></i> ကုန်ပစ္စည်း အသစ်တင်ရန် (ဓာတ်ပုံ ၅ ပုံအထိ နှင့် Matrix Table Stock)</h3>
         <form onsubmit="handleSellerAddProduct(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs sm:text-sm">
           <div class="sm:col-span-2"><label class="block font-bold text-slate-700 mb-1">ပစ္စည်းအမည် *</label><input type="text" id="prod-name" required placeholder="ပစ္စည်းအမည်..." class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
           <div><label class="block font-bold text-slate-700 mb-1">စုစုပေါင်း လက်ကျန် Stock *</label><input type="number" id="prod-stock" value="10" required class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
@@ -175,14 +175,14 @@
             <span class="text-[10px] text-slate-400 font-medium">ပုံများစွာကို တစ်ခါတည်း ရွေးချယ်နိုင်သည် (Max: 5)</span>
           </div>
 
-          <div><label class="block font-bold text-slate-700 mb-1">Sizes (ကော်မာခံရေးပါ)</label><input type="text" id="prod-sizes" placeholder="S, M, L, XL" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
-          <div><label class="block font-bold text-slate-700 mb-1">Colors (ကော်မာခံရေးပါ)</label><input type="text" id="prod-colors" placeholder="Red, Black, White" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
+          <div><label class="block font-bold text-slate-700 mb-1">Sizes (ကော်မာခံရေးပါ)</label><input type="text" id="prod-sizes" oninput="generateMatrixTable()" placeholder="S, M, L, XL" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
+          <div><label class="block font-bold text-slate-700 mb-1">Colors (ကော်မာခံရေးပါ)</label><input type="text" id="prod-colors" oninput="generateMatrixTable()" placeholder="Red, Black, White" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
           
-          <!-- Variant Stock Table Generator / Inputs -->
-          <div class="sm:col-span-3 bg-slate-50 p-3 rounded-2xl border space-y-2">
-            <span class="font-extrabold text-slate-700 text-xs block">⚙️ သီးသန့် Size/Colour အလိုက် Stock များကို စီမံရန် (Optional):</span>
-            <div id="variantStockContainer" class="space-y-2">
-              <p class="text-[11px] text-slate-400">Sizes သို့မဟုတ် Colors ထည့်သွင်းပြီးပါက အောက်ပါအတိုင်း သီးသန့် Stock များကို တွဲပေးနိုင်ပါသည် (သို့မဟုတ် အထက်ပါ စုစုပေါင်း Stock ကို အလိုအလျောက် သုံးပါမည်)</p>
+          <!-- MATRIX TABLE CONTAINER -->
+          <div class="sm:col-span-3 bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2.5">
+            <span class="font-extrabold text-slate-900 text-xs block">⚙️ <b>Matrix Table</b>: အရောင်နှင့် ဆိုဒ်အလိုက် သီးသန့် Stock များကို ဖြည့်သွင်းပါ (Optional)</span>
+            <div id="matrixTableContainer" class="overflow-x-auto">
+              <p class="text-xs text-slate-400 font-medium italic">Sizes သို့မဟုတ် Colors ထည့်သွင်းလိုက်သည်နှင့် ဇယားကွက်များ အလိုအလျောက် ပေါ်လာပါမည်။</p>
             </div>
           </div>
 
@@ -322,6 +322,47 @@
 
     function escapeHtml(value) {
       return String(value ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
+    }
+
+    // MATRIX TABLE GENERATOR
+    function generateMatrixTable() {
+      const sizesInput = document.getElementById('prod-sizes').value.trim();
+      const colorsInput = document.getElementById('prod-colors').value.trim();
+      const container = document.getElementById('matrixTableContainer');
+
+      const sizes = sizesInput ? sizesInput.split(',').map(s => s.trim()).filter(Boolean) : [];
+      const colors = colorsInput ? colorsInput.split(',').map(c => c.trim()).filter(Boolean) : [];
+
+      if (!sizes.length && !colors.length) {
+        container.innerHTML = '<p class="text-xs text-slate-400 font-medium italic">Sizes သို့မဟုတ် Colors ထည့်သွင်းလိုက်သည်နှင့် ဇယားကွက်များ အလိုအလျောက် ပေါ်လာပါမည်။</p>';
+        return;
+      }
+
+      let html = `<table class="w-full text-xs text-left border-collapse">
+        <thead class="bg-slate-200 text-slate-700">
+          <tr>
+            <th class="p-2 border">Color / Size</th>
+            ${(sizes.length ? sizes : ['Default']).map(s => `<th class="p-2 border text-center">${s}</th>`).join('')}
+          </tr>
+        </thead>
+        <tbody>`;
+
+      const colorList = colors.length ? colors : ['Default'];
+      const sizeList = sizes.length ? sizes : ['Default'];
+
+      colorList.forEach(color => {
+        html += `<tr><td class="p-2 border font-bold bg-slate-100">${color}</td>`;
+        sizeList.forEach(size => {
+          const inputId = `stock_${color}_${size}`.replace(/[^a-zA-Z0-9_]/g, '_');
+          html += `<td class="p-1.5 border text-center">
+            <input type="number" min="0" value="0" data-color="${color}" data-size="${size}" class="matrix-stock-input w-20 p-1.5 border rounded-lg text-center font-bold bg-white outline-none" />
+          </td>`;
+        });
+        html += `</tr>`;
+      });
+
+      html += `</tbody></table>`;
+      container.innerHTML = html;
     }
 
     async function checkSellerAuth() {
@@ -505,7 +546,7 @@
       }
     }
 
-    // PRODUCTS CRUD (Multiple Images 5ပုံအထိ နှင့် Size/Colour/Stock Variants)
+    // PRODUCTS CRUD (Matrix Stock Support)
     async function loadSellerProducts() {
       if (!currentShop) return;
       const tbody = document.getElementById('seller-products-tbody');
@@ -568,6 +609,19 @@
 
         const sizes = document.getElementById('prod-sizes').value.split(',').map(s => s.trim()).filter(Boolean);
         const colors = document.getElementById('prod-colors').value.split(',').map(c => c.trim()).filter(Boolean);
+        
+        // Collect Matrix Stock data if available
+        const matrixInputs = document.querySelectorAll('.matrix-stock-input');
+        let totalMatrixStock = 0;
+        const variantStocks = [];
+        matrixInputs.forEach(input => {
+          const val = Number(input.value) || 0;
+          totalMatrixStock += val;
+          variantStocks.push({ color: input.dataset.color, size: input.dataset.size, stock: val });
+        });
+
+        const generalStock = Number(document.getElementById('prod-stock').value);
+        const finalStock = matrixInputs.length > 0 ? totalMatrixStock : generalStock;
         const flashPriceVal = Number(document.getElementById('prod-flash-price').value) || 0;
 
         await client.from('products').insert([{
@@ -575,12 +629,15 @@
           title: document.getElementById('prod-name').value.trim(),
           price: Number(document.getElementById('prod-price').value),
           flash_price: flashPriceVal > 0 ? flashPriceVal : null,
-          stock: Number(document.getElementById('prod-stock').value),
-          sizes, colors, images: uploadedImages, image: uploadedImages[0]
+          stock: finalStock > 0 ? finalStock : generalStock,
+          sizes, colors, images: uploadedImages, image: uploadedImages[0],
+          variant_stocks: variantStocks.length ? variantStocks : null
         }]);
 
-        alert('🎉 ကုန်ပစ္စည်း အသစ် (ဓာတ်ပုံများနှင့်တကွ) အောင်မြင်စွာ တင်ပြီးပါပြီ');
-        e.target.reset(); loadSellerProducts();
+        alert('🎉 ကုန်ပစ္စည်း အသစ် (Matrix Stock များနှင့်တကွ) အောင်မြင်စွာ တင်ပြီးပါပြီ');
+        e.target.reset(); 
+        document.getElementById('matrixTableContainer').innerHTML = '<p class="text-xs text-slate-400 font-medium italic">Sizes သို့မဟုတ် Colors ထည့်သွင်းလိုက်သည်နှင့် ဇယားကွက်များ အလိုအလျောက် ပေါ်လာပါမည်။</p>';
+        loadSellerProducts();
       } catch (err) {
         alert('Error: ' + err.message);
       } finally {
