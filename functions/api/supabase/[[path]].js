@@ -23,9 +23,15 @@ export async function onRequest(context) {
   const newHeaders = new Headers(request.headers);
   newHeaders.set('Host', SUPABASE_HOST);
   
-  // Supabase API Keys များကို ထည့်သွင်းပေးခြင်း
+  // apikey header ကို အမြဲထည့်ပါ
   newHeaders.set('apikey', SUPABASE_ANON_KEY);
-  newHeaders.set('Authorization', `Bearer ${SUPABASE_ANON_KEY}`);
+
+  // အကယ်၍ ယူဆာ Login ဝင်ထားပြီး Authorization (Bearer Token) ပါလာလျှင် ၎င်းကို ဆက်သုံးခွင့်ပြုပါ
+  // မပါရှိမှသာ Anon Key ကို Authorization အဖြစ် သုံးပါ
+  const clientAuth = request.headers.get('Authorization');
+  if (!clientAuth || !clientAuth.startsWith('Bearer ey')) {
+    newHeaders.set('Authorization', `Bearer ${SUPABASE_ANON_KEY}`);
+  }
 
   const clientIp = request.headers.get('CF-Connecting-IP');
   if (clientIp) newHeaders.set('X-Forwarded-For', clientIp);
