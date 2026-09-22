@@ -367,17 +367,46 @@
     </div>
   </div>
 
-  <!-- CUSTOMER AUTH MODAL -->
+  <!-- CUSTOMER AUTH MODAL (အကောင့်အသစ်ဖွင့်ရာတွင် အမည်၊ ဖုန်း၊ မြို့နယ်၊ လိပ်စာ တစ်ပါတည်း ဖြည့်သွင်းရန်) -->
   <div id="authModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
-    <div class="bg-white text-slate-900 w-full max-w-md rounded-3xl p-6 sm:p-7 space-y-4 shadow-2xl text-xs sm:text-sm">
+    <div class="bg-white text-slate-900 w-full max-w-md rounded-3xl p-6 sm:p-7 space-y-4 shadow-2xl text-xs sm:text-sm max-h-[92vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
         <h3 id="authModalTitle" class="font-extrabold text-base text-slate-900">အကောင့်ဝင်ရန်</h3>
         <button type="button" onclick="closeAuthModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
-      <form onsubmit="handleCustomerAuth(event)" class="space-y-3.5">
-        <div id="authNameField" class="hidden"><label for="authName" class="font-bold block mb-1">အမည်အပြည့်အစုံ *</label><input type="text" id="authName" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" /></div>
-        <div><label for="authEmailOrPhone" class="font-bold block mb-1">Email (သို့) ဖုန်းနံပါတ် *</label><input type="text" id="authEmailOrPhone" required class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" /></div>
-        <div><label for="authPassword" class="font-bold block mb-1">စကားဝှက် *</label><input type="password" id="authPassword" required class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" /></div>
+      <form onsubmit="handleCustomerAuth(event)" class="space-y-3">
+        
+        <!-- SIGNUP FIELDS (အကောင့်သစ်ဖွင့်သည့်အခါမှသာ ပေါ်မည်) -->
+        <div id="signupExtraFields" class="space-y-3 hidden">
+          <div>
+            <label for="authName" class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label>
+            <input type="text" id="authName" placeholder="သင်၏အမည်" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
+          </div>
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label for="authTownship" class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label>
+              <input type="text" id="authTownship" placeholder="မြို့နယ်" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
+            </div>
+            <div>
+              <label for="authPhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label>
+              <input type="tel" id="authPhone" placeholder="09xxxxxxxxx" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
+            </div>
+          </div>
+          <div>
+            <label for="authAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label>
+            <textarea id="authAddress" rows="2" placeholder="လမ်းအမည်၊ ရပ်ကွက်..." class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs"></textarea>
+          </div>
+        </div>
+
+        <div>
+          <label for="authEmailOrPhone" class="font-bold block mb-1 text-slate-700">Email (သို့) ဖုန်းနံပါတ် *</label>
+          <input type="text" id="authEmailOrPhone" required placeholder="example@gmail.com သို့ ဖုန်းနံပါတ်" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
+        </div>
+        <div>
+          <label for="authPassword" class="font-bold block mb-1 text-slate-700">စကားဝှက် *</label>
+          <input type="password" id="authPassword" required placeholder="••••••••" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
+        </div>
+
         <button type="submit" id="authSubmitBtn" class="w-full bg-violet-600 text-white font-bold py-3.5 rounded-2xl shadow-lg cursor-pointer text-sm">အကောင့်ဝင်မည်</button>
       </form>
       <div class="text-center pt-3 border-t">
@@ -897,10 +926,17 @@
 
     function openAuthModal(mode = 'login') {
       isSignupMode = (mode === 'signup');
-      document.getElementById('authNameField').classList.toggle('hidden', !isSignupMode);
+      document.getElementById('signupExtraFields').classList.toggle('hidden', !isSignupMode);
       document.getElementById('authModalTitle').innerText = isSignupMode ? 'အကောင့်အသစ်ဖွင့်ရန်' : 'အကောင့်ဝင်ရန်';
       document.getElementById('authSubmitBtn').innerText = isSignupMode ? 'အကောင့်ဖွင့်မည်' : 'အကောင့်ဝင်ရန်';
       document.getElementById('authToggleBtn').innerText = isSignupMode ? 'အကောင့်ရှိပြီးသားလား (Login)' : 'အကောင့်အသစ်ဖွင့်ရန် (Sign Up)';
+      
+      // Required attributes toggle
+      document.getElementById('authName').required = isSignupMode;
+      document.getElementById('authTownship').required = isSignupMode;
+      document.getElementById('authPhone').required = isSignupMode;
+      document.getElementById('authAddress').required = isSignupMode;
+
       document.getElementById('authModal').classList.remove('hidden');
       document.getElementById('authModal').classList.add('flex');
     }
@@ -921,12 +957,16 @@
       try {
         if (isSignupMode) {
           const fullName = document.getElementById('authName').value.trim();
+          const phone = document.getElementById('authPhone').value.trim();
+          const township = document.getElementById('authTownship').value.trim();
+          const address = document.getElementById('authAddress').value.trim();
+
           if (!fullName) throw new Error('အမည် ထည့်သွင်းပေးပါရန်');
           
           const { data, error } = await client.auth.signUp({ 
             email, 
             password, 
-            options: { data: { full_name: fullName, phone: emailOrPhone } } 
+            options: { data: { full_name: fullName, phone: phone } } 
           });
           if (error) throw error;
           
@@ -934,13 +974,15 @@
             const { error: profileErr } = await client.from('profiles').upsert({ 
               id: data.user.id, 
               full_name: fullName, 
-              phone: emailOrPhone, 
+              phone: phone, 
+              township: township,
+              delivery_address: address,
               role: 'customer' 
             });
             
             if (profileErr) console.warn("Profile upsert warning:", profileErr.message);
 
-            Swal.fire({ icon: 'success', title: 'အောင်မြင်ပါသည်', text: 'အကောင့်ဖွင့်ပြီးပါပြီ!' }).then(() => location.reload());
+            Swal.fire({ icon: 'success', title: 'အောင်မြင်ပါသည်', text: 'အကောင့်ဖွင့်ပြီး ကိုယ်ရေးအချက်အလက်များ သိမ်းဆည်းပြီးပါပြီ!' }).then(() => location.reload());
           }
         } else {
           const { data, error } = await client.auth.signInWithPassword({ email, password });
