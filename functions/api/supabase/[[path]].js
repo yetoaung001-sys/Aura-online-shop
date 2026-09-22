@@ -15,7 +15,7 @@ export async function onRequest(context) {
   }
 
   const SUPABASE_HOST = 'zyajlsrytjvwxqtpxrqd.supabase.co';
-  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6Inp5YWlRzIiwiaWF0IjoxNzg4ODc4NTIxLCJleHAiOjIxMDQ0NTQ1MjF9.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8';
+  const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8';
 
   const subPath = Array.isArray(params.path) ? params.path.join('/') : (params.path || '');
   const targetUrl = `https://${SUPABASE_HOST}/${subPath}${url.search}`;
