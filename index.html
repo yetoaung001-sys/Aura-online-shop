@@ -418,7 +418,6 @@
     const SUPABASE_URL = window.location.origin + '/api/supabase';
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
     
-    // Fixed: Removed hardcoded global authorization headers to allow authenticated user sessions (JWT) to pass correctly for RLS
     const client = supabase.createClient(SUPABASE_URL, SB_KEY, {
       auth: { persistSession: true, autoRefreshToken: true },
       realtime: { params: { eventsPerSecond: 0 } }
@@ -1012,10 +1011,28 @@
       if (!session) { openAuthModal('login'); return; }
       currentAuthSessionUser = session.user;
       await loadCustomerPackages(session.user.id);
+      
+      const { data: profile } = await client.from('profiles').select('*').eq('id', session.user.id).maybeSingle();
+      if (profile) {
+        const pName = document.getElementById('profileName');
+        const pPhone = document.getElementById('profilePhone');
+        const pTownship = document.getElementById('profileTownship');
+        const pAddress = document.getElementById('profileAddress');
+
+        if (pName) pName.value = profile.full_name || '';
+        if (pPhone) pPhone.value = profile.phone || '';
+        if (pTownship) pTownship.value = profile.township || '';
+        if (pAddress) pAddress.value = profile.delivery_address || profile.address || '';
+      }
+
       document.getElementById('profileModal').classList.remove('hidden');
       document.getElementById('profileModal').classList.add('flex');
     }
-    function closeProfileModal(){ document.getElementById('profileModal').classList.add('hidden'); document.getElementById('profileModal').classList.remove('flex'); }
+    
+    function closeProfileModal() { 
+      document.getElementById('profileModal').classList.add('hidden'); 
+      document.getElementById('profileModal').classList.remove('flex'); 
+    }
 
     async function loadCustomerPackages(userId) {
       const container = document.getElementById('customerOrdersContainer');
