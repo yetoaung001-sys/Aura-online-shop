@@ -367,7 +367,7 @@
     </div>
   </div>
 
-  <!-- CUSTOMER AUTH MODAL (အကောင့်အသစ်ဖွင့်ရာတွင် အမည်၊ ဖုန်း၊ မြို့နယ်၊ လိပ်စာ တစ်ပါတည်း ဖြည့်သွင်းရန်) -->
+  <!-- CUSTOMER AUTH MODAL -->
   <div id="authModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
     <div class="bg-white text-slate-900 w-full max-w-md rounded-3xl p-6 sm:p-7 space-y-4 shadow-2xl text-xs sm:text-sm max-h-[92vh] overflow-y-auto">
       <div class="flex justify-between items-center border-b pb-3">
@@ -376,7 +376,6 @@
       </div>
       <form onsubmit="handleCustomerAuth(event)" class="space-y-3">
         
-        <!-- SIGNUP FIELDS (အကောင့်သစ်ဖွင့်သည့်အခါမှသာ ပေါ်မည်) -->
         <div id="signupExtraFields" class="space-y-3 hidden">
           <div>
             <label for="authName" class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label>
@@ -476,10 +475,23 @@
 
         if (profile) {
           document.getElementById('headerUserName').innerText = profile.full_name || 'Profile';
+          
+          // Checkout Form Input များကို Data ဝင်လာသည်နှင့် တစ်ခါတည်း Auto-fill လုပ်ပေးမည်
           document.getElementById('custName').value = profile.full_name || '';
           document.getElementById('custPhone').value = profile.phone || '';
           document.getElementById('custTownship').value = profile.township || '';
           document.getElementById('custAddress').value = profile.delivery_address || profile.address || '';
+
+          // Profile Modal တွင်းရှိ Form Input များကိုလည်း တစ်ခါတည်း ဖြည့်ပေးမည်
+          const pName = document.getElementById('profileName');
+          const pPhone = document.getElementById('profilePhone');
+          const pTownship = document.getElementById('profileTownship');
+          const pAddress = document.getElementById('profileAddress');
+
+          if (pName) pName.value = profile.full_name || '';
+          if (pPhone) pPhone.value = profile.phone || '';
+          if (pTownship) pTownship.value = profile.township || '';
+          if (pAddress) pAddress.value = profile.delivery_address || profile.address || '';
         }
       } else {
         currentAuthSessionUser = null;
@@ -931,7 +943,6 @@
       document.getElementById('authSubmitBtn').innerText = isSignupMode ? 'အကောင့်ဖွင့်မည်' : 'အကောင့်ဝင်ရန်';
       document.getElementById('authToggleBtn').innerText = isSignupMode ? 'အကောင့်ရှိပြီးသားလား (Login)' : 'အကောင့်အသစ်ဖွင့်ရန် (Sign Up)';
       
-      // Required attributes toggle
       document.getElementById('authName').required = isSignupMode;
       document.getElementById('authTownship').required = isSignupMode;
       document.getElementById('authPhone').required = isSignupMode;
