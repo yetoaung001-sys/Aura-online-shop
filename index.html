@@ -385,9 +385,8 @@
 
   <script>
     const SUPABASE_URL = window.location.origin + '/api/supabase';
-    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6Inp5YWlRzIiwiaWF0IjoxNzg4ODc4NTIxLCJleHAiOjIxMDQ0NTQ1MjF9.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
+    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
     
-    // Global Headers အနေဖြင့် apikey နှင့် Authorization ကို ထည့်သွင်းပေးခြင်း
     const client = supabase.createClient(SUPABASE_URL, SB_KEY, {
       auth: { persistSession: true, autoRefreshToken: true },
       global: {
