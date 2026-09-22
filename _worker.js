@@ -1,59 +1,43 @@
+const SUPABASE_URL = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8';
+
 export default {
-  async fetch(request, env) {
+  async fetch(request) {
     const url = new URL(request.url);
 
-    // ၁။ Supabase Reverse Proxy (/api/supabase)
-    if (url.pathname.startsWith('/api/supabase')) {
-      const SUPABASE_HOST = 'zyajlsrytjvwxqtpxrqd.supabase.co';
+    if (url.pathname.startsWith('/api/supabase/')) {
+      const targetPath = url.pathname.replace('/api/supabase', '');
+      const targetUrl = SUPABASE_URL + targetPath + url.search;
 
-      // OPTIONS Preflight
-      if (request.method === 'OPTIONS') {
-        return new Response(null, {
-          headers: {
-            'Access-Control-Allow-Origin': '*',
-            'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, PATCH, OPTIONS',
-            'Access-Control-Allow-Headers': '*',
-            'Access-Control-Max-Age': '86400',
-          },
-        });
-      }
+      const headers = new Headers(request.headers);
 
-      // လမ်းကြောင်း ခွဲထုတ်ယူခြင်း
-      const cleanPath = url.pathname.replace(/^\/api\/supabase/, '') || '';
-      const finalPath = cleanPath.startsWith('/') ? cleanPath : '/' + cleanPath;
-      const targetUrl = `https://${SUPABASE_HOST}${finalPath}${url.search}`;
+      // Supabase အတွက် လိုအပ်သော API Keys များကို မဖြစ်မနေ ထည့်သွင်းပေးခြင်း
+      headers.set('apikey', SUPABASE_ANON_KEY);
+      headers.set('Authorization', `Bearer ${SUPABASE_ANON_KEY}`);
 
-      const newHeaders = new Headers(request.headers);
-      newHeaders.set('Host', SUPABASE_HOST);
-      
-      const clientIp = request.headers.get('CF-Connecting-IP');
-      if (clientIp) newHeaders.set('X-Forwarded-For', clientIp);
+      // Host header ကို Supabase domain သို့ ပြောင်းပေးရန် (Supabase API က လက်ခံရန်အတွက်)
+      headers.set('Host', 'zyajlsrytjvwxqtpxrqd.supabase.co');
 
-      const hasBody = !['GET', 'HEAD'].includes(request.method);
-      const proxyRequest = new Request(targetUrl, {
+      const response = await fetch(targetUrl, {
         method: request.method,
-        headers: newHeaders,
-        body: hasBody ? request.body : null,
-        redirect: 'follow',
-        duplex: hasBody ? 'half' : undefined,
+        headers,
+        body: ['GET', 'HEAD'].includes(request.method)
+          ? undefined
+          : request.body,
+        redirect: 'follow'
       });
 
-      const response = await fetch(proxyRequest);
-
-      // CORS Response ထည့်သွင်းခြင်း
-      const resHeaders = new Headers(response.headers);
-      resHeaders.set('Access-Control-Allow-Origin', '*');
-      resHeaders.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
-      resHeaders.set('Access-Control-Allow-Headers', '*');
+      // Response headers များကို ပုံစံမှန်ကန်စွာ ပြန်လည်ပေးပို့ရန်
+      const newHeaders = new Headers(response.headers);
+      newHeaders.set('Access-Control-Allow-Origin', '*');
 
       return new Response(response.body, {
         status: response.status,
         statusText: response.statusText,
-        headers: resHeaders,
+        headers: newHeaders
       });
     }
 
-    // ၂။ Static Files (HTML, JS, Images) ပြသခြင်း
-    return env.ASSETS.fetch(request);
-  },
+    return fetch(request);
+  }
 };
