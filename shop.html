@@ -1,18 +1,18 @@
 <!DOCTYPE html>
-<html lang="my" class="scroll-smooth">
+<html lang="my">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Aura Marketplace - Shop Detail</title>
+  <title>Aura Marketplace - Online Shopping</title>
 
   <!-- Global Reverse Proxy URL Rewriter -->
   <script>
     (function() {
-      const SUPABASE_HOST = 'zyajlsrytjvwxqtpxrqd.supabase.co';
-      const PROXY_PATH = window.location.origin + '/api/supabase';
+      const SUPABASE_ORIGIN = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
+      const PROXY_ORIGIN = window.location.origin + '/api/supabase';
       function rewriteUrl(url) {
-        if (typeof url === 'string' && url.includes(SUPABASE_HOST)) {
-          return url.replace('https://' + SUPABASE_HOST, PROXY_PATH);
+        if (typeof url === 'string' && url.startsWith(SUPABASE_ORIGIN)) {
+          return url.replace(SUPABASE_ORIGIN, PROXY_ORIGIN);
         }
         return url;
       }
@@ -45,173 +45,294 @@
   <!-- Tailwind CSS Production CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/@phosphor-icons/web"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
-    body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; }
-    .no-scrollbar::-webkit-scrollbar { display: none; }
-    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    @import url('https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap');
+    body { font-family: 'Padauk', sans-serif; font-size: 19px; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; }
   </style>
 </head>
 <body class="pb-24">
 
   <!-- HEADER -->
-  <header class="bg-white/90 backdrop-blur-md border-b border-slate-100 sticky top-0 z-40 shadow-xs">
-    <div class="max-w-7xl mx-auto px-3 sm:px-4 h-16 sm:h-20 flex items-center justify-between gap-2">
-      <div class="flex items-center gap-2 cursor-pointer" onclick="location.href='index.html'">
-        <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl sm:rounded-2xl bg-slate-900 text-white font-black flex items-center justify-center text-base sm:text-lg">
-          <i class="ph-bold ph-arrow-left"></i>
-        </div>
-        <div>
-          <span class="font-black text-sm sm:text-base leading-none block text-slate-900">ပင်မစာမျက်နှာ</span>
-          <span class="text-[9px] text-violet-600 font-extrabold uppercase tracking-widest block">Back to Home</span>
-        </div>
+  <header class="bg-slate-900 text-white sticky top-0 z-50 shadow">
+    <div class="max-w-7xl mx-auto px-4 py-3.5 flex justify-between items-center">
+      <div class="flex items-center space-x-2.5">
+        <a href="index.html" class="bg-violet-600 text-white text-[11px] px-2.5 py-1 rounded-lg font-extrabold uppercase">Aura Market</a>
+        <h1 id="shopTitleHeader" class="text-base sm:text-lg font-extrabold tracking-tight">ဆိုင်ခွဲ ဈေးဆိုင်</h1>
       </div>
-      <div class="font-black text-sm sm:text-base text-slate-800" id="headerShopTitle">ဆိုင်အချက်အလက်</div>
+      <div class="flex items-center space-x-3">
+        <a href="index.html" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-xl font-bold transition">
+          <i class="fa-solid fa-house mr-1"></i> ပင်မသို့
+        </a>
+        <button type="button" onclick="openCartModal()" class="relative bg-violet-600 hover:bg-violet-700 px-3.5 py-1.5 rounded-xl font-bold transition text-xs cursor-pointer">
+          <i class="fa-solid fa-cart-shopping mr-1"></i> တောင်းထဲသို့ (<span id="cartCount">0</span>)
+        </button>
+      </div>
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-3 sm:px-4 py-4 sm:py-6 space-y-4 sm:space-y-6">
-    
-    <!-- SHOP HEADER & BANNER SECTION -->
-    <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-200 overflow-hidden shadow-xs">
-      <div class="relative h-36 sm:h-56 bg-slate-900">
-        <img id="shopBannerImg" src="https://placehold.co/1200x400" alt="Shop Banner" class="w-full h-full object-cover opacity-90" />
-      </div>
+  <!-- MAIN CONTENT -->
+  <main class="max-w-7xl mx-auto px-3 sm:px-4 py-5 space-y-6">
 
-      <div class="px-4 pb-4 sm:px-6 sm:pb-6 relative flex flex-col sm:flex-row items-start sm:items-end justify-between gap-3 -mt-10 sm:-mt-14">
-        <div class="flex items-end gap-3">
-          <img id="shopLogoImg" src="https://placehold.co/100" alt="Shop Logo" class="w-20 h-20 sm:w-28 sm:h-28 rounded-2xl sm:rounded-3xl object-cover border-4 border-white shadow-md bg-white" />
-          <div class="space-y-0.5 mb-1">
-            <h2 id="shopNameText" class="text-base sm:text-2xl font-black text-slate-900">ဆိုင်နာမည်</h2>
-            <div class="flex items-center gap-2 text-[11px] sm:text-xs text-slate-500 font-medium flex-wrap">
-              <span id="shopTownshipText" class="bg-violet-50 text-violet-700 px-2 py-0.5 rounded-lg font-bold border border-violet-100">မြို့နယ်</span>
-              <div class="flex items-center gap-1 text-amber-500 font-bold">
-                <i class="ph-fill ph-star"></i>
-                <span id="shopRatingText">4.9 (စတိုးဆိုင်အဆင့်)</span>
-              </div>
-            </div>
-          </div>
-        </div>
+    <!-- SHOP BANNER / INFO -->
+    <div id="shopInfoContainer" class="bg-white rounded-3xl p-6 shadow-xs border border-slate-200 text-center space-y-2">
+      <h2 id="shopNameDisplay" class="text-xl sm:text-2xl font-black text-slate-900">ဆိုင်အမည်</h2>
+      <p id="shopNoticeDisplay" class="text-xs sm:text-sm text-slate-500">ကြိုဆိုပါတယ်ခင်ဗျာ</p>
+    </div>
 
-        <a id="shopCallBtn" href="#" class="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-extrabold px-4 py-2.5 rounded-xl shadow-md transition flex items-center justify-center gap-2 text-xs">
-          <i class="ph-bold ph-phone-call text-base"></i> ဆိုင်သို့ တိုက်ရိုက်ဆက်သွယ်မည်
-        </a>
-      </div>
-
-      <!-- NOTICE BOARD -->
-      <div id="shopNoticeBoardBox" class="mx-4 mb-4 sm:mx-6 sm:mb-6 hidden bg-amber-50 border border-amber-200 p-3.5 rounded-2xl space-y-1">
-        <span class="font-extrabold text-amber-800 flex items-center gap-1.5 text-xs"><i class="ph-bold ph-megaphone"></i> ဆိုင်၏ အသိပေးချက် (Notice Board):</span>
-        <p id="shopNoticeBoardText" class="text-slate-700 text-xs font-medium leading-relaxed"></p>
+    <!-- PRODUCTS GRID -->
+    <div class="space-y-3">
+      <h3 class="font-extrabold text-slate-900 text-base sm:text-lg"><i class="fa-solid fa-box text-violet-600 mr-1.5"></i> ရရှိနိုင်သော ကုန်ပစ္စည်းများ</h3>
+      <div id="shopProductsGrid" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+        <div class="col-span-full py-12 text-center text-slate-400 font-semibold">ကုန်ပစ္စည်းများ ရယူနေပါသည်...</div>
       </div>
     </div>
 
-    <!-- PRODUCTS GRID HEADER -->
-    <div class="flex justify-between items-center bg-white p-3.5 sm:p-5 rounded-2xl border border-slate-100 shadow-xs">
-      <div>
-        <h3 class="font-black text-slate-900 text-sm sm:text-base">ဤဆိုင်၏ ကုန်ပစ္စည်းများ</h3>
-        <p class="text-[10px] sm:text-xs text-slate-500">အရည်အသွေးမြင့် ပစ္စည်းများကို တိုက်ရိုက်ဝယ်ယူပါ</p>
-      </div>
-      <span id="shopProductCount" class="text-[11px] sm:text-xs font-extrabold bg-violet-50 text-violet-700 px-3 py-1.5 rounded-xl border border-violet-100">0 မျိုး</span>
-    </div>
-
-    <!-- PRODUCTS GRID (Mobile 2 Column Optimized) -->
-    <div id="shopProductsGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 sm:gap-6"></div>
   </main>
+
+  <!-- PRODUCT DETAIL & VARIANT MODAL -->
+  <div id="productDetailModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-lg rounded-3xl p-6 space-y-4 text-xs sm:text-sm shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <button type="button" onclick="closeProductModal()" class="absolute top-4 right-4 w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+      
+      <div id="modalProductContent" class="space-y-4">
+        <!-- Dynamic Product Details & Variants Selection -->
+      </div>
+    </div>
+  </div>
+
+  <!-- CART SIDEBAR/MODAL -->
+  <div id="cartModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-4 text-xs sm:text-sm shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-extrabold text-slate-900 text-base">🛒 ဝယ်ယူမည့် ပစ္စည်းများ</h3>
+        <button type="button" onclick="closeCartModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div id="cartItemsList" class="space-y-3 divide-y">
+        <p class="text-center text-slate-400 py-4">တောင်းထဲတွင် ပစ္စည်းမရှိသေးပါ</p>
+      </div>
+      <div class="border-t pt-3 space-y-2">
+        <div class="flex justify-between font-black text-base">
+          <span>စုစုပေါင်းကျသင့်ငွေ:</span>
+          <span id="cartTotalPrice" class="text-rose-600">0 Ks</span>
+        </div>
+        <button type="button" onclick="proceedCheckout()" class="w-full bg-violet-600 text-white font-extrabold py-3.5 rounded-2xl hover:bg-violet-700 transition cursor-pointer">အော်ဒါတင်မည် (Checkout)</button>
+      </div>
+    </div>
+  </div>
 
   <script>
     const SUPABASE_URL = window.location.origin + '/api/supabase';
-    const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
-    const client = supabase.createClient(SUPABASE_URL, SB_KEY);
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg4Nzg1MjEsImV4cCI6MjEwNDQ1NDUyMX0.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8';
+    const client = supabase.createClient(SUPABASE_URL, SUPABASE_KEY, { realtime: { params: { eventsPerSecond: 0 } } });
 
-    function toProxyUrl(url) {
-      if (!url || typeof url !== 'string') return 'https://placehold.co/300';
-      const SUPABASE_ORIGIN = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
-      if (url.startsWith(SUPABASE_ORIGIN)) {
-        return url.replace(SUPABASE_ORIGIN, window.location.origin + '/api/supabase');
-      }
-      return url;
+    let shopId = null;
+    let currentShopData = null;
+    let cart = [];
+
+    function escapeHtml(value) {
+      return String(value ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
     }
-
-    function esc(v){ return String(v ?? '').replace(/[&<>"']/g, m => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#039;' }[m])); }
 
     async function initShopPage() {
       const urlParams = new URLSearchParams(window.location.search);
-      const shopId = urlParams.get('id');
-      if (!shopId) { alert('ဆိုင် ID မတွေ့ပါ'); location.href = 'index.html'; return; }
-
-      // Fetch Shop Data
-      const { data: shop, error: sErr } = await client.from('shops').select('*').eq('id', shopId).single();
-      if (sErr || !shop) { alert('ဆိုင် အချက်အလက် မရှိပါ။'); location.href = 'index.html'; return; }
-
-      document.getElementById('headerShopTitle').innerText = shop.name || 'Shop Detail';
-      document.getElementById('shopNameText').innerText = shop.name || 'Aura Store';
-      document.getElementById('shopTownshipText').innerText = shop.township || 'မြန်မာနိုင်ငံ';
-      if (shop.logo_url) document.getElementById('shopLogoImg').src = toProxyUrl(shop.logo_url);
+      shopId = urlParams.get('id') || urlParams.get('shop_id');
       
-      // Fetch Banners
-      const { data: banners } = await client.from('shop_banners').select('*').eq('shop_id', shopId).order('id', { ascending: false });
-      if (banners && banners.length > 0) {
-        document.getElementById('shopBannerImg').src = toProxyUrl(banners[0].image_url);
+      if (!shopId) {
+        // Default first shop if no ID provided
+        const { data: shops } = await client.from('shops').select('*').limit(1);
+        if (shops && shops.length) { shopId = shops[0].id; }
       }
 
-      // Notice Board
-      if (shop.notice_board) {
-        document.getElementById('shopNoticeBoardBox').classList.remove('hidden');
-        document.getElementById('shopNoticeBoardText').innerText = shop.notice_board;
-      }
-
-      // Call Phone Button
-      if (shop.phone) {
-        document.getElementById('shopCallBtn').href = `tel:${shop.phone}`;
+      if (shopId) {
+        await loadShopDetails(shopId);
+        await loadShopProducts(shopId);
       } else {
-        document.getElementById('shopCallBtn').style.display = 'none';
+        document.getElementById('shopProductsGrid').innerHTML = '<div class="col-span-full py-12 text-center text-rose-500 font-bold">ဆိုင်အချက်အလက် ရှာမတွေ့ပါ</div>';
       }
-
-      // Fetch Products of this Shop
-      const { data: prods } = await client.from('products').select('*').eq('shop_id', shopId).order('id', { ascending: false });
-      renderShopProducts(prods || []);
     }
 
-    function renderShopProducts(products) {
-      const grid = document.getElementById('shopProductsGrid');
-      document.getElementById('shopProductCount').innerText = `${products.length} မျိုး`;
-      if (!products.length) { grid.innerHTML = '<div class="col-span-full py-12 text-center text-slate-400 text-xs">ဤဆိုင်တွင် ကုန်ပစ္စည်း မရှိသေးပါ</div>'; return; }
+    async function loadShopDetails(id) {
+      const { data: shop } = await client.from('shops').select('*').eq('id', id).maybeSingle();
+      if (shop) {
+        currentShopData = shop;
+        document.getElementById('shopTitleHeader').innerText = shop.name || 'ဆိုင်ခွဲ';
+        document.getElementById('shopNameDisplay').innerText = shop.name || 'ဆိုင်ခွဲ';
+        document.getElementById('shopNoticeDisplay').innerText = shop.notice_board || shop.address || 'ကြိုဆိုပါတယ်ခင်ဗျာ';
+      }
+    }
 
-      grid.innerHTML = products.map(p => {
-        const originalPrice = Number(p.price || 0);
+    async function loadShopProducts(id) {
+      const grid = document.getElementById('shopProductsGrid');
+      const { data: prods, error } = await client.from('products').select('*').eq('shop_id', id).order('id', { ascending: false });
+
+      if (error || !prods || !prods.length) {
+        grid.innerHTML = '<div class="col-span-full py-12 text-center text-slate-400 font-semibold">ဤဆိုင်တွင် ကုန်ပစ္စည်း မရှိသေးပါ။</div>';
+        return;
+      }
+
+      grid.innerHTML = prods.map(p => {
+        const origPrice = Number(p.price || 0);
         const flashPrice = Number(p.flash_price || 0);
-        const hasDiscount = flashPrice > 0 && flashPrice < originalPrice;
-        const displayPrice = hasDiscount ? flashPrice : originalPrice;
-        const discountPercent = hasDiscount ? Math.round(((originalPrice - flashPrice) / originalPrice) * 100) : 0;
-        const image = toProxyUrl((p.images && p.images[0]) || p.image || p.image_url);
-        const stock = Number(p.stock || 0);
+        const hasDiscount = flashPrice > 0 && flashPrice < origPrice;
+        const imgUrl = (p.images && p.images[0]) || p.image || 'https://placehold.co/300';
 
         return `
-          <div class="bg-white rounded-2xl sm:rounded-3xl border border-slate-100 p-2.5 sm:p-3.5 flex flex-col justify-between hover:shadow-xl transition duration-300 group shadow-xs">
+          <div onclick='openProductModal(${JSON.stringify(p)})' class="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-xs hover:shadow-md transition cursor-pointer flex flex-col justify-between">
             <div>
-              <div class="relative cursor-pointer overflow-hidden rounded-xl sm:rounded-2xl bg-slate-100 mb-2.5" onclick="location.href='index.html'">
-                <img src="${image}" alt="${esc(p.title || p.name)}" class="w-full h-36 sm:h-48 object-cover group-hover:scale-105 transition duration-500" />
-                ${hasDiscount ? `<span class="absolute top-2 left-2 bg-rose-600 text-white text-[9px] px-1.5 py-0.5 rounded-md font-black uppercase shadow">${discountPercent}% OFF</span>` : ''}
-                <span class="absolute top-2 right-2 bg-emerald-600 text-white text-[9px] px-1.5 py-0.5 rounded-md font-bold shadow">📦 ${stock}</span>
-              </div>
-              <h4 class="font-bold text-xs text-slate-800 line-clamp-2">${esc(p.title || p.name)}</h4>
-              <div class="mt-1.5 flex items-baseline gap-1.5 flex-wrap">
-                <span class="text-xs sm:text-sm font-black text-rose-600">${displayPrice.toLocaleString()} Ks</span>
-                ${hasDiscount ? `<span class="text-[10px] font-bold text-slate-400 line-through">${originalPrice.toLocaleString()} Ks</span>` : ''}
+              <img src="${escapeHtml(imgUrl)}" class="w-full h-40 object-cover" />
+              <div class="p-3 space-y-1">
+                <h4 class="font-extrabold text-slate-900 text-xs sm:text-sm line-clamp-1">${escapeHtml(p.title || p.name)}</h4>
+                <div class="flex items-center space-x-2">
+                  <span class="font-black text-rose-600 text-xs sm:text-sm">${hasDiscount ? flashPrice.toLocaleString() : origPrice.toLocaleString()} Ks</span>
+                  ${hasDiscount ? `<span class="text-[10px] text-slate-400 line-through">${origPrice.toLocaleString()} Ks</span>` : ''}
+                </div>
               </div>
             </div>
-            <button type="button" onclick="location.href='index.html'" class="mt-3 w-full bg-slate-900 hover:bg-violet-600 text-white py-2 rounded-xl text-[11px] font-bold transition shadow-xs cursor-pointer">
-              ဝယ်ယူရန် (ပင်မသို့)
-            </button>
+            <div class="p-3 pt-0">
+              <button type="button" class="w-full bg-slate-900 hover:bg-violet-700 text-white text-xs font-extrabold py-2 rounded-xl transition">ကြည့်မည် / ဝယ်မည်</button>
+            </div>
           </div>
         `;
       }).join('');
     }
 
-    initShopPage();
+    function openProductModal(prod) {
+      const modal = document.getElementById('productDetailModal');
+      const content = document.getElementById('modalProductContent');
+      const origPrice = Number(prod.price || 0);
+      const flashPrice = Number(prod.flash_price || 0);
+      const hasDiscount = flashPrice > 0 && flashPrice < origPrice;
+      const imgUrl = (prod.images && prod.images[0]) || prod.image || 'https://placehold.co/400';
+      const sizes = Array.isArray(prod.sizes) ? prod.sizes : [];
+      const colors = Array.isArray(prod.colors) ? prod.colors : [];
+
+      content.innerHTML = `
+        <img src="${escapeHtml(imgUrl)}" class="w-full h-56 object-cover rounded-2xl border" />
+        <h3 class="font-black text-slate-900 text-base sm:text-lg">${escapeHtml(prod.title || prod.name)}</h3>
+        <div class="flex items-center space-x-3">
+          <span class="font-black text-rose-600 text-lg">${hasDiscount ? flashPrice.toLocaleString() : origPrice.toLocaleString()} Ks</span>
+          ${hasDiscount ? `<span class="text-xs text-slate-400 line-through">${origPrice.toLocaleString()} Ks</span>` : ''}
+        </div>
+        <p class="text-xs text-slate-500">လက်ကျန် Stock: <b>${prod.stock || 0}</b> ခု</p>
+
+        ${sizes.length ? `
+          <div>
+            <label class="block font-bold text-slate-700 mb-1 text-xs">Size ရွေးချယ်ပါ:</label>
+            <div id="selectedSizeContainer" class="flex flex-wrap gap-2">
+              ${sizes.map((s, idx) => `<button type="button" onclick="selectSize('${escapeHtml(s)}')" class="size-btn px-3 py-1.5 border rounded-xl text-xs font-bold ${idx===0?'border-violet-600 bg-violet-50 text-violet-700':''}">${escapeHtml(s)}</button>`).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        ${colors.length ? `
+          <div>
+            <label class="block font-bold text-slate-700 mb-1 text-xs">Colour ရွေးချယ်ပါ:</label>
+            <div id="selectedColorContainer" class="flex flex-wrap gap-2">
+              ${colors.map((c, idx) => `<button type="button" onclick="selectColor('${escapeHtml(c)}')" class="color-btn px-3 py-1.5 border rounded-xl text-xs font-bold ${idx===0?'border-violet-600 bg-violet-50 text-violet-700':''}">${escapeHtml(c)}</button>`).join('')}
+            </div>
+          </div>
+        ` : ''}
+
+        <button type="button" onclick='addToCart(${JSON.stringify(prod)}, "${sizes[0] || ''}", "${colors[0] || ''}")' class="w-full bg-violet-600 text-white font-extrabold py-3.5 rounded-2xl hover:bg-violet-700 transition cursor-pointer">တောင်းထဲသို့ ထည့်မည်</button>
+      `;
+
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+    }
+
+    function closeProductModal() {
+      document.getElementById('productDetailModal').classList.add('hidden');
+      document.getElementById('productDetailModal').classList.remove('flex');
+    }
+
+    let selectedSizeVal = '';
+    let selectedColorVal = '';
+    function selectSize(val) { selectedSizeVal = val; }
+    function selectColor(val) { selectedColorVal = val; }
+
+    function addToCart(prod, defaultSize, defaultColor) {
+      const size = selectedSizeVal || defaultSize || '';
+      const color = selectedColorVal || defaultColor || '';
+      const price = (prod.flash_price && prod.flash_price > 0 && prod.flash_price < prod.price) ? prod.flash_price : prod.price;
+
+      const existing = cart.find(item => item.id === prod.id && item.size === size && item.color === color);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({
+          id: prod.id,
+          title: prod.title || prod.name,
+          price: price,
+          image: (prod.images && prod.images[0]) || prod.image || '',
+          size: size,
+          color: color,
+          qty: 1
+        });
+      }
+
+      updateCartUI();
+      closeProductModal();
+      alert('✅ ပစ္စည်း တောင်းထဲသို့ ထည့်ပြီးပါပြီ');
+    }
+
+    function updateCartUI() {
+      document.getElementById('cartCount').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+      const list = document.getElementById('cartItemsList');
+      const totalEl = document.getElementById('cartTotalPrice');
+
+      if (!cart.length) {
+        list.innerHTML = '<p class="text-center text-slate-400 py-4">တောင်းထဲတွင် ပစ္စည်းမရှိသေးပါ</p>';
+        totalEl.innerText = '0 Ks';
+        return;
+      }
+
+      let total = 0;
+      list.innerHTML = cart.map((item, idx) => {
+        const sub = item.price * item.qty;
+        total += sub;
+        return `
+          py-2.5 flex justify-between items-center text-xs">
+            <div class="flex items-center space-x-2">
+              <img src="${escapeHtml(item.image)}" class="w-10 h-10 object-cover rounded-xl border">
+              <div>
+                <div class="font-bold text-slate-900">${escapeHtml(item.title)}</div>
+                <div class="text-[10px] text-slate-500">${item.size ? 'Size: '+item.size : ''} ${item.color ? 'Color: '+item.color : ''}</div>
+                <div class="text-rose-600 font-extrabold">${item.price.toLocaleString()} Ks x ${item.qty}</div>
+              </div>
+            </div>
+            <button type="button" onclick="removeFromCart(${idx})" class="text-rose-600 font-bold px-2 py-1"><i class="fa-solid fa-trash"></i></button>
+          </div>
+        `;
+      }).join('');
+
+      totalEl.innerText = total.toLocaleString() + ' Ks';
+    }
+
+    function removeFromCart(idx) {
+      cart.splice(idx, 1);
+      updateCartUI();
+    }
+
+    function openCartModal() {
+      document.getElementById('cartModal').classList.remove('hidden');
+      document.getElementById('cartModal').classList.add('flex');
+    }
+    function closeCartModal() {
+      document.getElementById('cartModal').classList.add('hidden');
+      document.getElementById('cartModal').classList.remove('flex');
+    }
+
+    function proceedCheckout() {
+      if (!cart.length) return alert('တောင်းထဲတွင် ပစ္စည်းမရှိသေးပါ');
+      // Redirect to checkout or handle order placement
+      localStorage.setItem('aura_cart', JSON.stringify(cart));
+      localStorage.setItem('aura_checkout_shop', JSON.stringify(currentShopData));
+      window.location.href = 'index.html#checkout';
+    }
+
+    document.addEventListener('DOMContentLoaded', initShopPage);
   </script>
 </body>
 </html>
