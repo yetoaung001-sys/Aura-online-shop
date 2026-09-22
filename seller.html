@@ -159,21 +159,33 @@
       </div>
     </section>
 
-    <!-- PRODUCTS TAB (Size, Colour & Stock Variants ပါဝင်သည်) -->
+    <!-- PRODUCTS TAB (Multiple Images 5ပုံအထိ နှင့် Size/Colour/Stock Variants စီမံခြင်း) -->
     <section id="section-products" class="tab-content hidden space-y-4">
       <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-xs border border-slate-200 space-y-3.5">
-        <h3 class="text-sm sm:text-base font-extrabold text-slate-900 border-b pb-2"><i class="fa-solid fa-plus-circle text-violet-600 mr-1.5"></i> ကုန်ပစ္စည်း အသစ်တင်ရန် (နှင့် Size/Colour Variants)</h3>
+        <h3 class="text-sm sm:text-base font-extrabold text-slate-900 border-b pb-2"><i class="fa-solid fa-plus-circle text-violet-600 mr-1.5"></i> ကုန်ပစ္စည်း အသစ်တင်ရန် (ဓာတ်ပုံ ၅ ပုံအထိ နှင့် Size/Colour Variants စီမံရန်)</h3>
         <form onsubmit="handleSellerAddProduct(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs sm:text-sm">
           <div class="sm:col-span-2"><label class="block font-bold text-slate-700 mb-1">ပစ္စည်းအမည် *</label><input type="text" id="prod-name" required placeholder="ပစ္စည်းအမည်..." class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
           <div><label class="block font-bold text-slate-700 mb-1">စုစုပေါင်း လက်ကျန် Stock *</label><input type="number" id="prod-stock" value="10" required class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
           
           <div><label class="block font-bold text-slate-700 mb-1">မူရင်းစျေး (Original Price - MMK) *</label><input type="number" id="prod-price" required placeholder="ဥပမာ - 25000" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold text-rose-600" /></div>
           <div><label class="block font-bold text-slate-700 mb-1">လျှော့ဈေး / Flash Sale (Promotion Price)</label><input type="number" id="prod-flash-price" placeholder="မရှိလျှင် ကွက်လပ်ထားပါ" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold text-emerald-600" /></div>
-          <div><label class="block font-bold text-slate-700 mb-1">ဓာတ်ပုံ *</label><input type="file" id="prod-file" accept="image/*" required class="border p-2 rounded-xl w-full bg-slate-50 text-xs cursor-pointer" /></div>
+          <div>
+            <label class="block font-bold text-slate-700 mb-1">ဓာတ်ပုံများ (အများဆုံး ၅ ပုံ) *</label>
+            <input type="file" id="prod-files" accept="image/*" multiple required class="border p-2 rounded-xl w-full bg-slate-50 text-xs cursor-pointer" />
+            <span class="text-[10px] text-slate-400 font-medium">ပုံများစွာကို တစ်ခါတည်း ရွေးချယ်နိုင်သည် (Max: 5)</span>
+          </div>
 
           <div><label class="block font-bold text-slate-700 mb-1">Sizes (ကော်မာခံရေးပါ)</label><input type="text" id="prod-sizes" placeholder="S, M, L, XL" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
           <div><label class="block font-bold text-slate-700 mb-1">Colors (ကော်မာခံရေးပါ)</label><input type="text" id="prod-colors" placeholder="Red, Black, White" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
           
+          <!-- Variant Stock Table Generator / Inputs -->
+          <div class="sm:col-span-3 bg-slate-50 p-3 rounded-2xl border space-y-2">
+            <span class="font-extrabold text-slate-700 text-xs block">⚙️ သီးသန့် Size/Colour အလိုက် Stock များကို စီမံရန် (Optional):</span>
+            <div id="variantStockContainer" class="space-y-2">
+              <p class="text-[11px] text-slate-400">Sizes သို့မဟုတ် Colors ထည့်သွင်းပြီးပါက အောက်ပါအတိုင်း သီးသန့် Stock များကို တွဲပေးနိုင်ပါသည် (သို့မဟုတ် အထက်ပါ စုစုပေါင်း Stock ကို အလိုအလျောက် သုံးပါမည်)</p>
+            </div>
+          </div>
+
           <div class="sm:col-span-3 pt-2">
             <button type="submit" id="saveProdBtn" class="w-full bg-slate-900 text-white rounded-2xl p-3.5 font-extrabold hover:bg-violet-700 transition cursor-pointer text-sm">ပစ္စည်း သိမ်းဆည်းတင်မည်</button>
           </div>
@@ -183,7 +195,7 @@
       <div class="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-x-auto">
         <table class="w-full text-left text-xs sm:text-sm text-slate-600">
           <thead class="bg-slate-50 text-[11px] uppercase text-slate-400 border-b">
-            <tr><th class="p-3.5">ပုံ</th><th class="p-3.5">အမည်</th><th class="p-3.5">စျေးနှုန်း (မူရင်း / လျှော့ဈေး)</th><th class="p-3.5">Sizes / Colors</th><th class="p-3.5">လက်ကျန်</th><th class="p-3.5">လုပ်ဆောင်ချက်</th></tr>
+            <tr><th class="p-3.5">ပုံများ</th><th class="p-3.5">အမည်</th><th class="p-3.5">စျေးနှုန်း (မူရင်း / လျှော့ဈေး)</th><th class="p-3.5">Sizes / Colors</th><th class="p-3.5">လက်ကျန်</th><th class="p-3.5">လုပ်ဆောင်ချက်</th></tr>
           </thead>
           <tbody id="seller-products-tbody" class="divide-y"><tr><td colspan="6" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr></tbody>
         </table>
@@ -493,7 +505,7 @@
       }
     }
 
-    // PRODUCTS CRUD
+    // PRODUCTS CRUD (Multiple Images 5ပုံအထိ နှင့် Size/Colour/Stock Variants)
     async function loadSellerProducts() {
       if (!currentShop) return;
       const tbody = document.getElementById('seller-products-tbody');
@@ -506,10 +518,15 @@
         const hasDiscount = flashPrice > 0 && flashPrice < origPrice;
         const sizesStr = (p.sizes || []).join(', ') || '-';
         const colorsStr = (p.colors || []).join(', ') || '-';
+        const imgs = p.images || (p.image ? [p.image] : []);
 
         return `
           <tr class="hover:bg-slate-50 border-b">
-            <td class="p-3.5"><img src="${escapeHtml((p.images && p.images[0]) || p.image || 'https://placehold.co/50')}" class="w-10 h-10 object-cover rounded-xl border"></td>
+            <td class="p-3.5">
+              <div class="flex gap-1 overflow-x-auto max-w-[120px]">
+                ${imgs.map(img => `<img src="${escapeHtml(img)}" class="w-9 h-9 object-cover rounded-lg border shrink-0">`).join('')}
+              </div>
+            </td>
             <td class="p-3.5 font-extrabold text-slate-900">${escapeHtml(p.title || p.name)}</td>
             <td class="p-3.5">
               <div class="font-black text-rose-600">${hasDiscount ? flashPrice.toLocaleString() + ' Ks' : origPrice.toLocaleString() + ' Ks'}</div>
@@ -532,16 +549,22 @@
     async function handleSellerAddProduct(e) {
       e.preventDefault();
       if (!currentShop) return;
-      const f = document.getElementById('prod-file').files[0];
-      if (!f) return alert('ပုံရွေးပါ');
+      const fileInput = document.getElementById('prod-files');
+      if (!fileInput.files.length) return alert('ပုံ အနည်းဆုံး ၁ ပုံ ရွေးပါ');
+      if (fileInput.files.length > 5) return alert('ဓာတ်ပုံ အများဆုံး ၅ ပုံသာ တင်နိုင်ပါသည်');
 
       const btn = document.getElementById('saveProdBtn');
-      btn.innerText = "သိမ်းဆည်းနေပါသည်..."; btn.disabled = true;
+      btn.innerText = "တင်သွင်းနေပါသည်..."; btn.disabled = true;
 
       try {
-        const name = `products/${Date.now()}.${f.name.split('.').pop()}`;
-        await client.storage.from('product-images').upload(name, f);
-        const publicUrl = `${window.location.origin}/api/supabase/storage/v1/object/public/product-images/${name}`;
+        const uploadedImages = [];
+        for (let i = 0; i < fileInput.files.length; i++) {
+          const file = fileInput.files[i];
+          const fileName = `products/${currentShop.id}-${Date.now()}-${i}.${file.name.split('.').pop()}`;
+          await client.storage.from('product-images').upload(fileName, file);
+          const publicUrl = `${window.location.origin}/api/supabase/storage/v1/object/public/product-images/${fileName}`;
+          uploadedImages.push(publicUrl);
+        }
 
         const sizes = document.getElementById('prod-sizes').value.split(',').map(s => s.trim()).filter(Boolean);
         const colors = document.getElementById('prod-colors').value.split(',').map(c => c.trim()).filter(Boolean);
@@ -553,10 +576,10 @@
           price: Number(document.getElementById('prod-price').value),
           flash_price: flashPriceVal > 0 ? flashPriceVal : null,
           stock: Number(document.getElementById('prod-stock').value),
-          sizes, colors, images: [publicUrl], image: publicUrl
+          sizes, colors, images: uploadedImages, image: uploadedImages[0]
         }]);
 
-        alert('ကုန်ပစ္စည်း အသစ် တင်ပြီးပါပြီ');
+        alert('🎉 ကုန်ပစ္စည်း အသစ် (ဓာတ်ပုံများနှင့်တကွ) အောင်မြင်စွာ တင်ပြီးပါပြီ');
         e.target.reset(); loadSellerProducts();
       } catch (err) {
         alert('Error: ' + err.message);
