@@ -159,16 +159,16 @@
       </div>
     </section>
 
-    <!-- PRODUCTS TAB (မူရင်းဈေး / လျှော့ဈေး Promotion ည့်သွင်းရန် အပြည့်အစုံ) -->
+    <!-- PRODUCTS TAB (Size, Colour & Stock Variants ပါဝင်သည်) -->
     <section id="section-products" class="tab-content hidden space-y-4">
       <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-xs border border-slate-200 space-y-3.5">
-        <h3 class="text-sm sm:text-base font-extrabold text-slate-900 border-b pb-2"><i class="fa-solid fa-plus-circle text-violet-600 mr-1.5"></i> ကုန်ပစ္စည်း အသစ်တင်ရန် (နှင့် လျှော့ဈေး Promotion)</h3>
+        <h3 class="text-sm sm:text-base font-extrabold text-slate-900 border-b pb-2"><i class="fa-solid fa-plus-circle text-violet-600 mr-1.5"></i> ကုန်ပစ္စည်း အသစ်တင်ရန် (နှင့် Size/Colour Variants)</h3>
         <form onsubmit="handleSellerAddProduct(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs sm:text-sm">
           <div class="sm:col-span-2"><label class="block font-bold text-slate-700 mb-1">ပစ္စည်းအမည် *</label><input type="text" id="prod-name" required placeholder="ပစ္စည်းအမည်..." class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
-          <div><label class="block font-bold text-slate-700 mb-1">လက်ကျန် အရေအတွက် (Stock) *</label><input type="number" id="prod-stock" value="10" required class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
+          <div><label class="block font-bold text-slate-700 mb-1">စုစုပေါင်း လက်ကျန် Stock *</label><input type="number" id="prod-stock" value="10" required class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
           
           <div><label class="block font-bold text-slate-700 mb-1">မူရင်းစျေး (Original Price - MMK) *</label><input type="number" id="prod-price" required placeholder="ဥပမာ - 25000" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold text-rose-600" /></div>
-          <div><label class="block font-bold text-slate-700 mb-1">လျှော့ဈေး / Flash Sale (Promotion Price)</label><input type="number" id="prod-flash-price" placeholder="မရှိလျှင် ကွက်လ่างထားပါ (ဥပမာ - 20000)" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold text-emerald-600" /></div>
+          <div><label class="block font-bold text-slate-700 mb-1">လျှော့ဈေး / Flash Sale (Promotion Price)</label><input type="number" id="prod-flash-price" placeholder="မရှိလျှင် ကွက်လပ်ထားပါ" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold text-emerald-600" /></div>
           <div><label class="block font-bold text-slate-700 mb-1">ဓာတ်ပုံ *</label><input type="file" id="prod-file" accept="image/*" required class="border p-2 rounded-xl w-full bg-slate-50 text-xs cursor-pointer" /></div>
 
           <div><label class="block font-bold text-slate-700 mb-1">Sizes (ကော်မာခံရေးပါ)</label><input type="text" id="prod-sizes" placeholder="S, M, L, XL" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
@@ -183,9 +183,9 @@
       <div class="bg-white rounded-2xl shadow-xs border border-slate-200 overflow-x-auto">
         <table class="w-full text-left text-xs sm:text-sm text-slate-600">
           <thead class="bg-slate-50 text-[11px] uppercase text-slate-400 border-b">
-            <tr><th class="p-3.5">ပုံ</th><th class="p-3.5">အမည်</th><th class="p-3.5">စျေးနှုန်း (မူရင်း / လျှော့ဈေး)</th><th class="p-3.5">လက်ကျန်</th><th class="p-3.5">လုပ်ဆောင်ချက်</th></tr>
+            <tr><th class="p-3.5">ပုံ</th><th class="p-3.5">အမည်</th><th class="p-3.5">စျေးနှုန်း (မူရင်း / လျှော့ဈေး)</th><th class="p-3.5">Sizes / Colors</th><th class="p-3.5">လက်ကျန်</th><th class="p-3.5">လုပ်ဆောင်ချက်</th></tr>
           </thead>
-          <tbody id="seller-products-tbody" class="divide-y"><tr><td colspan="5" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr></tbody>
+          <tbody id="seller-products-tbody" class="divide-y"><tr><td colspan="6" class="p-4 text-center">Data ရယူနေပါသည်...</td></tr></tbody>
         </table>
       </div>
     </section>
@@ -276,7 +276,7 @@
     </div>
   </div>
 
-  <!-- PRODUCT EDIT MODAL (မူရင်းဈေး / လျှော့ဈေး ပြင်ဆင်ရန်) -->
+  <!-- PRODUCT EDIT MODAL -->
   <div id="editProductModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-4">
     <div class="bg-white w-full max-w-md rounded-3xl p-6 space-y-3.5 text-xs sm:text-sm shadow-2xl">
       <div class="flex justify-between items-center border-b pb-3">
@@ -493,17 +493,19 @@
       }
     }
 
-    // PRODUCTS CRUD (Flash Price / Promotion ပါဝင်သည်)
+    // PRODUCTS CRUD
     async function loadSellerProducts() {
       if (!currentShop) return;
       const tbody = document.getElementById('seller-products-tbody');
       const { data: prods } = await client.from('products').select('*').eq('shop_id', currentShop.id).order('id', { ascending: false });
-      if (!prods || !prods.length) { tbody.innerHTML = '<tr><td colspan="5" class="p-4 text-center text-slate-400 font-semibold">ပစ္စည်း မရှိသေးပါ</td></tr>'; return; }
+      if (!prods || !prods.length) { tbody.innerHTML = '<tr><td colspan="6" class="p-4 text-center text-slate-400 font-semibold">ပစ္စည်း မရှိသေးပါ</td></tr>'; return; }
 
       tbody.innerHTML = prods.map(p => {
         const origPrice = Number(p.price || 0);
         const flashPrice = Number(p.flash_price || 0);
         const hasDiscount = flashPrice > 0 && flashPrice < origPrice;
+        const sizesStr = (p.sizes || []).join(', ') || '-';
+        const colorsStr = (p.colors || []).join(', ') || '-';
 
         return `
           <tr class="hover:bg-slate-50 border-b">
@@ -512,6 +514,10 @@
             <td class="p-3.5">
               <div class="font-black text-rose-600">${hasDiscount ? flashPrice.toLocaleString() + ' Ks' : origPrice.toLocaleString() + ' Ks'}</div>
               ${hasDiscount ? `<div class="text-[11px] font-bold text-slate-400 line-through">မူရင်း: ${origPrice.toLocaleString()} Ks</div>` : ''}
+            </td>
+            <td class="p-3.5 text-xs">
+              <div><b>Sizes:</b> ${escapeHtml(sizesStr)}</div>
+              <div><b>Colors:</b> ${escapeHtml(colorsStr)}</div>
             </td>
             <td class="p-3.5 font-extrabold">${p.stock}</td>
             <td class="p-3.5 space-x-2">
