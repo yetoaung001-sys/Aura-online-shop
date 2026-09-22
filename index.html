@@ -386,7 +386,18 @@
   <script>
     const SUPABASE_URL = window.location.origin + '/api/supabase';
     const SB_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6Inp5YWpsc3J5dGp2d3hxdHB4cnFkIiwicm9sZSI6Inp5YWlRzIiwiaWF0IjoxNzg4ODc4NTIxLCJleHAiOjIxMDQ0NTQ1MjF9.Tl_nrEQzt2wmCd9sZaLPr7Y5F97DKms9BCckZfI8WZ8";
-    const client = supabase.createClient(SUPABASE_URL, SB_KEY, { realtime: { params: { eventsPerSecond: 0 } } });
+    
+    // Global Headers အနေဖြင့် apikey နှင့် Authorization ကို ထည့်သွင်းပေးခြင်း
+    const client = supabase.createClient(SUPABASE_URL, SB_KEY, {
+      auth: { persistSession: true, autoRefreshToken: true },
+      global: {
+        headers: {
+          'apikey': SB_KEY,
+          'Authorization': `Bearer ${SB_KEY}`
+        }
+      },
+      realtime: { params: { eventsPerSecond: 0 } }
+    });
 
     function toProxyUrl(url) {
       if (!url || typeof url !== 'string') return 'https://placehold.co/300';
