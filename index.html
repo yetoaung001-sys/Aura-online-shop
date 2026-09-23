@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Aura Marketplace - Modern E-Commerce</title>
 
-  <!-- Global Reverse Proxy URL Rewriter -->
   <script>
     (function() {
       const SUPABASE_HOST = 'zyajlsrytjvwxqtpxrqd.supabase.co';
@@ -42,7 +41,6 @@
     })();
   </script>
 
-  <!-- Tailwind CSS Production CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://unpkg.com/@phosphor-icons/web"></script>
@@ -50,7 +48,7 @@
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Padauk:wght@400;700&display=swap" rel="stylesheet" />
   <style>
-    body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; font-size: 22px; }
+    body { font-family: 'Plus Jakarta Sans', 'Padauk', sans-serif; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; font-size: 20px; }
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
@@ -89,7 +87,7 @@
       </div>
 
       <div class="flex-1 max-w-xl relative">
-        <input type="text" id="searchInput" oninput="handleSearch(this.value)" autocomplete="off" placeholder="ပစ္စည်း သို့မဟုတ် ဆိုင်နာမည်ဖြင့် ရှာဖွေရန်..." class="w-full pl-10 sm:pl-12 pr-3 py-3 bg-slate-100 border border-slate-200 rounded-2xl text-xs sm:text-sm outline-none focus:bg-white focus:border-violet-600 transition font-semibold" />
+        <input type="text" id="searchInput" oninput="handleSearch(this.value)" autocomplete="search" placeholder="ပစ္စည်း သို့မဟုတ် ဆိုင်နာမည်ဖြင့် ရှာဖွေရန်..." class="w-full pl-10 sm:pl-12 pr-3 py-3 bg-slate-100 border border-slate-200 rounded-2xl text-xs sm:text-sm outline-none focus:bg-white focus:border-violet-600 transition font-semibold" />
         <i class="ph ph-magnifying-glass absolute left-3.5 top-3.5 sm:top-4 text-slate-400 text-base sm:text-lg"></i>
       </div>
 
@@ -157,17 +155,17 @@
       <form onsubmit="handleSplitOrderSubmit(event)" class="space-y-4">
         <div>
           <label for="custTownship" class="font-bold block mb-1.5 text-slate-700">📍 ဝယ်သူ မြို့နယ် (Township) ရိုက်ထည့်ပါ *</label>
-          <input type="text" id="custTownship" required oninput="handleCustomerTownshipInput(this.value)" placeholder="ဥပမာ - ရေး၊ မော်လမြိုင်..." class="w-full border p-3 rounded-2xl outline-none bg-slate-50 font-extrabold text-violet-700 text-sm" />
+          <input type="text" id="custTownship" required autocomplete="address-level2" oninput="handleCustomerTownshipInput(this.value)" placeholder="ဥပမာ - ရေး၊ မော်လမြိုင်..." class="w-full border p-3 rounded-2xl outline-none bg-slate-50 font-extrabold text-violet-700 text-sm" />
         </div>
 
         <div id="checkoutPackagesContainer" class="space-y-3 max-h-56 overflow-y-auto pr-1"></div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label for="custName" class="font-bold block mb-1 text-slate-700">ဝယ်သူအမည် *</label><input type="text" id="custName" required class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" /></div>
-          <div><label for="custPhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="custPhone" required class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" /></div>
+          <div><label for="custName" class="font-bold block mb-1 text-slate-700">ဝယ်သူအမည် *</label><input type="text" id="custName" required autocomplete="name" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" /></div>
+          <div><label for="custPhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="custPhone" required autocomplete="tel" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold" /></div>
         </div>
 
-        <div><label for="custAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="custAddress" required rows="2" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold"></textarea></div>
+        <div><label for="custAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="custAddress" required autocomplete="street-address" rows="2" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold"></textarea></div>
 
         <div>
           <label for="custPayment" class="font-bold block mb-1 text-slate-700">ငွေပေးချေမှုစနစ် ရွေးချယ်ရန် *</label>
@@ -198,7 +196,6 @@
         <button type="button" onclick="closeBuyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
       </div>
       
-      <!-- Multiple Images Display -->
       <div class="space-y-3">
         <div class="overflow-hidden rounded-2xl border bg-slate-100"><img id="detailMainImg" src="" alt="Product Detail" class="w-full h-60 sm:h-72 object-cover" /></div>
         <div id="detailThumbnails" class="flex gap-2 overflow-x-auto pb-1"></div>
@@ -239,12 +236,12 @@
 
       <form onsubmit="handleProfileUpdate(event)" class="bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-3">
         <h4 class="font-extrabold text-slate-800">📝 ကိုယ်ရေးအချက်အလက် ပြင်ဆင်ရန်</h4>
-        <div><label for="profileName" class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label><input type="text" id="profileName" required class="w-full border p-3 rounded-xl bg-white outline-none font-semibold" /></div>
+        <div><label for="profileName" class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label><input type="text" id="profileName" required autocomplete="name" class="w-full border p-3 rounded-xl bg-white outline-none font-semibold" /></div>
         <div class="grid grid-cols-2 gap-2.5">
-          <div><label for="profilePhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="profilePhone" required class="w-full border p-3 rounded-xl bg-white outline-none font-semibold" /></div>
-          <div><label for="profileTownship" class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label><input type="text" id="profileTownship" class="w-full border p-3 rounded-xl bg-white outline-none font-semibold" /></div>
+          <div><label for="profilePhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label><input type="tel" id="profilePhone" required autocomplete="tel" class="w-full border p-3 rounded-xl bg-white outline-none font-semibold" /></div>
+          <div><label for="profileTownship" class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label><input type="text" id="profileTownship" autocomplete="address-level2" class="w-full border p-3 rounded-xl bg-white outline-none font-semibold" /></div>
         </div>
-        <div><label for="profileAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="profileAddress" rows="2" class="w-full border p-3 rounded-xl bg-white outline-none font-semibold"></textarea></div>
+        <div><label for="profileAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label><textarea id="profileAddress" autocomplete="street-address" rows="2" class="w-full border p-3 rounded-xl bg-white outline-none font-semibold"></textarea></div>
         <button type="submit" id="updateProfileBtn" class="w-full bg-slate-900 text-white font-extrabold py-3 rounded-xl hover:bg-slate-800 transition cursor-pointer">သိမ်းဆည်းမည်</button>
       </form>
 
@@ -318,16 +315,16 @@
 
       <form onsubmit="handleSellerApplicationSubmit(event)" class="space-y-3.5">
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label for="applyShopName" class="font-bold text-slate-700 block mb-1">ဆိုင်အမည် (Shop Name) *</label><input type="text" id="applyShopName" required placeholder="ဥပမာ - Aura Fashion Store" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" /></div>
-          <div><label for="applyOwnerName" class="font-bold text-slate-700 block mb-1">ဆိုင်ရှင်အမည် (Owner Name) *</label><input type="text" id="applyOwnerName" required placeholder="သင်၏ အမည်အမှန်" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" /></div>
+          <div><label for="applyShopName" class="font-bold text-slate-700 block mb-1">ဆိုင်အမည် (Shop Name) *</label><input type="text" id="applyShopName" required autocomplete="organization" placeholder="ဥပမာ - Aura Fashion Store" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" /></div>
+          <div><label for="applyOwnerName" class="font-bold text-slate-700 block mb-1">ဆိုင်ရှင်အမည် (Owner Name) *</label><input type="text" id="applyOwnerName" required autocomplete="name" placeholder="သင်၏ အမည်အမှန်" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" /></div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label for="applyPhone" class="font-bold text-slate-700 block mb-1">ဖုန်းနံပါတ် *</label><input type="tel" id="applyPhone" required placeholder="09xxxxxxxxx" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" /></div>
-          <div><label for="applyEmail" class="font-bold text-slate-700 block mb-1">အီးမေးလ် *</label><input type="email" id="applyEmail" required placeholder="example@gmail.com" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" /></div>
+          <div><label for="applyPhone" class="font-bold text-slate-700 block mb-1">ဖုန်းနံပါတ် *</label><input type="tel" id="applyPhone" required autocomplete="tel" placeholder="09xxxxxxxxx" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" /></div>
+          <div><label for="applyEmail" class="font-bold text-slate-700 block mb-1">အီးမေးလ် *</label><input type="email" id="applyEmail" required autocomplete="email" placeholder="example@gmail.com" class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" /></div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div><label for="applyBusinessType" class="font-bold text-slate-700 block mb-1">လုပ်ငန်းအမျိုးအစား *</label><input type="text" id="applyBusinessType" required placeholder="ဥပမာ - အဝတ်အထည်..." class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" /></div>
-          <div><label for="applyAddress" class="font-bold text-slate-700 block mb-1">ဆိုင်လိပ်စာ *</label><input type="text" id="applyAddress" required placeholder="မြို့နယ်၊ လမ်းအမည်..." class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" /></div>
+          <div><label for="applyBusinessType" class="font-bold text-slate-700 block mb-1">လုပ်ငန်းအမျိုးအစား *</label><input type="text" id="applyBusinessType" required autocomplete="off" placeholder="ဥပမာ - အဝတ်အထည်..." class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" /></div>
+          <div><label for="applyAddress" class="font-bold text-slate-700 block mb-1">ဆိုင်လိပ်စာ *</label><input type="text" id="applyAddress" required autocomplete="street-address" placeholder="မြို့နယ်၊ လမ်းအမည်..." class="w-full border p-3 rounded-xl bg-slate-50 outline-none font-semibold" /></div>
         </div>
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div><label for="applyShopLogoFile" class="font-bold text-slate-700 block mb-1">ဆိုင် Logo</label><input type="file" id="applyShopLogoFile" accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 text-xs cursor-pointer" /></div>
@@ -338,32 +335,17 @@
         <div class="bg-violet-50/50 p-4 rounded-2xl border border-violet-100 space-y-3">
           <h4 class="font-extrabold text-slate-800 text-xs sm:text-sm">💳 ငွေပေးချေမှု အကောင့်များ (အကောင့် ၄ ခု)</h4>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <div><label for="applyPay1" class="font-bold block text-slate-700 mb-0.5 text-xs">1. KBZPay *</label><input type="text" id="applyPay1" required placeholder="09xxxxxxxxx (အမည်)" class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" /></div>
-            <div><label for="applyPay2" class="font-bold block text-slate-700 mb-0.5 text-xs">2. WavePay *</label><input type="text" id="applyPay2" required placeholder="09xxxxxxxxx (အမည်)" class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" /></div>
+            <div><label for="applyPay1" class="font-bold block text-slate-700 mb-0.5 text-xs">1. KBZPay *</label><input type="text" id="applyPay1" required autocomplete="off" placeholder="09xxxxxxxxx (အမည်)" class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" /></div>
+            <div><label for="applyPay2" class="font-bold block text-slate-700 mb-0.5 text-xs">2. WavePay *</label><input type="text" id="applyPay2" required autocomplete="off" placeholder="09xxxxxxxxx (အမည်)" class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" /></div>
           </div>
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-            <div><label for="applyPay3" class="font-bold block text-slate-700 mb-0.5 text-xs">3. အခြား အကောင့်</label><input type="text" id="applyPay3" placeholder="AYA Pay / CB Pay..." class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" /></div>
-            <div><label for="applyPay4" class="font-bold block text-slate-700 mb-0.5 text-xs">4. အခြား အကောင့်</label><input type="text" id="applyPay4" placeholder="Bank Account..." class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" /></div>
+            <div><label for="applyPay3" class="font-bold block text-slate-700 mb-0.5 text-xs">3. အခြား အကောင့်</label><input type="text" id="applyPay3" autocomplete="off" placeholder="AYA Pay / CB Pay..." class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" /></div>
+            <div><label for="applyPay4" class="font-bold block text-slate-700 mb-0.5 text-xs">4. အခြား အကောင့်</label><input type="text" id="applyPay4" autocomplete="off" placeholder="Bank Account..." class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold text-xs" /></div>
           </div>
         </div>
 
         <button type="submit" id="applySubmitBtn" class="w-full bg-gradient-to-r from-violet-600 to-rose-600 text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition cursor-pointer text-sm">ဆိုင်ဖွင့်ရန် လျှောက်ထားလွှာ ပေးပို့မည်</button>
       </form>
-    </div>
-  </div>
-
-  <!-- POLICY MODAL -->
-  <div id="policyModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
-    <div class="bg-white w-full max-w-lg rounded-3xl p-5 sm:p-6 space-y-3 text-xs sm:text-sm shadow-2xl">
-      <div class="flex justify-between items-center border-b pb-3">
-        <h3 class="font-extrabold text-sm sm:text-base text-slate-900">Return & Refund Policy</h3>
-        <button type="button" onclick="closePolicyModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
-      </div>
-      <div class="space-y-2.5 text-slate-600 leading-relaxed text-xs sm:text-sm">
-        <p><b>၁။ Return သက်တမ်း:</b> ပစ္စည်းလက်ခံရရှိပြီး ၃ ရက် (၇၂ နာရီ) အတွင်းသာ Return လျှောက်ထားနိုင်ပါသည်။</p>
-        <p><b>၂။ Unboxing Video:</b> ပါဆယ်စတင်ဖောက်ချိန်မှ ချို့ယွင်းချက်ပြသသည့် ဗီဒီယိုဖိုင် မဖြစ်မနေ လိုအပ်ပါသည်။</p>
-      </div>
-      <button type="button" onclick="closePolicyModal()" class="w-full bg-slate-900 text-white font-bold py-3 rounded-2xl cursor-pointer text-xs">နားလည်ပါသည်</button>
     </div>
   </div>
 
@@ -379,31 +361,31 @@
         <div id="signupExtraFields" class="space-y-3 hidden">
           <div>
             <label for="authName" class="font-bold block mb-1 text-slate-700">အမည်အပြည့်အစုံ *</label>
-            <input type="text" id="authName" placeholder="သင်၏အမည်" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
+            <input type="text" id="authName" autocomplete="name" placeholder="သင်၏အမည်" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
           </div>
           <div class="grid grid-cols-2 gap-2">
             <div>
               <label for="authTownship" class="font-bold block mb-1 text-slate-700">မြို့နယ် *</label>
-              <input type="text" id="authTownship" placeholder="မြို့နယ်" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
+              <input type="text" id="authTownship" autocomplete="address-level2" placeholder="မြို့နယ်" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
             </div>
             <div>
               <label for="authPhone" class="font-bold block mb-1 text-slate-700">ဖုန်းနံပါတ် *</label>
-              <input type="tel" id="authPhone" placeholder="09xxxxxxxxx" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
+              <input type="tel" id="authPhone" autocomplete="tel" placeholder="09xxxxxxxxx" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
             </div>
           </div>
           <div>
             <label for="authAddress" class="font-bold block mb-1 text-slate-700">လိပ်စာ အပြည့်အစုံ *</label>
-            <textarea id="authAddress" rows="2" placeholder="လမ်းအမည်၊ ရပ်ကွက်..." class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs"></textarea>
+            <textarea id="authAddress" rows="2" autocomplete="street-address" placeholder="လမ်းအမည်၊ ရပ်ကွက်..." class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs"></textarea>
           </div>
         </div>
 
         <div>
           <label for="authEmailOrPhone" class="font-bold block mb-1 text-slate-700">Email (သို့) ဖုန်းနံပါတ် *</label>
-          <input type="text" id="authEmailOrPhone" required placeholder="example@gmail.com သို့ ဖုန်းနံပါတ်" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
+          <input type="text" id="authEmailOrPhone" required autocomplete="email" placeholder="example@gmail.com သို့ ဖုန်းနံပါတ်" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
         </div>
         <div>
           <label for="authPassword" class="font-bold block mb-1 text-slate-700">စကားဝှက် *</label>
-          <input type="password" id="authPassword" required placeholder="••••••••" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
+          <input type="password" id="authPassword" required autocomplete="current-password" placeholder="••••••••" class="w-full border p-3 rounded-xl outline-none bg-slate-50 font-semibold text-xs" />
         </div>
 
         <button type="submit" id="authSubmitBtn" class="w-full bg-violet-600 text-white font-bold py-3.5 rounded-2xl shadow-lg cursor-pointer text-sm">အကောင့်ဝင်မည်</button>
