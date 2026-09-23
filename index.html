@@ -545,7 +545,7 @@
                 <img src="${image}" alt="${esc(p.title || p.name)}" class="w-full h-40 sm:h-52 object-cover group-hover:scale-105 transition duration-500" />
                 ${hasDiscount ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-black uppercase shadow">${discountPercent}% OFF</span>` : ''}
                 <span class="absolute top-2.5 right-2.5 bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-bold shadow">📦 ${stock}</span>
-                <div class="absolute bottom-2.5 left-2.5 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-xl flex items-center gap-1.5 shadow">
+                <div class="absolute bottom-2.5 left-2.5 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-xl flex items-center gap-1.5 shadow cursor-pointer hover:bg-white transition" onclick="event.stopPropagation(); location.href='shop.html?id=${shopInfo.id}'">
                   <img src="${toProxyUrl(shopInfo.logo_url || 'https://placehold.co/30')}" class="w-5 h-5 rounded-full object-cover border" />
                   <span class="text-[10px] sm:text-xs font-bold text-slate-900 line-clamp-1">${esc(shopInfo.name || 'Store')}</span>
                 </div>
@@ -582,7 +582,14 @@
       `).join('');
 
       document.getElementById('detailTitle').innerText = product.title || product.name || '';
-      document.getElementById('detailShop').innerText = `ဆိုင်: ${product.shops?.name || 'Aura Store'}`;
+      
+      const shopData = product.shops || {};
+      document.getElementById('detailShop').innerHTML = `
+        <div class="flex items-center gap-1.5 cursor-pointer hover:opacity-80 transition" onclick="location.href='shop.html?id=${shopData.id}'">
+          <img src="${toProxyUrl(shopData.logo_url || 'https://placehold.co/30')}" class="w-5 h-5 rounded-full object-cover border" />
+          <span>ဆိုင်: ${esc(shopData.name || 'Aura Store')} ↗</span>
+        </div>
+      `;
 
       const sizeArea = document.getElementById('sizeSelectionArea');
       if (product.sizes && product.sizes.length) {
@@ -643,7 +650,7 @@
         }
       }
 
-      if (selectedProductForBuy.variant_stocks && chosenColor && chosenSize) {
+      if (selectedProductForBuy.variant_stocks && Array.isArray(selectedProductForBuy.variant_stocks) && chosenColor && chosenSize) {
         const found = selectedProductForBuy.variant_stocks.find(v => v.color === chosenColor && v.size === chosenSize);
         if (found) {
           activeStock = Number(found.stock || 0);
@@ -651,6 +658,7 @@
       }
 
       document.getElementById('detailPriceContainer').innerHTML = `<span class="text-2xl font-black text-rose-600">${activePrice.toLocaleString()} MMK</span>`;
+      
       const stockBadge = document.getElementById('detailStockBadge');
       stockBadge.className = activeStock > 0 ? "px-3 py-1 rounded-xl font-extrabold text-xs bg-emerald-50 text-emerald-700 border border-emerald-200" : "px-3 py-1 rounded-xl font-black text-xs bg-rose-50 text-rose-700 border border-rose-200";
       stockBadge.innerText = activeStock > 0 ? `📦 လက်ကျန်: ${activeStock}` : `❌ ကုန်နေပါသည်`;
