@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Aura Platform - Super Admin Panel</title>
 
-  <!-- GLOBAL URL INTERCEPTOR (Supabase Storage Timeout မဖြစ်စေရန် Proxy သို့ အလိုအလျောက် လွှဲပေးခြင်း) -->
   <script>
     (function() {
       const SUPABASE_ORIGIN = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
@@ -42,7 +41,7 @@
 
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap');
-    body { font-family: 'Padauk', sans-serif; }
+    body { font-family: 'Padauk', sans-serif; font-size: 20px; }
   </style>
 </head>
 
@@ -62,11 +61,11 @@
       <form onsubmit="handleDirectAdminLogin(event)" class="space-y-3 pt-2">
         <div>
           <label for="directAdminEmail" class="block font-bold text-slate-700 mb-1">Admin Email *</label>
-          <input type="email" id="directAdminEmail" required placeholder="admin@aura.com" class="w-full border p-3 rounded-2xl bg-slate-50 outline-none focus:border-amber-500" />
+          <input type="email" id="directAdminEmail" required autocomplete="email" placeholder="admin@aura.com" class="w-full border p-3 rounded-2xl bg-slate-50 outline-none focus:border-amber-500" />
         </div>
         <div>
           <label for="directAdminPassword" class="block font-bold text-slate-700 mb-1">စကားဝှက် (Password) *</label>
-          <input type="password" id="directAdminPassword" required placeholder="••••••••" class="w-full border p-3 rounded-2xl bg-slate-50 outline-none focus:border-amber-500" />
+          <input type="password" id="directAdminPassword" required autocomplete="current-password" placeholder="••••••••" class="w-full border p-3 rounded-2xl bg-slate-50 outline-none focus:border-amber-500" />
         </div>
         <button type="submit" id="directAdminLoginBtn" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-3 rounded-2xl transition shadow">
           အကောင့်ဝင်မည်
@@ -252,12 +251,12 @@
       <div class="bg-white p-5 rounded-xl shadow-sm border">
         <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-store text-amber-500 mr-1"></i> ဆိုင်နှင့် ဆိုင်ရှင်အကောင့် တစ်ခါတည်း ဖွင့်ပေးရန်</h3>
         <form onsubmit="handleCreateSellerAndShop(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-          <div><label for="seller-shop-name" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်အမည် *</label><input type="text" id="seller-shop-name" placeholder="ဆိုင်အမည်" required class="border rounded p-2 w-full text-xs" /></div>
-          <div><label for="seller-name" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်ရှင် အမည် *</label><input type="text" id="seller-name" placeholder="အမည်" required class="border rounded p-2 w-full text-xs" /></div>
-          <div><label for="seller-phone" class="block text-xs font-bold text-slate-700 mb-1">ဖုန်းနံပါတ် *</label><input type="text" id="seller-phone" placeholder="ဖုန်း" required class="border rounded p-2 w-full text-xs" /></div>
-          <div><label for="seller-email" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်ရှင် Login Email *</label><input type="email" id="seller-email" placeholder="Email" required class="border rounded p-2 w-full text-xs" /></div>
-          <div><label for="seller-pass" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်ရှင် Password *</label><input type="password" id="seller-pass" placeholder="အနည်းဆုံး ၆ လုံး" required class="border rounded p-2 w-full text-xs" /></div>
-          <div><label for="seller-commission" class="block text-xs font-bold text-slate-700 mb-1">Platform ကော်မရှင် (%) *</label><input type="number" id="seller-commission" value="5" min="0" max="100" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="seller-shop-name" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်အမည် *</label><input type="text" id="seller-shop-name" autocomplete="organization" placeholder="ဆိုင်အမည်" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="seller-name" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်ရှင် အမည် *</label><input type="text" id="seller-name" autocomplete="name" placeholder="အမည်" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="seller-phone" class="block text-xs font-bold text-slate-700 mb-1">ဖုန်းနံပါတ် *</label><input type="tel" id="seller-phone" autocomplete="tel" placeholder="ဖုန်း" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="seller-email" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်ရှင် Login Email *</label><input type="email" id="seller-email" autocomplete="email" placeholder="Email" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="seller-pass" class="block text-xs font-bold text-slate-700 mb-1">ဆိုင်ရှင် Password *</label><input type="password" id="seller-pass" autocomplete="new-password" placeholder="အနည်းဆုံး ၆ လုံး" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="seller-commission" class="block text-xs font-bold text-slate-700 mb-1">Platform ကော်မရှင် (%) *</label><input type="number" id="seller-commission" autocomplete="off" value="5" min="0" max="100" required class="border rounded p-2 w-full text-xs" /></div>
           <button type="submit" id="createSellerBtn" class="sm:col-span-3 bg-slate-900 text-white rounded p-2.5 font-bold hover:bg-slate-800 transition">ဆိုင်နှင့် အကောင့် အတည်ပြုဖွင့်လှစ်မည်</button>
         </form>
       </div>
@@ -298,7 +297,7 @@
       <div class="bg-white p-5 rounded-xl shadow-sm border">
         <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-image text-amber-500 mr-1"></i> Banner ပုံအသစ် တင်ရန်</h3>
         <form onsubmit="handleAddBanner(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-sm">
-          <div><label for="banner-title" class="block text-xs font-bold text-slate-700 mb-1">ခေါင်းစဉ် *</label><input type="text" id="banner-title" placeholder="ခေါင်းစဉ်" class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="banner-title" class="block text-xs font-bold text-slate-700 mb-1">ခေါင်းစဉ် *</label><input type="text" id="banner-title" autocomplete="off" placeholder="ခေါင်းစဉ်" class="border rounded p-2 w-full text-xs" /></div>
           <div><label for="banner-file" class="block text-xs font-bold text-slate-700 mb-1">ပုံဖိုင် *</label><input type="file" id="banner-file" accept="image/*" required class="border rounded p-1.5 w-full bg-white text-xs cursor-pointer" /></div>
           <div class="flex items-end"><button type="submit" id="bannerSubmitBtn" class="bg-slate-900 text-white rounded p-2 font-bold w-full hover:bg-slate-800">Banner တင်မည်</button></div>
         </form>
@@ -311,9 +310,9 @@
       <div class="bg-white p-5 rounded-xl shadow-sm border">
         <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-credit-card text-amber-500 mr-1"></i> Payment အကောင့်အသစ် ထည့်ရန်</h3>
         <form onsubmit="handleAddPayment(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-sm">
-          <div><label for="pay-provider" class="block text-xs font-bold text-slate-700 mb-1">Provider *</label><input type="text" id="pay-provider" placeholder="KBZPay / Wave" required class="border rounded p-2 w-full text-xs" /></div>
-          <div><label for="pay-name" class="block text-xs font-bold text-slate-700 mb-1">အမည် *</label><input type="text" id="pay-name" placeholder="အမည်" required class="border rounded p-2 w-full text-xs" /></div>
-          <div><label for="pay-number" class="block text-xs font-bold text-slate-700 mb-1">နံပါတ် *</label><input type="text" id="pay-number" placeholder="နံပါတ်" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="pay-provider" class="block text-xs font-bold text-slate-700 mb-1">Provider *</label><input type="text" id="pay-provider" autocomplete="off" placeholder="KBZPay / Wave" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="pay-name" class="block text-xs font-bold text-slate-700 mb-1">အမည် *</label><input type="text" id="pay-name" autocomplete="name" placeholder="အမည်" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="pay-number" class="block text-xs font-bold text-slate-700 mb-1">နံပါတ် *</label><input type="text" id="pay-number" autocomplete="off" placeholder="နံပါတ်" required class="border rounded p-2 w-full text-xs" /></div>
           <div class="flex items-end"><button type="submit" id="paymentSubmitBtn" class="bg-slate-900 text-white rounded p-2 font-bold w-full hover:bg-slate-800">ထည့်သွင်းမည်</button></div>
         </form>
       </div>
@@ -330,9 +329,9 @@
       <div class="bg-white p-5 rounded-xl shadow-sm border">
         <h3 class="text-base font-bold text-slate-800 mb-3"><i class="fa-solid fa-tags text-amber-500 mr-1"></i> Coupon အသစ်ဖန်တီးရန်</h3>
         <form onsubmit="handleAddCoupon(event)" class="grid grid-cols-1 sm:grid-cols-4 gap-3 text-sm">
-          <div><label for="coupon-code" class="block text-xs font-bold text-slate-700 mb-1">ကုဒ် *</label><input type="text" id="coupon-code" placeholder="ကုဒ်" required class="border rounded p-2 uppercase w-full text-xs" /></div>
-          <div><label for="coupon-discount" class="block text-xs font-bold text-slate-700 mb-1">လျှော့ငွေ *</label><input type="number" id="coupon-discount" placeholder="လျှော့ငွေ" required class="border rounded p-2 w-full text-xs" /></div>
-          <div><label for="coupon-min" class="block text-xs font-bold text-slate-700 mb-1">အနည်းဆုံးဝယ်ငွေ *</label><input type="number" id="coupon-min" value="0" class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="coupon-code" class="block text-xs font-bold text-slate-700 mb-1">ကုဒ် *</label><input type="text" id="coupon-code" autocomplete="off" placeholder="ကုဒ်" required class="border rounded p-2 uppercase w-full text-xs" /></div>
+          <div><label for="coupon-discount" class="block text-xs font-bold text-slate-700 mb-1">လျှော့ငွေ *</label><input type="number" id="coupon-discount" autocomplete="off" placeholder="လျှော့ငွေ" required class="border rounded p-2 w-full text-xs" /></div>
+          <div><label for="coupon-min" class="block text-xs font-bold text-slate-700 mb-1">အနည်းဆုံးဝယ်ငွေ *</label><input type="number" id="coupon-min" autocomplete="off" value="0" class="border rounded p-2 w-full text-xs" /></div>
           <div class="flex items-end"><button type="submit" id="couponSubmitBtn" class="bg-slate-900 text-white rounded p-2 font-bold w-full hover:bg-slate-800">ကူပွန်ထုတ်မည်</button></div>
         </form>
       </div>
