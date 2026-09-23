@@ -1084,12 +1084,19 @@
         }
 
         container.innerHTML = orders.map((o) => {
-          const status = o.status || 'pending';
+          const shopOrders = o.shop_orders || [];
+          const isAllCompleted = shopOrders.length > 0 && shopOrders.every(so => so.status === 'completed');
+          const isAnyShipping = shopOrders.some(so => so.status === 'shipping');
+          
+          let displayStatus = o.status || 'pending';
+          if (isAllCompleted) displayStatus = 'completed';
+          else if (isAnyShipping) displayStatus = 'shipping';
+
           return `
             <div class="bg-slate-50 border border-slate-200 rounded-2xl p-3.5 space-y-2 text-xs sm:text-sm">
               <div class="flex justify-between items-center">
                 <span class="font-mono font-bold text-violet-700">Order #${o.id}</span>
-                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${status === 'completed' ? 'bg-emerald-50 text-emerald-600' : status === 'cancelled' ? 'bg-rose-50 text-rose-600' : 'bg-indigo-50 text-indigo-600'}">${status}</span>
+                <span class="px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase ${displayStatus === 'completed' ? 'bg-emerald-50 text-emerald-600' : displayStatus === 'shipping' ? 'bg-indigo-50 text-indigo-600' : displayStatus === 'cancelled' ? 'bg-rose-50 text-rose-600' : 'bg-amber-50 text-amber-600'}">${displayStatus}</span>
               </div>
               <div class="flex justify-between items-center border-t pt-2 text-slate-700 font-semibold">
                 <span>ကျသင့်ငွေ: <b class="text-slate-900">${Number(o.total_amount || 0).toLocaleString()} MMK</b></span>
@@ -1194,11 +1201,12 @@
       }).join('');
 
       const returnContainer = document.getElementById('returnRequestContainer');
+      const hasCompletedPackage = shopOrders.some(so => so.status === 'completed' || so.status === 'shipping');
       const orderCompletedTime = new Date(order.updated_at || order.created_at);
       const hoursPassed = (new Date() - orderCompletedTime) / (1000 * 60 * 60);
       const isWithin48Hours = hoursPassed <= 48;
 
-      if ((status === 'completed' || status === 'shipping') && isWithin48Hours) {
+      if (hasCompletedPackage && isWithin48Hours) {
         returnContainer.innerHTML = `
           <div class="bg-rose-50 border border-rose-200 rounded-2xl p-4 space-y-3 mt-4 text-xs">
             <h4 class="font-extrabold text-rose-800 text-sm flex items-center gap-1.5">
@@ -1233,7 +1241,7 @@
             </form>
           </div>
         `;
-      } else if (!isWithin48Hours && (status === 'completed')) {
+      } else if (!isWithin48Hours) {
         returnContainer.innerHTML = `
           <div class="bg-slate-100 border border-slate-200 rounded-2xl p-3 mt-4 text-xs text-slate-500 font-semibold text-center">
             ⏳ ပစ္စည်းလက်ခံရရှိပြီး ၄၈ နာရီကျော်လွန်သွားပြီဖြစ်သောကြောင့် Return တောင်းဆိုခွင့် ကုန်ဆုံးသွားပါပြီ။
