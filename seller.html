@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Aura Platform - Seller Center Dashboard</title>
 
-  <!-- Global Reverse Proxy URL Rewriter -->
   <script>
     (function() {
       const SUPABASE_ORIGIN = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
@@ -42,14 +41,13 @@
     })();
   </script>
 
-  <!-- Tailwind CSS Production CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap');
-    body { font-family: 'Padauk', sans-serif; font-size: 19px; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Padauk', sans-serif; font-size: 20px; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; }
   </style>
 </head>
 <body class="pb-24">
@@ -68,11 +66,11 @@
       <form onsubmit="handleSellerDirectLogin(event)" class="space-y-3.5">
         <div>
           <label class="font-bold text-slate-700 block mb-1 text-xs">Seller Email *</label>
-          <input type="email" id="sellerEmail" required placeholder="seller@aura.com" class="w-full px-4 py-3 border border-slate-200 rounded-2xl outline-none bg-slate-50 font-semibold text-sm" />
+          <input type="email" id="sellerEmail" required autocomplete="email" placeholder="seller@aura.com" class="w-full px-4 py-3 border border-slate-200 rounded-2xl outline-none bg-slate-50 font-semibold text-sm" />
         </div>
         <div>
           <label class="font-bold text-slate-700 block mb-1 text-xs">စကားဝှက် (Password) *</label>
-          <input type="password" id="sellerPassword" required placeholder="••••••••" class="w-full px-4 py-3 border border-slate-200 rounded-2xl outline-none bg-slate-50 font-semibold text-sm" />
+          <input type="password" id="sellerPassword" required autocomplete="current-password" placeholder="••••••••" class="w-full px-4 py-3 border border-slate-200 rounded-2xl outline-none bg-slate-50 font-semibold text-sm" />
         </div>
         <button type="submit" id="sellerLoginBtn" class="w-full bg-slate-900 hover:bg-violet-700 text-white font-extrabold py-3.5 rounded-2xl shadow-lg transition text-sm cursor-pointer">လော့ဂ်အင် ဝင်မည်</button>
       </form>
@@ -164,19 +162,19 @@
       <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-xs border border-slate-200 space-y-3.5">
         <h3 class="text-sm sm:text-base font-extrabold text-slate-900 border-b pb-2"><i class="fa-solid fa-plus-circle text-violet-600 mr-1.5"></i> ကုန်ပစ္စည်း အသစ်တင်ရန် (ဓာတ်ပုံ ၅ ပုံအထိ နှင့် Matrix Table)</h3>
         <form onsubmit="handleSellerAddProduct(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs sm:text-sm">
-          <div class="sm:col-span-2"><label class="block font-bold text-slate-700 mb-1">ပစ္စည်းအမည် *</label><input type="text" id="prod-name" required placeholder="ပစ္စည်းအမည်..." class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
-          <div><label class="block font-bold text-slate-700 mb-1">စုစုပေါင်း လက်ကျန် Stock *</label><input type="number" id="prod-stock" value="10" required class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
+          <div class="sm:col-span-2"><label class="block font-bold text-slate-700 mb-1">ပစ္စည်းအမည် *</label><input type="text" id="prod-name" required autocomplete="off" placeholder="ပစ္စည်းအမည်..." class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
+          <div><label class="block font-bold text-slate-700 mb-1">စုစုပေါင်း လက်ကျန် Stock *</label><input type="number" id="prod-stock" value="10" required autocomplete="off" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
           
-          <div><label class="block font-bold text-slate-700 mb-1">မူရင်းစျေး (Original Price - MMK) *</label><input type="number" id="prod-price" required placeholder="ဥပမာ - 25000" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold text-rose-600" /></div>
-          <div><label class="block font-bold text-slate-700 mb-1">လျှော့ဈေး / Flash Sale (Promotion Price)</label><input type="number" id="prod-flash-price" placeholder="မရှိလျှင် ကွက်လပ်ထားပါ" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold text-emerald-600" /></div>
+          <div><label class="block font-bold text-slate-700 mb-1">မူရင်းစျေး (Original Price - MMK) *</label><input type="number" id="prod-price" required autocomplete="off" placeholder="ဥပမာ - 25000" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold text-rose-600" /></div>
+          <div><label class="block font-bold text-slate-700 mb-1">လျှော့ဈေး / Flash Sale (Promotion Price)</label><input type="number" id="prod-flash-price" autocomplete="off" placeholder="မရှိလျှင် ကွက်လပ်ထားပါ" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold text-emerald-600" /></div>
           <div>
             <label class="block font-bold text-slate-700 mb-1">ဓာတ်ပုံများ (အများဆုံး ၅ ပုံ) *</label>
             <input type="file" id="prod-files" accept="image/*" multiple required class="border p-2 rounded-xl w-full bg-slate-50 text-xs cursor-pointer" />
             <span class="text-[10px] text-slate-400 font-medium">ပုံများစွာကို တစ်ခါတည်း ရွေးချယ်နိုင်သည် (Max: 5)</span>
           </div>
 
-          <div><label class="block font-bold text-slate-700 mb-1">Sizes (ကော်မာခံရေးပါ)</label><input type="text" id="prod-sizes" oninput="generateMatrixTable()" placeholder="S, M, L, XL" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
-          <div><label class="block font-bold text-slate-700 mb-1">Colors (ကော်မာခံရေးပါ)</label><input type="text" id="prod-colors" oninput="generateMatrixTable()" placeholder="Red, Black, White" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
+          <div><label class="block font-bold text-slate-700 mb-1">Sizes (ကော်မာခံရေးပါ)</label><input type="text" id="prod-sizes" autocomplete="off" oninput="generateMatrixTable()" placeholder="S, M, L, XL" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
+          <div><label class="block font-bold text-slate-700 mb-1">Colors (ကော်မာခံရေးပါ)</label><input type="text" id="prod-colors" autocomplete="off" oninput="generateMatrixTable()" placeholder="Red, Black, White" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
           
           <!-- MATRIX TABLE CONTAINER -->
           <div class="sm:col-span-3 bg-slate-50 p-4 rounded-2xl border border-slate-200 space-y-2.5">
@@ -207,7 +205,7 @@
       <div class="bg-white p-4 sm:p-6 rounded-2xl sm:rounded-3xl shadow-xs border border-slate-200">
         <h3 class="text-sm sm:text-base font-extrabold text-slate-800 mb-3"><i class="fa-solid fa-image text-violet-600 mr-1.5"></i> ဆိုင်ခွဲအတွက် Banner အသစ်တင်ရန်</h3>
         <form onsubmit="handleSellerAddBanner(event)" class="grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs sm:text-sm">
-          <div><label class="block font-bold text-slate-700 mb-1">Banner ခေါင်းစဉ်</label><input type="text" id="banner-title" placeholder="ပရိုမိုးရှင်း ခေါင်းစဉ်" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
+          <div><label class="block font-bold text-slate-700 mb-1">Banner ခေါင်းစဉ်</label><input type="text" id="banner-title" autocomplete="off" placeholder="ပရိုမိုးရှင်း ခေါင်းစဉ်" class="border p-3 rounded-xl w-full outline-none bg-slate-50 font-semibold" /></div>
           <div><label class="block font-bold text-slate-700 mb-1">Banner ဓာတ်ပုံ *</label><input type="file" id="banner-file" accept="image/*" required class="border p-2 rounded-xl w-full bg-slate-50 text-xs cursor-pointer" /></div>
           <div class="flex items-end"><button type="submit" id="saveBannerBtn" class="bg-slate-900 text-white rounded-xl p-3 font-extrabold w-full hover:bg-slate-800 cursor-pointer">Banner တင်မည်</button></div>
         </form>
@@ -252,17 +250,17 @@
       <form onsubmit="handleSaveSellerSettings(event)" class="bg-white p-6 rounded-3xl shadow-xs border border-slate-200 space-y-4 text-xs sm:text-sm">
         <h3 class="font-extrabold text-slate-900 text-base border-b pb-2">ဆိုင်ခွဲ အချက်အလက်၊ ပို့ခ နှင့် Notice Board</h3>
         
-        <div><label class="font-bold block mb-1 text-slate-700">ဆိုင်အမည် *</label><input type="text" id="shopNameInput" required class="w-full border p-3 rounded-xl bg-slate-50 font-semibold" /></div>
-        <div><label class="font-bold block mb-1 text-slate-700">ဆိုင်ရှင် ဆက်သွယ်ရန် ဖုန်းနံပါတ် *</label><input type="tel" id="shopPhoneInput" required class="w-full border p-3 rounded-xl bg-slate-50 font-semibold" /></div>
+        <div><label class="font-bold block mb-1 text-slate-700">ဆိုင်အမည် *</label><input type="text" id="shopNameInput" required autocomplete="organization" class="w-full border p-3 rounded-xl bg-slate-50 font-semibold" /></div>
+        <div><label class="font-bold block mb-1 text-slate-700">ဆိုင်ရှင် ဆက်သွယ်ရန် ဖုန်းနံပါတ် *</label><input type="tel" id="shopPhoneInput" required autocomplete="tel" class="w-full border p-3 rounded-xl bg-slate-50 font-semibold" /></div>
 
         <div class="grid grid-cols-2 gap-3">
-          <div><label class="font-bold block mb-1 text-slate-700">မြို့တွင်း ပို့ခ (Ks)</label><input type="number" id="shopShipFeeInput" class="w-full border p-3 rounded-xl bg-slate-50 font-semibold" /></div>
-          <div><label class="font-bold block mb-1 text-slate-700">နယ်ဝေး ဂိတ်တင်ခ (Ks)</label><input type="number" id="shopGateFeeInput" class="w-full border p-3 rounded-xl bg-slate-50 font-semibold" /></div>
+          <div><label class="font-bold block mb-1 text-slate-700">မြို့တွင်း ပို့ခ (Ks)</label><input type="number" id="shopShipFeeInput" autocomplete="off" class="w-full border p-3 rounded-xl bg-slate-50 font-semibold" /></div>
+          <div><label class="font-bold block mb-1 text-slate-700">နယ်ဝေး ဂိတ်တင်ခ (Ks)</label><input type="number" id="shopGateFeeInput" autocomplete="off" class="w-full border p-3 rounded-xl bg-slate-50 font-semibold" /></div>
         </div>
 
-        <div><label class="font-bold block mb-1 text-slate-700">ဆိုင်တည်ရှိရာ မြို့နယ် *</label><input type="text" id="shopTownshipInput" required class="w-full border p-3 rounded-xl bg-slate-50 font-bold text-violet-700" /></div>
-        <div><label class="font-bold block mb-1 text-slate-700">ဆိုင်လိပ်စာ အပြည့်အစုံ</label><textarea id="shopAddressInput" rows="2" class="w-full border p-3 rounded-xl bg-slate-50 font-semibold"></textarea></div>
-        <div><label class="font-bold block mb-1 text-slate-700">📢 ဆိုင် Notice Board</label><textarea id="shopNoticeBoardInput" rows="3" class="w-full border p-3 rounded-xl bg-slate-50 font-semibold"></textarea></div>
+        <div><label class="font-bold block mb-1 text-slate-700">ဆိုင်တည်ရှိရာ မြို့နယ် *</label><input type="text" id="shopTownshipInput" required autocomplete="address-level2" class="w-full border p-3 rounded-xl bg-slate-50 font-bold text-violet-700" /></div>
+        <div><label class="font-bold block mb-1 text-slate-700">ဆိုင်လိပ်စာ အပြည့်အစုံ</label><textarea id="shopAddressInput" rows="2" autocomplete="street-address" class="w-full border p-3 rounded-xl bg-slate-50 font-semibold"></textarea></div>
+        <div><label class="font-bold block mb-1 text-slate-700">📢 ဆိုင် Notice Board</label><textarea id="shopNoticeBoardInput" rows="3" autocomplete="off" class="w-full border p-3 rounded-xl bg-slate-50 font-semibold"></textarea></div>
 
         <button type="submit" id="saveSettingBtn" class="w-full bg-violet-600 hover:bg-violet-700 text-white font-extrabold py-3.5 rounded-2xl transition cursor-pointer text-sm">အချက်အလက်များ သိမ်းဆည်းမည်</button>
       </form>
@@ -279,9 +277,9 @@
       </div>
       <form onsubmit="handleConfirmShipWithTracking(event)" class="space-y-3">
         <input type="hidden" id="ship-target-id" />
-        <div><label class="font-bold block mb-1">Deli / ကားဂိတ် အမည် *</label><input type="text" id="ship-courier-name" required placeholder="ဥပမာ - Royal Express" class="w-full border p-3 rounded-xl font-semibold" /></div>
-        <div><label class="font-bold block mb-1">Waybill / ဘောက်ချာကုဒ် *</label><input type="text" id="ship-tracking-code" required placeholder="ဥပမာ - RYL-9042" class="w-full border p-3 rounded-xl font-mono font-bold" /></div>
-        <div><label class="font-bold block mb-1">ဂိတ်ဖုန်းနံပါတ်</label><input type="tel" id="ship-courier-phone" placeholder="09xxxxxxxxx" class="w-full border p-3 rounded-xl font-semibold" /></div>
+        <div><label class="font-bold block mb-1">Deli / ကားဂိတ် အမည် *</label><input type="text" id="ship-courier-name" required autocomplete="off" placeholder="ဥပမာ - Royal Express" class="w-full border p-3 rounded-xl font-semibold" /></div>
+        <div><label class="font-bold block mb-1">Waybill / ဘောက်ချာကုဒ် *</label><input type="text" id="ship-tracking-code" required autocomplete="off" placeholder="ဥပမာ - RYL-9042" class="w-full border p-3 rounded-xl font-mono font-bold" /></div>
+        <div><label class="font-bold block mb-1">ဂိတ်ဖုန်းနံပါတ်</label><input type="tel" id="ship-courier-phone" autocomplete="tel" placeholder="09xxxxxxxxx" class="w-full border p-3 rounded-xl font-semibold" /></div>
         <div><label class="font-bold block mb-1">ဘောက်ချာပုံ (ဓာတ်ပုံ)</label><input type="file" id="ship-waybill-file" accept="image/*" class="w-full border p-2 rounded-xl bg-slate-50 text-xs" /></div>
         <button type="submit" id="btnConfirmShip" class="w-full bg-violet-600 text-white font-extrabold py-3.5 rounded-2xl hover:bg-violet-700 cursor-pointer text-sm">ပါဆယ်ပို့ဆောင်မှု အတည်ပြုမည်</button>
       </form>
@@ -297,16 +295,16 @@
       </div>
       <form onsubmit="handleSaveEditProduct(event)" class="space-y-3">
         <input type="hidden" id="edit-prod-id" />
-        <div><label class="font-bold block mb-1">ပစ္စည်းအမည် *</label><input type="text" id="edit-prod-title" required class="w-full border p-3 rounded-xl font-semibold" /></div>
+        <div><label class="font-bold block mb-1">ပစ္စည်းအမည် *</label><input type="text" id="edit-prod-title" required autocomplete="off" class="w-full border p-3 rounded-xl font-semibold" /></div>
         <div class="grid grid-cols-2 gap-2.5">
-          <div><label class="font-bold block mb-1">မူရင်းဈေး (Ks) *</label><input type="number" id="edit-prod-price" required class="w-full border p-3 rounded-xl font-semibold text-rose-600" /></div>
-          <div><label class="font-bold block mb-1">လျှော့ဈေး (Flash Price)</label><input type="number" id="edit-prod-flash-price" class="w-full border p-3 rounded-xl font-semibold text-emerald-600" /></div>
+          <div><label class="font-bold block mb-1">မူရင်းဈေး (Ks) *</label><input type="number" id="edit-prod-price" required autocomplete="off" class="w-full border p-3 rounded-xl font-semibold text-rose-600" /></div>
+          <div><label class="font-bold block mb-1">လျှော့ဈေး (Flash Price)</label><input type="number" id="edit-prod-flash-price" autocomplete="off" class="w-full border p-3 rounded-xl font-semibold text-emerald-600" /></div>
         </div>
         <div class="grid grid-cols-2 gap-2.5">
-          <div><label class="font-bold block mb-1">လက်ကျန် Stock *</label><input type="number" id="edit-prod-stock" required class="w-full border p-3 rounded-xl font-semibold" /></div>
-          <div><label class="font-bold block mb-1">Sizes</label><input type="text" id="edit-prod-sizes" class="w-full border p-3 rounded-xl font-semibold" /></div>
+          <div><label class="font-bold block mb-1">လက်ကျန် Stock *</label><input type="number" id="edit-prod-stock" required autocomplete="off" class="w-full border p-3 rounded-xl font-semibold" /></div>
+          <div><label class="font-bold block mb-1">Sizes</label><input type="text" id="edit-prod-sizes" autocomplete="off" class="w-full border p-3 rounded-xl font-semibold" /></div>
         </div>
-        <div><label class="font-bold block mb-1">Colors</label><input type="text" id="edit-prod-colors" class="w-full border p-3 rounded-xl font-semibold" /></div>
+        <div><label class="font-bold block mb-1">Colors</label><input type="text" id="edit-prod-colors" autocomplete="off" class="w-full border p-3 rounded-xl font-semibold" /></div>
         <button type="submit" id="saveEditProdBtn" class="w-full bg-slate-900 text-white font-extrabold py-3.5 rounded-2xl hover:bg-slate-800 cursor-pointer text-sm">ပြင်ဆင်မှု သိမ်းဆည်းမည်</button>
       </form>
     </div>
@@ -324,7 +322,6 @@
       return String(value ?? '').replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
     }
 
-    // MATRIX TABLE GENERATOR
     function generateMatrixTable() {
       const sizesInput = document.getElementById('prod-sizes').value.trim();
       const colorsInput = document.getElementById('prod-colors').value.trim();
@@ -546,7 +543,6 @@
       }
     }
 
-    // PRODUCTS CRUD (Matrix Stock & Price Support)
     async function loadSellerProducts() {
       if (!currentShop) return;
       const tbody = document.getElementById('seller-products-tbody');
@@ -697,7 +693,6 @@
       loadSellerProducts();
     }
 
-    // BANNERS
     async function loadSellerBanners() {
       if (!currentShop) return;
       const container = document.getElementById('seller-banners-container');
@@ -745,7 +740,6 @@
       loadSellerBanners();
     }
 
-    // RETURNS TAB
     async function loadSellerReturns() {
       if (!currentShop) return;
       const tbody = document.getElementById('seller-returns-tbody');
@@ -771,7 +765,6 @@
       }).join('');
     }
 
-    // PAYOUTS TAB
     async function loadSellerPayouts() {
       if (!currentShop) return;
       const tbody = document.getElementById('seller-payouts-tbody');
