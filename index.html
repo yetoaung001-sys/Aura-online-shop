@@ -224,7 +224,6 @@
         <input id="buyQty" type="number" min="1" value="1" class="w-full border bg-slate-50 p-3 rounded-xl outline-none font-extrabold text-slate-800 text-sm" />
       </div>
 
-      <!-- STAR RATING SECTION -->
       <div class="border-t pt-3 space-y-1.5">
         <span class="font-bold text-slate-700 text-xs block">⭐ ဤပစ္စည်းကို အဆင့်သတ်မှတ်ရန်:</span>
         <div id="starRatingContainer" class="flex gap-1 text-lg text-slate-300 cursor-pointer">
@@ -1137,7 +1136,12 @@
         const pStatus = so.status || 'pending';
         const items = Array.isArray(so.items) ? so.items : [];
 
-        const callShopBtn = shop.phone ? '<a href="tel:' + esc(shop.phone) + '" class="bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-xl font-bold text-xs flex items-center gap-1"><i class="ph-bold ph-phone-call"></i> ခေါ်မည်</a>' : '';
+        const orderDate = new Date(order.created_at);
+        const estStart = new Date(orderDate); estStart.setDate(orderDate.getDate() + 2);
+        const estEnd = new Date(orderDate); estEnd.setDate(orderDate.getDate() + 5);
+        const estDateStr = `${estStart.toLocaleDateString()} - ${estEnd.toLocaleDateString()}`;
+
+        const callShopBtn = shop.phone ? '<a href="tel:' + esc(shop.phone) + '" class="bg-emerald-50 text-emerald-700 px-2.5 py-1 rounded-xl font-bold text-xs flex items-center gap-1"><i class="ph-bold ph-phone-call"></i> ဆိုင်သို့ခေါ်မည်</a>' : '';
 
         const itemsHtml = items.map(it => `
           <div class="flex justify-between items-center text-xs">
@@ -1147,23 +1151,28 @@
         `).join('');
 
         const courierHtml = so.courier_name ? `
-          <div class="bg-indigo-50 p-2.5 rounded-xl border border-indigo-100 text-xs space-y-1">
-            <div><b>စနစ်:</b> ${esc(so.courier_name)} | <b>Waybill:</b> ${esc(so.tracking_code || '-')}</div>
-            ${so.courier_phone ? `<div><b>ဂိတ်ဖုန်း:</b> <a href="tel:${esc(so.courier_phone)}" class="text-indigo-600 underline font-bold">${esc(so.courier_phone)}</a></div>` : ''}
+          <div class="bg-indigo-50 p-3 rounded-2xl border border-indigo-100 text-xs space-y-1.5 mt-2">
+            <div class="font-extrabold text-indigo-900 flex items-center gap-1">
+              <i class="ph-bold ph-truck"></i> ပို့ဆောင်ရေး အချက်အလက် (Courier / Gate)
+            </div>
+            <div><b>ဂိတ်/Deli အမည်:</b> ${esc(so.courier_name)}</div>
+            <div><b>Waybill / Tracking Code:</b> <span class="font-mono bg-white px-2 py-0.5 rounded border text-indigo-700 font-bold">${esc(so.tracking_code || '-')}</span></div>
+            ${so.courier_phone ? `<div><b>ဂိတ်ဖုန်းနံပါတ်:</b> <a href="tel:${esc(so.courier_phone)}" class="text-indigo-600 underline font-bold">${esc(so.courier_phone)}</a></div>` : ''}
+            ${so.waybill_image ? `<div class="pt-1"><a href="${esc(so.waybill_image)}" target="_blank" class="text-indigo-700 underline font-bold text-[11px]">📄 ပို့ဆောင်ရေး ဘောက်ချာပုံကြည့်ရန်</a></div>` : ''}
           </div>
-        ` : '';
+        ` : `<div class="text-[11px] text-amber-600 bg-amber-50 p-2 rounded-xl mt-2 font-semibold">⏳ ပါဆယ်ဂိတ်တင်ရန် စီစဉ်ဆဲဖြစ်ပါသည်</div>`;
 
         const confirmBtnHtml = (pStatus === 'shipping') ? `
-          <button type="button" onclick="handleConfirmPackageReceived(${so.id})" class="w-full bg-emerald-600 text-white font-extrabold py-2.5 rounded-xl text-xs cursor-pointer shadow-xs">
-            ✅ ပစ္စည်းလက်ခံရရှိပါပြီ
+          <button type="button" onclick="handleConfirmPackageReceived(${so.id})" class="w-full bg-emerald-600 text-white font-extrabold py-2.5 rounded-xl text-xs cursor-pointer shadow-xs mt-2">
+            ✅ ပစ္စည်းလက်ခံရရှိပါပြီ (Complete Order)
           </button>
         ` : '';
 
         return `
-          <div class="bg-white rounded-2xl border border-slate-200 p-3.5 space-y-2.5">
+          <div class="bg-white rounded-2xl border border-slate-200 p-4 space-y-2.5 shadow-xs">
             <div class="flex justify-between items-center border-b pb-2 text-xs sm:text-sm">
               <div>
-                <span class="bg-violet-100 text-violet-700 font-extrabold px-2 py-0.5 rounded text-[10px]">Pkg ${idx + 1}</span>
+                <span class="bg-violet-100 text-violet-700 font-extrabold px-2 py-0.5 rounded text-[10px]">Package ${idx + 1}</span>
                 <span class="font-extrabold text-slate-900 ml-1.5">${esc(shop.name || 'Store')}</span>
               </div>
               <div class="flex items-center gap-1.5">
@@ -1171,15 +1180,106 @@
                 <span class="px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase ${pStatus === 'completed' ? 'bg-emerald-50 text-emerald-700' : 'bg-indigo-50 text-indigo-700'}">${pStatus}</span>
               </div>
             </div>
+            
             <div class="space-y-1">${itemsHtml}</div>
+            
+            <div class="text-[11px] text-slate-500 font-medium bg-slate-50 p-2 rounded-xl">
+              🕒 ခန့်မှန်းရောက်ရှိမည့်ကြာချိန်: <b class="text-slate-800">${estDateStr}</b> အတွင်း
+            </div>
+
             ${courierHtml}
             ${confirmBtnHtml}
           </div>
         `;
       }).join('');
 
+      const returnContainer = document.getElementById('returnRequestContainer');
+      const orderCompletedTime = new Date(order.updated_at || order.created_at);
+      const hoursPassed = (new Date() - orderCompletedTime) / (1000 * 60 * 60);
+      const isWithin48Hours = hoursPassed <= 48;
+
+      if ((status === 'completed' || status === 'shipping') && isWithin48Hours) {
+        returnContainer.innerHTML = `
+          <div class="bg-rose-50 border border-rose-200 rounded-2xl p-4 space-y-3 mt-4 text-xs">
+            <h4 class="font-extrabold text-rose-800 text-sm flex items-center gap-1.5">
+              <i class="ph-bold ph-arrow-u-down-left"></i> ပစ္စည်းပြန်လည်လဲလှယ်ရန် (Return & Refund Box - ၄၈ နာရီအတွင်း)
+            </h4>
+            <p class="text-slate-600 font-medium">ပစ္စည်းတွင် ချို့ယွင်းချက်ရှိပါက လက်ခံရရှိပြီး <b>၄၈ နာရီအတွင်း</b> Unboxing Video နှင့်အတူ တောင်းဆိုနိုင်ပါသည်။</p>
+            
+            <form onsubmit="handleReturnSubmit(event, ${order.id})" class="space-y-2.5">
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">အကြောင်းပြချက် *</label>
+                <select id="returnReasonType" class="w-full border p-2.5 rounded-xl bg-white font-semibold outline-none">
+                  <option value="damaged">ပစ္စည်းကွဲအက်/ပျက်စီးနေသည်</option>
+                  <option value="wrong_item">မှာထားသည်နှင့် မတူသောပစ္စည်းရောက်လာသည်</option>
+                  <option value="defective">ပစ္စည်းအလုပ်မလုပ်ပါ/ချို့ယွင်းချက်ရှိသည်</option>
+                </select>
+              </div>
+              <div>
+                <label class="font-bold text-slate-700 block mb-1">အသေးစိတ်ရှင်းလင်းချက် *</label>
+                <textarea id="returnReasonDetail" required rows="2" placeholder="အသေးစိတ်ရေးပါ..." class="w-full border p-2.5 rounded-xl bg-white outline-none font-semibold"></textarea>
+              </div>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                <div>
+                  <label class="font-bold text-slate-700 block mb-1">Unboxing Video လင့်ခ် *</label>
+                  <input type="text" id="returnVideoUrl" required placeholder="Video URL သို့ ဖိုင်လင့်ခ်" class="w-full border p-2 rounded-xl bg-white outline-none font-semibold text-xs" />
+                </div>
+                <div>
+                  <label class="font-bold text-slate-700 block mb-1">သက်သေ ဓာတ်ပုံ *</label>
+                  <input type="file" id="returnPhotoFile" accept="image/*" required class="w-full border p-1.5 rounded-xl bg-white text-xs cursor-pointer" />
+                </div>
+              </div>
+              <button type="submit" id="btnSubmitReturn" class="w-full bg-rose-600 hover:bg-rose-700 text-white font-extrabold py-2.5 rounded-xl cursor-pointer">Return တောင်းဆိုမှု ပေးပို့မည်</button>
+            </form>
+          </div>
+        `;
+      } else if (!isWithin48Hours && (status === 'completed')) {
+        returnContainer.innerHTML = `
+          <div class="bg-slate-100 border border-slate-200 rounded-2xl p-3 mt-4 text-xs text-slate-500 font-semibold text-center">
+            ⏳ ပစ္စည်းလက်ခံရရှိပြီး ၄၈ နာရီကျော်လွန်သွားပြီဖြစ်သောကြောင့် Return တောင်းဆိုခွင့် ကုန်ဆုံးသွားပါပြီ။
+          </div>
+        `;
+      } else {
+        returnContainer.innerHTML = '';
+      }
+
       document.getElementById('orderDetailModal').classList.remove('hidden');
       document.getElementById('orderDetailModal').classList.add('flex');
+    }
+
+    async function handleReturnSubmit(e, orderId) {
+      e.preventDefault();
+      const photoInput = document.getElementById('returnPhotoFile');
+      if (!photoInput.files.length) return Swal.fire({ icon: 'warning', title: 'ဓာတ်ပုံထည့်ပေးပါ' });
+
+      const file = photoInput.files[0];
+      const btn = document.getElementById('btnSubmitReturn');
+      btn.innerText = "ပေးပို့နေပါသည်..."; btn.disabled = true;
+
+      try {
+        const fileName = `returns/ret-${Date.now()}.${file.name.split('.').pop()}`;
+        await client.storage.from('product-images').upload(fileName, file);
+        const photoUrl = `${window.location.origin}/api/supabase/storage/v1/object/public/product-images/${fileName}`;
+
+        const { error } = await client.from('order_returns').insert([{
+          order_id: orderId,
+          shop_id: activeOrderForReturn.shop_orders[0]?.shop_id,
+          reason_type: document.getElementById('returnReasonType').value,
+          reason_detail: document.getElementById('returnReasonDetail').value.trim(),
+          proof_video: document.getElementById('returnVideoUrl').value.trim(),
+          proof_images: [photoUrl],
+          refund_amount: activeOrderForReturn.total_amount,
+          status: 'pending'
+        }]);
+
+        if (error) throw error;
+        Swal.fire({ icon: 'success', title: 'ပေးပို့ပြီးပါပြီ', text: 'Return တောင်းဆိုမှု အောင်မြင်ပါသည်။' });
+        closeOrderDetailModal();
+      } catch (err) {
+        Swal.fire({ icon: 'error', title: 'Error', text: err.message });
+      } finally {
+        btn.innerText = "Return တောင်းဆိုမှု ပေးပို့မည်"; btn.disabled = false;
+      }
     }
 
     async function handleConfirmPackageReceived(shopOrderId) {
