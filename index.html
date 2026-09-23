@@ -211,6 +211,11 @@
         <div id="detailPriceContainer" class="pt-1.5 flex items-baseline gap-2"></div>
       </div>
 
+      <div id="shopNoticeDisplayArea" class="hidden bg-amber-50 border border-amber-200 p-3.5 rounded-2xl space-y-1">
+        <span class="font-bold text-amber-800 flex items-center gap-1.5 text-xs"><i class="ph-bold ph-info"></i> ဆိုင်၏ အသိပေးချက်:</span>
+        <p id="shopNoticeDisplayText" class="text-slate-700 font-medium leading-relaxed text-xs"></p>
+      </div>
+
       <div id="sizeSelectionArea" class="space-y-2 hidden"><span class="font-bold text-slate-700 block">📏 Size ရွေးပါ:</span><div id="sizeOptionsList" class="flex flex-wrap gap-2"></div></div>
       <div id="colorSelectionArea" class="space-y-2 hidden"><span class="font-bold text-slate-700 block">🎨 Color ရွေးပါ:</span><div id="colorOptionsList" class="flex flex-wrap gap-2"></div></div>
       
@@ -492,7 +497,6 @@
       products = prodRes.data || [];
       paymentMethods = payRes.data || [];
 
-      // Fetch ratings for products
       for (let p of products) {
         const { data: stat } = await client.rpc('get_product_rating_stats', { p_product_id: p.id });
         if (stat) {
