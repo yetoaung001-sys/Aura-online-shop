@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Aura Marketplace - Online Shopping</title>
 
-  <!-- Global Reverse Proxy URL Rewriter -->
   <script>
     (function() {
       const SUPABASE_ORIGIN = 'https://zyajlsrytjvwxqtpxrqd.supabase.co';
@@ -42,14 +41,13 @@
     })();
   </script>
 
-  <!-- Tailwind CSS Production CDN -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" />
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Padauk:wght@400;700&display=swap');
-    body { font-family: 'Padauk', sans-serif; font-size: 19px; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; }
+    body { font-family: 'Padauk', sans-serif; font-size: 20px; background-color: #f8fafc; color: #0f172a; -webkit-tap-highlight-color: transparent; }
   </style>
 </head>
 <body class="pb-24">
@@ -140,7 +138,6 @@
       shopId = urlParams.get('id') || urlParams.get('shop_id');
       
       if (!shopId) {
-        // Default first shop if no ID provided
         const { data: shops } = await client.from('shops').select('*').limit(1);
         if (shops && shops.length) { shopId = shops[0].id; }
       }
@@ -293,7 +290,7 @@
         const sub = item.price * item.qty;
         total += sub;
         return `
-          py-2.5 flex justify-between items-center text-xs">
+          <div class="py-2.5 flex justify-between items-center text-xs">
             <div class="flex items-center space-x-2">
               <img src="${escapeHtml(item.image)}" class="w-10 h-10 object-cover rounded-xl border">
               <div>
@@ -326,7 +323,6 @@
 
     function proceedCheckout() {
       if (!cart.length) return alert('တောင်းထဲတွင် ပစ္စည်းမရှိသေးပါ');
-      // Redirect to checkout or handle order placement
       localStorage.setItem('aura_cart', JSON.stringify(cart));
       localStorage.setItem('aura_checkout_shop', JSON.stringify(currentShopData));
       window.location.href = 'index.html#checkout';
