@@ -406,7 +406,6 @@
 
     function proceedCheckout() {
       if (!cart.length) return Swal.fire({ icon: 'warning', title: 'တောင်းထဲတွင် ပစ္စည်းမရှိသေးပါ' });
-      // Main index.html သို့ cart အချက်အလက်များ sync လုပ်ပေးပြီး ပို့မည်
       const globalCart = JSON.parse(localStorage.getItem(`aura_cart_guest`) || '[]');
       cart.forEach(item => {
         const found = globalCart.find(g => g.key === item.key);
