@@ -551,7 +551,8 @@
 
       grid.innerHTML = list.map(p => {
         const originalPrice = Number(p.price || 0);
-        const flashPrice = Number(p.flash_price || 0);
+        // flash_price သို့မဟုတ် discount_price ကို တွဲဖက်စစ်ဆေးခြင်း
+        const flashPrice = Number(p.flash_price || p.discount_price || 0);
         const hasDiscount = flashPrice > 0 && flashPrice < originalPrice;
         const displayPrice = hasDiscount ? flashPrice : originalPrice;
         const discountPercent = hasDiscount ? Math.round(((originalPrice - flashPrice) / originalPrice) * 100) : 0;
@@ -564,7 +565,7 @@
             <div>
               <div class="relative cursor-pointer overflow-hidden rounded-2xl bg-slate-100 mb-3" onclick="openBuyModalById(${p.id})">
                 <img src="${image}" alt="${esc(p.title || p.name)}" class="w-full h-40 sm:h-52 object-cover group-hover:scale-105 transition duration-500" />
-                ${hasDiscount ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-black uppercase shadow">${discountPercent}% OFF</span>` : ''}
+                ${hasDiscount ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2.5 py-0.5 rounded-lg font-black uppercase shadow">${discountPercent}% OFF</span>` : ''}
                 <span class="absolute top-2.5 right-2.5 bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-bold shadow">📦 ${stock}</span>
                 <div class="absolute bottom-2.5 left-2.5 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-xl flex items-center gap-1.5 shadow cursor-pointer hover:bg-white transition" onclick="event.stopPropagation(); location.href='shop.html?id=${shopInfo.id}'">
                   <img src="${toProxyUrl(shopInfo.logo_url || 'https://placehold.co/30')}" class="w-5 h-5 rounded-full object-cover border" />
@@ -666,13 +667,13 @@
 
     function updateVariantPriceAndStockDisplay() {
       if (!selectedProductForBuy) return;
-      let activePrice = Number(selectedProductForBuy.flash_price > 0 ? selectedProductForBuy.flash_price : selectedProductForBuy.price);
+      let rawPrice = Number(selectedProductForBuy.flash_price || selectedProductForBuy.discount_price || selectedProductForBuy.price);
       let activeStock = Number(selectedProductForBuy.stock || 0);
 
       if (selectedProductForBuy.variant_prices && chosenColor && chosenSize) {
         const pKey = `${chosenColor}_${chosenSize}`;
         if (selectedProductForBuy.variant_prices[pKey]) {
-          activePrice = Number(selectedProductForBuy.variant_prices[pKey]);
+          rawPrice = Number(selectedProductForBuy.variant_prices[pKey]);
         }
       }
 
@@ -683,7 +684,7 @@
         }
       }
 
-      document.getElementById('detailPriceContainer').innerHTML = `<span class="text-2xl font-black text-rose-600">${activePrice.toLocaleString()} MMK</span>`;
+      document.getElementById('detailPriceContainer').innerHTML = `<span class="text-2xl font-black text-rose-600">${rawPrice.toLocaleString()} MMK</span>`;
       
       const stockBadge = document.getElementById('detailStockBadge');
       stockBadge.className = activeStock > 0 ? "px-3 py-1 rounded-xl font-extrabold text-xs bg-emerald-50 text-emerald-700 border border-emerald-200" : "px-3 py-1 rounded-xl font-black text-xs bg-rose-50 text-rose-700 border border-rose-200";
@@ -711,7 +712,7 @@
       if (!selectedProductForBuy) return;
       const qty = Math.max(1, Number(document.getElementById('buyQty').value) || 1);
       
-      let activePrice = Number(selectedProductForBuy.flash_price > 0 ? selectedProductForBuy.flash_price : selectedProductForBuy.price);
+      let activePrice = Number(selectedProductForBuy.flash_price || selectedProductForBuy.discount_price || selectedProductForBuy.price);
       let activeStock = Number(selectedProductForBuy.stock || 0);
 
       if (selectedProductForBuy.variant_prices && chosenColor && chosenSize) {
