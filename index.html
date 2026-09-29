@@ -54,7 +54,7 @@
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="pb-24">
+<body class="pb-16 flex flex-col min-h-screen">
 
   <!-- NOTIFICATION BAR -->
   <div class="bg-gradient-to-r from-violet-600 via-indigo-600 to-rose-600 text-white text-xs sm:text-sm py-2.5 px-3 shadow-md overflow-hidden whitespace-nowrap">
@@ -106,7 +106,7 @@
     </div>
   </header>
 
-  <main class="max-w-7xl mx-auto px-3 sm:px-4 py-6 space-y-6">
+  <main class="max-w-7xl mx-auto px-3 sm:px-4 py-6 space-y-6 flex-1 w-full">
     <section id="indexBannersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden"></section>
     
     <div class="flex justify-between items-center bg-white p-4 sm:p-6 rounded-3xl border border-slate-100 shadow-xs">
@@ -119,6 +119,115 @@
 
     <div id="productGrid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-6"></div>
   </main>
+
+  <!-- FOOTER SECTION (ဆက်သွယ်ရန်နှင့် ကုမ္ပဏီအကြောင်း) -->
+  <footer class="bg-slate-900 text-slate-300 pt-12 pb-8 border-t border-slate-800 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 grid grid-cols-1 md:grid-cols-3 gap-8 pb-10 border-b border-slate-800 text-xs sm:text-sm">
+      
+      <!-- ကုမ္ပဏီအကြောင်း -->
+      <div class="space-y-3">
+        <div class="flex items-center gap-2.5">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-violet-600 to-rose-500 text-white font-black flex items-center justify-center text-lg shadow">
+            <i class="ph-bold ph-storefront"></i>
+          </div>
+          <span class="font-black text-white text-base tracking-wider">AURA MARKETPLACE</span>
+        </div>
+        <p class="text-slate-400 font-medium leading-relaxed">
+          မြန်မာနိုင်ငံတစ်ဝန်းရှိ ဆိုင်ခွဲပေါင်းစုံမှ အရည်အသွေးမြင့် ကုန်ပစ္စည်းများကို Package ခွဲထုတ်စနစ် (Split Checkout)၊ ၄၈ နာရီ Return မူဝါဒတို့ဖြင့် လုံခြုံစိတ်ချစွာ ဝယ်ယူနိုင်သော ခေတ်မီ E-Commerce စနစ် ဖြစ်ပါသည်။
+        </p>
+      </div>
+
+      <!-- အမြန်ဆက်သွယ်ရန် လမ်းကြောင်းများ -->
+      <div class="space-y-3">
+        <h4 class="font-extrabold text-white text-sm sm:text-base border-l-4 border-violet-600 pl-2.5">📞 ဆက်သွယ်ရန် & Support</h4>
+        <ul class="space-y-2 text-slate-300 font-medium">
+          <li>
+            <a href="tel:09123951357" class="hover:text-white flex items-center gap-2 transition">
+              <i class="ph-bold ph-phone-call text-violet-400 text-base"></i> Hotline: 09-123951357
+            </a>
+          </li>
+          <li>
+            <a href="https://viber.com" target="_blank" class="hover:text-white flex items-center gap-2 transition">
+              <i class="fa-brands fa-viber text-violet-400 text-base"></i> Viber / Telegram: 09-123951357
+            </a>
+          </li>
+          <li>
+            <a href="mailto:support@auramarket.shop" class="hover:text-white flex items-center gap-2 transition">
+              <i class="ph-bold ph-envelope text-violet-400 text-base"></i> Email: support@auramarket.shop
+            </a>
+          </li>
+          <li class="flex items-start gap-2">
+            <i class="ph-bold ph-map-pin text-violet-400 text-base mt-0.5 shrink-0"></i> 
+            <span>လိပ်စာ: ရန်ကုန်မြို့ / မွန်ပြည်နယ် (မြန်မာနိုင်ငံ)</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- အသုံးဝင်သော လင့်ခ်များ -->
+      <div class="space-y-3">
+        <h4 class="font-extrabold text-white text-sm sm:text-base border-l-4 border-rose-600 pl-2.5">🔗 အသုံးဝင်သော လင့်ခ်များ</h4>
+        <ul class="space-y-2 font-medium">
+          <li><button type="button" onclick="openSellerApplyModal()" class="hover:text-white transition text-left cursor-pointer">🏪 အခမဲ့ ဆိုင်ဖွင့်ရန် လျှောက်ထားခြင်း</button></li>
+          <li><button type="button" onclick="openTermsModal()" class="hover:text-violet-400 transition text-left cursor-pointer underline">📜 မူဝါဒများနှင့် စည်းကမ်းချက်များ (Terms)</button></li>
+          <li><button type="button" onclick="openProfileModal()" class="hover:text-white transition text-left cursor-pointer">📦 ကျွန်ုပ်၏ အော်ဒါအခြေအနေများ</button></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 pt-6 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 font-medium gap-3">
+      <p>© 2026 AURA Marketplace. All rights reserved.</p>
+      <p class="flex items-center gap-1">Powered by <span class="text-violet-400 font-bold">Supabase & Tailwind CSS</span></p>
+    </div>
+  </footer>
+
+  <!-- TERMS & CONDITIONS MODAL -->
+  <div id="termsModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden items-center justify-center p-3 sm:p-4">
+    <div class="bg-white w-full max-w-2xl rounded-3xl p-5 sm:p-7 space-y-4 text-xs sm:text-sm shadow-2xl max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b pb-3">
+        <h3 class="font-extrabold text-base text-slate-900">📜 မူဝါဒများနှင့် စည်းကမ်းချက်များ (Terms & Conditions)</h3>
+        <button type="button" onclick="closeTermsModal()" class="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center cursor-pointer"><i class="ph ph-x text-base"></i></button>
+      </div>
+
+      <div class="space-y-4 text-slate-700 leading-relaxed font-medium">
+        <div class="bg-violet-50 p-3.5 rounded-2xl border border-violet-100 text-violet-900 text-xs">
+          ကျေးဇူးပြု၍ AURA Marketplace ကို အသုံးမပြုမီ ဤစည်းကမ်းချက်များကို သေချာစွာ ဖတ်ရှုပါ။ အကောင့်ဖွင့်ခြင်းနှင့် ဝယ်ယူခြင်းဖြင့် အောက်ပါစည်းကမ်းများကို သဘောတူပြီးဖြစ်ပါသည်။
+        </div>
+
+        <div>
+          <h4 class="font-extrabold text-slate-900 text-sm mb-1">၁။ အထွေထွေနှင့် အကောင့်ဖွင့်ခြင်း</h4>
+          <p>ဝယ်သူများသည် မိမိတို့၏ ကိုယ်ရေးအချက်အလက်များ (အမည်၊ ဖုန်း၊ လိပ်စာ) ကို မှန်ကန်စွာ ဖြည့်သွင်းရမည်ဖြစ်ပြီး အကောင့်လုံခြုံရေးအတွက် ကိုယ်တိုင်တာဝန်ယူရမည်။</p>
+        </div>
+
+        <div>
+          <h4 class="font-extrabold text-slate-900 text-sm mb-1">၂။ ဆိုင်ခွဲအလိုက် အော်ဒါခွဲထုတ်ခြင်း (Split Orders)</h4>
+          <p>ဆိုင်အမျိုးမျိုးမှ ပစ္စည်းများကို တစ်ကြိမ်တည်း 🛒 စျေးဝယ်တွန်းလှည်းမှ ဝယ်ယူသည့်အခါ စနစ်က Package များအဖြစ် အလိုအလျောက် ခွဲထုတ်ပေးမည်။ ငွေလွှဲဘောက်ချာ အမှန်တကယ် ပူးတွဲတင်ပြရမည်။</p>
+        </div>
+
+        <div>
+          <h4 class="font-extrabold text-slate-900 text-sm mb-1">၃။ ပို့ဆောင်ခနှင့် ပို့ဆောင်ချိန်</h4>
+          <p>ပို့ဆောင်ခကို မြို့တွင်း သို့မဟုတ် နယ်ဝေးအပေါ်မူတည်၍ အလိုအလျောက် တွက်ချက်မည်။ ခန့်မှန်းရောက်ရှိချိန်မှာ အတည်ပြုပြီး ၂ ရက်မှ ၅ ရက်အတွင်း ဖြစ်သည်။</p>
+        </div>
+
+        <div>
+          <h4 class="font-extrabold text-slate-900 text-sm mb-1">၄။ ပစ္စည်းလက်ခံခြင်းနှင့် Auto-Complete</h4>
+          <p>ပစ္စည်းရောက်လာပါက အော်ဒါအသေးစိတ်မှ "ပစ္စည်းလက်ခံရရှိပါပြီ" ဟု နှိပ်ပေးရမည်။ မနှိပ်ပါက ပစ္စည်းစတင်ပို့ဆောင်ပြီး ၇ ရက်ပြည့်ပါက စနစ်က အလိုအလျောက် ပြီးမြောက်ကြောင်း သတ်မှတ်မည်။</p>
+        </div>
+
+        <div>
+          <h4 class="font-extrabold text-slate-900 text-sm mb-1">၅။ ၄၈ နာရီအတွင်း Return & Refund မူဝါဒ</h4>
+          <p>ပစ္စည်းလက်ခံရရှိပြီး <b>၄၈ နာရီအတွင်း</b>သာ Return/Refund တောင်းဆိုခွင့်ရှိသည်။ ချို့ယွင်းချက်များအတွက် <b>Unboxing Video</b> နှင့် ဓာတ်ပုံ မဖြစ်မနေ တင်သွင်းရမည်။</p>
+        </div>
+
+        <div>
+          <h4 class="font-extrabold text-slate-900 text-sm mb-1">၆။ ကုန်ပစ္စည်း လက်ကျန် (Stock)</h4>
+          <p>ဝယ်ယူလိုက်သည့်အခါ ပင်မ Stock သာမက အရောင် (Color) နှင့် ဆိုဒ် (Size) Variant Stock များပါ တစ်ပါတည်း အလိုအလျောက် လျော့သွားမည်ဖြစ်သည်။</p>
+        </div>
+      </div>
+
+      <button type="button" onclick="closeTermsModal()" class="w-full bg-slate-900 text-white py-3 rounded-2xl font-extrabold cursor-pointer text-xs">နားလည်သဘောတူပါသည်</button>
+    </div>
+  </div>
 
   <!-- CART DRAWER -->
   <div id="cartModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 hidden justify-end">
@@ -551,7 +660,6 @@
 
       grid.innerHTML = list.map(p => {
         const originalPrice = Number(p.price || 0);
-        // flash_price သို့မဟုတ် discount_price ကို တွဲဖက်စစ်ဆေးခြင်း
         const flashPrice = Number(p.flash_price || p.discount_price || 0);
         const hasDiscount = flashPrice > 0 && flashPrice < originalPrice;
         const displayPrice = hasDiscount ? flashPrice : originalPrice;
@@ -565,7 +673,7 @@
             <div>
               <div class="relative cursor-pointer overflow-hidden rounded-2xl bg-slate-100 mb-3" onclick="openBuyModalById(${p.id})">
                 <img src="${image}" alt="${esc(p.title || p.name)}" class="w-full h-40 sm:h-52 object-cover group-hover:scale-105 transition duration-500" />
-                ${hasDiscount ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2.5 py-0.5 rounded-lg font-black uppercase shadow">${discountPercent}% OFF</span>` : ''}
+                ${hasDiscount ? `<span class="absolute top-2.5 left-2.5 bg-rose-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-black uppercase shadow">${discountPercent}% OFF</span>` : ''}
                 <span class="absolute top-2.5 right-2.5 bg-emerald-600 text-white text-[10px] px-2 py-0.5 rounded-lg font-bold shadow">📦 ${stock}</span>
                 <div class="absolute bottom-2.5 left-2.5 bg-white/90 backdrop-blur-md px-2.5 py-1 rounded-xl flex items-center gap-1.5 shadow cursor-pointer hover:bg-white transition" onclick="event.stopPropagation(); location.href='shop.html?id=${shopInfo.id}'">
                   <img src="${toProxyUrl(shopInfo.logo_url || 'https://placehold.co/30')}" class="w-5 h-5 rounded-full object-cover border" />
@@ -1312,6 +1420,9 @@
     function closeOrderDetailModal(){ document.getElementById('orderDetailModal').classList.add('hidden'); document.getElementById('orderDetailModal').classList.remove('flex'); }
     function openSellerApplyModal(){ document.getElementById('sellerApplyModal').classList.remove('hidden'); document.getElementById('sellerApplyModal').classList.add('flex'); }
     function closeSellerApplyModal(){ document.getElementById('sellerApplyModal').classList.add('hidden'); document.getElementById('sellerApplyModal').classList.remove('flex'); }
+    
+    function openTermsModal() { document.getElementById('termsModal').classList.remove('hidden'); document.getElementById('termsModal').classList.add('flex'); }
+    function closeTermsModal() { document.getElementById('termsModal').classList.add('hidden'); document.getElementById('termsModal').classList.remove('flex'); }
 
     async function handleSellerApplicationSubmit(e) {
       e.preventDefault();
