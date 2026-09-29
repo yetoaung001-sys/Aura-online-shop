@@ -5,6 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Aura Marketplace - Modern E-Commerce</title>
 
+  <!-- PWA & Mobile Meta Tags -->
+  <meta name="theme-color" content="#7c3aed" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Aura Market" />
+  <link rel="apple-touch-icon" href="https://placehold.co/192x192/7c3aed/white?text=Aura" />
+
   <script>
     (function() {
       const SUPABASE_HOST = 'zyajlsrytjvwxqtpxrqd.supabase.co';
@@ -515,6 +522,27 @@
       <div class="text-center pt-3 border-t">
         <button type="button" onclick="toggleAuthMode()" id="authToggleBtn" class="text-violet-700 font-extrabold hover:underline cursor-pointer text-xs">အကောင့်အသစ်ဖွင့်ရန် (Sign Up)</button>
       </div>
+    </div>
+  </div>
+
+  <!-- PWA INSTALL BANNER -->
+  <div id="installBanner" class="hidden fixed bottom-4 left-4 right-4 max-w-md mx-auto bg-slate-900 text-white p-4 rounded-2xl shadow-2xl z-[150] flex items-center justify-between border border-amber-500/30">
+    <div class="flex items-center space-x-3">
+      <div class="w-10 h-10 bg-amber-500 text-slate-900 rounded-xl flex items-center justify-center font-bold text-lg">
+        <i class="fa-solid fa-mobile-screen"></i>
+      </div>
+      <div>
+        <h4 class="font-bold text-xs">Aura Marketplace App ကို Install လုပ်ရန်</h4>
+        <p class="text-[10px] text-slate-400">ဖုန်း Home Screen ပေါ်တွင် App အဖြစ် အမြန်ဖွင့်ရန်</p>
+      </div>
+    </div>
+    <div class="flex items-center space-x-2">
+      <button type="button" id="installBtn" class="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-xs px-3 py-2 rounded-xl transition shadow">
+        Install
+      </button>
+      <button type="button" onclick="document.getElementById('installBanner').classList.add('hidden')" class="text-slate-400 hover:text-white px-2 py-1 text-xs">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
     </div>
   </div>
 
@@ -1502,6 +1530,38 @@
     }
 
     async function handleCustomerLogout() { await client.auth.signOut(); location.reload(); }
+
+    // PWA Install Script
+    let deferredPrompt;
+    const installBanner = document.getElementById('installBanner');
+    const installBtn = document.getElementById('installBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      if (installBanner) {
+        installBanner.classList.remove('hidden');
+        installBanner.classList.add('flex');
+      }
+    });
+
+    if (installBtn) {
+      installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        deferredPrompt = null;
+        installBanner.classList.add('hidden');
+        installBanner.classList.remove('flex');
+      });
+    }
+
+    window.addEventListener('appinstalled', () => {
+      if (installBanner) {
+        installBanner.classList.add('hidden');
+        installBanner.classList.remove('flex');
+      }
+    });
 
     init();
   </script>
