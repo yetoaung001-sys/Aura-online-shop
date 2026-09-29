@@ -114,6 +114,22 @@
   </header>
 
   <main class="max-w-7xl mx-auto px-3 sm:px-4 py-6 space-y-6 flex-1 w-full">
+    <!-- MANUAL APP INSTALL BUTTON -->
+    <div class="bg-gradient-to-r from-violet-600 to-indigo-600 p-4 sm:p-5 rounded-3xl shadow-md text-white flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-12 h-12 bg-white/20 rounded-2xl flex items-center justify-center text-2xl font-bold">
+          <i class="fa-solid fa-mobile-screen"></i>
+        </div>
+        <div>
+          <h3 class="font-black text-sm sm:text-base">Aura Marketplace App ကို ဖုန်းထဲသို့ ထည့်သွင်းပါ</h3>
+          <p class="text-xs text-white/80">App အနေဖြင့် အမြန်ဆုံးနှင့် အလွယ်တကူ ဝင်ရောက်အသုံးပြုနိုင်ပါသည်</p>
+        </div>
+      </div>
+      <button type="button" id="manualInstallBtn" class="bg-white text-violet-700 hover:bg-slate-100 font-extrabold px-5 py-3 rounded-2xl shadow transition text-xs sm:text-sm cursor-pointer shrink-0">
+        <i class="fa-solid fa-download mr-1.5"></i> App ကို Install လုပ်မည်
+      </button>
+    </div>
+
     <section id="indexBannersContainer" class="grid grid-cols-1 md:grid-cols-2 gap-4 hidden"></section>
     
     <div class="flex justify-between items-center bg-white p-4 sm:p-6 rounded-3xl border border-slate-100 shadow-xs">
@@ -522,27 +538,6 @@
       <div class="text-center pt-3 border-t">
         <button type="button" onclick="toggleAuthMode()" id="authToggleBtn" class="text-violet-700 font-extrabold hover:underline cursor-pointer text-xs">အကောင့်အသစ်ဖွင့်ရန် (Sign Up)</button>
       </div>
-    </div>
-  </div>
-
-  <!-- PWA INSTALL BANNER -->
-  <div id="installBanner" class="hidden fixed bottom-4 left-4 right-4 max-w-md mx-auto bg-slate-900 text-white p-4 rounded-2xl shadow-2xl z-[150] flex items-center justify-between border border-amber-500/30">
-    <div class="flex items-center space-x-3">
-      <div class="w-10 h-10 bg-amber-500 text-slate-900 rounded-xl flex items-center justify-center font-bold text-lg">
-        <i class="fa-solid fa-mobile-screen"></i>
-      </div>
-      <div>
-        <h4 class="font-bold text-xs">Aura Marketplace App ကို Install လုပ်ရန်</h4>
-        <p class="text-[10px] text-slate-400">ဖုန်း Home Screen ပေါ်တွင် App အဖြစ် အမြန်ဖွင့်ရန်</p>
-      </div>
-    </div>
-    <div class="flex items-center space-x-2">
-      <button type="button" id="installBtn" class="bg-amber-500 hover:bg-amber-400 text-slate-900 font-bold text-xs px-3 py-2 rounded-xl transition shadow">
-        Install
-      </button>
-      <button type="button" onclick="document.getElementById('installBanner').classList.add('hidden')" class="text-slate-400 hover:text-white px-2 py-1 text-xs">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
     </div>
   </div>
 
@@ -1531,37 +1526,35 @@
 
     async function handleCustomerLogout() { await client.auth.signOut(); location.reload(); }
 
-    // PWA Install Script
+    // Manual PWA Install Button Handler
     let deferredPrompt;
-    const installBanner = document.getElementById('installBanner');
-    const installBtn = document.getElementById('installBtn');
-
     window.addEventListener('beforeinstallprompt', (e) => {
       e.preventDefault();
       deferredPrompt = e;
-      if (installBanner) {
-        installBanner.classList.remove('hidden');
-        installBanner.classList.add('flex');
-      }
     });
 
-    if (installBtn) {
-      installBtn.addEventListener('click', async () => {
-        if (!deferredPrompt) return;
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        deferredPrompt = null;
-        installBanner.classList.add('hidden');
-        installBanner.classList.remove('flex');
+    const manualInstallBtn = document.getElementById('manualInstallBtn');
+    if (manualInstallBtn) {
+      manualInstallBtn.addEventListener('click', async () => {
+        if (deferredPrompt) {
+          deferredPrompt.prompt();
+          const { outcome } = await deferredPrompt.userChoice;
+          deferredPrompt = null;
+        } else {
+          Swal.fire({
+            icon: 'info',
+            title: 'App အဖြစ် ထည့်သွင်းရန် လမ်းညွှန်ချက်',
+            html: `
+              <div class="text-left text-xs sm:text-sm space-y-2">
+                <p><b>• Android (Chrome Browser):</b> ဘရောက်ဆာ၏ ညာဘက်အပေါ်ထောင့်ရှိ မီနူး (⋮) ကိုနှိပ်ပြီး <b>"Add to home screen"</b> သို့မဟုတ် <b>"Install app"</b> ကို နှိပ်ပါ။</p>
+                <p><b>• iPhone (Safari Browser):</b> ဖုန်း၏ အောက်ခြေရှိ <b>Share (မျှဝေရန်)</b> ခလုတ်ကို နှိပ်ပြီး <b>"Add to Home Screen"</b> ကို ရွေးချယ်ပါ။</p>
+              </div>
+            `,
+            confirmButtonColor: '#7c3aed'
+          });
+        }
       });
     }
-
-    window.addEventListener('appinstalled', () => {
-      if (installBanner) {
-        installBanner.classList.add('hidden');
-        installBanner.classList.remove('flex');
-      }
-    });
 
     init();
   </script>
