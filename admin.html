@@ -807,12 +807,26 @@
       }
     }
 
+    // -------------------------------------------------------------
+    // 💡 ဤနေရာတွင် admin က အော်ဒါဖျက်လျှင် RPC function ကို လှမ်းခေါ်စေရန် ပြင်ဆင်ထားပါသည်
+    // -------------------------------------------------------------
     async function rejectOrder(orderId) {
-      if (!confirm(`အော်ဒါ #${orderId} ကို ပယ်ဖျက်မှာ သေချာပါသလား?`)) return;
-      await client.from('orders').update({ order_status: 'cancelled', status: 'cancelled' }).eq('id', orderId);
-      await client.from('shop_orders').update({ status: 'cancelled' }).eq('order_id', orderId);
-      alert('ပယ်ဖျက်ပြီးပါပြီ'); 
-      await loadOrders();
+      if (!confirm(`အော်ဒါ #${orderId} ကို ပယ်ဖျက်ပြီး Stock များ မူလအတိုင်း ပြန်လည်ဖြည့်တင်းရန် သေချာပါသလား?`)) return;
+
+      try {
+        const { data: res, error } = await client.rpc('cancel_customer_order', {
+          p_order_id: Number(orderId)
+        });
+
+        if (error) throw error;
+        if (res && res.success === false) throw new Error(res.message);
+
+        alert('🚫 အော်ဒါကို အောင်မြင်စွာ ဖျက်သိမ်းပြီး ကုန်ပစ္စည်း Stock များကို မူလအတိုင်း ပြန်လည်ဖြည့်တင်းပြီးပါပြီ။');
+        await loadOrders();
+        await loadDashboardStats();
+      } catch (err) {
+        alert('❌ အော်ဒါဖျက်ရာတွင် အမှားအယွင်းရှိပါသည်: ' + (err.message || err));
+      }
     }
 
     async function loadShops() {
@@ -932,7 +946,7 @@
       try {
         const { error } = await client.rpc('admin_delete_user_completely', { target_user_id: userId });
         if (error) throw error;
-        alert('🗑️ အသင်းဝင်အား အပြီးတိုင် ဖျက်ပစ်ပြီးပါပြီ!');
+        alert('🗑️️ အသင်းဝင်အား အပြီးတိုင် ဖျက်ပစ်ပြီးပါပြီ!');
         await loadUsers(); await loadShops(); await loadDashboardStats();
       } catch (err) {
         alert('❌ ဖျက်မရပါ: ' + (err.message || err));
